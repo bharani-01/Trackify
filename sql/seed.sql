@@ -7,7 +7,7 @@ ON CONFLICT (email) DO NOTHING;
 
 -- Seed Departments
 INSERT INTO departments (code, name) VALUES
-('CSE', 'Computer Science & Engineering')
+('CSE', 'Computer Science & Engineering (Cyber Security & IoT)')
 ON CONFLICT (code) DO NOTHING;
 
 -- Seed Master Subjects (Admin created, user_id is NULL)
