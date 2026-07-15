@@ -48,12 +48,22 @@
         <!-- Selector Controls -->
         <div class="glass-card border-glass mb-3 p-3">
           <form id="templateSelector" class="row g-2 align-items-center" onsubmit="loadTemplate(event)">
-            <div class="col-md-9">
-              <select class="form-select border-light py-2 fs-7 fw-semibold" id="selectTemplate" required>
-                <option value="CSE-1" selected>Computer Science Engineering - Year 1 | Semester 1 (Master Template)</option>
-                <option value="ECE-3">Electronics Engineering - Year 2 | Semester 3 (Master Template)</option>
-                <option value="ME-5">Mechanical Engineering - Year 3 | Semester 5 (Master Template)</option>
-                <option value="CE-7">Civil Engineering - Year 4 | Semester 7 (Master Template)</option>
+            <div class="col-md-5">
+              <select class="form-select border-light py-2 fs-7 fw-semibold" id="selectDepartment" required>
+                <option value="" disabled selected>Select Department</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <select class="form-select border-light py-2 fs-7 fw-semibold" id="selectSemester" required>
+                <option value="" disabled selected>Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -313,16 +323,28 @@
         document.getElementById('user-header-name').innerText = meResult.user.name;
       } else {
         window.location.href = '/login';
+        return;
+      }
+
+      // Load active departments list dynamically
+      const deptsResult = await apiCall('/api/departments');
+      if (deptsResult.success && deptsResult.departments) {
+        const deptSelect = document.getElementById('selectDepartment');
+        deptSelect.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        deptsResult.departments.forEach(dept => {
+          const opt = document.createElement('option');
+          opt.value = dept.code;
+          opt.textContent = `${dept.name} (${dept.code})`;
+          deptSelect.appendChild(opt);
+        });
       }
     }
 
     async function loadTemplate(e) {
       if (e) e.preventDefault();
       
-      const selectVal = document.getElementById('selectTemplate').value;
-      const parts = selectVal.split('-');
-      activeDept = parts[0];
-      activeSem = parseInt(parts[1], 10);
+      activeDept = document.getElementById('selectDepartment').value;
+      activeSem = parseInt(document.getElementById('selectSemester').value, 10);
 
       const bannerText = `Active Template: ${activeDept} | Semester ${activeSem}`;
       document.getElementById('template-banner-text').innerText = bannerText;
