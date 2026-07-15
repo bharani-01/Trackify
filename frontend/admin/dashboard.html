@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Trackify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <style>
+    /* Premium KPI Card Layout and Animations */
+    .kpi-card {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 14px !important;
+      background: #ffffff !important;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04) !important;
+    }
+    .kpi-icon-container {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .bg-primary-glow { background-color: rgba(37, 99, 235, 0.08); }
+    .bg-success-glow { background-color: rgba(5, 150, 105, 0.08); }
+    .bg-danger-glow { background-color: rgba(220, 38, 38, 0.08); }
+    .bg-info-glow { background-color: rgba(8, 145, 178, 0.08); }
+
+    .border-start-glow-primary { border-left: 4px solid var(--primary) !important; }
+    .border-start-glow-success { border-left: 4px solid var(--success) !important; }
+    .border-start-glow-danger { border-left: 4px solid var(--danger) !important; }
+    .border-start-glow-info { border-left: 4px solid var(--info) !important; }
+
+    .fs-8 { font-size: 0.72rem !important; }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link active" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Admin Overview</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Welcome Banner -->
+        <div class="glass-card border-glass mb-4">
+          <div class="row align-items-center">
+            <div class="col-md-12">
+              <span class="badge badge-absent px-3 py-2 mb-2 fs-7 text-uppercase" style="color: var(--primary); background: var(--primary-glow); border-color: rgba(99,102,241,0.2);">ADMIN PORTAL ACTIVE</span>
+              <h1 class="h2 fw-bold mb-1">Welcome, <span id="welcome-name">Administrator</span>!</h1>
+              <p class="text-secondary mb-0">Monitor registration metrics and global averages for the Trackify application.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Global Metrics Grid -->
+        <div class="row g-4 mb-4">
+          <!-- Total Registered -->
+          <div class="col-md-6 col-xl-3">
+            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-primary">
+              <div class="text-start">
+                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Total Students</div>
+                <div class="fs-4 fw-extrabold text-dark mt-1" id="stats-total">0</div>
+              </div>
+              <div class="kpi-icon-container bg-primary-glow text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Active Accounts -->
+          <div class="col-md-6 col-xl-3">
+            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-success">
+              <div class="text-start">
+                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Active Accounts</div>
+                <div class="fs-4 fw-extrabold text-success mt-1" id="stats-active">0</div>
+              </div>
+              <div class="kpi-icon-container bg-success-glow text-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suspended Accounts -->
+          <div class="col-md-6 col-xl-3">
+            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-danger">
+              <div class="text-start">
+                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Suspended</div>
+                <div class="fs-4 fw-extrabold text-danger mt-1" id="stats-suspended">0</div>
+              </div>
+              <div class="kpi-icon-container bg-danger-glow text-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Global Avg Attendance -->
+          <div class="col-md-6 col-xl-3">
+            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-info">
+              <div class="text-start">
+                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Global Average</div>
+                <div class="fs-4 fw-extrabold text-info mt-1" id="stats-avg">0.0%</div>
+              </div>
+              <div class="kpi-icon-container bg-info-glow text-info">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Quick Actions Card -->
+        <div class="glass-card border-glass">
+          <h2 class="h5 fw-bold mb-4">Administrator Quick Commands</h2>
+          <div class="row g-3">
+            <div class="col-sm-6 col-md-4">
+              <a href="/admin/users" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
+                <span>User Management</span>
+              </a>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <a href="/admin/timetable" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
+                <span>Master Timetable Builder</span>
+              </a>
+            </div>
+            <div class="col-sm-6 col-md-4">
+              <a href="/admin/announcements" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
+                <span>Announcements Board</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script>
+    async function loadData() {
+      // Fetch user profile session
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+        document.getElementById('welcome-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Fetch global statistics
+      const response = await apiCall('/api/admin/stats');
+      if (response.success && response.stats) {
+        const stats = response.stats;
+        document.getElementById('stats-total').innerText = stats.total_students;
+        document.getElementById('stats-active').innerText = stats.active_students;
+        document.getElementById('stats-suspended').innerText = stats.suspended_students;
+        document.getElementById('stats-avg').innerText = `${stats.overall_avg_attendance}%`;
+      } else {
+        showAlert('Failed to load system metrics statistics.', 'danger');
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

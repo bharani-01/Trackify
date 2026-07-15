@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - Trackify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/student/dashboard">Dashboard Overview</a>
+        <a class="sidebar-link" href="/student/timetable">Timetable Schedule</a>
+        <a class="sidebar-link" href="/student/attendance">Mark Attendance</a>
+        <a class="sidebar-link" href="/student/history">Attendance History</a>
+        <a class="sidebar-link active" href="/student/settings">Preferences & Target</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Preferences & Target</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">S</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Description -->
+        <p class="text-secondary small mb-4">Configure your minimum attendance threshold and account settings.</p>
+
+        <div class="row g-4">
+          <!-- Left: Settings Form -->
+          <div class="col-md-6">
+            <div class="glass-card border-glass h-100">
+              <h2 class="h5 fw-bold mb-4">Attendance Configurations</h2>
+              <form id="settingsForm">
+                <!-- Minimum Attendance Target -->
+                <div class="form-floating mb-3">
+                  <input type="number" class="form-control" id="minAttendance" placeholder="80" required min="50" max="100">
+                  <label for="minAttendance">Minimum Target Attendance (%)</label>
+                  <div class="form-text text-secondary mt-1 small">Typically set to 80% according to college academic standards.</div>
+                </div>
+
+                <!-- Notifications Toggle -->
+                <div class="form-switch form-check mb-4 p-3 rounded-4 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem;">
+                  <div>
+                    <label class="form-check-label fw-bold text-dark" for="notifsToggle">Enable Reminders</label>
+                    <div class="text-secondary small">Notify me if subject averages fall below target.</div>
+                  </div>
+                  <input class="form-check-input ms-0" type="checkbox" role="switch" id="notifsToggle" checked>
+                </div>
+
+                <button type="submit" class="btn btn-glow w-100 py-3">Save Preferences</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Profile Info Display -->
+          <div class="col-md-6">
+            <div class="glass-card border-glass h-100">
+              <h2 class="h5 fw-bold mb-4">Account Information</h2>
+              <div class="mb-3 p-3 bg-light rounded-4 border">
+                <div class="text-secondary small">Student Name</div>
+                <div class="fs-6 fw-bold" id="info-name">Loading...</div>
+              </div>
+              <div class="mb-3 p-3 bg-light rounded-4 border">
+                <div class="text-secondary small">Email Address</div>
+                <div class="fs-6 fw-bold" id="info-email">Loading...</div>
+              </div>
+              <div class="mb-3 p-3 bg-light rounded-4 border">
+                <div class="text-secondary small">Registration ID</div>
+                <div class="fs-6 fw-bold" id="info-reg">Loading...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    async function loadData() {
+      // Load user profile header and info
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        const user = meResult.user;
+        document.getElementById('user-header-name').innerText = user.name;
+        document.getElementById('info-name').innerText = user.name;
+        document.getElementById('info-email').innerText = user.email;
+        document.getElementById('info-reg').innerText = user.register_number;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Fetch user settings
+      const response = await apiCall('/api/settings');
+      if (response.success && response.settings) {
+        document.getElementById('minAttendance').value = response.settings.minimum_attendance;
+        document.getElementById('notifsToggle').checked = response.settings.notifications;
+      } else {
+        showAlert('Failed to load user settings configurations.', 'danger');
+      }
+    }
+
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const minimum_attendance = document.getElementById('minAttendance').value;
+      const notifications = document.getElementById('notifsToggle').checked;
+
+      const response = await apiCall('/api/settings', {
+        method: 'PUT',
+        body: { minimum_attendance, notifications }
+      });
+
+      if (response.success) {
+        showAlert('Preferences saved successfully', 'success');
+        loadData();
+      } else {
+        showAlert(response.message, 'danger');
+      }
+    });
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

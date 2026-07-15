@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <style>
+    /* Modal input and select overrides to enforce consistent light-theme forms */
+    #editProfileModal input.form-control, 
+    #addUserModal input.form-control,
+    #editProfileModal select.form-select, 
+    #addUserModal select.form-select {
+      background-color: #ffffff !important;
+      color: #212529 !important;
+      border: 1px solid #ced4da !important;
+    }
+    #editProfileModal select.form-select option, 
+    #addUserModal select.form-select option {
+      background-color: #ffffff !important;
+      color: #212529 !important;
+    }
+    #editProfileModal label, 
+    #addUserModal label {
+      color: #495057 !important;
+    }
+    #editProfileModal input[readonly] {
+      background-color: #e2e8f0 !important;
+      color: #475569 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link active" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Manage Users</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Sub-header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">User Account Directory</h2>
+            <p class="text-secondary small mb-0">Suspend active sessions or remove student registrations.</p>
+          </div>
+          <button class="btn btn-glow" data-bs-toggle="modal" data-bs-target="#addUserModal" onclick="openAddUserModal()">
+            + Add New User
+          </button>
+        </div>
+
+        <!-- Search Filter Card -->
+        <div class="glass-card border-glass mb-4 p-3">
+          <div class="row g-2">
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name or register number..." onkeyup="filterUsers()">
+                <label for="searchBox">Search by Student Name or Registration Number...</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Listings Table -->
+        <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="users-table">
+              <thead class="table-light border-bottom">
+                <tr>
+                  <th class="ps-4">Student Details</th>
+                  <th>Reg Number</th>
+                  <th>Department / Sem</th>
+                  <th>Status</th>
+                  <th class="pe-4 text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-container">
+                <tr>
+                  <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Add New User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass text-white bg-dark">
+        <div class="modal-header border-glass">
+          <h5 class="modal-title fw-bold" id="addUserModalLabel">Provision New Account</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="addUserForm">
+            <!-- Full Name -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control bg-white text-dark border-secondary-subtle" id="add-name" placeholder="John Doe" required>
+              <label for="add-name" class="text-secondary small">Full Name</label>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control bg-white text-dark border-secondary-subtle" id="add-email" placeholder="name@example.com" required>
+              <label for="add-email" class="text-secondary small">Email Address</label>
+            </div>
+
+            <!-- Password -->
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-password" placeholder="Password" required minlength="6">
+              <label for="add-password" class="text-secondary small">Temporary Password (min 6 chars)</label>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="form-floating mb-3">
+              <select class="form-select bg-white text-dark border-secondary-subtle" id="add-role" required onchange="toggleAddUserRoleFields(this.value)">
+                <option value="student" selected>Student Companion</option>
+                <option value="admin">System Administrator</option>
+              </select>
+              <label for="add-role" class="text-secondary small">System Access Role</label>
+            </div>
+
+            <!-- Student Only Fields Container -->
+            <div id="student-only-fields">
+              <!-- Registration Number -->
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control bg-white text-dark border-secondary-subtle" id="add-register-number" placeholder="REG001">
+                <label for="add-register-number" class="text-secondary small">Registration Number</label>
+              </div>
+
+              <!-- Department -->
+              <div class="mb-3">
+                <label for="add-department" class="form-label small fw-bold text-secondary">Department</label>
+                <select class="form-select bg-white text-dark border-secondary-subtle" id="add-department">
+                  <option value="" disabled selected>Select Department</option>
+                </select>
+              </div>
+
+              <!-- Semester -->
+              <div class="mb-4">
+                <label for="add-semester" class="form-label small fw-bold text-secondary">Semester</label>
+                <select class="form-select bg-white text-dark border-secondary-subtle" id="add-semester">
+                  <option value="" disabled selected>Select Semester</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="7">Semester 7</option>
+                  <option value="8">Semester 8</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-glow w-100 py-2.5">Provision Account</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Student Profile Modal -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass text-white bg-dark">
+        <div class="modal-header border-glass">
+          <h5 class="modal-title fw-bold" id="editProfileModalLabel">Edit Student Department & Semester</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="editProfileForm">
+            <input type="hidden" id="edit-user-id">
+            
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Student Name</label>
+              <input type="text" class="form-control bg-light text-dark border-secondary-subtle" id="edit-user-name" readonly>
+            </div>
+            
+            <div class="mb-3">
+              <label for="edit-department" class="form-label small fw-bold text-secondary">Department</label>
+              <select class="form-select bg-white text-dark border-secondary-subtle" id="edit-department" required>
+                <option value="" disabled selected>Loading departments...</option>
+              </select>
+            </div>
+            
+            <div class="mb-4">
+              <label for="edit-semester" class="form-label small fw-bold text-secondary">Semester</label>
+              <select class="form-select bg-white text-dark border-secondary-subtle" id="edit-semester" required>
+                <option value="" disabled selected>Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            
+            <button type="submit" class="btn btn-glow w-100 py-2.5">Save Changes & Initialize Templates</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let usersList = [];
+
+    async function loadData() {
+      // Fetch session
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Fetch departments list
+      const deptsResponse = await apiCall('/api/departments');
+      if (deptsResponse.success && deptsResponse.departments) {
+        departmentsList = deptsResponse.departments;
+        const deptSelect = document.getElementById('edit-department');
+        deptSelect.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        departmentsList.forEach(dept => {
+          const opt = document.createElement('option');
+          opt.value = dept.code;
+          opt.textContent = `${dept.name} (${dept.code})`;
+          deptSelect.appendChild(opt);
+        });
+      }
+
+      // Fetch students list
+      const response = await apiCall('/api/admin/users');
+      const container = document.getElementById('users-container');
+
+      if (response.success) {
+        usersList = response.users;
+        renderUsers(usersList);
+      } else {
+        container.innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
+      }
+    }
+
+    // Render users table rows
+    function renderUsers(list) {
+      const container = document.getElementById('users-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-5 text-secondary">
+              No students registered yet.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(user => {
+        const statusBadge = user.is_suspended
+          ? '<span class="badge badge-absent px-2 py-1 fs-8">Suspended</span>'
+          : '<span class="badge badge-present px-2 py-1 fs-8">Active</span>';
+
+        const suspendBtnText = user.is_suspended ? 'Activate' : 'Suspend';
+        const suspendBtnClass = user.is_suspended ? 'border-success text-success' : 'border-warning text-warning';
+
+        container.innerHTML += `
+          <tr class="user-row border-bottom" data-name="${user.name}" data-reg="${user.register_number}">
+            <td class="ps-4">
+              <div class="fw-semibold text-dark">${user.name}</div>
+              <div class="text-secondary small" style="font-size: 0.8rem;">${user.email}</div>
+            </td>
+            <td class="fw-semibold text-secondary small">${user.register_number}</td>
+            <td class="text-secondary small">
+              ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
+            </td>
+            <td>${statusBadge}</td>
+            <td class="pe-4 text-end">
+              <div class="d-flex gap-1 justify-content-end">
+                <button onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}')" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
+                  Edit
+                </button>
+                <button onclick="toggleSuspension('${user.id}', ${user.is_suspended})" class="btn btn-glass btn-sm ${suspendBtnClass} py-1 px-2.5" style="font-size: 0.8rem;">
+                  ${suspendBtnText}
+                </button>
+                <button onclick="deleteUserAccount('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Client-side search filtration
+    function filterUsers() {
+      const query = document.getElementById('searchBox').value.toLowerCase().trim();
+      const rows = document.querySelectorAll('.user-row');
+
+      rows.forEach(row => {
+        const name = row.getAttribute('data-name').toLowerCase();
+        const reg = row.getAttribute('data-reg').toLowerCase();
+        
+        if (name.includes(query) || reg.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
+    // Toggle suspension call
+    async function toggleSuspension(id, currentlySuspended) {
+      const confirmMsg = currentlySuspended
+        ? 'Allow this user account to log in and sync data again?'
+        : 'Suspend this user account? The student will be instantly blocked from logging in or fetching APIs.';
+      
+      if (confirm(confirmMsg)) {
+        const response = await apiCall(`/api/admin/users/${id}/suspend`, {
+          method: 'PUT',
+          body: { is_suspended: !currentlySuspended }
+        });
+
+        if (response.success) {
+          showAlert('User account status updated', 'success');
+          loadData();
+        } else {
+          showAlert(response.message, 'danger');
+        }
+      }
+    }
+
+    // Delete user account call
+    async function deleteUserAccount(id) {
+      if (confirm('Permanently delete this user account? All of the student\'s personal subjects, timetables, and attendance histories will be destroyed! This action is irreversible.')) {
+        const response = await apiCall(`/api/admin/users/${id}`, { method: 'DELETE' });
+        if (response.success) {
+          showAlert('User account permanently deleted', 'success');
+          loadData();
+        } else {
+          showAlert(response.message, 'danger');
+        }
+      }
+    }
+
+    function openEditModal(id, name, dept, sem) {
+      document.getElementById('edit-user-id').value = id;
+      document.getElementById('edit-user-name').value = name;
+      document.getElementById('edit-department').value = dept || '';
+      document.getElementById('edit-semester').value = sem || '';
+      
+      const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+      modal.show();
+    }
+
+    document.getElementById('editProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('edit-user-id').value;
+      const department = document.getElementById('edit-department').value;
+      const semester = document.getElementById('edit-semester').value;
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Saving...';
+      
+      const response = await apiCall(`/api/admin/users/${id}`, {
+        method: 'PUT',
+        body: { department, semester }
+      });
+      
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Save Changes & Initialize Templates';
+      
+      if (response.success) {
+        showAlert('Student profile updated and schedules initialized', 'success');
+        
+        // Hide modal
+        const modalEl = document.getElementById('editProfileModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        
+        loadData();
+      } else {
+        showAlert(response.message, 'danger');
+      }
+    });
+
+    let departmentsList = [];
+    const addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
+
+    function openAddUserModal() {
+      document.getElementById('addUserForm').reset();
+      toggleAddUserRoleFields('student');
+      
+      const deptSelect = document.getElementById('add-department');
+      deptSelect.innerHTML = '<option value="" disabled selected>Select Department</option>';
+      departmentsList.forEach(dept => {
+        const opt = document.createElement('option');
+        opt.value = dept.code;
+        opt.textContent = `${dept.name} (${dept.code})`;
+        deptSelect.appendChild(opt);
+      });
+    }
+
+    function toggleAddUserRoleFields(role) {
+      const container = document.getElementById('student-only-fields');
+      const regInput = document.getElementById('add-register-number');
+      const deptSelect = document.getElementById('add-department');
+      const semSelect = document.getElementById('add-semester');
+
+      if (role === 'admin') {
+        container.style.display = 'none';
+        regInput.removeAttribute('required');
+        deptSelect.removeAttribute('required');
+        semSelect.removeAttribute('required');
+      } else {
+        container.style.display = 'block';
+        regInput.setAttribute('required', 'required');
+        deptSelect.setAttribute('required', 'required');
+        semSelect.setAttribute('required', 'required');
+      }
+    }
+
+    document.getElementById('addUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('add-name').value.trim();
+      const email = document.getElementById('add-email').value.trim();
+      const password = document.getElementById('add-password').value;
+      const role = document.getElementById('add-role').value;
+      const register_number = document.getElementById('add-register-number').value.trim();
+      const department = document.getElementById('add-department').value;
+      const semester = document.getElementById('add-semester').value;
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Provisioning...';
+
+      const response = await apiCall('/api/admin/users', {
+        method: 'POST',
+        body: {
+          name,
+          email,
+          password,
+          role,
+          register_number: role === 'student' ? register_number : undefined,
+          department: role === 'student' ? department : undefined,
+          semester: role === 'student' ? semester : undefined
+        }
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Provision Account';
+
+      if (response.success) {
+        showAlert('New user account provisioned successfully', 'success');
+        addUserModal.hide();
+        loadData();
+      } else {
+        showAlert(response.message || 'Failed to provision user account', 'danger');
+      }
+    });
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

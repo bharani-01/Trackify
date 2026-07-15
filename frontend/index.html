@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trackify - Personal Attendance Tracker</title>
+  <meta name="description" content="Manage your subjects, build weekly timetables, track attendance, and predict performance with Trackify.">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg glass-nav sticky-top">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center text-white" href="/">
+        <span class="fs-3 fw-bold gradient-accent-text" id="logo">Trackify</span>
+      </a>
+      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <div class="d-flex gap-3 mt-3 mt-lg-0">
+          <a href="/login" class="btn btn-glow">Log In</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="container my-5 py-5 text-center position-relative">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 animate-fade-in-up">
+        <span class="badge bg-purple-500 text-uppercase px-3 py-2 mb-3 badge-present fs-7">STUDENT COMPANION</span>
+        <h1 class="display-3 fw-extrabold mb-4 gradient-text">
+          Own your academic success with <span class="gradient-accent-text">Trackify</span>
+        </h1>
+        <p class="lead text-secondary mb-5 fs-4">
+          A personal attendance tracking dashboard. Organize subjects, map your timetable, log classes daily, and calculate exactly how many days you can safely skip.
+        </p>
+        <div class="d-flex justify-content-center gap-4 flex-wrap">
+          <a href="/login" class="btn btn-glow btn-lg px-5 py-3">Access Portal</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section class="container my-5 py-5">
+    <div class="text-center mb-5 animate-fade-in-up delay-1">
+      <h2 class="fs-1 fw-bold">Built for Students, Run by You</h2>
+      <p class="text-secondary fs-5">Everything you need to keep your attendance on track without administrative friction.</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 animate-fade-in-up delay-2">
+        <div class="glass-card h-100">
+          <h3 class="h4 mb-3 fw-semibold">Dynamic Timetable</h3>
+          <p class="text-secondary mb-0">Build your custom weekly schedule. View daily class schedules and mark presence or absence with a single click.</p>
+        </div>
+      </div>
+      <div class="col-md-4 animate-fade-in-up delay-3">
+        <div class="glass-card h-100">
+          <h3 class="h4 mb-3 fw-semibold">Interactive Analytics</h3>
+          <p class="text-secondary mb-0">Monitor overall and subject-specific attendance percentages. Analyze weekly and monthly trends with elegant charts.</p>
+        </div>
+      </div>
+      <div class="col-md-4 animate-fade-in-up delay-4">
+        <div class="glass-card h-100">
+          <h3 class="h4 mb-3 fw-semibold">Prediction Engine</h3>
+          <p class="text-secondary mb-0">Predict future attendance. Know precisely how many classes you must attend to hit 75%, and how many you can skip safely.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Info Callout -->
+  <section class="container my-5 py-3 animate-fade-in-up delay-4">
+    <div class="glass-card text-center p-5 border-glass">
+      <h2 class="h3 mb-3 fw-bold text-white">Looking for Administration Portal?</h2>
+      <p class="text-secondary mx-auto mb-4" style="max-width: 600px;">
+        Trackify administrators can monitor registrations, suspend users, publish announcements, and review metrics.
+      </p>
+      <a href="/login" class="link-light fw-semibold text-decoration-none">
+        Go to Login &rarr;
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-top border-glass py-4 mt-5 text-center text-secondary">
+    <div class="container">
+      <p class="mb-0">&copy; 2026 Trackify. Built with Node, Postgres & Bootstrap 5.</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

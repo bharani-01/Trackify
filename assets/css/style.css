@@ -1,0 +1,437 @@
+/* Trackify - Global CSS Stylesheet (Minimal Light Theme) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --bg-primary: #f8fafc; /* Slate 50 */
+  --bg-secondary: #ffffff; /* Pure white */
+  --border-color: #e2e8f0; /* Slate 200 */
+  --border-focus: #cbd5e1; /* Slate 300 */
+  
+  --text-primary: #0f172a; /* Slate 900 */
+  --text-secondary: #334155; /* Slate 700 */
+  --text-muted: #64748b; /* Slate 500 */
+  
+  --primary: #2563eb; /* Royal Blue */
+  --primary-subtle: #eff6ff;
+  --secondary: #475569; /* Cool Slate */
+  
+  --success: #059669; /* Emerald */
+  --success-subtle: #ecfdf5;
+  --danger: #dc2626; /* Rose */
+  --danger-subtle: #fff5f5;
+  --warning: #d97706; /* Amber */
+  --warning-subtle: #fef3c7;
+  --info: #0891b2; /* Cyan */
+  --info-subtle: #ecfeff;
+}
+
+/* Base resets and defaults */
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Standard containers are centered; fluid layout applies within app-layout */
+.app-layout .container {
+  max-width: 98% !important;
+  width: 98% !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Minimalist Cards */
+.glass-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: var(--border-focus);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Minimalist Navbar */
+.glass-nav {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  z-index: 1000;
+}
+
+/* Premium Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.gradient-text, .gradient-accent-text {
+  /* Remove gradients for an ultra-professional slate layout */
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: unset;
+  background-clip: unset;
+  color: var(--text-primary);
+}
+
+/* Minimalist Inputs */
+.form-floating > .form-control {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  transition: all 0.15s ease-in-out;
+}
+
+.form-floating > .form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.form-floating > label {
+  color: var(--text-muted);
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+  color: var(--primary);
+}
+
+.form-select {
+  background-color: #ffffff !important;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 0.85rem 0.75rem;
+}
+
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Minimal Buttons */
+.btn-glow {
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  color: #ffffff;
+  font-weight: 500;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  box-shadow: none;
+}
+
+.btn-glow::before {
+  display: none;
+}
+
+.btn-glow:hover {
+  background-color: #1d4ed8; /* Darker blue */
+  border-color: #1d4ed8;
+  color: #ffffff;
+  transform: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-glass {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-weight: 500;
+  padding: 0.65rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  box-shadow: none;
+}
+
+.btn-glass:hover {
+  background: #f8fafc;
+  border-color: var(--border-focus);
+  color: var(--text-primary);
+  transform: none;
+}
+
+/* Table Timetable Grid Layout (Spreadsheet style) */
+.timetable-grid-wrapper {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+.timetable-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+
+.timetable-table th {
+  background: #f8fafc;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.timetable-table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  vertical-align: middle;
+  text-align: center;
+  background: #ffffff;
+  height: 105px;
+}
+
+.timetable-table td.day-cell {
+  background: #f8fafc;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  width: 110px;
+  border-right: 2px solid var(--border-color);
+}
+
+.timetable-table td.break-cell {
+  background: #f8fafc;
+  color: var(--text-muted);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  width: 32px;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  border-left: 2px solid var(--border-color);
+  border-right: 2px solid var(--border-color);
+  padding: 0;
+  height: 105px;
+}
+
+/* Inner cell class block details card */
+.timetable-cell-card {
+  background: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.timetable-cell-card:hover {
+  background: #f1f5f9;
+  border-color: var(--border-focus);
+}
+
+.timetable-cell-card.empty-cell {
+  background: transparent;
+  border: 1px dashed #cbd5e1;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.timetable-cell-card.empty-cell:hover {
+  background: var(--primary-subtle);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Badges */
+.badge-present {
+  background-color: var(--success-subtle);
+  color: var(--success);
+  border: 1px solid rgba(5, 150, 105, 0.15);
+}
+
+.badge-absent {
+  background-color: var(--danger-subtle);
+  color: var(--danger);
+  border: 1px solid rgba(220, 38, 38, 0.15);
+}
+
+/* Alerts */
+.alert {
+  border-radius: 8px;
+  background-color: #ffffff !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.alert-danger {
+  border-left: 4px solid var(--danger) !important;
+}
+
+.alert-success {
+  border-left: 4px solid var(--success) !important;
+}
+
+.alert-info {
+  border-left: 4px solid var(--info) !important;
+}
+
+/* Animations */
+.animate-fade-in-up {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enterprise Application Layout */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.app-sidebar {
+  width: 250px;
+  background-color: #0f172a; /* Slate 900 */
+  color: #94a3b8; /* Slate 400 */
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid #1e293b;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-logo {
+  padding: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  border-bottom: 1px solid #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar-menu {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+}
+
+.sidebar-link:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+.sidebar-link.active {
+  background-color: #2563eb; /* Royal Blue */
+  color: #ffffff;
+}
+
+.sidebar-link.logout-link {
+  color: #ef4444; /* Red logout text */
+  margin-top: auto; /* Push it to the bottom */
+}
+
+.sidebar-link.logout-link:hover {
+  background-color: #7f1d1d;
+  color: #ffffff;
+}
+
+.app-main-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background-color: #f8fafc;
+}
+
+.app-header {
+  height: 70px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  flex-shrink: 0;
+}
+
+.app-header-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.app-header-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-content {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+/* Adjust general cards inside app layout */
+.app-content .glass-card {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+

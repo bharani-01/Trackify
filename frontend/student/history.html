@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance History - Trackify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/student/dashboard">Dashboard Overview</a>
+        <a class="sidebar-link" href="/student/timetable">Timetable Schedule</a>
+        <a class="sidebar-link" href="/student/attendance">Mark Attendance</a>
+        <a class="sidebar-link active" href="/student/history">Attendance History</a>
+        <a class="sidebar-link" href="/student/settings">Preferences & Target</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Attendance History</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">S</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Subheader Controls -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Review & Export Logs</h2>
+            <p class="text-secondary small mb-0">Modify details, filter recordings, or export your historical logs.</p>
+          </div>
+          <button onclick="exportToCSV()" class="btn btn-glow">
+            Export CSV
+          </button>
+        </div>
+
+        <!-- Filter controls panel -->
+        <div class="glass-card border-glass mb-4 p-3">
+          <form id="filterForm" class="row g-2 align-items-center">
+            <!-- Subject Filter -->
+            <div class="col-md-3">
+              <select class="form-select border-light" id="filterSubject">
+                <option value="">All Subjects</option>
+              </select>
+            </div>
+            <!-- Start Date -->
+            <div class="col-md-3">
+              <input type="date" class="form-control border-light" id="filterStart">
+            </div>
+            <!-- End Date -->
+            <div class="col-md-3">
+              <input type="date" class="form-control border-light" id="filterEnd">
+            </div>
+            <!-- Submit -->
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-glass w-100 border-secondary text-secondary fw-semibold">Apply Filters</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Logs Table -->
+        <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light border-bottom">
+                <tr>
+                  <th class="ps-4" style="width: 150px;">Date</th>
+                  <th>Subject Details</th>
+                  <th style="width: 120px;">Status</th>
+                  <th>Remarks / Period</th>
+                  <th class="pe-4 text-end" style="width: 180px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="logs-container">
+                <tr>
+                  <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Edit Attendance Log Modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold" id="editModalLabel">Edit Attendance Log</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editForm">
+          <input type="hidden" id="editLogId">
+          <div class="modal-body p-4">
+            
+            <div class="mb-3 p-3 bg-light rounded-4 border">
+              <div class="text-secondary small">Subject</div>
+              <div class="fs-6 fw-bold" id="editSubjectName">-</div>
+            </div>
+
+            <div class="mb-3 p-3 bg-light rounded-4 border">
+              <div class="text-secondary small">Date</div>
+              <div class="fs-6 fw-bold" id="editLogDate">-</div>
+            </div>
+
+            <!-- Status Dropdown -->
+            <div class="form-floating mb-3">
+              <select class="form-select" id="editStatus" required>
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+                <option value="Medical Leave">Medical Leave</option>
+                <option value="Holiday">Holiday</option>
+              </select>
+              <label for="editStatus">Status</label>
+            </div>
+
+            <!-- Remarks -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="editRemarks" placeholder="Optional comments">
+              <label for="editRemarks">Remarks</label>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentLogs = [];
+    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+    async function loadData() {
+      // Load user profile header
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Load subjects for filter selection (if not already loaded)
+      if (document.getElementById('filterSubject').options.length === 1) {
+        const subResult = await apiCall('/api/subjects');
+        if (subResult.success) {
+          const select = document.getElementById('filterSubject');
+          subResult.subjects.forEach(sub => {
+            select.innerHTML += `<option value="${sub.id}">${sub.subject_code} - ${sub.subject_name}</option>`;
+          });
+        }
+      }
+
+      // Fetch logs
+      const subId = document.getElementById('filterSubject').value;
+      const start = document.getElementById('filterStart').value;
+      const end = document.getElementById('filterEnd').value;
+
+      let url = '/api/attendance?';
+      if (subId) url += `subjectId=${subId}&`;
+      if (start) url += `startDate=${start}&`;
+      if (end) url += `endDate=${end}&`;
+
+      const response = await apiCall(url);
+      const container = document.getElementById('logs-container');
+
+      if (response.success) {
+        currentLogs = response.logs;
+        container.innerHTML = '';
+
+        if (currentLogs.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-center py-5 text-secondary">
+                No attendance logs found matching filters.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        currentLogs.forEach((log, idx) => {
+          const d = new Date(log.date);
+          const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+          let badgeClass = 'badge-present';
+          if (log.status === 'Absent') badgeClass = 'badge-absent';
+          else if (log.status === 'Medical Leave') badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+          else if (log.status === 'Holiday') badgeClass = 'bg-info-subtle text-info border border-info-subtle';
+
+          container.innerHTML += `
+            <tr class="border-bottom">
+              <td class="ps-4 fw-semibold">${dateStr}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span style="display:inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${log.color}; margin-right: 8px;"></span>
+                  <span>${log.subject_name} <span class="text-secondary small">(${log.subject_code})</span></span>
+                </div>
+              </td>
+              <td><span class="badge ${badgeClass} fs-8">${log.status}</span></td>
+              <td class="text-secondary small">${log.remarks || '-'}</td>
+              <td class="pe-4 text-end">
+                <div class="d-flex gap-1 justify-content-end">
+                  <button onclick="openEditModal(${idx})" class="btn btn-glass btn-sm py-1 px-2.5" style="font-size: 0.8rem;">Edit</button>
+                  <button onclick="deleteLog('${log.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+      } else {
+        container.innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load logs.</td></tr>';
+      }
+    }
+
+    document.getElementById('filterForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      loadData();
+    });
+
+    function openEditModal(idx) {
+      const log = currentLogs[idx];
+      const d = new Date(log.date);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      document.getElementById('editLogId').value = log.id;
+      document.getElementById('editSubjectName').innerText = log.subject_name;
+      document.getElementById('editLogDate').innerText = dateStr;
+      document.getElementById('editStatus').value = log.status;
+      document.getElementById('editRemarks').value = log.remarks || '';
+      
+      editModal.show();
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const id = document.getElementById('editLogId').value;
+      const status = document.getElementById('editStatus').value;
+      const remarks = document.getElementById('editRemarks').value;
+
+      const response = await apiCall(`/api/attendance/${id}`, {
+        method: 'PUT',
+        body: { status, remarks }
+      });
+
+      if (response.success) {
+        editModal.hide();
+        showAlert('Attendance log entry updated', 'success');
+        loadData();
+      } else {
+        showAlert(response.message, 'danger');
+      }
+    });
+
+    async function deleteLog(id) {
+      if (confirm('Permanently delete this attendance log? This will update your calculated attendance percentages immediately.')) {
+        const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
+        if (response.success) {
+          showAlert('Log record deleted successfully', 'success');
+          loadData();
+        } else {
+          showAlert(response.message, 'danger');
+        }
+      }
+    }
+
+    function exportToCSV() {
+      if (currentLogs.length === 0) {
+        showAlert('No records available to export', 'warning');
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Date,Subject Code,Subject Name,Status,Remarks\n";
+
+      currentLogs.forEach(log => {
+        const d = new Date(log.date);
+        const dateStr = d.toISOString().split('T')[0];
+        const row = `"${dateStr}","${log.subject_code}","${log.subject_name}","${log.status}","${log.remarks || ''}"`;
+        csvContent += row + "\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `attendance_history_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

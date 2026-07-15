@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/style.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link active" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Announcements</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Announcements Board</h2>
+            <p class="text-secondary small mb-0">Publish notices to students or broadcast alerts.</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Left: Create Notice Form -->
+          <div class="col-md-5">
+            <div class="glass-card border-glass">
+              <h2 class="h5 fw-bold mb-4">Create Announcement</h2>
+              <form id="annForm" onsubmit="createAnnouncement(event)">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="annTitle" placeholder="Holiday notice" required>
+                  <label for="annTitle">Notice Title</label>
+                </div>
+                <div class="form-floating mb-4">
+                  <textarea class="form-control" id="annContent" placeholder="Write notice here..." style="height: 120px;" required></textarea>
+                  <label for="annContent">Notice Description</label>
+                </div>
+                <button type="submit" class="btn btn-glow w-100 py-3">Publish Notice</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Notice Stream -->
+          <div class="col-md-7">
+            <div class="glass-card border-glass h-100">
+              <h2 class="h5 fw-bold mb-4">Broadcast Stream</h2>
+              <div class="d-flex flex-column gap-3" id="announcements-container">
+                <!-- Dynamic announcement cards -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let mockAnnouncements = [
+      {
+        id: 1,
+        title: "Semester Registrations Open",
+        content: "Please ensure that your department and semester credentials are correct under the settings panel to populate the default master schedules.",
+        date: "Jul 14, 2026"
+      },
+      {
+        id: 2,
+        title: "Default Attendance Targets",
+        content: "Students are reminded that the default minimum attendance is set to 75%. You can modify this target dynamically under settings.",
+        date: "Jul 15, 2026"
+      }
+    ];
+
+    function saveToStorage() {
+      localStorage.setItem('trackify_announcements', JSON.stringify(mockAnnouncements));
+    }
+
+    function loadFromStorage() {
+      const saved = localStorage.getItem('trackify_announcements');
+      if (saved) {
+        mockAnnouncements = JSON.parse(saved);
+      } else {
+        saveToStorage();
+      }
+    }
+
+    async function loadData() {
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      loadFromStorage();
+      renderAnnouncements();
+    }
+
+    function renderAnnouncements() {
+      const container = document.getElementById('announcements-container');
+      container.innerHTML = '';
+
+      if (mockAnnouncements.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5 text-secondary small">
+            No notices published yet.
+          </div>
+        `;
+        return;
+      }
+
+      mockAnnouncements.forEach((ann, idx) => {
+        container.innerHTML += `
+          <div class="p-3 rounded-4 border bg-white shadow-sm position-relative">
+            <button onclick="deleteAnnouncement(${idx})" class="btn-close position-absolute" style="top: 15px; right: 15px; font-size: 0.8rem;"></button>
+            <h3 class="fs-6 fw-bold mb-1" style="padding-right: 20px;">${ann.title}</h3>
+            <div class="text-muted fs-9 mb-2">${ann.date}</div>
+            <p class="small text-secondary mb-0">${ann.content}</p>
+          </div>
+        `;
+      });
+    }
+
+    function createAnnouncement(e) {
+      e.preventDefault();
+      const title = document.getElementById('annTitle').value;
+      const content = document.getElementById('annContent').value;
+      const d = new Date();
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      mockAnnouncements.unshift({
+        id: Date.now(),
+        title,
+        content,
+        date: dateStr
+      });
+
+      saveToStorage();
+      renderAnnouncements();
+      showAlert('Notice published successfully!', 'success');
+      document.getElementById('annForm').reset();
+    }
+
+    function deleteAnnouncement(index) {
+      if (confirm('Delete this announcement?')) {
+        mockAnnouncements.splice(index, 1);
+        saveToStorage();
+        renderAnnouncements();
+        showAlert('Notice deleted', 'success');
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>
