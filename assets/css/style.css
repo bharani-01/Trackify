@@ -435,3 +435,104 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+/* Responsive Overrides for Mobile-Friendliness */
+@media (max-width: 768px) {
+  /* Switch app layout to stacked columns */
+  .app-layout {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+    width: 100%;
+    overflow: visible;
+  }
+
+  /* Transform sidebar into a mobile bottom navigation bar */
+  .app-sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: auto;
+    width: 100% !important;
+    height: 60px !important;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid #1e293b;
+    z-index: 1000;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar-logo {
+    display: none !important;
+  }
+
+  .sidebar-menu {
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.25rem 0.5rem;
+    gap: 0;
+    width: 100%;
+    overflow-y: visible;
+  }
+
+  .sidebar-link {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.25rem;
+    gap: 0.15rem;
+    font-size: 0.65rem !important;
+    font-weight: 600;
+    border-radius: 6px;
+    flex-grow: 1;
+    color: #94a3b8;
+    text-align: center;
+  }
+
+  /* Compact padding & icons sizing inside links */
+  .sidebar-link svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .sidebar-link.logout-link {
+    display: none !important; /* Hide logout on bottom navigation bar to save space */
+  }
+
+  /* Adjust main wrapper to fill screen and accommodate bottom navbar */
+  .app-main-wrapper {
+    height: auto;
+    min-height: calc(100vh - 60px);
+    margin-bottom: 60px;
+    width: 100%;
+  }
+
+  .app-header {
+    height: 60px;
+    padding: 0 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .app-header-title {
+    font-size: 1.1rem;
+  }
+
+  .app-content {
+    padding: 1rem;
+  }
+
+  /* Stack columns cleanly in content area */
+  .row > * {
+    margin-bottom: 1rem;
+  }
+  .row > *:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Scale charts correctly */
+  canvas {
+    max-width: 100% !important;
+  }
+}
+
