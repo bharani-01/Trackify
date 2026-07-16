@@ -7,8 +7,8 @@ const {
 } = require('../controllers/departmentController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
-// Get departments (any authenticated user can list)
-router.get('/', protect, getDepartments);
+// Get departments (public list access for registration dropdowns)
+router.get('/', getDepartments);
 
 // Admin-only mutations
 router.post('/', protect, authorize('admin'), createDepartment);
