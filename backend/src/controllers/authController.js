@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const userRepository = require('../repositories/userRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
+const { sendResetEmail } = require('../utils/emailHelper');
 
 /**
  * Helper to set JWT token cookie in response
@@ -229,13 +230,26 @@ const forgotPassword = async (req, res) => {
     
     console.log(`[PASSWORD RESET LINK]: ${resetUrl}`);
 
+    // Send email via Resend
+    let emailSent = false;
+    let emailError = null;
+    try {
+      await sendResetEmail(user.email, resetUrl);
+      emailSent = true;
+    } catch (err) {
+      emailError = err.message;
+      console.error('[FORGOT PASSWORD EMAIL ERROR]:', err);
+    }
+
     // Return the link in development/testing mode for easy copy-paste
     const responsePayload = {
       success: true,
-      message: 'Reset password link simulated and logged successfully.'
+      message: emailSent 
+        ? 'Password recovery email sent successfully. Please check your inbox.' 
+        : `Email delivery failed (${emailError}). Reset link logged to console.`
     };
     
-    if (process.env.NODE_ENV !== 'production') {
+    if (process.env.NODE_ENV !== 'production' || !emailSent) {
       responsePayload.devResetUrl = resetUrl;
     }
 
