@@ -1,14 +1,7 @@
 -- Enable UUID extension if required (PostgreSQL 13+ has gen_random_uuid built-in)
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Drop existing tables to ensure clean re-initialization in dev
-DROP TABLE IF EXISTS notifications CASCADE;
-DROP TABLE IF EXISTS settings CASCADE;
-DROP TABLE IF EXISTS attendance CASCADE;
-DROP TABLE IF EXISTS timetable CASCADE;
-DROP TABLE IF EXISTS subjects CASCADE;
-DROP TABLE IF EXISTS system_settings CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+
 
 -- USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
@@ -130,4 +123,13 @@ CREATE TABLE IF NOT EXISTS system_settings (
     key VARCHAR(100) PRIMARY KEY,
     value VARCHAR(255) NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- BACKUPS LOGS TABLE
+CREATE TABLE IF NOT EXISTS backups (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    filename VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    error_message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

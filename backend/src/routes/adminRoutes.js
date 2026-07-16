@@ -59,4 +59,12 @@ router.route('/timetable')
 router.route('/timetable/:id')
   .delete(deleteMasterTimetableSlot);
 
+// Backups and Data Exports management
+const { getBackupsList, triggerBackup, exportData, emailData } = require('../controllers/backupController');
+router.route('/backups')
+  .get(getBackupsList)
+  .post(triggerBackup);
+router.get('/backups/export', exportData);
+router.post('/backups/email', emailData);
+
 module.exports = router;

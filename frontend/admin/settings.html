@@ -95,9 +95,63 @@
 
               <div class="d-flex gap-2">
                 <button onclick="testPing()" class="btn btn-glass btn-sm w-100 py-2.5">Test Pool Ping</button>
-                <button onclick="backupPrompt()" class="btn btn-glass btn-sm w-100 border-primary text-primary py-2.5">Database Backup</button>
+                <button onclick="runBackupTrigger()" class="btn btn-glass btn-sm w-100 border-primary text-primary py-2.5" id="backupBtn">Database Backup</button>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- System Backups & Data Exports Panel -->
+        <div class="glass-card border-glass mt-4">
+          <h2 class="h5 fw-bold mb-4">System Backups & Data Exports</h2>
+          
+          <div class="row g-3 mb-4">
+            <!-- Downloads category -->
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-4 border h-100">
+                <div class="fw-bold mb-2 text-dark">Direct Browser Downloads</div>
+                <div class="text-secondary small mb-3">Download complete SQL data dumps or Excel-ready CSV sheets directly to your local device.</div>
+                <div class="d-flex flex-wrap gap-2">
+                  <a href="/api/admin/backups/export?format=sql" class="btn btn-glow btn-sm py-2 px-3 text-white text-decoration-none">Download SQL Dump</a>
+                  <a href="/api/admin/backups/export?format=csv_attendance" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Attendance CSV</a>
+                  <a href="/api/admin/backups/export?format=csv_students" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Students CSV</a>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Email category -->
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-4 border h-100">
+                <div class="fw-bold mb-2 text-dark">Email Dispatchers</div>
+                <div class="text-secondary small mb-3">Send data exports directly to your administrator inbox using Resend attachments.</div>
+                <div class="d-flex flex-wrap gap-2">
+                  <button onclick="emailBackupFile('sql')" class="btn btn-glass btn-sm border-primary text-primary py-2 px-3">Email SQL Dump</button>
+                  <button onclick="emailBackupFile('csv_attendance')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Attendance CSV</button>
+                  <button onclick="emailBackupFile('csv_students')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Students CSV</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="h6 fw-bold mb-3">Recent SQL Backups Log</h3>
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light border-bottom">
+                <tr>
+                  <th class="ps-4">Backup Filename</th>
+                  <th>Date & Time</th>
+                  <th>Status</th>
+                  <th class="pe-4 text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody id="backups-log-container">
+                <tr>
+                  <td colspan="4" class="text-center py-4 text-secondary">
+                    Loading backups timeline logs...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </main>
@@ -124,6 +178,65 @@
         document.getElementById('regSwitch').checked = response.settings.allow_self_registration;
         document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
       }
+
+      // Fetch backups history list
+      loadBackupHistory();
+    }
+
+    async function loadBackupHistory() {
+      const response = await apiCall('/api/admin/backups');
+      const container = document.getElementById('backups-log-container');
+      
+      if (response.success && response.backups) {
+        renderBackups(response.backups);
+      } else {
+        container.innerHTML = '<tr><td colspan="4" class="text-danger text-center p-3">Failed to load backups history.</td></tr>';
+      }
+    }
+
+    function renderBackups(list) {
+      const container = document.getElementById('backups-log-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-4 text-secondary">
+              No SQL backup logs found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(item => {
+        const dateStr = new Date(item.created_at).toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        const statusClass = item.status === 'Success' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger';
+
+        container.innerHTML += `
+          <tr class="border-bottom">
+            <td class="ps-4 fw-semibold text-dark small" style="font-size: 0.85rem;">${item.filename}</td>
+            <td class="text-secondary small" style="font-size: 0.8rem;">${dateStr}</td>
+            <td>
+              <span class="badge ${statusClass} px-2 py-1 fs-8">${item.status}</span>
+              ${item.error_message ? `<div class="text-danger small mt-1" style="font-size: 0.75rem;">${item.error_message}</div>` : ''}
+            </td>
+            <td class="pe-4 text-end">
+              <button onclick="emailBackupFile('sql')" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
+                Email File
+              </button>
+            </td>
+          </tr>
+        `;
+      });
     }
 
     async function saveConfigs() {
@@ -149,12 +262,52 @@
       }
     }
 
-    function testPing() {
-      showAlert('Database ping response: 4ms. Connection healthy.', 'success');
+    async function runBackupTrigger() {
+      const btn = document.getElementById('backupBtn');
+      btn.disabled = true;
+      btn.innerText = 'Backing Up...';
+
+      showAlert('Triggered database backup, compiling tables...', 'info');
+
+      const response = await apiCall('/api/admin/backups', {
+        method: 'POST'
+      });
+
+      btn.disabled = false;
+      btn.innerText = 'Database Backup';
+
+      if (response.success) {
+        showAlert(response.message || 'Database backup successfully sent and logged!', 'success');
+        loadBackupHistory();
+      } else {
+        showAlert(response.message || 'Failed to perform database backup.', 'danger');
+        loadBackupHistory();
+      }
     }
 
-    function backupPrompt() {
-      showAlert('Wrote database dump to /backups/trackify_latest.sql successfully.', 'info');
+    async function emailBackupFile(format) {
+      showAlert(`Processing on-demand email delivery for format: ${format}...`, 'info');
+
+      const response = await apiCall('/api/admin/backups/email', {
+        method: 'POST',
+        body: { format }
+      });
+
+      if (response.success) {
+        showAlert(response.message || 'File dispatched to admin inbox successfully!', 'success');
+        if (format === 'sql') {
+          loadBackupHistory();
+        }
+      } else {
+        showAlert(response.message || 'Failed to send backup file email.', 'danger');
+        if (format === 'sql') {
+          loadBackupHistory();
+        }
+      }
+    }
+
+    function testPing() {
+      showAlert('Database ping response: 4ms. Connection healthy.', 'success');
     }
 
     window.onload = loadData;
