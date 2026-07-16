@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const userRepository = require('../repositories/userRepository');
+const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
 const { sendResetEmail } = require('../utils/emailHelper');
 
@@ -46,15 +47,24 @@ const register = async (req, res) => {
   const { name, register_number, email, password, department, semester } = req.body;
 
   try {
-    // 1. Validation
-    if (!name || !register_number || !email || !password) {
-      return res.status(400).json({
+    // 1. Check if public registration is enabled in global settings
+    const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
+    if (allowSelfReg !== 'true') {
+      return res.status(403).json({
         success: false,
-        message: 'Please provide name, register number, email, and password'
+        message: 'Public registration is currently disabled by the administrator.'
       });
     }
 
-    // 2. Check if user already exists (by email)
+    // 2. Validation
+    if (!name || !register_number || !email || !password || !department || !semester) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide all required fields: name, register number, email, password, department, and semester'
+      });
+    }
+
+    // 3. Check if user already exists (by email)
     const userExistsByEmail = await userRepository.findByEmail(email);
     if (userExistsByEmail) {
       return res.status(400).json({
@@ -63,22 +73,25 @@ const register = async (req, res) => {
       });
     }
 
-    // 3. Hash password
+    // 4. Hash password
     const password_hash = await hashPassword(password);
 
-    // 4. Create user
+    // 5. Create user pending approval (is_approved: false)
     const newUser = await userRepository.createUser({
       name,
       register_number,
       email,
       password_hash,
-      role: 'student', // Default role is student. Admins are seeded.
+      role: 'student',
       department,
-      semester: semester ? parseInt(semester, 10) : null
+      semester: parseInt(semester, 10),
+      is_approved: false
     });
 
-    // 5. Send cookie & response
-    sendTokenCookie(newUser, 201, res);
+    return res.status(201).json({
+      success: true,
+      message: 'Your registration request has been submitted successfully! An administrator will review and approve your account shortly.'
+    });
   } catch (error) {
     console.error('Registration controller error:', error);
     
@@ -126,6 +139,13 @@ const login = async (req, res) => {
       return res.status(403).json({
         success: false,
         message: 'Your account has been suspended by an administrator.'
+      });
+    }
+
+    if (!user.is_approved) {
+      return res.status(403).json({
+        success: false,
+        message: 'Your registration request is pending administrator approval.'
       });
     }
 
@@ -313,11 +333,32 @@ const resetPassword = async (req, res) => {
   }
 };
 
+/**
+ * Get public self-registration configuration status
+ * @route GET /api/auth/registration-status
+ */
+const getRegistrationStatus = async (req, res) => {
+  try {
+    const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
+    return res.status(200).json({
+      success: true,
+      allowSelfRegistration: allowSelfReg === 'true'
+    });
+  } catch (error) {
+    console.error('getRegistrationStatus error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error retrieving configuration'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getMe,
   logout,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  getRegistrationStatus
 };

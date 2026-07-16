@@ -95,29 +95,74 @@
           </div>
         </div>
 
-        <!-- Student Listings Table -->
-        <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="users-table">
-              <thead class="table-light border-bottom">
-                <tr>
-                  <th class="ps-4">Student Details</th>
-                  <th>Reg Number</th>
-                  <th>Department / Sem</th>
-                  <th>Status</th>
-                  <th class="pe-4 text-end">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="users-container">
-                <tr>
-                  <td colspan="5" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- Navigation Tabs for Active vs Pending -->
+        <ul class="nav nav-tabs border-bottom mb-3" id="userDirectoryTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-dark border-0 border-bottom-2" id="active-students-tab" data-bs-toggle="tab" data-bs-target="#active-students-pane" type="button" role="tab" aria-controls="active-students-pane" aria-selected="true" onclick="switchTab('active')">
+              Active Students (<span id="active-count">0</span>)
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-secondary border-0 border-bottom-2 position-relative" id="pending-approvals-tab" data-bs-toggle="tab" data-bs-target="#pending-approvals-pane" type="button" role="tab" aria-controls="pending-approvals-pane" aria-selected="false" onclick="switchTab('pending')">
+              Pending Approvals (<span id="pending-count">0</span>)
+            </button>
+          </li>
+        </ul>
+
+        <!-- Tab Content Wrapper -->
+        <div class="tab-content" id="userDirectoryContent">
+          <!-- Active Students Tab Pane -->
+          <div class="tab-pane fade show active" id="active-students-pane" role="tabpanel" aria-labelledby="active-students-tab">
+            <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="users-table">
+                  <thead class="table-light border-bottom">
+                    <tr>
+                      <th class="ps-4">Student Details</th>
+                      <th>Reg Number</th>
+                      <th>Department / Sem</th>
+                      <th>Status</th>
+                      <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-container">
+                    <tr>
+                      <td colspan="5" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pending Approvals Tab Pane -->
+          <div class="tab-pane fade" id="pending-approvals-pane" role="tabpanel" aria-labelledby="pending-approvals-tab">
+            <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="approvals-table">
+                  <thead class="table-light border-bottom">
+                    <tr>
+                      <th class="ps-4">Student Details</th>
+                      <th>Reg Number</th>
+                      <th>Department / Sem</th>
+                      <th>Requested Date</th>
+                      <th class="pe-4 text-end">Approvals Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="approvals-container">
+                    <tr>
+                      <td colspan="5" class="text-center py-5">
+                        No pending registration requests.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -281,6 +326,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     let usersList = [];
+    let pendingList = [];
+    let activeTab = 'active'; // 'active' or 'pending'
 
     async function loadData() {
       // Fetch session
@@ -306,15 +353,24 @@
         });
       }
 
-      // Fetch students list
+      // Fetch active students list
       const response = await apiCall('/api/admin/users');
-      const container = document.getElementById('users-container');
-
       if (response.success) {
         usersList = response.users;
+        document.getElementById('active-count').innerText = usersList.length;
         renderUsers(usersList);
       } else {
-        container.innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
+        document.getElementById('users-container').innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
+      }
+
+      // Fetch pending approvals list
+      const pendingResponse = await apiCall('/api/admin/approvals');
+      if (pendingResponse.success) {
+        pendingList = pendingResponse.users;
+        document.getElementById('pending-count').innerText = pendingList.length;
+        renderPending(pendingList);
+      } else {
+        document.getElementById('approvals-container').innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load pending requests.</td></tr>';
       }
     }
 
@@ -377,7 +433,8 @@
     // Client-side search filtration
     function filterUsers() {
       const query = document.getElementById('searchBox').value.toLowerCase().trim();
-      const rows = document.querySelectorAll('.user-row');
+      const selector = activeTab === 'active' ? '.user-row' : '.pending-row';
+      const rows = document.querySelectorAll(selector);
 
       rows.forEach(row => {
         const name = row.getAttribute('data-name').toLowerCase();
@@ -578,6 +635,109 @@
         showAlert(response.message || 'Failed to override user password', 'danger');
       }
     });
+
+    function renderPending(list) {
+      const container = document.getElementById('approvals-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-5 text-secondary">
+              No pending registration requests found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(user => {
+        const dateStr = new Date(user.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+
+        container.innerHTML += `
+          <tr class="pending-row border-bottom" data-name="${user.name}" data-reg="${user.register_number}">
+            <td class="ps-4">
+              <div class="fw-semibold text-dark">${user.name}</div>
+              <div class="text-secondary small" style="font-size: 0.8rem;">${user.email}</div>
+            </td>
+            <td class="fw-semibold text-secondary small">${user.register_number}</td>
+            <td class="text-secondary small">
+              ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
+            </td>
+            <td class="text-secondary small">${dateStr}</td>
+            <td class="pe-4 text-end">
+              <div class="d-flex gap-1 justify-content-end">
+                <button onclick="approveRegistration('${user.id}')" class="btn btn-glass btn-sm border-success text-success py-1 px-2.5" style="font-size: 0.8rem;">
+                  Approve
+                </button>
+                <button onclick="rejectRegistration('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function approveRegistration(id) {
+      if (!confirm('Are you sure you want to approve this student registration request?')) return;
+      
+      const response = await apiCall(`/api/admin/approvals/${id}/approve`, {
+        method: 'PUT'
+      });
+
+      if (response.success) {
+        showAlert(response.message || 'Student registration request approved.', 'success');
+        loadData();
+      } else {
+        showAlert(response.message || 'Failed to approve request.', 'danger');
+      }
+    }
+
+    async function rejectRegistration(id) {
+      if (!confirm('Are you sure you want to reject and delete this registration request?')) return;
+
+      const response = await apiCall(`/api/admin/approvals/${id}/reject`, {
+        method: 'DELETE'
+      });
+
+      if (response.success) {
+        showAlert(response.message || 'Student registration request rejected.', 'success');
+        loadData();
+      } else {
+        showAlert(response.message || 'Failed to reject request.', 'danger');
+      }
+    }
+
+    function switchTab(tab) {
+      activeTab = tab;
+      
+      // Update tab styles
+      const activeTabBtn = document.getElementById('active-students-tab');
+      const pendingTabBtn = document.getElementById('pending-approvals-tab');
+      
+      if (tab === 'active') {
+        activeTabBtn.classList.remove('text-secondary');
+        activeTabBtn.classList.add('text-dark');
+        pendingTabBtn.classList.remove('text-dark');
+        pendingTabBtn.classList.add('text-secondary');
+      } else {
+        pendingTabBtn.classList.remove('text-secondary');
+        pendingTabBtn.classList.add('text-dark');
+        activeTabBtn.classList.remove('text-dark');
+        activeTabBtn.classList.add('text-secondary');
+      }
+      
+      // Clear and re-filter search box
+      document.getElementById('searchBox').value = '';
+      const allRows = document.querySelectorAll('.user-row, .pending-row');
+      allRows.forEach(r => r.style.display = '');
+    }
 
     window.onload = loadData;
   </script>

@@ -115,11 +115,38 @@
         document.getElementById('user-header-name').innerText = meResult.user.name;
       } else {
         window.location.href = '/login';
+        return;
+      }
+
+      // Fetch global system configurations
+      const response = await apiCall('/api/admin/settings');
+      if (response.success && response.settings) {
+        document.getElementById('regSwitch').checked = response.settings.allow_self_registration;
+        document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
       }
     }
 
-    function saveConfigs() {
-      showAlert('System configuration parameters saved successfully!', 'success');
+    async function saveConfigs() {
+      const allow_self_registration = document.getElementById('regSwitch').checked;
+      const maintenance_mode = document.getElementById('maintSwitch').checked;
+      
+      const saveBtn = document.querySelector('button[onclick="saveConfigs()"]');
+      saveBtn.disabled = true;
+      saveBtn.innerText = 'Saving...';
+
+      const response = await apiCall('/api/admin/settings', {
+        method: 'PUT',
+        body: { allow_self_registration, maintenance_mode }
+      });
+
+      saveBtn.disabled = false;
+      saveBtn.innerText = 'Save System Variables';
+
+      if (response.success) {
+        showAlert('System configuration parameters saved successfully!', 'success');
+      } else {
+        showAlert(response.message || 'Failed to save system settings.', 'danger');
+      }
     }
 
     function testPing() {

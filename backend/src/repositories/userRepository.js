@@ -30,7 +30,8 @@ const findById = async (id) => {
  * @returns {Promise<object>}
  */
 const createUser = async (user) => {
-  const { name, register_number, email, password_hash, role, department, semester } = user;
+  const { name, register_number, email, password_hash, role, department, semester, is_approved } = user;
+  const approvedStatus = is_approved !== undefined ? is_approved : true;
   
   const client = await db.pool.connect();
   try {
@@ -38,9 +39,9 @@ const createUser = async (user) => {
     
     // 1. Insert User
     const insertUserQuery = `
-      INSERT INTO users (name, register_number, email, password_hash, role, department, semester)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
-      RETURNING id, name, register_number, email, role, department, semester, created_at
+      INSERT INTO users (name, register_number, email, password_hash, role, department, semester, is_approved)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      RETURNING id, name, register_number, email, role, department, semester, is_approved, created_at
     `;
     const userResult = await client.query(insertUserQuery, [
       name.trim(),
@@ -49,13 +50,14 @@ const createUser = async (user) => {
       password_hash,
       role || 'student',
       department || null,
-      semester || null
+      semester || null,
+      approvedStatus
     ]);
     
     const createdUser = userResult.rows[0];
 
-    // 2. Setup Student Account Defaults (only for student role)
-    if (createdUser.role === 'student') {
+    // 2. Setup Student Account Defaults (only for student role if immediately approved)
+    if (createdUser.role === 'student' && approvedStatus) {
       // Create settings record
       const insertSettingsQuery = `
         INSERT INTO settings (user_id, minimum_attendance, theme, notifications)
@@ -134,11 +136,96 @@ const updatePasswordAndClearToken = async (userId, passwordHash) => {
   return result.rows[0];
 };
 
+/**
+ * Retrieve all self-registered student request directory profiles pending approval
+ */
+const findPendingUsers = async () => {
+  const query = `
+    SELECT id, name, email, register_number, department, semester, created_at 
+    FROM users 
+    WHERE is_approved = FALSE
+    ORDER BY created_at DESC
+  `;
+  const result = await db.query(query);
+  return result.rows;
+};
+
+/**
+ * Approve a student account and run the transactional templates initialization
+ */
+const approveUser = async (userId) => {
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    // Update user to be approved
+    const approveQuery = `
+      UPDATE users 
+      SET is_approved = TRUE, updated_at = CURRENT_TIMESTAMP
+      WHERE id = $1
+      RETURNING id, name, register_number, email, role, department, semester
+    `;
+    const userResult = await client.query(approveQuery, [userId]);
+    const user = userResult.rows[0];
+    
+    if (!user) {
+      throw new Error('User account not found');
+    }
+
+    // Set up student defaults
+    if (user.role === 'student') {
+      const insertSettingsQuery = `
+        INSERT INTO settings (user_id, minimum_attendance, theme, notifications)
+        VALUES ($1, 75, 'light', TRUE)
+        ON CONFLICT DO NOTHING
+      `;
+      await client.query(insertSettingsQuery, [user.id]);
+
+      if (user.department && user.semester) {
+        const subjectMap = await subjectRepository.copyMasterSubjects(
+          client,
+          user.id,
+          user.department,
+          user.semester
+        );
+
+        await timetableRepository.copyMasterTimetable(
+          client,
+          user.id,
+          user.department,
+          user.semester,
+          subjectMap
+        );
+      }
+    }
+
+    await client.query('COMMIT');
+    return user;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+/**
+ * Reject a student account registration request
+ */
+const rejectUser = async (userId) => {
+  const query = 'DELETE FROM users WHERE id = $1 AND is_approved = FALSE RETURNING id';
+  const result = await db.query(query, [userId]);
+  return result.rows[0];
+};
+
 module.exports = {
   findByEmail,
   findById,
   createUser,
   updateResetToken,
   findByResetToken,
-  updatePasswordAndClearToken
+  updatePasswordAndClearToken,
+  findPendingUsers,
+  approveUser,
+  rejectUser
 };

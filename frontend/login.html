@@ -49,7 +49,7 @@
             <button type="submit" class="btn btn-glow w-100 py-3 mb-3">Log In</button>
           </form>
 
-          <div class="text-center mt-3">
+          <div class="text-center mt-3" id="signup-option-container">
             <span class="text-secondary">Need an account? Please contact your administrator.</span>
           </div>
         </div>
@@ -60,6 +60,26 @@
   <!-- Global scripts -->
   <script src="/assets/js/main.js"></script>
   <script>
+    // Check URL parameters for status alerts
+    const urlParams = new URLSearchParams(window.location.search);
+    const msg = urlParams.get('msg');
+    if (msg === 'registration_disabled') {
+      showAlert('Public self-registration is currently disabled.', 'warning');
+    } else if (msg === 'pending_approval') {
+      showAlert('Your registration request is pending administrator review.', 'info');
+    }
+
+    // Check registration status dynamically
+    async function checkRegistration() {
+      const response = await apiCall('/api/auth/registration-status');
+      if (response.success && response.allowSelfRegistration) {
+        document.getElementById('signup-option-container').innerHTML = `
+          <span class="text-secondary">Need an account? <a href="/register" class="text-primary text-decoration-none fw-semibold">Sign Up</a></span>
+        `;
+      }
+    }
+    checkRegistration();
+
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       

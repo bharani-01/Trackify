@@ -1,15 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { login, getMe, logout, forgotPassword, resetPassword } = require('../controllers/authController');
+const { login, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
-router.post('/register', (req, res) => {
-  return res.status(403).json({
-    success: false,
-    message: 'Public registration is disabled. Please contact your administrator.'
-  });
-});
+router.post('/register', register);
+router.get('/registration-status', getRegistrationStatus);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);

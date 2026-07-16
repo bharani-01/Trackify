@@ -33,6 +33,18 @@ router.route('/users/:id')
 router.put('/users/:id/suspend', toggleUserSuspension);
 router.put('/users/:id/reset-password', adminResetUserPassword);
 
+// Approvals management
+const { getPendingApprovals, approveRegistration, rejectRegistration } = require('../controllers/approvalController');
+router.get('/approvals', getPendingApprovals);
+router.put('/approvals/:id/approve', approveRegistration);
+router.delete('/approvals/:id/reject', rejectRegistration);
+
+// Global settings
+const { getSettings, updateSettings } = require('../controllers/systemSettingsController');
+router.route('/settings')
+  .get(getSettings)
+  .put(updateSettings);
+
 // Master subjects templates
 router.route('/subjects')
   .get(getMasterSubjects)

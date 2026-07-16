@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS settings CASCADE;
 DROP TABLE IF EXISTS attendance CASCADE;
 DROP TABLE IF EXISTS timetable CASCADE;
 DROP TABLE IF EXISTS subjects CASCADE;
+DROP TABLE IF EXISTS system_settings CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- USERS TABLE
@@ -21,6 +22,7 @@ CREATE TABLE IF NOT EXISTS users (
     department VARCHAR(100),
     semester INT,
     is_suspended BOOLEAN DEFAULT FALSE,
+    is_approved BOOLEAN DEFAULT TRUE,
     reset_password_token VARCHAR(255),
     reset_password_expires TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -122,3 +124,10 @@ CREATE INDEX IF NOT EXISTS idx_timetable_dept_sem ON timetable(department, semes
 CREATE INDEX IF NOT EXISTS idx_attendance_user_subject ON attendance(user_id, subject_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_date ON attendance(date);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id) WHERE read = FALSE;
+
+-- SYSTEM SETTINGS TABLE (GLOBAL SYSTEM CONFIGS)
+CREATE TABLE IF NOT EXISTS system_settings (
+    key VARCHAR(100) PRIMARY KEY,
+    value VARCHAR(255) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

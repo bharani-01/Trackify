@@ -13,6 +13,7 @@ const adminRoutes = require('./src/routes/adminRoutes');
 const departmentRoutes = require('./src/routes/departmentRoutes');
 const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
+const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -461,8 +462,18 @@ app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../
 // Serve assets globally
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
-app.get('/register', (req, res) => {
-  res.redirect('/login');
+app.get('/register', async (req, res) => {
+  try {
+    const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
+    if (allowSelfReg === 'true') {
+      res.sendFile(path.join(__dirname, '../frontend/register.html'));
+    } else {
+      res.redirect('/login?msg=registration_disabled');
+    }
+  } catch (error) {
+    console.error('Error checking self registration status:', error);
+    res.redirect('/login');
+  }
 });
 
 // Serve public static folder (Landing, Login, Register)

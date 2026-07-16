@@ -126,3 +126,10 @@ INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, r
 SELECT NULL, id, 'Saturday', 6, '13:50:00', '14:40:00', 'CR 5', 'E02', 5 FROM subjects WHERE subject_code = 'CYB23SLU07' AND user_id IS NULL;
 INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room, department, semester)
 SELECT NULL, id, 'Saturday', 7, '14:55:00', '15:45:00', 'CR 5', 'E02', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND user_id IS NULL;
+
+-- Seed default system settings
+INSERT INTO system_settings (key, value) VALUES
+('allow_self_registration', 'true'),
+('maintenance_mode', 'false')
+ON CONFLICT (key) DO NOTHING;
+
