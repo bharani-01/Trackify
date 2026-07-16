@@ -11,7 +11,7 @@ const sendResetEmail = async (email, resetUrl) => {
 
   try {
     const data = await resend.emails.send({
-      from: 'Trackify <onboarding@resend.dev>',
+      from: 'Trackify <trackify@bharani-01.xyz>',
       to: [email],
       subject: 'Reset your Trackify Password',
       html: `
