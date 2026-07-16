@@ -123,7 +123,13 @@
             <div class="col-md-6">
               <div class="p-3 bg-light rounded-4 border h-100">
                 <div class="fw-bold mb-2 text-dark">Email Dispatchers</div>
-                <div class="text-secondary small mb-3">Send data exports directly to your administrator inbox using Resend attachments.</div>
+                <div class="text-secondary small mb-2">Send data exports directly to any email address using Resend attachments.</div>
+                
+                <!-- Custom recipient email input -->
+                <div class="mb-3">
+                  <input type="email" class="form-control form-control-sm bg-white" id="customEmailInput" placeholder="Recipient email (optional - defaults to your account)">
+                </div>
+
                 <div class="d-flex flex-wrap gap-2">
                   <button onclick="emailBackupFile('sql')" class="btn btn-glass btn-sm border-primary text-primary py-2 px-3">Email SQL Dump</button>
                   <button onclick="emailBackupFile('csv_attendance')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Attendance CSV</button>
@@ -267,10 +273,13 @@
       btn.disabled = true;
       btn.innerText = 'Backing Up...';
 
+      const email = document.getElementById('customEmailInput').value.trim();
+
       showAlert('Triggered database backup, compiling tables...', 'info');
 
       const response = await apiCall('/api/admin/backups', {
-        method: 'POST'
+        method: 'POST',
+        body: email ? { email } : {}
       });
 
       btn.disabled = false;
@@ -280,17 +289,19 @@
         showAlert(response.message || 'Database backup successfully sent and logged!', 'success');
         loadBackupHistory();
       } else {
-        showAlert(response.message || 'Failed to perform database backup.', 'danger');
+        showAlert(response.message || 'Failed to perform database database backup.', 'danger');
         loadBackupHistory();
       }
     }
 
     async function emailBackupFile(format) {
+      const email = document.getElementById('customEmailInput').value.trim();
+
       showAlert(`Processing on-demand email delivery for format: ${format}...`, 'info');
 
       const response = await apiCall('/api/admin/backups/email', {
         method: 'POST',
-        body: { format }
+        body: { format, email: email || undefined }
       });
 
       if (response.success) {

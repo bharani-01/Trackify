@@ -15,8 +15,9 @@ const getTimestampedFilename = (prefix, extension) => {
  * @route POST /api/admin/backups
  */
 const triggerBackup = async (req, res) => {
+  const { email } = req.body;
   const filename = getTimestampedFilename('trackify_backup_complete', 'sql');
-  const recipientEmail = req.user ? req.user.email : 'admin@trackify.com';
+  const recipientEmail = email || (req.user ? req.user.email : 'admin@trackify.com');
 
   try {
     // 1. Generate full SQL dump
@@ -125,8 +126,8 @@ const exportData = async (req, res) => {
  * @route POST /api/admin/backups/email
  */
 const emailData = async (req, res) => {
-  const { format } = req.body;
-  const recipientEmail = req.user ? req.user.email : 'admin@trackify.com';
+  const { format, email } = req.body;
+  const recipientEmail = email || (req.user ? req.user.email : 'admin@trackify.com');
 
   try {
     let content = '';
