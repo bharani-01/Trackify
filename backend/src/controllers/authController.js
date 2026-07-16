@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const userRepository = require('../repositories/userRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
 
@@ -191,9 +192,118 @@ const logout = async (req, res) => {
   }
 };
 
+/**
+ * Request Password Reset Token
+ * @route POST /api/auth/forgot-password
+ */
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email address'
+      });
+    }
+
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user account found with that email address'
+      });
+    }
+
+    // Generate secure random token
+    const resetToken = crypto.randomBytes(20).toString('hex');
+    
+    // Set expiry to 1 hour from now
+    const resetExpires = new Date(Date.now() + 3600000);
+
+    // Save to database
+    await userRepository.updateResetToken(user.id, resetToken, resetExpires);
+
+    // Build reset link (dynamic protocol & host)
+    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
+    
+    console.log(`[PASSWORD RESET LINK]: ${resetUrl}`);
+
+    // Return the link in development/testing mode for easy copy-paste
+    const responsePayload = {
+      success: true,
+      message: 'Reset password link simulated and logged successfully.'
+    };
+    
+    if (process.env.NODE_ENV !== 'production') {
+      responsePayload.devResetUrl = resetUrl;
+    }
+
+    return res.status(200).json(responsePayload);
+  } catch (error) {
+    console.error('ForgotPassword controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error generating password reset token.'
+    });
+  }
+};
+
+/**
+ * Reset Password using Token
+ * @route POST /api/auth/reset-password
+ */
+const resetPassword = async (req, res) => {
+  const { token, password, confirmPassword } = req.body;
+
+  try {
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset token and password are required'
+      });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Passwords do not match'
+      });
+    }
+
+    // Verify token validity
+    const user = await userRepository.findByResetToken(token);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password reset token is invalid or has expired'
+      });
+    }
+
+    // Hash the new password
+    const passwordHash = await hashPassword(password);
+
+    // Save and clear tokens
+    await userRepository.updatePasswordAndClearToken(user.id, passwordHash);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password reset successfully. You can now log in with your new credentials.'
+    });
+  } catch (error) {
+    console.error('ResetPassword controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error resetting password.'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   getMe,
-  logout
+  logout,
+  forgotPassword,
+  resetPassword
 };

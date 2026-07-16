@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
     department VARCHAR(100),
     semester INT,
     is_suspended BOOLEAN DEFAULT FALSE,
+    reset_password_token VARCHAR(255),
+    reset_password_expires TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

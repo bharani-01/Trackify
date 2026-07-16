@@ -12,7 +12,8 @@ const {
   getMasterTimetable, 
   createMasterTimetableSlot, 
   deleteMasterTimetableSlot,
-  createUser
+  createUser,
+  adminResetUserPassword
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -30,6 +31,7 @@ router.route('/users/:id')
   .put(updateStudentProfile)
   .delete(deleteUser);
 router.put('/users/:id/suspend', toggleUserSuspension);
+router.put('/users/:id/reset-password', adminResetUserPassword);
 
 // Master subjects templates
 router.route('/subjects')

@@ -93,8 +93,52 @@ const createUser = async (user) => {
   }
 };
 
+/**
+ * Update reset password token and expiry date for a user
+ */
+const updateResetToken = async (userId, token, expires) => {
+  const query = `
+    UPDATE users 
+    SET reset_password_token = $1, reset_password_expires = $2, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $3
+    RETURNING id, email
+  `;
+  const result = await db.query(query, [token, expires, userId]);
+  return result.rows[0];
+};
+
+/**
+ * Find user by reset token that hasn't expired yet
+ */
+const findByResetToken = async (token) => {
+  const query = `
+    SELECT id, email, reset_password_expires 
+    FROM users 
+    WHERE reset_password_token = $1 AND reset_password_expires > NOW()
+  `;
+  const result = await db.query(query, [token]);
+  return result.rows[0];
+};
+
+/**
+ * Update user's password and wipe out reset tokens
+ */
+const updatePasswordAndClearToken = async (userId, passwordHash) => {
+  const query = `
+    UPDATE users 
+    SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $2
+    RETURNING id, email, role
+  `;
+  const result = await db.query(query, [passwordHash, userId]);
+  return result.rows[0];
+};
+
 module.exports = {
   findByEmail,
   findById,
-  createUser
+  createUser,
+  updateResetToken,
+  findByResetToken,
+  updatePasswordAndClearToken
 };

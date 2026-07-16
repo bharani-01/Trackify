@@ -399,6 +399,48 @@ const createUser = async (req, res) => {
   }
 };
 
+/**
+ * Administrator override to change a user's password directly
+ * @route PUT /api/admin/users/:id/reset-password
+ */
+const adminResetUserPassword = async (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  try {
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    // Hash new password
+    const passwordHash = await hashPassword(password);
+
+    // Update in database and wipe tokens if any
+    const updatedUser = await userRepository.updatePasswordAndClearToken(id, passwordHash);
+    
+    if (!updatedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User account not found'
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Password for user ${updatedUser.email} has been overridden successfully.`
+    });
+  } catch (error) {
+    console.error('adminResetUserPassword controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error during password override'
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   toggleUserSuspension,
@@ -411,5 +453,6 @@ module.exports = {
   getMasterTimetable,
   createMasterTimetableSlot,
   deleteMasterTimetableSlot,
-  createUser
+  createUser,
+  adminResetUserPassword
 };

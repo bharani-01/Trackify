@@ -11,6 +11,7 @@
     /* Modal input and select overrides to enforce consistent light-theme forms */
     #editProfileModal input.form-control, 
     #addUserModal input.form-control,
+    #adminResetPasswordModal input.form-control,
     #editProfileModal select.form-select, 
     #addUserModal select.form-select {
       background-color: #ffffff !important;
@@ -23,10 +24,12 @@
       color: #212529 !important;
     }
     #editProfileModal label, 
-    #addUserModal label {
+    #addUserModal label,
+    #adminResetPasswordModal label {
       color: #495057 !important;
     }
-    #editProfileModal input[readonly] {
+    #editProfileModal input[readonly],
+    #adminResetPasswordModal input[readonly] {
       background-color: #e2e8f0 !important;
       color: #475569 !important;
     }
@@ -244,6 +247,35 @@
     </div>
   </div>
 
+  <!-- Admin Override Reset Password Modal -->
+  <div class="modal fade" id="adminResetPasswordModal" tabindex="-1" aria-labelledby="adminResetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass text-white bg-dark">
+        <div class="modal-header border-glass">
+          <h5 class="modal-title fw-bold" id="adminResetPasswordModalLabel">Override User Password</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="adminResetPasswordForm">
+            <input type="hidden" id="reset-target-user-id">
+            
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary">Account User</label>
+              <input type="text" class="form-control bg-light text-dark border-secondary-subtle" id="reset-target-user-name" readonly>
+            </div>
+            
+            <div class="form-floating mb-4">
+              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="reset-new-password" placeholder="New Password" required minlength="6">
+              <label for="reset-new-password" class="text-secondary small">Set New Password (min 6 chars)</label>
+            </div>
+            
+            <button type="submit" class="btn btn-glow w-100 py-2.5">Override Credentials</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Global scripts -->
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -325,6 +357,9 @@
               <div class="d-flex gap-1 justify-content-end">
                 <button onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}')" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
                   Edit
+                </button>
+                <button onclick="openAdminResetPasswordModal('${user.id}', '${user.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
+                  Password
                 </button>
                 <button onclick="toggleSuspension('${user.id}', ${user.is_suspended})" class="btn btn-glass btn-sm ${suspendBtnClass} py-1 px-2.5" style="font-size: 0.8rem;">
                   ${suspendBtnText}
@@ -506,6 +541,41 @@
         loadData();
       } else {
         showAlert(response.message || 'Failed to provision user account', 'danger');
+      }
+    });
+
+    const adminResetPasswordModal = new bootstrap.Modal(document.getElementById('adminResetPasswordModal'));
+
+    function openAdminResetPasswordModal(id, name) {
+      document.getElementById('adminResetPasswordForm').reset();
+      document.getElementById('reset-target-user-id').value = id;
+      document.getElementById('reset-target-user-name').value = name;
+      adminResetPasswordModal.show();
+    }
+
+    document.getElementById('adminResetPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const id = document.getElementById('reset-target-user-id').value;
+      const password = document.getElementById('reset-new-password').value;
+      
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Overriding...';
+
+      const response = await apiCall(`/api/admin/users/${id}/reset-password`, {
+        method: 'PUT',
+        body: { password }
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Override Credentials';
+
+      if (response.success) {
+        showAlert(response.message || 'User password overridden successfully', 'success');
+        adminResetPasswordModal.hide();
+      } else {
+        showAlert(response.message || 'Failed to override user password', 'danger');
       }
     });
 
