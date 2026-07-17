@@ -23,7 +23,7 @@ const getSubjects = async (req, res) => {
  * Add a new subject
  */
 const createSubject = async (req, res) => {
-  const { subject_code, subject_name, credits, color } = req.body;
+  const { subject_code, subject_name, credits, color, total_periods } = req.body;
 
   if (!subject_code || !subject_name) {
     return res.status(400).json({
@@ -38,7 +38,8 @@ const createSubject = async (req, res) => {
       subject_code,
       subject_name,
       credits,
-      color
+      color,
+      total_periods
     });
 
     return res.status(201).json({
@@ -59,7 +60,7 @@ const createSubject = async (req, res) => {
  */
 const updateSubject = async (req, res) => {
   const { id } = req.params;
-  const { subject_code, subject_name, credits, color } = req.body;
+  const { subject_code, subject_name, credits, color, total_periods } = req.body;
 
   if (!subject_code || !subject_name) {
     return res.status(400).json({
@@ -73,7 +74,8 @@ const updateSubject = async (req, res) => {
       subject_code,
       subject_name,
       credits,
-      color
+      color,
+      total_periods
     });
 
     if (!updatedSubject) {

@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS subjects (
     color VARCHAR(7) DEFAULT '#3b82f6',
     department VARCHAR(100), -- For admin master subjects
     semester INT,          -- For admin master subjects
+    total_periods INT DEFAULT 45 CHECK (total_periods >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS attendance (
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE,
     date DATE NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('Present', 'Absent', 'Medical Leave', 'Holiday')),
+    status VARCHAR(20) CHECK (status IN ('Present', 'Absent', 'Medical Leave', 'Holiday', 'On Duty')),
     remarks TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     -- A user can mark attendance for a subject on a date multiple times if it has multiple periods,
@@ -132,4 +133,29 @@ CREATE TABLE IF NOT EXISTS backups (
     status VARCHAR(50) NOT NULL,
     error_message TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- SYSTEM AUDIT LOGS TABLE
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL,
+    details TEXT,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- TIMETABLE SCHEDULE ADJUSTMENTS TABLE
+CREATE TABLE IF NOT EXISTS schedule_adjustments (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    department VARCHAR(100) NOT NULL,
+    semester INT NOT NULL,
+    date DATE NOT NULL,
+    period INT NOT NULL,
+    original_subject_id UUID REFERENCES subjects(id) ON DELETE SET NULL,
+    adjusted_subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE,
+    adjustment_type VARCHAR(20) NOT NULL CHECK (adjustment_type IN ('substitution', 'swap', 'extra', 'cancel')),
+    remarks TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(department, semester, date, period)
 );

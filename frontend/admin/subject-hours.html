@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Subject Hours override - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link" href="/admin/adjustments">Schedule Adjustments</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/audit-logs">Activity Audit Logs</a>
+        <a class="sidebar-link active" href="/admin/subject-hours">Subject Hours</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Subject Hours Manager</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Sub-header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Alter Subject Hours (Semester Limits)</h2>
+            <p class="text-secondary small mb-0">Modify total classes/hours allocated for subjects in a cohort. Changes will save to template rules and propagate to all active students in that cohort.</p>
+          </div>
+        </div>
+
+        <!-- Cohort Select Card -->
+        <div class="glass-card border-glass mb-4 p-4">
+          <form id="cohortForm" class="row g-3 align-items-end" onsubmit="handleLoadCohort(event)">
+            <div class="col-md-4">
+              <label for="cohortDept" class="form-label small fw-semibold text-secondary">Department</label>
+              <select class="form-select border-light" id="cohortDept" required>
+                <option value="">Select Department</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label for="cohortSem" class="form-label small fw-semibold text-secondary">Semester</label>
+              <select class="form-select border-light" id="cohortSem" required>
+                <option value="">Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-glow w-100">Load Cohort Subjects</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Workspace -->
+        <div id="workspace-area" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h6 fw-bold mb-0 text-uppercase tracking-wide text-secondary" id="cohort-title">Cohort: CSE Sem 1</h3>
+            <button onclick="saveCohortHours()" class="btn btn-glow btn-sm py-1.5 px-3 fs-8">Save & Propagate Hours</button>
+          </div>
+
+          <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+                <thead class="table-light border-bottom">
+                  <tr>
+                    <th class="ps-4">Subject Code</th>
+                    <th>Subject Name</th>
+                    <th>Credits</th>
+                    <th style="width: 180px;">Total Periods (Hours)</th>
+                  </tr>
+                </thead>
+                <tbody id="subject-table-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let activeDept = '';
+    let activeSem = '';
+    let subjects = [];
+
+    async function loadData() {
+      // Fetch session
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Load departments list
+      const deptsRes = await apiCall('/api/departments');
+      if (deptsRes.success) {
+        const select = document.getElementById('cohortDept');
+        select.innerHTML = '<option value="">Select Department</option>';
+        deptsRes.departments.forEach(d => {
+          select.innerHTML += `<option value="${d.code}">${d.name} (${d.code})</option>`;
+        });
+      }
+    }
+
+    async function handleLoadCohort(e) {
+      e.preventDefault();
+      activeDept = document.getElementById('cohortDept').value;
+      activeSem = document.getElementById('cohortSem').value;
+
+      document.getElementById('cohort-title').innerText = `Department: ${activeDept} | Semester: ${activeSem}`;
+
+      // Fetch master subjects
+      const subRes = await apiCall(`/api/admin/subjects?department=${activeDept}&semester=${activeSem}`);
+      if (subRes.success) {
+        subjects = subRes.subjects;
+        renderSubjects();
+        document.getElementById('workspace-area').style.display = 'block';
+      } else {
+        showAlert('Failed to load cohort subjects.', 'danger');
+      }
+    }
+
+    function renderSubjects() {
+      const container = document.getElementById('subject-table-body');
+      container.innerHTML = '';
+
+      if (subjects.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-4 text-secondary">
+              No template subjects registered for this cohort. Add subjects in Timetable Builder.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      subjects.forEach(s => {
+        const totalPeriods = s.total_periods || 45;
+        container.innerHTML += `
+          <tr>
+            <td class="ps-4 fw-bold font-monospace text-primary">${s.subject_code}</td>
+            <td class="text-dark small">${s.subject_name}</td>
+            <td class="small text-secondary">${s.credits}</td>
+            <td>
+              <input type="number" 
+                class="form-control form-control-sm border-light" 
+                id="hours-${s.subject_code}" 
+                value="${totalPeriods}" 
+                min="0" 
+                max="200" 
+                style="max-width: 120px;"
+                required
+              >
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function saveCohortHours() {
+      if (!confirm('This will update total periods/hours configuration and propagate it to all active student subjects in this cohort. Continue?')) {
+        return;
+      }
+
+      // Build subjectHours array
+      const subjectHours = [];
+      for (const s of subjects) {
+        const inputVal = document.getElementById(`hours-${s.subject_code}`).value;
+        if (!inputVal || parseInt(inputVal, 10) < 0) {
+          alert(`Invalid hours value for subject: ${s.subject_code}`);
+          return;
+        }
+        subjectHours.push({
+          subject_code: s.subject_code,
+          total_periods: parseInt(inputVal, 10)
+        });
+      }
+
+      const response = await apiCall('/api/admin/subjects/hours', {
+        method: 'POST',
+        body: {
+          department: activeDept,
+          semester: activeSem,
+          subjectHours
+        }
+      });
+
+      if (response.success) {
+        showAlert('Cohort subject hours updated and synced with active students.', 'success');
+        
+        // Update local subjects total_periods state
+        subjects.forEach(s => {
+          const match = subjectHours.find(sh => sh.subject_code === s.subject_code);
+          if (match) {
+            s.total_periods = match.total_periods;
+          }
+        });
+        renderSubjects();
+      } else {
+        showAlert(response.message || 'Failed to update cohort subject hours.', 'danger');
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

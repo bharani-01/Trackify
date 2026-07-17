@@ -29,10 +29,10 @@ const getByIdAndUser = async (id, userId) => {
  * @returns {Promise<object>}
  */
 const create = async (subject) => {
-  const { user_id, subject_code, subject_name, credits, color } = subject;
+  const { user_id, subject_code, subject_name, credits, color, total_periods } = subject;
   const query = `
-    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, total_periods)
+    VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -40,7 +40,8 @@ const create = async (subject) => {
     subject_code.trim().toUpperCase(),
     subject_name.trim(),
     credits ? parseInt(credits, 10) : 3,
-    color || '#3b82f6'
+    color || '#3b82f6',
+    total_periods ? parseInt(total_periods, 10) : 45
   ]);
   return result.rows[0];
 };
@@ -53,11 +54,11 @@ const create = async (subject) => {
  * @returns {Promise<object|null>}
  */
 const update = async (id, userId, subject) => {
-  const { subject_code, subject_name, credits, color } = subject;
+  const { subject_code, subject_name, credits, color, total_periods } = subject;
   const query = `
     UPDATE subjects
-    SET subject_code = $1, subject_name = $2, credits = $3, color = $4
-    WHERE id = $5 AND user_id = $6
+    SET subject_code = $1, subject_name = $2, credits = $3, color = $4, total_periods = $5
+    WHERE id = $6 AND user_id = $7
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -65,6 +66,7 @@ const update = async (id, userId, subject) => {
     subject_name.trim(),
     parseInt(credits, 10),
     color,
+    total_periods ? parseInt(total_periods, 10) : 45,
     id,
     userId
   ]);
@@ -93,7 +95,7 @@ const deleteSubject = async (id, userId) => {
  */
 const copyMasterSubjects = async (client, userId, department, semester) => {
   const getMasterQuery = `
-    SELECT id, subject_code, subject_name, credits, color 
+    SELECT id, subject_code, subject_name, credits, color, total_periods 
     FROM subjects 
     WHERE user_id IS NULL AND department = $1 AND semester = $2
   `;
@@ -102,8 +104,8 @@ const copyMasterSubjects = async (client, userId, department, semester) => {
 
   for (const masterSub of masterResult.rows) {
     const insertQuery = `
-      INSERT INTO subjects (user_id, subject_code, subject_name, credits, color)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, total_periods)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING id
     `;
     const result = await client.query(insertQuery, [
@@ -111,7 +113,8 @@ const copyMasterSubjects = async (client, userId, department, semester) => {
       masterSub.subject_code,
       masterSub.subject_name,
       masterSub.credits,
-      masterSub.color
+      masterSub.color,
+      masterSub.total_periods
     ]);
     subjectMap[masterSub.id] = result.rows[0].id;
   }

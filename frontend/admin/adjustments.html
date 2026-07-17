@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule Adjustments - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <style>
+    .slot-row {
+      transition: all 0.2s ease;
+    }
+    .slot-row.modified {
+      background-color: rgba(245, 158, 11, 0.03) !important;
+      border-left: 4px solid var(--warning) !important;
+    }
+    .slot-row.canceled {
+      background-color: rgba(220, 38, 38, 0.03) !important;
+      border-left: 4px solid var(--danger) !important;
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    .slot-row.extra {
+      background-color: rgba(5, 150, 105, 0.03) !important;
+      border-left: 4px solid var(--success) !important;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link active" href="/admin/adjustments">Schedule Adjustments</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/audit-logs">Activity Audit Logs</a>
+        <a class="sidebar-link" href="/admin/subject-hours">Subject Hours</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Schedule Adjustments</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Sub-header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Substitutions & Period Exchanges</h2>
+            <p class="text-secondary small mb-0">Apply temporary timetable adjustments for a specific department and semester cohort.</p>
+          </div>
+        </div>
+
+        <!-- Cohort Select Card -->
+        <div class="glass-card border-glass mb-4 p-4">
+          <form id="cohortForm" class="row g-3 align-items-end" onsubmit="handleLoadSchedule(event)">
+            <div class="col-md-3">
+              <label for="cohortDept" class="form-label small fw-semibold text-secondary">Department</label>
+              <select class="form-select border-light" id="cohortDept" required>
+                <option value="">Select Department</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="cohortSem" class="form-label small fw-semibold text-secondary">Semester</label>
+              <select class="form-select border-light" id="cohortSem" required>
+                <option value="">Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label for="adjDate" class="form-label small fw-semibold text-secondary">Date</label>
+              <input type="date" class="form-control border-light" id="adjDate" required>
+            </div>
+            <div class="col-md-3">
+              <button type="submit" class="btn btn-glow w-100">Load Daily Schedule</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Adjusted Schedule Area -->
+        <div id="schedule-workspace" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="h6 fw-bold mb-0 text-uppercase tracking-wide text-secondary" id="workspace-title">Adjusting Schedule for CSE Sem 1 (2026-07-18)</h3>
+            <div class="d-flex gap-2">
+              <button onclick="openExtraPeriodModal()" class="btn btn-glass btn-sm border-success text-success py-1.5 px-3 fs-8 fw-semibold">+ Add Extra Period</button>
+              <button onclick="handleSaveAdjustments()" class="btn btn-glow btn-sm py-1.5 px-3 fs-8">Save Schedule Changes</button>
+            </div>
+          </div>
+
+          <div class="glass-card border-glass p-0 overflow-hidden shadow-sm mb-4">
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+                <thead class="table-light border-bottom">
+                  <tr>
+                    <th class="ps-4" style="width: 100px;">Period</th>
+                    <th style="width: 180px;">Time Slot</th>
+                    <th>Standard Subject</th>
+                    <th>Adjusted Subject Status</th>
+                    <th class="pe-4 text-end" style="width: 250px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="schedule-table-body">
+                  <!-- Generated slots dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Substitution Modal -->
+  <div class="modal fade" id="substituteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold">Substitute Subject</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="substituteForm" onsubmit="applySubstitution(event)">
+          <input type="hidden" id="subPeriod">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="subSubjectSelect" class="form-label small text-secondary">Select Substituting Subject</label>
+              <select class="form-select" id="subSubjectSelect" required>
+                <!-- populated dynamically -->
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Apply Substitution</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Swap Modal -->
+  <div class="modal fade" id="swapModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold">Swap Periods</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="swapForm" onsubmit="applySwap(event)">
+          <input type="hidden" id="swapPeriodSrc">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="swapPeriodTargetSelect" class="form-label small text-secondary">Select Period to Swap with</label>
+              <select class="form-select" id="swapPeriodTargetSelect" required>
+                <!-- populated dynamically -->
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Swap Periods</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Extra Class Modal -->
+  <div class="modal fade" id="extraModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold">Add Extra Class Period</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="extraForm" onsubmit="applyExtraClass(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label for="extraPeriod" class="form-label small text-secondary">Period Number</label>
+              <input type="number" class="form-control" id="extraPeriod" min="1" max="10" required>
+            </div>
+            <div class="mb-3">
+              <label for="extraSubjectSelect" class="form-label small text-secondary">Subject</label>
+              <select class="form-select" id="extraSubjectSelect" required>
+                <!-- populated dynamically -->
+              </select>
+            </div>
+            <div class="row">
+              <div class="col-6 mb-3">
+                <label for="extraStart" class="form-label small text-secondary">Start Time</label>
+                <input type="time" class="form-control" id="extraStart" required>
+              </div>
+              <div class="col-6 mb-3">
+                <label for="extraEnd" class="form-label small text-secondary">End Time</label>
+                <input type="time" class="form-control" id="extraEnd" required>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Add Class</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let activeDept = '';
+    let activeSem = '';
+    let activeDate = '';
+
+    let subjects = [];
+    let regularSlots = [];
+    let adjustments = []; // Active adjustments locally modified
+    let initialSavedAdjustments = []; // Saved state from DB
+
+    const subModal = new bootstrap.Modal(document.getElementById('substituteModal'));
+    const swapModal = new bootstrap.Modal(document.getElementById('swapModal'));
+    const extraModal = new bootstrap.Modal(document.getElementById('extraModal'));
+
+    // Set default date to today
+    document.getElementById('adjDate').value = new Date().toISOString().split('T')[0];
+
+    async function loadData() {
+      // Fetch user profile session
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // Load departments
+      const deptsRes = await apiCall('/api/departments');
+      if (deptsRes.success) {
+        const select = document.getElementById('cohortDept');
+        select.innerHTML = '<option value="">Select Department</option>';
+        deptsRes.departments.forEach(d => {
+          select.innerHTML += `<option value="${d.code}">${d.name} (${d.code})</option>`;
+        });
+      }
+    }
+
+    async function handleLoadSchedule(e) {
+      e.preventDefault();
+      activeDept = document.getElementById('cohortDept').value;
+      activeSem = parseInt(document.getElementById('cohortSem').value, 10);
+      activeDate = document.getElementById('adjDate').value;
+
+      document.getElementById('workspace-title').innerText = `Adjusting Daily Schedule: ${activeDept} Semester ${activeSem} (${activeDate})`;
+
+      const dateParts = activeDate.split('-');
+      const dObj = new Date(parseInt(dateParts[0], 10), parseInt(dateParts[1], 10) - 1, parseInt(dateParts[2], 10));
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const targetDay = days[dObj.getDay()];
+
+      // 1. Fetch regular timetable templates for the cohort on this weekday
+      const timeRes = await apiCall(`/api/admin/timetable?department=${activeDept}&semester=${activeSem}`);
+      // 2. Fetch master subjects for drop-downs
+      const subRes = await apiCall(`/api/admin/subjects?department=${activeDept}&semester=${activeSem}`);
+      // 3. Fetch adjustments already saved for this cohort and date
+      const adjRes = await apiCall(`/api/admin/adjustments?department=${activeDept}&semester=${activeSem}&date=${activeDate}`);
+
+      if (timeRes.success && subRes.success && adjRes.success) {
+        subjects = subRes.subjects;
+        // Filter timetable slots by day
+        regularSlots = timeRes.timetable.filter(s => s.day === targetDay);
+        initialSavedAdjustments = adjRes.adjustments;
+
+        // Reset local adjustments array to mirror saved state
+        adjustments = [...initialSavedAdjustments];
+
+        // Populate modals select dropdowns
+        populateDropdowns();
+
+        // Render schedule table workspace
+        renderWorkspace();
+        document.getElementById('schedule-workspace').style.display = 'block';
+      } else {
+        showAlert('Failed to load cohort schedule configurations.', 'danger');
+      }
+    }
+
+    function populateDropdowns() {
+      // Substitute dropdown
+      const subSelect = document.getElementById('subSubjectSelect');
+      subSelect.innerHTML = '<option value="">Select Subject</option>';
+      subjects.forEach(s => {
+        subSelect.innerHTML += `<option value="${s.id}">${s.subject_code} - ${s.subject_name}</option>`;
+      });
+
+      // Extra class dropdown
+      const extraSelect = document.getElementById('extraSubjectSelect');
+      extraSelect.innerHTML = '<option value="">Select Subject</option>';
+      subjects.forEach(s => {
+        extraSelect.innerHTML += `<option value="${s.id}">${s.subject_code} - ${s.subject_name}</option>`;
+      });
+    }
+
+    function renderWorkspace() {
+      const container = document.getElementById('schedule-table-body');
+      container.innerHTML = '';
+
+      // We merge regular slots and local adjustments to get a list of what the day currently looks like
+      // Standard slots
+      const daySlots = regularSlots.map(slot => {
+        // Find if this slot has a local adjustment
+        const adj = adjustments.find(a => a.period === slot.period && a.adjustment_type !== 'extra');
+        
+        let displaySubject = slot.subject_name + ` (${slot.subject_code})`;
+        let statusHtml = '<span class="badge bg-light text-secondary border">Regular Class</span>';
+        let rowClass = 'slot-row';
+
+        if (adj) {
+          if (adj.adjustment_type === 'cancel') {
+            statusHtml = '<span class="badge bg-danger-subtle text-danger border border-danger-subtle">CANCELED</span>';
+            rowClass = 'slot-row canceled';
+          } else if (adj.adjustment_type === 'substitution') {
+            statusHtml = `<span class="badge bg-warning-subtle text-warning border border-warning-subtle">SUBSTITUTED</span> to <strong class="text-dark">${adj.adjusted_subject_name || getSubjectNameById(adj.adjusted_subject_id)}</strong>`;
+            rowClass = 'slot-row modified';
+          } else if (adj.adjustment_type === 'swap') {
+            statusHtml = `<span class="badge bg-info-subtle text-info border border-info-subtle">SWAPPED</span> with Period ${adj.remarks ? adj.remarks.split(' ').pop() : '?'}`;
+            rowClass = 'slot-row modified';
+          }
+        }
+
+        return {
+          type: 'regular',
+          period: slot.period,
+          time: `${slot.start_time.substring(0,5)} - ${slot.end_time.substring(0,5)}`,
+          originalSubject: displaySubject,
+          originalSubjectId: slot.subject_id,
+          statusHtml,
+          rowClass,
+          slotId: slot.id
+        };
+      });
+
+      // Extra classes
+      const extraSlots = adjustments
+        .filter(a => a.adjustment_type === 'extra')
+        .map(adj => {
+          return {
+            type: 'extra',
+            period: adj.period,
+            time: adj.remarks || 'Extra Period',
+            originalSubject: '-',
+            originalSubjectId: null,
+            statusHtml: `<span class="badge bg-success-subtle text-success border border-success-subtle">EXTRA CLASS</span>: <strong>${adj.adjusted_subject_name || getSubjectNameById(adj.adjusted_subject_id)}</strong>`,
+            rowClass: 'slot-row extra',
+            slotId: null
+          };
+        });
+
+      // Combine and sort by period
+      const combined = [...daySlots, ...extraSlots].sort((a,b) => a.period - b.period);
+
+      if (combined.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-4 text-secondary">
+              No classes are regularly scheduled for this day. Click "+ Add Extra Period" to add one.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      combined.forEach(item => {
+        let actionButtons = '';
+        if (item.type === 'regular') {
+          // Adjustments active? Show Reset
+          const hasAdj = adjustments.some(a => a.period === item.period && a.adjustment_type !== 'extra');
+          if (hasAdj) {
+            actionButtons = `<button onclick="resetAdjustment(${item.period})" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5 fs-8 fw-semibold">Reset</button>`;
+          } else {
+            actionButtons = `
+              <div class="d-flex gap-1 justify-content-end">
+                <button onclick="openSubstituteModal(${item.period})" class="btn btn-glass btn-sm border-warning text-warning py-1 px-2.5 fs-8 fw-semibold">Substitute</button>
+                <button onclick="openSwapModal(${item.period})" class="btn btn-glass btn-sm border-info text-info py-1 px-2.5 fs-8 fw-semibold">Swap</button>
+                <button onclick="cancelPeriod(${item.period}, '${item.originalSubjectId}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5 fs-8 fw-semibold">Cancel</button>
+              </div>
+            `;
+          }
+        } else {
+          // Extra class, show Reset/Delete
+          actionButtons = `<button onclick="resetAdjustment(${item.period})" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5 fs-8 fw-semibold">Remove</button>`;
+        }
+
+        container.innerHTML += `
+          <tr class="${item.rowClass}">
+            <td class="ps-4 fw-bold">Period ${item.period}</td>
+            <td class="small text-secondary">${item.time}</td>
+            <td class="small text-dark">${item.originalSubject}</td>
+            <td class="small text-dark">${item.statusHtml}</td>
+            <td class="pe-4 text-end">${actionButtons}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function getSubjectNameById(id) {
+      const s = subjects.find(sub => sub.id === id);
+      return s ? `${s.subject_name} (${s.subject_code})` : 'Unknown';
+    }
+
+    function getSubjectCodeById(id) {
+      const s = subjects.find(sub => sub.id === id);
+      return s ? s.subject_code : 'Unknown';
+    }
+
+    function resetAdjustment(period) {
+      adjustments = adjustments.filter(a => a.period !== period);
+      renderWorkspace();
+    }
+
+    // Modal triggers
+    function openSubstituteModal(period) {
+      document.getElementById('subPeriod').value = period;
+      subModal.show();
+    }
+
+    function applySubstitution(e) {
+      e.preventDefault();
+      const period = parseInt(document.getElementById('subPeriod').value, 10);
+      const targetSubjId = document.getElementById('subSubjectSelect').value;
+
+      if (!targetSubjId) return;
+
+      const regular = regularSlots.find(s => s.period === period);
+      if (!regular) return;
+
+      // Add to adjustments
+      adjustments = adjustments.filter(a => a.period !== period); // Remove any old adjustments
+      adjustments.push({
+        period,
+        original_subject_id: regular.subject_id,
+        adjusted_subject_id: targetSubjId,
+        adjustment_type: 'substitution',
+        remarks: 'Substituted'
+      });
+
+      subModal.hide();
+      document.getElementById('substituteForm').reset();
+      renderWorkspace();
+    }
+
+    function openSwapModal(period) {
+      document.getElementById('swapPeriodSrc').value = period;
+      
+      const select = document.getElementById('swapPeriodTargetSelect');
+      select.innerHTML = '<option value="">Select Period</option>';
+      
+      // Load other scheduled periods
+      regularSlots.forEach(s => {
+        if (s.period !== period) {
+          select.innerHTML += `<option value="${s.period}">Period ${s.period} - ${s.subject_name}</option>`;
+        }
+      });
+
+      swapModal.show();
+    }
+
+    function applySwap(e) {
+      e.preventDefault();
+      const srcPeriod = parseInt(document.getElementById('swapPeriodSrc').value, 10);
+      const targetPeriod = parseInt(document.getElementById('swapPeriodTargetSelect').value, 10);
+
+      if (!targetPeriod) return;
+
+      const srcSlot = regularSlots.find(s => s.period === srcPeriod);
+      const targetSlot = regularSlots.find(s => s.period === targetPeriod);
+
+      if (!srcSlot || !targetSlot) return;
+
+      // Swap logic:
+      // Src period becomes target subject
+      // Target period becomes src subject
+      adjustments = adjustments.filter(a => a.period !== srcPeriod && a.period !== targetPeriod);
+      
+      adjustments.push({
+        period: srcPeriod,
+        original_subject_id: srcSlot.subject_id,
+        adjusted_subject_id: targetSlot.subject_id,
+        adjustment_type: 'swap',
+        remarks: `Swapped with Period ${targetPeriod}`
+      });
+
+      adjustments.push({
+        period: targetPeriod,
+        original_subject_id: targetSlot.subject_id,
+        adjusted_subject_id: srcSlot.subject_id,
+        adjustment_type: 'swap',
+        remarks: `Swapped with Period ${srcPeriod}`
+      });
+
+      swapModal.hide();
+      document.getElementById('swapForm').reset();
+      renderWorkspace();
+    }
+
+    function cancelPeriod(period, origSubjId) {
+      if (!confirm(`Are you sure you want to cancel Period ${period}?`)) return;
+
+      adjustments = adjustments.filter(a => a.period !== period);
+      adjustments.push({
+        period,
+        original_subject_id: origSubjId,
+        adjusted_subject_id: null,
+        adjustment_type: 'cancel',
+        remarks: 'Canceled'
+      });
+
+      renderWorkspace();
+    }
+
+    function openExtraPeriodModal() {
+      // Find unused periods or default
+      extraModal.show();
+    }
+
+    function applyExtraClass(e) {
+      e.preventDefault();
+      const period = parseInt(document.getElementById('extraPeriod').value, 10);
+      const subjectId = document.getElementById('extraSubjectSelect').value;
+      const start = document.getElementById('extraStart').value;
+      const end = document.getElementById('extraEnd').value;
+
+      if (regularSlots.some(s => s.period === period) || adjustments.some(a => a.period === period)) {
+        alert(`Period ${period} is already occupied. If you want to replace it, reset/remove it first.`);
+        return;
+      }
+
+      adjustments.push({
+        period,
+        original_subject_id: null,
+        adjusted_subject_id: subjectId,
+        adjustment_type: 'extra',
+        remarks: `Extra Class (${start} - ${end})`
+      });
+
+      extraModal.hide();
+      document.getElementById('extraForm').reset();
+      renderWorkspace();
+    }
+
+    async function handleSaveAdjustments() {
+      if (!confirm('Are you sure you want to save schedule changes for this date? This will immediately override timetable check-lists for students in this cohort.')) return;
+
+      const response = await apiCall('/api/admin/adjustments', {
+        method: 'POST',
+        body: {
+          department: activeDept,
+          semester: activeSem,
+          date: activeDate,
+          adjustments
+        }
+      });
+
+      if (response.success) {
+        showAlert('Schedule adjustments saved and broadcasted successfully.', 'success');
+        // Reload list
+        initialSavedAdjustments = [...adjustments];
+        renderWorkspace();
+      } else {
+        showAlert(response.message || 'Failed to save daily schedule changes.', 'danger');
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

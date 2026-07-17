@@ -63,6 +63,7 @@
         <a class="sidebar-link" href="/student/timetable">Timetable Schedule</a>
         <a class="sidebar-link active" href="/student/attendance">Mark Attendance</a>
         <a class="sidebar-link" href="/student/history">Attendance History</a>
+        <a class="sidebar-link" href="/student/calculator">Attendance Forecaster</a>
         <a class="sidebar-link" href="/student/settings">Preferences & Target</a>
         <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
       </div>
@@ -249,13 +250,73 @@
       const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       document.getElementById('progress-date-title').innerText = `${targetDayName}, ${months[targetDate.getMonth()]} ${targetDate.getDate()}, ${targetDate.getFullYear()}`;
 
-      // Fetch student's timetable schedule and log entries for the selected date
+      // Fetch student's timetable schedule, adjustments, and log entries for the selected date
       const timetableRes = await apiCall('/api/timetable');
+      const adjustmentsRes = await apiCall(`/api/timetable/adjustments?date=${currentSelectedDate}`);
       const logsRes = await apiCall(`/api/attendance?startDate=${currentSelectedDate}&endDate=${currentSelectedDate}`);
       
-      if (timetableRes.success && logsRes.success) {
-        const daySlots = timetableRes.timetable.filter(s => s.day === targetDayName);
+      if (timetableRes.success && adjustmentsRes.success && logsRes.success) {
+        const rawSlots = timetableRes.timetable.filter(s => s.day === targetDayName);
         const dayLogs = logsRes.logs;
+        const dayAdjustments = adjustmentsRes.adjustments;
+
+        // Apply cohort adjustments to the template slots
+        let daySlots = [];
+        rawSlots.forEach(slot => {
+          const adj = dayAdjustments.find(a => a.period === slot.period && a.adjustment_type !== 'extra');
+          if (adj) {
+            if (adj.adjustment_type === 'cancel') {
+              daySlots.push({
+                ...slot,
+                is_canceled: true
+              });
+            } else if (adj.adjustment_type === 'substitution') {
+              daySlots.push({
+                ...slot,
+                subject_id: adj.adjusted_subject_id,
+                subject_name: adj.adjusted_subject_name,
+                subject_code: adj.adjusted_subject_code,
+                color: adj.adjusted_subject_color || slot.color,
+                is_substituted: true,
+                original_subject_name: slot.subject_name
+              });
+            } else if (adj.adjustment_type === 'swap') {
+              daySlots.push({
+                ...slot,
+                subject_id: adj.adjusted_subject_id,
+                subject_name: adj.adjusted_subject_name,
+                subject_code: adj.adjusted_subject_code,
+                color: adj.adjusted_subject_color || slot.color,
+                is_swapped: true,
+                swap_period_details: adj.remarks
+              });
+            }
+          } else {
+            daySlots.push(slot);
+          }
+        });
+
+        // Add extra class periods
+        dayAdjustments.forEach(adj => {
+          if (adj.adjustment_type === 'extra') {
+            daySlots.push({
+              id: null,
+              subject_id: adj.adjusted_subject_id,
+              subject_name: adj.adjusted_subject_name,
+              subject_code: adj.adjusted_subject_code,
+              color: adj.adjusted_subject_color || '#3b82f6',
+              day: targetDayName,
+              period: adj.period,
+              start_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[0].trim() + ':00' : '00:00:00',
+              end_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[1].trim() + ':00' : '00:00:00',
+              room: 'TBA',
+              is_extra: true
+            });
+          }
+        });
+
+        // Sort by period number
+        daySlots.sort((a, b) => a.period - b.period);
 
         container.innerHTML = '';
 
@@ -271,12 +332,38 @@
         }
 
         let markedCount = 0;
+        let activeTotal = 0;
 
         daySlots.forEach(slot => {
           const start = slot.start_time.substring(0, 5);
           const end = slot.end_time.substring(0, 5);
+
+          if (slot.is_canceled) {
+            container.innerHTML += `
+              <div class="p-3 mb-3 rounded-4 border bg-light text-muted gap-3 class-attendance-card" style="border-left: 5px solid #e2e8f0 !important; text-decoration: line-through; opacity: 0.65;">
+                <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
+                  <div>
+                    <span class="badge bg-secondary text-white px-2 py-0.5 fs-9 mb-1">Period ${slot.period}</span>
+                    <h3 class="fs-6 fw-bold mb-1">${slot.subject_name} (${slot.subject_code})</h3>
+                    <div class="text-secondary small">Time: ${start} - ${end} | Canceled Class</div>
+                  </div>
+                  <div class="text-start text-md-end mt-2 mt-md-0">
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fs-7">CANCELED</span>
+                  </div>
+                </div>
+              </div>
+            `;
+            return;
+          }
+
+          activeTotal++; // Only count non-canceled classes in checklist progress
           
-          const matchLog = dayLogs.find(l => l.subject_id === slot.subject_id && l.remarks === `Period ${slot.period}`);
+          // Match log precisely by period
+          const matchLog = dayLogs.find(l => {
+            if (!l.remarks) return false;
+            const parts = l.remarks.split(' ');
+            return parts[0] === 'Period' && parts[1] === String(slot.period);
+          });
 
           let statusAreaHtml = '';
           let cardBgStyle = '';
@@ -295,6 +382,9 @@
               cardBgStyle = 'background: rgba(245, 158, 11, 0.02);';
             } else if (matchLog.status === 'Holiday') {
               badgeClass = 'bg-info-subtle text-info border border-info-subtle';
+            } else if (matchLog.status === 'On Duty') {
+              badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+              cardBgStyle = 'background: rgba(37, 99, 235, 0.02);';
             }
 
             statusAreaHtml = `
@@ -308,27 +398,38 @@
               <div class="d-flex gap-1 flex-wrap justify-content-md-end attendance-btn-group">
                 <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Present')" class="btn btn-sm btn-outline-success px-3">Present</button>
                 <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Absent')" class="btn btn-sm btn-outline-danger px-3">Absent</button>
+                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'On Duty')" class="btn btn-sm btn-outline-primary px-3">OD</button>
                 <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Medical Leave')" class="btn btn-sm btn-outline-warning px-3">ML</button>
                 <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Holiday')" class="btn btn-sm btn-outline-info px-3">Holiday</button>
               </div>
             `;
           }
 
+          let subLabel = '';
+          if (slot.is_substituted) {
+            subLabel = `<div class="text-warning small" style="font-size:0.75rem; font-weight: 500;">★ Substituted from ${slot.original_subject_name}</div>`;
+          } else if (slot.is_swapped) {
+            subLabel = `<div class="text-info small" style="font-size:0.75rem; font-weight: 500;">⇆ ${slot.swap_period_details}</div>`;
+          } else if (slot.is_extra) {
+            subLabel = `<div class="text-success small" style="font-size:0.75rem; font-weight: 500;">✚ Extra Period</div>`;
+          }
+
           container.innerHTML += `
             <div class="p-3 mb-3 rounded-4 border bg-white shadow-sm gap-3 class-attendance-card" style="border-left: 5px solid ${slot.color} !important; ${cardBgStyle}">
               <div>
                 <span class="badge text-white px-2 py-0.5 fs-9 mb-1" style="background-color: ${slot.color};">Period ${slot.period}</span>
-                <h3 class="fs-6 fw-bold mb-1">${slot.subject_name}</h3>
-                <div class="text-secondary small">Time: ${start} - ${end} ${slot.room ? `| Room: ${slot.room}` : ''}</div>
+                <h3 class="fs-6 fw-bold mb-1">${slot.subject_name} <span class="text-secondary small font-monospace">(${slot.subject_code})</span></h3>
+                <div class="text-secondary small mb-1">Time: ${start} - ${end} ${slot.room ? `| Room: ${slot.room}` : ''}</div>
+                ${subLabel}
               </div>
-              <div class="text-start text-md-end">
+              <div class="text-start text-md-end mt-2 mt-md-0">
                 ${statusAreaHtml}
               </div>
             </div>
           `;
         });
 
-        updateProgressBar(markedCount, daySlots.length);
+        updateProgressBar(markedCount, activeTotal);
       } else {
         container.innerHTML = '<div class="text-danger p-3 text-center">Failed to load schedule checklist.</div>';
       }

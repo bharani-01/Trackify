@@ -1,5 +1,6 @@
 const backupRepository = require('../repositories/backupRepository');
 const backupHelper = require('../utils/backupHelper');
+const auditLogRepository = require('../repositories/auditLogRepository');
 
 /**
  * Helper to generate a timestamped filename
@@ -34,6 +35,15 @@ const triggerBackup = async (req, res) => {
     // 3. Log success
     const log = await backupRepository.logBackup(filename, 'Success');
 
+    // Activity Log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'TRIGGER_BACKUP',
+      `Database backup triggered successfully (file: ${filename}, sent to: ${recipientEmail})`,
+      ip
+    );
+
     return res.status(200).json({
       success: true,
       message: `Complete database backup generated and sent to ${recipientEmail} successfully.`,
@@ -44,6 +54,15 @@ const triggerBackup = async (req, res) => {
     
     // Log failure
     const log = await backupRepository.logBackup(filename, 'Failed', error.message);
+
+    // Activity Log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user ? req.user.id : null,
+      'TRIGGER_BACKUP_FAILED',
+      `Database backup failed: ${error.message}`,
+      ip
+    );
 
     return res.status(500).json({
       success: false,

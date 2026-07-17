@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const userRepository = require('../repositories/userRepository');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
+const auditLogRepository = require('../repositories/auditLogRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
 const { sendResetEmail } = require('../utils/emailHelper');
 
@@ -88,6 +89,9 @@ const register = async (req, res) => {
       is_approved: false
     });
 
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(newUser.id, 'REGISTER', `User registered pending approval: ${name} (${register_number})`, ip);
+
     return res.status(201).json({
       success: true,
       message: 'Your registration request has been submitted successfully! An administrator will review and approve your account shortly.'
@@ -159,6 +163,8 @@ const login = async (req, res) => {
     }
 
     // 4. Send cookie & response
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'LOGIN', `User logged in: ${user.name} (${user.email})`, ip);
     sendTokenCookie(user, 200, res);
   } catch (error) {
     console.error('Login controller error:', error);
@@ -195,6 +201,11 @@ const getMe = async (req, res) => {
  */
 const logout = async (req, res) => {
   try {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    if (req.user) {
+      await auditLogRepository.logAction(req.user.id, 'LOGOUT', `User logged out: ${req.user.name}`, ip);
+    }
+
     res.cookie('token', 'none', {
       expires: new Date(Date.now() + 5000), // Expires in 5 seconds
       httpOnly: true
@@ -244,6 +255,10 @@ const forgotPassword = async (req, res) => {
 
     // Save to database
     await userRepository.updateResetToken(user.id, resetToken, resetExpires);
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'PASSWORD_RESET_REQUEST', `Password reset token requested for ${user.email}`, ip);
 
     // Build reset link (dynamic protocol & host)
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
@@ -319,6 +334,10 @@ const resetPassword = async (req, res) => {
 
     // Save and clear tokens
     await userRepository.updatePasswordAndClearToken(user.id, passwordHash);
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'PASSWORD_RESET_COMPLETED', `Password reset completed for user ${user.email}`, ip);
 
     return res.status(200).json({
       success: true,

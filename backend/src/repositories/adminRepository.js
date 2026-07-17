@@ -95,10 +95,10 @@ const getMasterSubjects = async (department, semester) => {
  * Create a new master subject template
  */
 const createMasterSubject = async (subject) => {
-  const { subject_code, subject_name, credits, color, department, semester } = subject;
+  const { subject_code, subject_name, credits, color, department, semester, total_periods } = subject;
   const query = `
-    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, department, semester)
-    VALUES (NULL, $1, $2, $3, $4, $5, $6)
+    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, department, semester, total_periods)
+    VALUES (NULL, $1, $2, $3, $4, $5, $6, $7)
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -107,9 +107,46 @@ const createMasterSubject = async (subject) => {
     parseInt(credits, 10),
     color || '#3b82f6',
     department,
-    parseInt(semester, 10)
+    parseInt(semester, 10),
+    total_periods ? parseInt(total_periods, 10) : 45
   ]);
   return result.rows[0];
+};
+
+/**
+ * Update total hours for a master subject and propagate it to all students in that cohort
+ */
+const updateCohortSubjectHours = async (department, semester, subjectCode, totalPeriods) => {
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    // 1. Update the master subject template
+    await client.query(`
+      UPDATE subjects 
+      SET total_periods = $1 
+      WHERE user_id IS NULL AND department = $2 AND semester = $3 AND subject_code = $4
+    `, [totalPeriods, department, semester, subjectCode]);
+
+    // 2. Propagate to all active student subjects in this department/semester cohort
+    await client.query(`
+      UPDATE subjects 
+      SET total_periods = $1 
+      WHERE user_id IS NOT NULL 
+        AND subject_code = $4 
+        AND user_id IN (
+          SELECT id FROM users WHERE department = $2 AND semester = $3 AND role = 'student'
+        )
+    `, [totalPeriods, department, semester, subjectCode]);
+
+    await client.query('COMMIT');
+    return true;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 /**
@@ -241,5 +278,6 @@ module.exports = {
   deleteMasterSubject,
   getMasterTimetable,
   createMasterTimetableSlot,
-  deleteMasterTimetableSlot
+  deleteMasterTimetableSlot,
+  updateCohortSubjectHours
 };

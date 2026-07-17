@@ -13,7 +13,8 @@ const {
   createMasterTimetableSlot, 
   deleteMasterTimetableSlot,
   createUser,
-  adminResetUserPassword
+  adminResetUserPassword,
+  bulkUpdateSubjectHours
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -23,6 +24,10 @@ router.use(authorize('admin'));
 
 // Global stats
 router.get('/stats', getDashboardStats);
+
+// System audit logs
+const { getAuditLogs } = require('../controllers/auditLogController');
+router.get('/audit-logs', getAuditLogs);
 
 // Student management
 router.get('/users', getUsers);
@@ -51,6 +56,7 @@ router.route('/subjects')
   .post(createMasterSubject);
 router.route('/subjects/:id')
   .delete(deleteMasterSubject);
+router.post('/subjects/hours', bulkUpdateSubjectHours);
 
 // Master timetable templates
 router.route('/timetable')
@@ -66,5 +72,11 @@ router.route('/backups')
   .post(triggerBackup);
 router.get('/backups/export', exportData);
 router.post('/backups/email', emailData);
+
+// Schedule adjustments management
+const { getAdminAdjustments, saveAdminAdjustments } = require('../controllers/adjustmentController');
+router.route('/adjustments')
+  .get(getAdminAdjustments)
+  .post(saveAdminAdjustments);
 
 module.exports = router;

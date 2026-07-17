@@ -21,6 +21,7 @@
         <a class="sidebar-link" href="/student/timetable">Timetable Schedule</a>
         <a class="sidebar-link" href="/student/attendance">Mark Attendance</a>
         <a class="sidebar-link active" href="/student/history">Attendance History</a>
+        <a class="sidebar-link" href="/student/calculator">Attendance Forecaster</a>
         <a class="sidebar-link" href="/student/settings">Preferences & Target</a>
         <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
       </div>
@@ -135,6 +136,7 @@
               <select class="form-select" id="editStatus" required>
                 <option value="Present">Present</option>
                 <option value="Absent">Absent</option>
+                <option value="On Duty">On Duty</option>
                 <option value="Medical Leave">Medical Leave</option>
                 <option value="Holiday">Holiday</option>
               </select>
@@ -221,6 +223,7 @@
           if (log.status === 'Absent') badgeClass = 'badge-absent';
           else if (log.status === 'Medical Leave') badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
           else if (log.status === 'Holiday') badgeClass = 'bg-info-subtle text-info border border-info-subtle';
+          else if (log.status === 'On Duty') badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
 
           container.innerHTML += `
             <tr class="border-bottom">

@@ -1,4 +1,5 @@
 const userRepository = require('../repositories/userRepository');
+const auditLogRepository = require('../repositories/auditLogRepository');
 
 /**
  * Get all pending registration requests
@@ -29,6 +30,16 @@ const approveRegistration = async (req, res) => {
 
   try {
     const approvedUser = await userRepository.approveUser(id);
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'REGISTRATION_APPROVED',
+      `Approved student registration for ${approvedUser.name} (${approvedUser.register_number})`,
+      ip
+    );
+
     return res.status(200).json({
       success: true,
       message: `Account for student ${approvedUser.name} (${approvedUser.register_number}) has been approved and provisioned successfully.`,
@@ -58,6 +69,15 @@ const rejectRegistration = async (req, res) => {
         message: 'Pending registration request not found'
       });
     }
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'REGISTRATION_REJECTED',
+      `Rejected and deleted pending registration request with ID ${id}`,
+      ip
+    );
 
     return res.status(200).json({
       success: true,

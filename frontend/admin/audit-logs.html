@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Audit Logs - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <style>
+    .badge-login { background-color: rgba(37, 99, 235, 0.08); color: var(--primary); border: 1px solid rgba(37, 99, 235, 0.2); }
+    .badge-logout { background-color: rgba(100, 116, 139, 0.08); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); }
+    .badge-create { background-color: rgba(5, 150, 105, 0.08); color: var(--success); border: 1px solid rgba(5, 150, 105, 0.2); }
+    .badge-update { background-color: rgba(245, 158, 11, 0.08); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+    .badge-danger-action { background-color: rgba(220, 38, 38, 0.08); color: var(--danger); border: 1px solid rgba(220, 38, 38, 0.2); }
+    .badge-settings { background-color: rgba(8, 145, 178, 0.08); color: var(--info); border: 1px solid rgba(8, 145, 178, 0.2); }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link" href="/admin/adjustments">Schedule Adjustments</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link active" href="/admin/audit-logs">Activity Audit Logs</a>
+        <a class="sidebar-link" href="/admin/subject-hours">Subject Hours</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Activity Audit Logs</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Sub-header -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">System Security & Activity Trail</h2>
+            <p class="text-secondary small mb-0">Monitor and audit all user authentication, scheduling changes, and updates.</p>
+          </div>
+        </div>
+
+        <!-- Search / Filter Card -->
+        <div class="glass-card border-glass mb-4 p-3">
+          <div class="row g-2">
+            <div class="col-12">
+              <div class="form-floating">
+                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name, action, or details..." onkeyup="handleSearch(event)">
+                <label for="searchBox">Search by Performed By, Action, details, or IP address (Press Enter to search)...</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Table -->
+        <div class="glass-card border-glass p-0 overflow-hidden shadow-sm mb-4">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light border-bottom">
+                <tr>
+                  <th class="ps-4" style="width: 180px;">Timestamp</th>
+                  <th style="width: 220px;">Performed By</th>
+                  <th style="width: 200px;">Action</th>
+                  <th>Activity Description</th>
+                  <th class="pe-4 text-end" style="width: 140px;">IP Address</th>
+                </tr>
+              </thead>
+              <tbody id="audit-logs-container">
+                <tr>
+                  <td colspan="5" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading audit logs...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-between align-items-center px-2 flex-wrap gap-2">
+          <div class="text-secondary small" id="pagination-status">Showing 0 of 0 logs</div>
+          <div class="d-flex gap-2">
+            <button class="btn btn-glass btn-sm border-secondary text-secondary py-1.5 px-3 fs-8 fw-semibold" id="btn-prev" onclick="changePage(-1)" disabled>Previous</button>
+            <button class="btn btn-glass btn-sm border-secondary text-secondary py-1.5 px-3 fs-8 fw-semibold" id="btn-next" onclick="changePage(1)" disabled>Next</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script>
+    let limit = 20;
+    let offset = 0;
+    let totalLogs = 0;
+    let currentSearch = '';
+
+    async function loadData() {
+      // Fetch user profile session
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      await fetchLogs();
+    }
+
+    async function fetchLogs() {
+      const container = document.getElementById('audit-logs-container');
+      container.innerHTML = `
+        <tr>
+          <td colspan="5" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      const response = await apiCall(`/api/admin/audit-logs?limit=${limit}&offset=${offset}&search=${encodeURIComponent(currentSearch)}`);
+      
+      if (response.success) {
+        const logs = response.logs;
+        totalLogs = response.pagination.total;
+        container.innerHTML = '';
+
+        if (logs.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-center py-5 text-secondary">
+                No activity logs found.
+              </td>
+            </tr>
+          `;
+          updatePaginationUI();
+          return;
+        }
+
+        logs.forEach(log => {
+          const timestamp = new Date(log.created_at).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
+
+          // Action badge styling
+          let badgeClass = 'badge-logout';
+          const act = log.action.toUpperCase();
+
+          if (act.includes('LOGIN')) {
+            badgeClass = 'badge-login';
+          } else if (act.includes('CREATE') || act.includes('REGISTER') || act.includes('BACKUP')) {
+            badgeClass = 'badge-create';
+          } else if (act.includes('UPDATE') || act.includes('ADJUST') || act.includes('EDIT')) {
+            badgeClass = 'badge-update';
+          } else if (act.includes('DELETE') || act.includes('SUSPEND') || act.includes('REJECT') || act.includes('FAIL')) {
+            badgeClass = 'badge-danger-action';
+          } else if (act.includes('PASSWORD') || act.includes('SETTINGS')) {
+            badgeClass = 'badge-settings';
+          }
+
+          // User identifier info
+          let userDetailsHtml = '<span class="text-secondary small">System / Guest</span>';
+          if (log.user_name) {
+            userDetailsHtml = `
+              <div class="fw-semibold text-dark fs-7">${log.user_name}</div>
+              <div class="text-secondary small" style="font-size: 0.72rem;">${log.register_number} | <span class="text-capitalize text-muted">${log.user_role}</span></div>
+            `;
+          }
+
+          container.innerHTML += `
+            <tr class="border-bottom">
+              <td class="ps-4 small text-secondary">${timestamp}</td>
+              <td>${userDetailsHtml}</td>
+              <td><span class="badge ${badgeClass} px-2 py-1 fs-9 fw-semibold text-uppercase tracking-wide">${log.action}</span></td>
+              <td class="small text-dark">${log.details || '-'}</td>
+              <td class="pe-4 text-end small text-secondary font-monospace">${log.ip_address || 'N/A'}</td>
+            </tr>
+          `;
+        });
+
+        updatePaginationUI();
+      } else {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-danger text-center p-3">
+              ${response.message || 'Failed to retrieve audit logs.'}
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    function updatePaginationUI() {
+      const prevBtn = document.getElementById('btn-prev');
+      const nextBtn = document.getElementById('btn-next');
+      const statusText = document.getElementById('pagination-status');
+
+      prevBtn.disabled = offset === 0;
+      nextBtn.disabled = offset + limit >= totalLogs;
+
+      const currentStart = totalLogs === 0 ? 0 : offset + 1;
+      const currentEnd = Math.min(offset + limit, totalLogs);
+      statusText.innerText = `Showing ${currentStart} to ${currentEnd} of ${totalLogs} logs`;
+    }
+
+    async function changePage(direction) {
+      offset += direction * limit;
+      if (offset < 0) offset = 0;
+      await fetchLogs();
+    }
+
+    async function handleSearch(event) {
+      if (event.key === 'Enter' || event.keyCode === 13 || document.getElementById('searchBox').value === '') {
+        currentSearch = document.getElementById('searchBox').value.trim();
+        offset = 0; // Reset pagination
+        await fetchLogs();
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

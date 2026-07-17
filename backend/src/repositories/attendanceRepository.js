@@ -103,16 +103,18 @@ const getSubjectStats = async (userId) => {
       s.subject_name,
       s.credits,
       s.color,
+      s.total_periods,
       COALESCE(SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END), 0)::int AS present_count,
       COALESCE(SUM(CASE WHEN a.status = 'Absent' THEN 1 ELSE 0 END), 0)::int AS absent_count,
       COALESCE(SUM(CASE WHEN a.status = 'Medical Leave' THEN 1 ELSE 0 END), 0)::int AS medical_count,
       COALESCE(SUM(CASE WHEN a.status = 'Holiday' THEN 1 ELSE 0 END), 0)::int AS holiday_count,
-      -- Conducted classes that affect percentage (excluding medical and holidays)
-      COALESCE(SUM(CASE WHEN a.status IN ('Present', 'Absent') THEN 1 ELSE 0 END), 0)::int AS conducted_count
+      COALESCE(SUM(CASE WHEN a.status = 'On Duty' THEN 1 ELSE 0 END), 0)::int AS od_count,
+      -- Conducted classes that affect percentage (excluding medical and holidays, but including On Duty)
+      COALESCE(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)::int AS conducted_count
     FROM subjects s
     LEFT JOIN attendance a ON s.id = a.subject_id AND a.user_id = $1
     WHERE s.user_id = $1
-    GROUP BY s.id, s.subject_code, s.subject_name, s.credits, s.color
+    GROUP BY s.id, s.subject_code, s.subject_name, s.credits, s.color, s.total_periods
     ORDER BY s.subject_name ASC
   `;
   const result = await db.query(query, [userId]);

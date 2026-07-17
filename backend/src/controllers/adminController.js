@@ -1,6 +1,7 @@
 const adminRepository = require('../repositories/adminRepository');
 const userRepository = require('../repositories/userRepository');
 const { hashPassword } = require('../utils/authHelper');
+const auditLogRepository = require('../repositories/auditLogRepository');
 
 /**
  * Get all registered student users
@@ -44,6 +45,15 @@ const toggleUserSuspension = async (req, res) => {
       });
     }
 
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      is_suspended ? 'SUSPEND_USER' : 'UNSUSPEND_USER',
+      `Suspension status updated to ${is_suspended} for user ID ${id}`,
+      ip
+    );
+
     return res.status(200).json({
       success: true,
       message: `User suspension status updated to ${is_suspended}`
@@ -71,6 +81,15 @@ const deleteUser = async (req, res) => {
         message: 'User account not found'
       });
     }
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'DELETE_USER',
+      `Deleted user account with ID ${id}`,
+      ip
+    );
 
     return res.status(200).json({
       success: true,
@@ -136,7 +155,7 @@ const getMasterSubjects = async (req, res) => {
  * Add a master subject template
  */
 const createMasterSubject = async (req, res) => {
-  const { subject_code, subject_name, credits, color, department, semester } = req.body;
+  const { subject_code, subject_name, credits, color, department, semester, total_periods } = req.body;
 
   if (!subject_code || !subject_name || !department || !semester) {
     return res.status(400).json({
@@ -152,7 +171,8 @@ const createMasterSubject = async (req, res) => {
       credits,
       color,
       department,
-      semester
+      semester,
+      total_periods
     });
 
     return res.status(201).json({
@@ -374,6 +394,15 @@ const createUser = async (req, res) => {
       semester: role === 'student' && semester ? parseInt(semester, 10) : null
     });
 
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'CREATE_USER',
+      `Created new user: ${newUser.name} (${newUser.email}) as role ${newUser.role}`,
+      ip
+    );
+
     return res.status(201).json({
       success: true,
       message: 'User created successfully',
@@ -428,6 +457,15 @@ const adminResetUserPassword = async (req, res) => {
       });
     }
 
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_RESET_PASSWORD',
+      `Overrode password for user: ${updatedUser.email} (ID ${id})`,
+      ip
+    );
+
     return res.status(200).json({
       success: true,
       message: `Password for user ${updatedUser.email} has been overridden successfully.`
@@ -437,6 +475,52 @@ const adminResetUserPassword = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Server error during password override'
+    });
+  }
+};
+
+/**
+ * Update total hours for subjects in a cohort and propagate
+ */
+const bulkUpdateSubjectHours = async (req, res) => {
+  const { department, semester, subjectHours } = req.body;
+
+  if (!department || !semester || !Array.isArray(subjectHours)) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide department, semester, and subjectHours array'
+    });
+  }
+
+  try {
+    // Save each subject code hours
+    for (const item of subjectHours) {
+      await adminRepository.updateCohortSubjectHours(
+        department,
+        parseInt(semester, 10),
+        item.subject_code,
+        parseInt(item.total_periods, 10)
+      );
+    }
+
+    // Log the action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'UPDATE_COHORT_SUBJECT_HOURS',
+      `Updated subject hours for cohort: Dept ${department}, Sem ${semester}. ${subjectHours.length} subjects modified.`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Subject hours updated and propagated successfully'
+    });
+  } catch (error) {
+    console.error('bulkUpdateSubjectHours controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update subject hours'
     });
   }
 };
@@ -454,5 +538,6 @@ module.exports = {
   createMasterTimetableSlot,
   deleteMasterTimetableSlot,
   createUser,
-  adminResetUserPassword
+  adminResetUserPassword,
+  bulkUpdateSubjectHours
 };
