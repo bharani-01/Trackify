@@ -63,6 +63,83 @@
   --info-subtle: rgba(6, 182, 212, 0.1);
 }
 
+/* Global Bootstrap overrides for Dark Mode */
+[data-theme="dark"] .bg-white {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-light {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-dark {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .text-secondary {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .text-muted {
+  color: var(--text-muted) !important;
+}
+
+[data-theme="dark"] .table {
+  --bs-table-bg: var(--bg-secondary) !important;
+  --bs-table-striped-bg: var(--bg-primary) !important;
+  --bs-table-hover-bg: var(--bg-primary) !important;
+  --bs-table-border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .table thead th {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .card {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .list-group-item {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .modal-content {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .dropdown-menu {
+  background-color: var(--bg-secondary) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .form-floating>.form-control {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .form-select {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
 /* Base resets and defaults */
 body {
   font-family: 'Inter', sans-serif;
