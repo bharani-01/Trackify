@@ -1,16 +1,26 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/foundation.dart';
 import '../env.dart';
 
 class ApiClient {
-  static final _storage = FlutterSecureStorage();
   static const _tokenKey = 'trackify_token';
 
-  static Future<String?> getToken() => _storage.read(key: _tokenKey);
-  static Future<void> saveToken(String t) => _storage.write(key: _tokenKey, value: t);
-  static Future<void> clearToken() => _storage.delete(key: _tokenKey);
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_tokenKey);
+  }
+
+  static Future<void> saveToken(String t) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_tokenKey, t);
+  }
+
+  static Future<void> clearToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+  }
 
   static Future<Map<String, dynamic>> get(String path) async {
     return _request('GET', path);
@@ -33,7 +43,18 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? body,
   }) async {
-    final url = Uri.parse('${Env.apiBaseUrl}$path');
+    // Sanitize base URL and path to avoid double slash issues
+    var baseUrl = Env.apiBaseUrl.trim();
+    while (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+    }
+    
+    var cleanPath = path.trim();
+    while (cleanPath.startsWith('/')) {
+      cleanPath = cleanPath.substring(1);
+    }
+
+    final url = Uri.parse('$baseUrl/$cleanPath');
     final token = await getToken();
     final headers = {
       'Content-Type': 'application/json',

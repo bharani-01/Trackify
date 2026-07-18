@@ -33,31 +33,27 @@ class AuthService extends ChangeNotifier {
     final now = DateTime.now().millisecondsSinceEpoch;
     final daysSinceValidation = (now - lastValidated) / (1000 * 60 * 60 * 24);
 
-    // Restore from cache immediately so the UI shows without a network round-trip
-    if (token != null && cachedJson != null) {
-      try {
-        _user = jsonDecode(cachedJson) as Map<String, dynamic>;
-      } catch (_) {}
-    }
+    if (token != null) {
+      if (cachedJson != null) {
+        try {
+          _user = jsonDecode(cachedJson) as Map<String, dynamic>;
+        } catch (_) {}
+      }
 
-    // Re-validate against the server only if >1 hour since last check
-    if (token != null && daysSinceValidation > (1 / 24)) {
-      final res = await ApiClient.get('/api/auth/me');
-      if (res['success'] == true) {
-        _user = res['user'];
-        await prefs.setString(_kCachedUser, jsonEncode(_user));
-        await prefs.setInt(_kLastValidated, now);
-      } else {
-        // API returned an error — check if the cached session is still within TTL
-        if (daysSinceValidation > _kSessionTtlDays) {
-          // Session too old — force logout
-          debugPrint('[AuthService] Session TTL exceeded. Logging out.');
-          await _clearSession(prefs);
+      if (_user == null || daysSinceValidation > (1 / 24)) {
+        final res = await ApiClient.get('/api/auth/me');
+        if (res['success'] == true) {
+          _user = res['user'];
+          await prefs.setString(_kCachedUser, jsonEncode(_user));
+          await prefs.setInt(_kLastValidated, now);
         } else {
-          debugPrint('[AuthService] API unreachable — using cached session (${daysSinceValidation.toStringAsFixed(1)} days old).');
+          if (_user == null || daysSinceValidation > _kSessionTtlDays) {
+            debugPrint('[AuthService] Auto-login failed: session invalid or unreachable.');
+            await _clearSession(prefs);
+          }
         }
       }
-    } else if (token == null) {
+    } else {
       _user = null;
     }
 
