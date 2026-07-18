@@ -199,22 +199,11 @@
       if (response.success && response.settings) {
         document.getElementById('minAttendance').value = response.settings.minimum_attendance;
         document.getElementById('notifsToggle').checked = response.settings.notifications;
+        document.getElementById('dailyReminderToggle').checked = response.settings.daily_reminders !== false;
+        document.getElementById('lowAttendanceAlert').checked = response.settings.low_attendance_warnings !== false;
+        document.getElementById('reminderTimer').value = response.settings.email_timer || '18:00';
       } else {
         showAlert('Failed to load user settings configurations.', 'danger');
-      }
-
-      // Fetch custom local settings
-      const dailyReminder = localStorage.getItem('dailyReminderMarking');
-      if (dailyReminder !== null) {
-        document.getElementById('dailyReminderToggle').checked = dailyReminder === 'true';
-      }
-      const lowAttendanceNotify = localStorage.getItem('lowAttendanceAlertNotify');
-      if (lowAttendanceNotify !== null) {
-        document.getElementById('lowAttendanceAlert').checked = lowAttendanceNotify === 'true';
-      }
-      const reminderTime = localStorage.getItem('reminderEmailTime');
-      if (reminderTime !== null) {
-        document.getElementById('reminderTimer').value = reminderTime;
       }
     }
 
@@ -223,15 +212,19 @@
 
       const minimum_attendance = document.getElementById('minAttendance').value;
       const notifications = document.getElementById('notifsToggle').checked;
-
-      // Save custom local settings
-      localStorage.setItem('dailyReminderMarking', document.getElementById('dailyReminderToggle').checked);
-      localStorage.setItem('lowAttendanceAlertNotify', document.getElementById('lowAttendanceAlert').checked);
-      localStorage.setItem('reminderEmailTime', document.getElementById('reminderTimer').value);
+      const daily_reminders = document.getElementById('dailyReminderToggle').checked;
+      const low_attendance_warnings = document.getElementById('lowAttendanceAlert').checked;
+      const email_timer = document.getElementById('reminderTimer').value;
 
       const response = await apiCall('/api/settings', {
         method: 'PUT',
-        body: { minimum_attendance, notifications }
+        body: { 
+          minimum_attendance, 
+          notifications, 
+          daily_reminders, 
+          email_timer, 
+          low_attendance_warnings 
+        }
       });
 
       if (response.success) {

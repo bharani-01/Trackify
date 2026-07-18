@@ -72,6 +72,13 @@ const initMigrations = async () => {
       ALTER TABLE subjects ADD COLUMN IF NOT EXISTS total_periods INT DEFAULT 45;
     `);
 
+    // 6. Ensure custom reminder columns exist in settings table
+    await pool.query(`
+      ALTER TABLE settings ADD COLUMN IF NOT EXISTS daily_reminders BOOLEAN DEFAULT TRUE;
+      ALTER TABLE settings ADD COLUMN IF NOT EXISTS email_timer VARCHAR(10) DEFAULT '18:00';
+      ALTER TABLE settings ADD COLUMN IF NOT EXISTS low_attendance_warnings BOOLEAN DEFAULT TRUE;
+    `);
+
     console.log('Database self-healing table checks completed.');
   } catch (error) {
     console.error('Error during database self-healing migration:', error.message);

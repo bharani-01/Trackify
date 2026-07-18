@@ -502,4 +502,12 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Trackify Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`);
   console.log(`Landing Page: http://localhost:${PORT}`);
+  
+  // Start background reminders and low attendance alarm scheduler
+  try {
+    const { startScheduler } = require('./src/services/reminderScheduler');
+    startScheduler();
+  } catch (err) {
+    console.error('Failed to start background reminders scheduler service:', err.message);
+  }
 });
