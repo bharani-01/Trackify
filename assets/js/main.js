@@ -109,6 +109,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateLogos(currentTheme);
 
+  // Inject mobile header logo dynamically next to dashboard title
+  const headerTitle = document.querySelector('.app-header-title');
+  if (headerTitle) {
+    if (!headerTitle.querySelector('.mobile-header-logo')) {
+      const mobileLogo = document.createElement('img');
+      mobileLogo.className = 'mobile-header-logo d-md-none me-2';
+      mobileLogo.src = currentTheme === 'dark' ? '/assets/images/logo_dark.webp' : '/assets/images/logo_light.webp';
+      mobileLogo.alt = 'Trackify Logo';
+      mobileLogo.style.height = '28px';
+      mobileLogo.style.width = 'auto';
+      mobileLogo.style.verticalAlign = 'middle';
+      mobileLogo.style.marginRight = '8px';
+      
+      headerTitle.insertBefore(mobileLogo, headerTitle.firstChild);
+    }
+  }
+
   // Inject theme toggle button dynamically
   const navContainer = document.querySelector('nav.navbar .container, nav.navbar .container-fluid, .app-header-profile');
   if (navContainer) {
