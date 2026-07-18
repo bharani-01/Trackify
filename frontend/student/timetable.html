@@ -12,7 +12,7 @@
     .timetable-grid-wrapper {
       background: #ffffff;
       border: 2px solid #334155;
-      border-radius: 12px;
+      border-radius: 0px;
       margin-bottom: 2rem;
       max-width: 100%;
       overflow-x: auto;
@@ -87,6 +87,34 @@
     }
     .sub-meta-box:last-child {
       border-right: none;
+    }
+
+    /* Mobile overrides for timetable metadata */
+    @media (max-width: 768px) {
+      .timetable-meta-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .meta-box {
+        border-right: 2px solid #334155 !important;
+        border-bottom: 2px solid #334155 !important;
+      }
+      .meta-box:nth-child(2n) {
+        border-right: none !important;
+      }
+      .meta-box:nth-child(3), .meta-box:nth-child(4) {
+        border-bottom: none !important;
+      }
+      .sub-meta-row {
+        grid-template-columns: 1fr !important;
+      }
+      .sub-meta-box {
+        border-right: none !important;
+        border-bottom: 2px solid #334155 !important;
+        padding: 0.25rem 0;
+      }
+      .sub-meta-box:last-child {
+        border-bottom: none !important;
+      }
     }
 
     .timetable-table {
