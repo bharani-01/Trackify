@@ -85,6 +85,9 @@ const sendLowAttendanceWarning = async (email, name, percentage, target) => {
   }
 };
 
+// Sleep helper to throttle email dispatches to prevent rate-limiting on Resend
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 /**
  * Start the background cron reminder process
  */
@@ -114,6 +117,8 @@ const startScheduler = () => {
       for (const row of dailyRes.rows) {
         await sendDailyMarkingReminder(row.email, row.name);
         await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder sent automatically at ${currentTimeStr}`, '127.0.0.1');
+        // Pause for 1000ms between calls to respect rate-limiting
+        await sleep(1000);
       }
 
       // 2. Process Low Attendance warnings (Only once per day at 18:00 Dinner hour to prevent spamming)
@@ -139,6 +144,8 @@ const startScheduler = () => {
           if (currentPercentage !== null && currentPercentage < target) {
             await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target);
             await auditLogRepository.logAction(student.id, 'EMAIL_DISPATCHED', `Automated low attendance warning email sent (${currentPercentage}% vs target ${target}%)`, '127.0.0.1');
+            // Pause for 1000ms between calls to respect rate-limiting
+            await sleep(1000);
           }
         }
       }
