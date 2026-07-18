@@ -93,8 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -110,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: 160,
                         height: 50,
                         child: Image.asset(
-                          'assets/images/logo_light.webp',
+                          isDark ? 'assets/images/logo_dark.webp' : 'assets/images/logo_light.webp',
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -274,29 +275,39 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _label(String text) => Text(
-        text,
-        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
-      );
+  Widget _label(String text) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Text(
+      text,
+      style: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w600,
+        color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
+      ),
+    );
+  }
 
-  InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
-        hintText: hint,
-        hintStyle: const TextStyle(color: Color(0xFFCBD5E1)),
-        prefixIcon: Icon(icon, size: 18, color: const Color(0xFF94A3B8)),
-        filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.zero,
-          borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
-        ),
-      );
+  InputDecoration _inputDeco(String hint, IconData icon) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: isDark ? const Color(0xFF64748B) : const Color(0xFFCBD5E1)),
+      prefixIcon: Icon(icon, size: 18, color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
+      filled: true,
+      fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
+      ),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: BorderRadius.zero,
+        borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
+      ),
+    );
+  }
 }

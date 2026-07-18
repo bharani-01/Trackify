@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'core/auth_service.dart';
 import 'core/app_lock_service.dart';
+import 'core/theme_service.dart';
 import 'core/api_client.dart';
 import 'router.dart';
 
@@ -33,10 +34,12 @@ Future<void> main() async {
 
   final authService = AuthService();
   final appLockService = AppLockService();
+  final themeService = ThemeService();
 
   await Future.wait([
     authService.tryAutoLogin(),
     appLockService.init(),
+    themeService.init(),
   ]);
 
   runApp(
@@ -44,6 +47,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider.value(value: authService),
         ChangeNotifierProvider.value(value: appLockService),
+        ChangeNotifierProvider.value(value: themeService),
       ],
       child: const TrackifyApp(),
     ),
@@ -86,10 +90,12 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthService>();
     final appLock = context.watch<AppLockService>();
+    final themeSvc = context.watch<ThemeService>();
 
     final app = MaterialApp.router(
       title: dotenv.env['APP_NAME'] ?? 'Trackify',
       debugShowCheckedModeBanner: false,
+      themeMode: themeSvc.themeMode,
       theme: ThemeData(
         useMaterial3: true,
         fontFamily: 'Inter',
@@ -106,6 +112,24 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
           shadowColor: Colors.transparent,
           shape: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
         ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Inter',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2563EB),
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF000000), // Deep black theme matching web
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0F172A),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          shape: Border(bottom: BorderSide(color: Color(0xFF1E293B))),
+        ),
+      ),
         cardTheme: const CardThemeData(
           color: Colors.white,
           elevation: 0,

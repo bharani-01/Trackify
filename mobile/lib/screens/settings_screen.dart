@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../core/api_client.dart';
 import '../core/app_lock_service.dart';
 import '../core/auth_service.dart';
+import '../core/theme_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -114,9 +115,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final appLock = context.watch<AppLockService>();
+    final themeSvc = context.watch<ThemeService>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Row(
           children: [
@@ -293,6 +295,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         },
                       ),
                   ],
+                ]),
+                const SizedBox(height: 20),
+
+                // Theme settings section
+                _Section(title: 'App Theme Preference', items: [
+                  ListTile(
+                    title: const Text('Theme Mode', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    subtitle: Text(
+                      themeSvc.themeMode == ThemeMode.light
+                          ? 'Light Mode'
+                          : themeSvc.themeMode == ThemeMode.dark
+                              ? 'Dark Mode'
+                              : 'System Default',
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                    trailing: const Icon(Icons.arrow_drop_down),
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                        builder: (ctx) {
+                          return SafeArea(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  title: const Text('System Default'),
+                                  leading: const Icon(Icons.brightness_auto_rounded),
+                                  trailing: themeSvc.themeMode == ThemeMode.system ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
+                                  onTap: () {
+                                    themeSvc.setThemeMode(ThemeMode.system);
+                                    Navigator.pop(ctx);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Light Mode'),
+                                  leading: const Icon(Icons.light_mode_rounded),
+                                  trailing: themeSvc.themeMode == ThemeMode.light ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
+                                  onTap: () {
+                                    themeSvc.setThemeMode(ThemeMode.light);
+                                    Navigator.pop(ctx);
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Dark Mode'),
+                                  leading: const Icon(Icons.dark_mode_rounded),
+                                  trailing: themeSvc.themeMode == ThemeMode.dark ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
+                                  onTap: () {
+                                    themeSvc.setThemeMode(ThemeMode.dark);
+                                    Navigator.pop(ctx);
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ]),
                 const SizedBox(height: 40),
               ],

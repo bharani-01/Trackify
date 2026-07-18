@@ -55,25 +55,24 @@ class _LockScreenState extends State<LockScreen> {
   @override
   Widget build(BuildContext context) {
     final svc = context.watch<AppLockService>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
             const Spacer(),
             // Logo
-            Container(
-              width: 64, height: 64,
-              decoration: const BoxDecoration(
-                color: Color(0xFF2563EB),
-                borderRadius: BorderRadius.zero,
+            SizedBox(
+              width: 160,
+              height: 50,
+              child: Image.asset(
+                isDark ? 'assets/images/logo_dark.webp' : 'assets/images/logo_light.webp',
+                fit: BoxFit.contain,
               ),
-              child: const Icon(Icons.lock_outline_rounded, color: Colors.white, size: 32),
             ),
-            const SizedBox(height: 20),
-            const Text('Trackify', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Colors.white)),
-            const SizedBox(height: 8),
-            const Text('Enter your 4-digit PIN', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14)),
+            const SizedBox(height: 16),
+            Text('Enter your 4-digit PIN', style: TextStyle(color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B), fontSize: 14)),
 
             const SizedBox(height: 36),
 
@@ -92,7 +91,7 @@ class _LockScreenState extends State<LockScreen> {
                         ? const Color(0xFFEF4444)
                         : filled
                             ? const Color(0xFF2563EB)
-                            : const Color(0xFF334155),
+                            : isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
                   ),
                 );
               }),
@@ -162,11 +161,18 @@ class _DigitKey extends StatelessWidget {
         child: Container(
           height: 64,
           decoration: BoxDecoration(
-            color: const Color(0xFF1E293B),
+            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Text(digit, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white)),
+            child: Text(
+              digit,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
+              ),
+            ),
           ),
         ),
       ),
