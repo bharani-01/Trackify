@@ -133,18 +133,31 @@ class _TimetableScreenState extends State<TimetableScreen> {
   }
 
   Widget _buildTableFormatView() {
-    final cols = ['Period', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    
-    // Matrix of slots: periodNum (1..8) -> day -> slot Map
-    final grid = <int, Map<String, dynamic>>{};
-    for (int p = 1; p <= 8; p++) {
-      grid[p] = {};
+    // Columns definition following the Sri Ramachandra university schedule structure
+    final cols = [
+      'Day',
+      'Hour I\n08:00-08:55',
+      'Hour II\n08:55-09:50',
+      'BREAK\n09:50-10:10',
+      'Hour III\n10:10-11:05',
+      'Hour IV\n11:05-12:00',
+      'LUNCH\n12:00-01:00',
+      'Hour V\n01:00-01:50',
+      'Hour VI\n01:50-02:40',
+      'BREAK\n02:40-02:55',
+      'Hour VII\n02:55-03:45',
+    ];
+
+    // Map database slots: Day String -> Period (1..7) -> Slot Map
+    final grid = <String, Map<int, dynamic>>{};
+    for (final day in _days) {
+      grid[day] = {};
     }
     for (final s in _slots) {
       final p = s['period'] as int?;
       final d = s['day'] as String?;
-      if (p != null && d != null && p >= 1 && p <= 8) {
-        grid[p]![d] = s;
+      if (p != null && d != null && p >= 1 && p <= 7) {
+        grid[d]![p] = s;
       }
     }
 
@@ -156,36 +169,57 @@ class _TimetableScreenState extends State<TimetableScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Table(
-              defaultColumnWidth: const FixedColumnWidth(85),
+              defaultColumnWidth: const FixedColumnWidth(110),
               columnWidths: const {
-                0: FixedColumnWidth(60),
+                0: FixedColumnWidth(55), // Day column
+                3: FixedColumnWidth(40), // Break I column
+                6: FixedColumnWidth(50), // Lunch column
+                9: FixedColumnWidth(40), // Break II column
               },
               border: TableBorder.all(color: const Color(0xFFE2E8F0), width: 1),
               children: [
+                // Header row
                 TableRow(
                   decoration: const BoxDecoration(color: Color(0xFFF8FAFC)),
                   children: cols.map((col) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                     child: Text(
                       col,
-                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF475569)),
+                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 9, color: Color(0xFF475569)),
                       textAlign: TextAlign.center,
                     ),
                   )).toList(),
                 ),
-                for (int p = 1; p <= 8; p++)
+                // Days rows
+                for (final day in _days)
                   TableRow(
                     children: [
+                      // Day Column cell
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding: const EdgeInsets.symmetric(vertical: 18),
                         child: Text(
-                          'P$p',
-                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF64748B)),
+                          day.substring(0, 3),
+                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF0F172A)),
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      for (final day in _days)
-                        _buildTableCell(p, grid[p]![day], day),
+                      // Hour I & II
+                      _buildTableCell(1, grid[day]![1]),
+                      _buildTableCell(2, grid[day]![2]),
+                      // Break I
+                      _buildBreakCell('BREAK'),
+                      // Hour III & IV
+                      _buildTableCell(3, grid[day]![3]),
+                      _buildTableCell(4, grid[day]![4]),
+                      // Lunch
+                      _buildBreakCell('LUNCH'),
+                      // Hour V & VI
+                      _buildTableCell(5, grid[day]![5]),
+                      _buildTableCell(6, grid[day]![6]),
+                      // Break II
+                      _buildBreakCell('BREAK'),
+                      // Hour VII
+                      _buildTableCell(7, grid[day]![7]),
                     ],
                   ),
               ],
@@ -196,32 +230,68 @@ class _TimetableScreenState extends State<TimetableScreen> {
     );
   }
 
-  Widget _buildTableCell(int period, dynamic slot, String day) {
+  Widget _buildBreakCell(String text) {
+    return Container(
+      height: 52,
+      color: const Color(0xFFF1F5F9),
+      alignment: Alignment.center,
+      child: RotatedBox(
+        quarterTurns: 1, // Vertical text display for break columns
+        child: Text(
+          text,
+          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), letterSpacing: 0.5),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableCell(int period, dynamic slot) {
     final hasClass = slot != null;
     final code = hasClass ? (slot['subject_code'] ?? '') : '';
+    final name = hasClass ? (slot['subject_name'] ?? '') : '';
+    final room = hasClass ? (slot['room'] ?? '') : '';
     final color = hasClass ? _parseColor(slot['color']) : Colors.transparent;
 
-    return GestureDetector(
-      onTap: () {
-        setState(() => _selectedDay = day);
-        _manageSlot(period, slot);
-      },
-      child: Container(
-        height: 48,
-        color: hasClass ? color.withValues(alpha: 0.05) : Colors.transparent,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.symmetric(horizontal: 4),
-        child: Text(
-          hasClass ? code : '—',
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: hasClass ? FontWeight.w800 : FontWeight.normal,
-            color: hasClass ? color : const Color(0xFFCBD5E1),
+    return Container(
+      height: 52,
+      color: hasClass ? color.withValues(alpha: 0.05) : Colors.transparent,
+      padding: const EdgeInsets.all(4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            hasClass ? code : '—',
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w800,
+              color: hasClass ? color : const Color(0xFFCBD5E1),
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+          if (hasClass && name.isNotEmpty) ...[
+            const SizedBox(height: 1),
+            Text(
+              name,
+              style: const TextStyle(fontSize: 8, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          if (hasClass && room.isNotEmpty) ...[
+            const SizedBox(height: 1),
+            Text(
+              'Rm $room',
+              style: const TextStyle(fontSize: 7, color: Color(0xFF94A3B8)),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -234,18 +304,16 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final times = _getPeriodTimes(periodNum);
     final color = hasSubject ? _parseColor(slot['color']) : const Color(0xFFCBD5E1);
 
-    return InkWell(
-      onTap: () => _manageSlot(periodNum, slot),
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: hasSubject ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9)),
-          boxShadow: [
-            BoxShadow(color: Colors.black.withValues(alpha: 0.01), blurRadius: 4, offset: const Offset(0, 1))
-          ],
-        ),
-        child: Row(
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: hasSubject ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9)),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withValues(alpha: 0.01), blurRadius: 4, offset: const Offset(0, 1))
+        ],
+      ),
+      child: Row(
           children: [
             // Period Badge
             Container(
@@ -300,8 +368,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   Color _parseColor(dynamic hex) {
@@ -378,7 +445,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         items: _subjects.map((sub) {
                           return DropdownMenuItem<String>(
                             value: sub['id']?.toString(),
-                            child: Text('${sub['name']} (${sub['subject_code']})'),
+                            child: Text('${sub['subject_name'] ?? sub['name'] ?? 'Unknown'} (${sub['subject_code']})'),
                           );
                         }).toList(),
                         onChanged: (val) {
