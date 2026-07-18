@@ -534,24 +534,39 @@ h1, h2, h3, h4, h5, h6 {
   /* Make the central action button (Mark Attendance) stand out */
   .sidebar-link[href="/student/attendance"] {
     position: relative;
-    top: -14px;
-    height: 54px !important;
-    max-width: 54px;
+    top: -18px;
+    width: 58px !important;
+    height: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
     border-radius: 50% !important;
     background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
     color: #ffffff !important;
-    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3) !important;
-    margin: 0 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35) !important;
+    margin: 0 8px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
     border: 4px solid #ffffff !important;
+    flex-grow: 0 !important;
+    padding: 0 !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar-link[href="/student/attendance"]:active {
+    transform: scale(0.92);
   }
 
   .sidebar-link[href="/student/attendance"] svg {
-    width: 20px !important;
-    height: 20px !important;
+    width: 22px !important;
+    height: 22px !important;
     stroke: #ffffff !important;
+    stroke-width: 2.5px !important;
+    margin: 0 !important;
+  }
+
+  .sidebar-link[href="/student/attendance"] span {
+    display: none !important;
   }
 
   .sidebar-link[href="/student/attendance"].active {
