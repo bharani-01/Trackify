@@ -12,6 +12,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
   List<dynamic> _slots = [];
   List<dynamic> _subjects = [];
   bool _loading = true;
+  bool _isTableFormat = false;
 
   static const _days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   String _selectedDay = 'Monday';
@@ -67,57 +68,160 @@ class _TimetableScreenState extends State<TimetableScreen> {
       appBar: AppBar(
         title: const Text('Timetable Schedule', style: TextStyle(fontWeight: FontWeight.w800)),
         elevation: 0,
-      ),
-      body: Column(
-        children: [
-          // Day selector
-          SizedBox(
-            height: 48,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              itemCount: _days.length,
-              itemBuilder: (_, i) {
-                final day = _days[i];
-                final active = day == _selectedDay;
-                return Padding(
-                  padding: const EdgeInsets.only(right: 6),
-                  child: ChoiceChip(
-                    label: Text(day.substring(0, 3)),
-                    selected: active,
-                    onSelected: (_) => setState(() => _selectedDay = day),
-                    selectedColor: const Color(0xFF2563EB),
-                    labelStyle: TextStyle(
-                      color: active ? Colors.white : const Color(0xFF64748B),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 12,
-                    ),
-                    backgroundColor: Colors.white,
-                    side: BorderSide(color: active ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
-                    showCheckmark: false,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // Period Slots List (1 to 8)
-          Expanded(
-            child: _loading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
-                : ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: 8,
-                    separatorBuilder: (_, __) => const SizedBox(height: 10),
-                    itemBuilder: (ctx, i) {
-                      final periodNum = i + 1;
-                      final slot = slotsByPeriod[periodNum];
-                      return _buildPeriodRow(periodNum, slot);
-                    },
-                  ),
+        actions: [
+          IconButton(
+            icon: Icon(_isTableFormat ? Icons.view_day_outlined : Icons.grid_on_outlined),
+            onPressed: () => setState(() => _isTableFormat = !_isTableFormat),
+            tooltip: _isTableFormat ? 'Show Daily List' : 'Show Grid Table',
           ),
         ],
+      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+          : Column(
+              children: [
+                if (!_isTableFormat) ...[
+                  // Day selector
+                  SizedBox(
+                    height: 48,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      itemCount: _days.length,
+                      itemBuilder: (_, i) {
+                        final day = _days[i];
+                        final active = day == _selectedDay;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 6),
+                          child: ChoiceChip(
+                            label: Text(day.substring(0, 3)),
+                            selected: active,
+                            onSelected: (_) => setState(() => _selectedDay = day),
+                            selectedColor: const Color(0xFF2563EB),
+                            labelStyle: TextStyle(
+                              color: active ? Colors.white : const Color(0xFF64748B),
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                            backgroundColor: Colors.white,
+                            side: BorderSide(color: active ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
+                            showCheckmark: false,
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  // Period Slots List (1 to 8)
+                  Expanded(
+                    child: ListView.separated(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: 8,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (ctx, i) {
+                        final periodNum = i + 1;
+                        final slot = slotsByPeriod[periodNum];
+                        return _buildPeriodRow(periodNum, slot);
+                      },
+                    ),
+                  ),
+                ] else
+                  _buildTableFormatView(),
+              ],
+            ),
+    );
+  }
+
+  Widget _buildTableFormatView() {
+    final cols = ['Period', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    // Matrix of slots: periodNum (1..8) -> day -> slot Map
+    final grid = <int, Map<String, dynamic>>{};
+    for (int p = 1; p <= 8; p++) {
+      grid[p] = {};
+    }
+    for (final s in _slots) {
+      final p = s['period'] as int?;
+      final d = s['day'] as String?;
+      if (p != null && d != null && p >= 1 && p <= 8) {
+        grid[p]![d] = s;
+      }
+    }
+
+    return Expanded(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Table(
+              defaultColumnWidth: const FixedColumnWidth(85),
+              columnWidths: const {
+                0: FixedColumnWidth(60),
+              },
+              border: TableBorder.all(color: const Color(0xFFE2E8F0), width: 1),
+              children: [
+                TableRow(
+                  decoration: const BoxDecoration(color: Color(0xFFF8FAFC)),
+                  children: cols.map((col) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                    child: Text(
+                      col,
+                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF475569)),
+                      textAlign: TextAlign.center,
+                    ),
+                  )).toList(),
+                ),
+                for (int p = 1; p <= 8; p++)
+                  TableRow(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        child: Text(
+                          'P$p',
+                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF64748B)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      for (final day in _days)
+                        _buildTableCell(p, grid[p]![day], day),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTableCell(int period, dynamic slot, String day) {
+    final hasClass = slot != null;
+    final code = hasClass ? (slot['subject_code'] ?? '') : '';
+    final color = hasClass ? _parseColor(slot['color']) : Colors.transparent;
+
+    return GestureDetector(
+      onTap: () {
+        setState(() => _selectedDay = day);
+        _manageSlot(period, slot);
+      },
+      child: Container(
+        height: 48,
+        color: hasClass ? color.withValues(alpha: 0.05) : Colors.transparent,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: Text(
+          hasClass ? code : '—',
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: hasClass ? FontWeight.w800 : FontWeight.normal,
+            color: hasClass ? color : const Color(0xFFCBD5E1),
+          ),
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
     );
   }
@@ -127,7 +231,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final subjectName = hasSubject ? slot['subject_name'] ?? 'Unknown' : 'Free Period';
     final subjectCode = hasSubject ? slot['subject_code'] ?? '' : '';
     final room = hasSubject ? slot['room'] ?? '' : '';
-    final times = _defaultTimes[periodNum] ?? ('--', '--');
+    final times = _getPeriodTimes(periodNum);
     final color = hasSubject ? _parseColor(slot['color']) : const Color(0xFFCBD5E1);
 
     return InkWell(
@@ -207,6 +311,19 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return const Color(0xFF2563EB);
   }
 
+  (String, String) _getPeriodTimes(int periodNum) {
+    for (final s in _slots) {
+      if (s['period'] == periodNum) {
+        final start = s['start_time']?.toString();
+        final end = s['end_time']?.toString();
+        if (start != null && end != null && start.length >= 5 && end.length >= 5) {
+          return (start.substring(0, 5), end.substring(0, 5));
+        }
+      }
+    }
+    return _defaultTimes[periodNum] ?? ('09:00', '09:50');
+  }
+
   void _manageSlot(int periodNum, dynamic slot) {
     if (_subjects.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -218,7 +335,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final isEdit = slot != null;
     String? selectedSubId = isEdit ? slot['subject_id']?.toString() : _subjects[0]['id']?.toString();
     final roomCtrl = TextEditingController(text: isEdit ? slot['room'] ?? '' : '');
-    final defaultTimes = _defaultTimes[periodNum] ?? ('09:00', '09:50');
+    final defaultTimes = _getPeriodTimes(periodNum);
     
     final startCtrl = TextEditingController(text: isEdit ? slot['start_time'] ?? defaultTimes.$1 : defaultTimes.$1);
     final endCtrl = TextEditingController(text: isEdit ? slot['end_time'] ?? defaultTimes.$2 : defaultTimes.$2);
@@ -227,7 +344,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setStateSheet) {
@@ -249,75 +366,75 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   const Text('Select Course Subject', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
                   const SizedBox(height: 6),
                   Container(
+                    width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE2E8F0))),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                    ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedSubId,
                         isExpanded: true,
-                        items: _subjects.map((s) {
+                        items: _subjects.map((sub) {
                           return DropdownMenuItem<String>(
-                            value: s['id']?.toString(),
-                            child: Text('${s['subject_name']} (${s['subject_code']})'),
+                            value: sub['id']?.toString(),
+                            child: Text('${sub['name']} (${sub['subject_code']})'),
                           );
                         }).toList(),
-                        onChanged: (val) => setStateSheet(() => selectedSubId = val),
+                        onChanged: (val) {
+                          setStateSheet(() => selectedSubId = val);
+                        },
                       ),
                     ),
                   ),
                   const SizedBox(height: 16),
 
-                  // Start and End Times
+                  // Times input
                   Row(
                     children: [
                       Expanded(
-                        child: TextField(
-                          controller: startCtrl,
-                          decoration: const InputDecoration(labelText: 'Start Time', border: OutlineInputBorder()),
-                          readOnly: true,
-                          onTap: () async {
-                            final parsed = TimeOfDay(
-                              hour: int.parse(startCtrl.text.split(':')[0]),
-                              minute: int.parse(startCtrl.text.split(':')[1]),
-                            );
-                            final picked = await showTimePicker(context: context, initialTime: parsed);
-                            if (picked != null) {
-                              setStateSheet(() {
-                                startCtrl.text = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-                              });
-                            }
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('Start Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                            const SizedBox(height: 6),
+                            TextField(
+                              controller: startCtrl,
+                              decoration: const InputDecoration(
+                                hintText: 'HH:MM',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
-                        child: TextField(
-                          controller: endCtrl,
-                          decoration: const InputDecoration(labelText: 'End Time', border: OutlineInputBorder()),
-                          readOnly: true,
-                          onTap: () async {
-                            final parsed = TimeOfDay(
-                              hour: int.parse(endCtrl.text.split(':')[0]),
-                              minute: int.parse(endCtrl.text.split(':')[1]),
-                            );
-                            final picked = await showTimePicker(context: context, initialTime: parsed);
-                            if (picked != null) {
-                              setStateSheet(() {
-                                endCtrl.text = '${picked.hour.toString().padLeft(2, '0')}:${picked.minute.toString().padLeft(2, '0')}';
-                              });
-                            }
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text('End Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                            const SizedBox(height: 6),
+                            TextField(
+                              controller: endCtrl,
+                              decoration: const InputDecoration(
+                                hintText: 'HH:MM',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 16),
 
-                  // Room detail
+                  // Room Input
+                  const Text('Class Room (Optional)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                  const SizedBox(height: 6),
                   TextField(
                     controller: roomCtrl,
                     decoration: const InputDecoration(
-                      labelText: 'Room / Lab Class Location (Optional)',
                       hintText: 'e.g. CSE Lab 1',
                       border: OutlineInputBorder(),
                     ),
@@ -333,13 +450,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
                             style: OutlinedButton.styleFrom(
                               side: const BorderSide(color: Colors.redAccent),
                               foregroundColor: Colors.redAccent,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                             ),
                             onPressed: () async {
                               final res = await ApiClient.delete('/api/timetable/${slot['id']}');
                               if (res['success'] == true) {
-                                if (ctx.mounted) Navigator.pop(ctx);
-                                _loadAll();
+                                  if (ctx.mounted) Navigator.pop(ctx);
+                                  _loadAll();
                               } else {
                                 setStateSheet(() {
                                   if (ctx.mounted) {
@@ -360,7 +477,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2563EB),
                             foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                           ),
                           onPressed: () async {
                             if (selectedSubId == null) return;

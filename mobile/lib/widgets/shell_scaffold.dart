@@ -41,26 +41,33 @@ class ShellScaffold extends StatelessWidget {
                   
                   return Expanded(
                     child: Ink(
-                      color: active ? const Color(0xFF2563EB) : Colors.white,
+                      color: Colors.white,
                       child: InkWell(
                         onTap: () => context.go(tab.path),
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Container(
+                              height: 3,
+                              width: 44,
+                              color: active ? const Color(0xFF2563EB) : Colors.transparent,
+                            ),
+                            const Spacer(),
                             Icon(
                               tab.icon,
                               size: 22,
-                              color: active ? Colors.white : const Color(0xFF475569),
+                              color: active ? const Color(0xFF2563EB) : const Color(0xFF475569),
                             ),
-                            const SizedBox(height: 3),
+                            const SizedBox(height: 2),
                             Text(
                               tab.label,
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-                                color: active ? Colors.white : const Color(0xFF475569),
+                                color: active ? const Color(0xFF2563EB) : const Color(0xFF475569),
                               ),
                             ),
+                            const Spacer(),
                           ],
                         ),
                       ),

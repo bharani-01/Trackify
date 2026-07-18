@@ -64,9 +64,9 @@ class _LockScreenState extends State<LockScreen> {
             // Logo
             Container(
               width: 64, height: 64,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
-                borderRadius: BorderRadius.circular(16),
+              decoration: const BoxDecoration(
+                color: Color(0xFF2563EB),
+                borderRadius: BorderRadius.zero,
               ),
               child: const Icon(Icons.lock_outline_rounded, color: Colors.white, size: 32),
             ),

@@ -68,20 +68,6 @@ class ProfileScreen extends StatelessWidget {
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/settings'),
             ),
-            ListTile(
-              leading: const Icon(Icons.book_outlined, color: Color(0xFF16A34A)),
-              title: const Text('Manage Subjects', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              subtitle: const Text('Add, edit, or delete courses', style: TextStyle(fontSize: 11)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/subjects'),
-            ),
-            ListTile(
-              leading: const Icon(Icons.calculate_outlined, color: Color(0xFFD97706)),
-              title: const Text('Attendance Predictor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              subtitle: const Text('Simulate target predictions', style: TextStyle(fontSize: 11)),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.push('/calculator'),
-            ),
           ]),
 
           const SizedBox(height: 16),
@@ -107,16 +93,6 @@ class ProfileScreen extends StatelessWidget {
               trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
               onTap: () => context.push('/terms'),
             ),
-          ]),
-
-          const SizedBox(height: 16),
-
-          // App Info
-          _Section(title: 'App Info', items: [
-            _InfoRow(label: 'Version', value: Env.appVersion),
-            _InfoRow(label: 'Build', value: Env.appBuild),
-            _InfoRow(label: 'Bundle ID', value: Env.appOrg),
-            _InfoRow(label: 'API Server', value: Env.apiBaseUrl),
           ]),
 
           const SizedBox(height: 24),

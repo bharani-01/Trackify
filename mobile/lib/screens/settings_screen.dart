@@ -149,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               backgroundColor: const Color(0xFF2563EB),
                               foregroundColor: Colors.white,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                             ),
                             onPressed: _savingProfile ? null : _saveProfile,
                             child: _savingProfile
@@ -229,7 +229,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           side: const BorderSide(color: Color(0xFF2563EB)),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                         ),
                         onPressed: _savingSettings ? null : _saveSettings,
                         child: _savingSettings
@@ -298,7 +298,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setStateSheet) {
@@ -387,7 +387,7 @@ class _Section extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.zero,
             border: Border.all(color: const Color(0xFFE2E8F0)),
           ),
           child: Column(children: items),

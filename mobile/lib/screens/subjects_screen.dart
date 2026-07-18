@@ -185,7 +185,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       builder: (ctx) {
         return StatefulBuilder(
           builder: (context, setStateSheet) {
@@ -278,7 +278,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                       ),
                       onPressed: () async {
                         final name = nameCtrl.text.trim();

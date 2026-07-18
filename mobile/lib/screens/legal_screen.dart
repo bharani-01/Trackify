@@ -33,9 +33,9 @@ class LegalScreen extends StatelessWidget {
           // Badge
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              border: Border.all(color: const Color(0xFFCBD5E1)),
-              borderRadius: BorderRadius.circular(4),
+            decoration: const BoxDecoration(
+              border: Border.all(color: Color(0xFFCBD5E1)),
+              borderRadius: BorderRadius.zero,
             ),
             child: Text(
               badge.toUpperCase(),
@@ -67,13 +67,10 @@ class LegalScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: const Color(0xFFEFF6FF),
-                border: Border(left: BorderSide(color: const Color(0xFF2563EB), width: 3)),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(6),
-                  bottomRight: Radius.circular(6),
-                ),
+              decoration: const BoxDecoration(
+                color: Color(0xFFEFF6FF),
+                border: Border(left: BorderSide(color: Color(0xFF2563EB), width: 3)),
+                borderRadius: BorderRadius.zero,
               ),
               child: Text(
                 highlightNote!,
