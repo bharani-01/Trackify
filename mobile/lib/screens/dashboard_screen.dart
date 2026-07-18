@@ -158,7 +158,7 @@ class _OverallCard extends StatelessWidget {
                 const SizedBox(width: 16),
                 Container(
                   padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(color: color.withOpacity(0.08), shape: BoxShape.circle),
+                  decoration: BoxDecoration(color: color.withValues(alpha: 0.08), shape: BoxShape.circle),
                   child: Icon(
                     percentage >= 80 ? Icons.verified_rounded : Icons.warning_amber_rounded,
                     color: color,

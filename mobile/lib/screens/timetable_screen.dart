@@ -17,6 +17,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
   @override
   void initState() {
+    super.initState();
     final today = DateTime.now().weekday; // 1=Mon .. 7=Sun
     _selectedDay = today <= 6 ? _days[today - 1] : 'Monday';
     _load();
@@ -108,7 +109,7 @@ class _SlotCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFE2E8F0)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 4, offset: const Offset(0, 1))],
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.02), blurRadius: 4, offset: const Offset(0, 1))],
       ),
       child: Row(
         children: [
