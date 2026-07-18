@@ -149,6 +149,44 @@
     .table-responsive::-webkit-scrollbar-track {
       background: #f1f5f9;
     }
+
+    @media (max-width: 768px) {
+      .subject-table-wrapper {
+        overflow-x: auto !important;
+      }
+      
+      .subject-table th, 
+      .subject-table td {
+        padding: 0.75rem 0.5rem !important;
+      }
+
+      .subject-table th:nth-child(1) {
+        min-width: 140px !important;
+      }
+      .subject-table th:nth-child(2),
+      .subject-table th:nth-child(3),
+      .subject-table th:nth-child(4),
+      .subject-table th:nth-child(5) {
+        width: 70px !important;
+      }
+      .subject-table th:nth-child(6) {
+        min-width: 100px !important;
+        padding-right: 0.75rem !important;
+      }
+      
+      .subject-table td:nth-child(6) {
+        padding-right: 0.75rem !important;
+      }
+
+      .subject-name {
+        font-size: 0.85rem;
+        max-width: 110px;
+      }
+      
+      .percentage-val {
+        font-size: 1.1rem !important;
+      }
+    }
   </style>
 </head>
 <body>

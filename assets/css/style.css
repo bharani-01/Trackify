@@ -588,5 +588,11 @@ h1, h2, h3, h4, h5, h6 {
   canvas {
     max-width: 100% !important;
   }
+
+  /* Fix tables on mobile view */
+  .table-responsive {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
 }
 
