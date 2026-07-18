@@ -27,6 +27,7 @@ const sendTokenCookie = (user, statusCode, res) => {
     .cookie('token', token, cookieOptions)
     .json({
       success: true,
+      token, // Include token in body to simplify mobile app authorization headers
       user: {
         id: user.id,
         name: user.name,

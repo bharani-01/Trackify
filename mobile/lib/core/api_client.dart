@@ -6,6 +6,7 @@ import '../env.dart';
 
 class ApiClient {
   static const _tokenKey = 'trackify_token';
+  static String? lastError;
 
   static Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
@@ -75,10 +76,61 @@ class ApiClient {
         response = await http.post(url, headers: headers, body: jsonEncode(body)).timeout(timeout);
       }
 
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      // Check and automatically extract cookie tokens (Set-Cookie fallback)
+      final setCookie = response.headers['set-cookie'];
+      if (setCookie != null && setCookie.contains('token=')) {
+        final reg = RegExp(r'token=([^;]+)');
+        final match = reg.firstMatch(setCookie);
+        if (match != null && match.groupCount >= 1) {
+          final cookieToken = match.group(1);
+          if (cookieToken != null && cookieToken != 'none' && cookieToken.isNotEmpty) {
+            await saveToken(cookieToken);
+          }
+        }
+      }
+
+      if (response.statusCode >= 400) {
+        lastError = 'HTTP ${response.statusCode}: ${response.body}\nURL: $url\nMethod: $method\nHeaders: $headers';
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map<String, dynamic>) {
+            return {
+              'success': false,
+              'message': data['message'] ?? 'Server error (${response.statusCode})',
+              'error_details': lastError,
+            };
+          }
+        } catch (_) {}
+        return {
+          'success': false,
+          'message': 'HTTP Error ${response.statusCode}',
+          'error_details': lastError,
+        };
+      }
+
+      final data = jsonDecode(response.body);
+      if (data is Map<String, dynamic>) {
+        // Fallback: If backend returns a token in the body, save it
+        if (data['success'] == true && data['token'] != null) {
+          await saveToken(data['token'].toString());
+        }
+        return data;
+      }
+      
+      lastError = 'Invalid JSON: ${response.body}\nURL: $url';
+      return {
+        'success': false,
+        'message': 'Invalid server response format.',
+        'error_details': lastError,
+      };
     } catch (e) {
+      lastError = 'Exception: $e\nURL: $url\nMethod: $method';
       debugPrint('[ApiClient ERROR] $method $path → $e');
-      return {'success': false, 'message': 'Network error. Please try again.'};
+      return {
+        'success': false,
+        'message': 'Connection failed. Check network or server status.',
+        'error_details': lastError,
+      };
     }
   }
 }

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_development';
-const JWT_EXPIRE = process.env.JWT_EXPIRE || '24h';
+const JWT_EXPIRE = process.env.JWT_EXPIRE || '30d';
 
 /**
  * Hash a plain text password using bcrypt
