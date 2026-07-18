@@ -108,8 +108,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Column(
                     children: [
                       SizedBox(
-                        width: 160,
-                        height: 50,
+                        width: isDark ? 176 : 160,
+                        height: isDark ? 56 : 50,
                         child: Image.asset(
                           isDark ? 'assets/images/logo_dark.webp' : 'assets/images/logo_light.webp',
                           fit: BoxFit.contain,
