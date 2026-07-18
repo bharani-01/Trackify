@@ -61,9 +61,8 @@ class ShellScaffold extends StatelessWidget {
                           duration: const Duration(milliseconds: 200),
                           height: 2,
                           width: active ? 20 : 0,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF2563EB),
-                            borderRadius: BorderRadius.circular(1),
+                          decoration: const BoxDecoration(
+                            color: Color(0xFF2563EB),
                           ),
                         ),
                       ],

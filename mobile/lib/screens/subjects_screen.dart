@@ -79,7 +79,6 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Row(
@@ -89,7 +88,6 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
             height: 48,
             decoration: BoxDecoration(
               color: colorVal,
-              borderRadius: BorderRadius.circular(4),
             ),
           ),
           const SizedBox(width: 16),

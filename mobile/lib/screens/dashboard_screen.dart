@@ -154,7 +154,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFFFEF2F2),
-        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFFCA5A5)),
       ),
       child: Column(
@@ -186,7 +185,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   foregroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                 ),
                 onPressed: _loadStats,
                 icon: const Icon(Icons.refresh_rounded, size: 14),
@@ -198,7 +197,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   foregroundColor: const Color(0xFFB91C1C),
                   side: const BorderSide(color: Color(0xFFFCA5A5)),
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                 ),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: _errorDetails ?? 'No technical details.'));
@@ -241,7 +240,6 @@ class _OverallCard extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: loading
@@ -259,14 +257,11 @@ class _OverallCard extends StatelessWidget {
                         style: TextStyle(fontSize: 40, fontWeight: FontWeight.w800, color: color, height: 1),
                       ),
                       const SizedBox(height: 10),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
-                        child: LinearProgressIndicator(
-                          value: percentage / 100,
-                          backgroundColor: const Color(0xFFF1F5F9),
-                          valueColor: AlwaysStoppedAnimation<Color>(color),
-                          minHeight: 6,
-                        ),
+                      LinearProgressIndicator(
+                        value: percentage / 100,
+                        backgroundColor: const Color(0xFFF1F5F9),
+                        valueColor: AlwaysStoppedAnimation<Color>(color),
+                        minHeight: 6,
                       ),
                     ],
                   ),
@@ -300,7 +295,6 @@ class _StatCard extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: const Color(0xFFE2E8F0)),
       ),
       child: Column(
@@ -335,12 +329,10 @@ class _ActionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: const Color(0xFFE2E8F0)),
         ),
         child: Column(

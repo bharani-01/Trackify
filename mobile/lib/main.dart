@@ -67,6 +67,7 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'Inter',
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xFF2563EB),
           brightness: Brightness.light,
@@ -76,16 +77,68 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
           backgroundColor: Colors.white,
           foregroundColor: Color(0xFF0F172A),
           elevation: 0,
-          scrolledUnderElevation: 1,
-          shadowColor: Color(0x0D000000),
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          shape: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
         ),
-        cardTheme: CardThemeData(
+        cardTheme: const CardThemeData(
           color: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: const BorderSide(color: Color(0xFFE2E8F0)),
+            borderRadius: BorderRadius.zero,
+            side: BorderSide(color: Color(0xFFE2E8F0)),
           ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            elevation: 0,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            side: const BorderSide(color: Color(0xFFE2E8F0)),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
+        ),
+        chipTheme: const ChipThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+            side: BorderSide(color: Color(0xFFE2E8F0)),
+          ),
+        ),
+        dialogTheme: const DialogThemeData(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.white,
+          modalBarrierColor: Colors.black26,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
       ),
       routerConfig: buildRouter(auth),

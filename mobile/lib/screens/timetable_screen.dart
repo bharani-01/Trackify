@@ -132,12 +132,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
 
     return InkWell(
       onTap: () => _manageSlot(periodNum, slot),
-      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: hasSubject ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9)),
           boxShadow: [
             BoxShadow(color: Colors.black.withValues(alpha: 0.01), blurRadius: 4, offset: const Offset(0, 1))
@@ -151,7 +149,6 @@ class _TimetableScreenState extends State<TimetableScreen> {
               height: 44,
               decoration: BoxDecoration(
                 color: hasSubject ? color.withValues(alpha: 0.1) : const Color(0xFFF1F5F9),
-                borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Text(
@@ -253,7 +250,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE2E8F0)), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE2E8F0))),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedSubId,

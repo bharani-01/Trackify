@@ -137,14 +137,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
 
           return Container(
             padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
+              border: Border(
+                left: BorderSide(color: Color(0xFFE2E8F0)),
+                top: BorderSide(color: Color(0xFFE2E8F0)),
+                right: BorderSide(color: Color(0xFFE2E8F0)),
+                bottom: BorderSide(color: Color(0xFFE2E8F0)),
+              ),
             ),
             child: Row(
               children: [
-                Container(width: 6, height: 50, decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(3))),
+                Container(width: 6, height: 50, color: color),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -154,16 +158,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                       const SizedBox(height: 3),
                       Text(code, style: const TextStyle(fontSize: 11, color: Color(0xFF64748B))),
                       const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(2),
-                        child: LinearProgressIndicator(
-                          value: pct / 100,
-                          backgroundColor: const Color(0xFFF1F5F9),
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            pct >= 80 ? const Color(0xFF16A34A) : pct >= 65 ? const Color(0xFFD97706) : const Color(0xFFEF4444)
-                          ),
-                          minHeight: 4,
+                      LinearProgressIndicator(
+                        value: pct / 100,
+                        backgroundColor: const Color(0xFFF1F5F9),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          pct >= 80 ? const Color(0xFF16A34A) : pct >= 65 ? const Color(0xFFD97706) : const Color(0xFFEF4444)
                         ),
+                        minHeight: 4,
                       ),
                       const SizedBox(height: 6),
                       Text(
@@ -221,7 +222,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Row(
@@ -234,7 +234,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(color: statusCol.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                            decoration: BoxDecoration(color: statusCol.withValues(alpha: 0.1)),
                             child: Text(
                               status,
                               style: TextStyle(color: statusCol, fontSize: 10, fontWeight: FontWeight.bold),
@@ -333,7 +333,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                   const SizedBox(height: 6),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE2E8F0)), borderRadius: BorderRadius.circular(8)),
+                    decoration: BoxDecoration(border: Border.all(color: const Color(0xFFE2E8F0))),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
                         value: selectedSubId,
