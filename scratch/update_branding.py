@@ -7,8 +7,17 @@ theme_script = """  <script>
     (function() {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
     })();
   </script>"""
+
+# Regex to find any existing theme script version to replace it cleanly
+existing_script_pattern = re.compile(
+    r'<\s*script\s*>\s*\(function\(\)\s*\{\s*const\s+theme\s*=\s*localStorage\.getItem\(\'theme\'\).*?\}\)\(\);\s*</\s*script\s*>',
+    re.IGNORECASE | re.DOTALL
+)
 
 logo_patterns = [
     # Pattern 1: fs-3 with logo ID
@@ -51,9 +60,9 @@ def process_file(filepath):
         content = f.read()
 
     modified = False
+    new_content = content
     
     # 1. Apply logo and previous run replacements
-    new_content = content
     for pattern, replacement in logo_patterns:
         if pattern.search(new_content):
             new_content = pattern.sub(replacement, new_content)
@@ -64,8 +73,11 @@ def process_file(filepath):
         new_content = new_content.replace('</head>', f'  {favicon_tag}\n</head>')
         modified = True
 
-    # 3. Add theme script if not present at all
-    if '</head>' in new_content and 'data-theme' not in new_content:
+    # 3. Replace or inject theme script
+    if existing_script_pattern.search(new_content):
+        new_content = existing_script_pattern.sub(theme_script, new_content)
+        modified = True
+    elif '</head>' in new_content and 'data-theme' not in new_content:
         new_content = new_content.replace('</head>', f'{theme_script}\n</head>')
         modified = True
 

@@ -136,11 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Restore sidebar collapse state preference on page load
+  // Restore sidebar collapse state preference on page load (synced to documentElement)
   const isSidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-  const appLayout = document.querySelector('.app-layout');
-  if (isSidebarCollapsed && appLayout) {
-    appLayout.classList.add('sidebar-collapsed');
+  if (isSidebarCollapsed) {
+    document.documentElement.classList.add('sidebar-collapsed');
   }
 
   // Inject desktop sidebar toggle button dynamically
@@ -158,11 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
     sidebarToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
     
     sidebarToggle.addEventListener('click', () => {
-      const layout = document.querySelector('.app-layout');
-      if (layout) {
-        layout.classList.toggle('sidebar-collapsed');
-        localStorage.setItem('sidebar-collapsed', layout.classList.contains('sidebar-collapsed') ? 'true' : 'false');
-      }
+      document.documentElement.classList.toggle('sidebar-collapsed');
+      localStorage.setItem('sidebar-collapsed', document.documentElement.classList.contains('sidebar-collapsed') ? 'true' : 'false');
     });
 
     // Insert at the beginning of the header

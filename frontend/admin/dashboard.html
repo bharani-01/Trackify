@@ -42,10 +42,13 @@
     .fs-8 { font-size: 0.72rem !important; }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-  <script>
+    <script>
     (function() {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
     })();
   </script>
 </head>
