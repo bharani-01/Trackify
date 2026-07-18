@@ -1,14 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'dart:ui';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import 'core/auth_service.dart';
 import 'core/app_lock_service.dart';
+import 'core/api_client.dart';
 import 'router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
+
+  // Log uncaught Flutter framework errors to remote DB audit logs
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    ApiClient.logRemoteError(
+      'FlutterError: ${details.exception}',
+      details.stack?.toString() ?? 'No stacktrace available',
+    );
+  };
+
+  // Log uncaught Dart asynchronous errors to remote DB audit logs
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    ApiClient.logRemoteError(
+      'PlatformError: $error',
+      stack.toString(),
+    );
+    return true;
+  };
 
   final authService = AuthService();
   final appLockService = AppLockService();

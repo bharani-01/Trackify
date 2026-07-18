@@ -560,6 +560,31 @@ const verifyOtpResetPassword = async (req, res) => {
   }
 };
 
+/**
+ * Log client-side error to backend audit logs database
+ * @route POST /api/auth/log-error
+ */
+const logError = async (req, res) => {
+  const { error, details } = req.body;
+  try {
+    let userId = null;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decoded = verifyToken(token);
+        if (decoded) userId = decoded.id;
+      } catch (_) {}
+    }
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(userId, 'CLIENT_ERROR', `Error: ${error}\nDetails: ${details}`, ip);
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    console.error('logError controller error:', err);
+    return res.status(500).json({ success: false });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -571,5 +596,6 @@ module.exports = {
   updateProfile,
   sendOtp,
   verifyOtpLogin,
-  verifyOtpResetPassword
+  verifyOtpResetPassword,
+  logError
 };

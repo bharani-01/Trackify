@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { login, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus, updateProfile, sendOtp, verifyOtpLogin, verifyOtpResetPassword } = require('../controllers/authController');
+const { login, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus, updateProfile, sendOtp, verifyOtpLogin, verifyOtpResetPassword, logError } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
@@ -9,6 +9,7 @@ router.get('/registration-status', getRegistrationStatus);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/log-error', logError);
 
 // OTP authentication & password recovery routes
 router.post('/otp/send', sendOtp);

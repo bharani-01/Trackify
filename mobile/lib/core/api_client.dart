@@ -91,6 +91,9 @@ class ApiClient {
 
       if (response.statusCode >= 400) {
         lastError = 'HTTP ${response.statusCode}: ${response.body}\nURL: $url\nMethod: $method\nHeaders: $headers';
+        if (cleanPath != 'api/auth/log-error') {
+          logRemoteError('HTTP ${response.statusCode} on $cleanPath', lastError ?? '');
+        }
         try {
           final data = jsonDecode(response.body);
           if (data is Map<String, dynamic>) {
@@ -126,11 +129,38 @@ class ApiClient {
     } catch (e) {
       lastError = 'Exception: $e\nURL: $url\nMethod: $method';
       debugPrint('[ApiClient ERROR] $method $path → $e');
+      if (path != 'api/auth/log-error') {
+        logRemoteError('Exception on $path: $e', lastError ?? '');
+      }
       return {
         'success': false,
         'message': 'Connection failed. Check network or server status.',
         'error_details': lastError,
       };
+    }
+  }
+
+  static Future<void> logRemoteError(String error, String details) async {
+    try {
+      var baseUrl = Env.apiBaseUrl.trim();
+      while (baseUrl.endsWith('/')) {
+        baseUrl = baseUrl.substring(0, baseUrl.length - 1);
+      }
+      final url = Uri.parse('$baseUrl/api/auth/log-error');
+      final token = await getToken();
+      await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null) 'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'error': error,
+          'details': details,
+        }),
+      ).timeout(const Duration(seconds: 4));
+    } catch (_) {
+      // Catch silently to avoid recursion/infinite errors
     }
   }
 }

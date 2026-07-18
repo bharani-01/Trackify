@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../core/api_client.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -155,6 +156,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 18),
                       const SizedBox(width: 8),
                       Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 13))),
+                      IconButton(
+                        icon: const Icon(Icons.copy_rounded, color: Color(0xFFEF4444), size: 18),
+                        tooltip: 'Copy Error',
+                        onPressed: () {
+                          Clipboard.setData(ClipboardData(text: ApiClient.lastError ?? _error ?? ''));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Error details copied to clipboard!')),
+                          );
+                        },
+                        constraints: const BoxConstraints(),
+                        padding: EdgeInsets.zero,
+                      ),
                     ],
                   ),
                 ),
