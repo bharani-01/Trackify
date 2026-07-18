@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'core/auth_service.dart';
 import 'core/app_lock_service.dart';
 import 'router.dart';
@@ -36,10 +37,13 @@ class TrackifyApp extends StatefulWidget {
 }
 
 class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
+  late final GoRouter _router;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _router = buildRouter(context.read<AuthService>());
   }
 
   @override
@@ -141,7 +145,7 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
       ),
-      routerConfig: buildRouter(auth),
+      routerConfig: _router,
     );
 
     // Show lock screen on top of the app if locked

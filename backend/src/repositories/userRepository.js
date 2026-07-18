@@ -232,6 +232,34 @@ const updateProfile = async (userId, name, email) => {
   return result.rows[0];
 };
 
+/**
+ * Update user record with generated OTP and expiry
+ */
+const updateOtp = async (userId, otp, expires) => {
+  const query = `
+    UPDATE users 
+    SET otp_code = $1, otp_expires = $2, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $3
+    RETURNING id, email
+  `;
+  const result = await db.query(query, [otp, expires, userId]);
+  return result.rows[0];
+};
+
+/**
+ * Clear user record's OTP columns
+ */
+const clearOtp = async (userId) => {
+  const query = `
+    UPDATE users 
+    SET otp_code = NULL, otp_expires = NULL, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $1
+    RETURNING id, email
+  `;
+  const result = await db.query(query, [userId]);
+  return result.rows[0];
+};
+
 module.exports = {
   findByEmail,
   findById,
@@ -242,5 +270,7 @@ module.exports = {
   findPendingUsers,
   approveUser,
   rejectUser,
-  updateProfile
+  updateProfile,
+  updateOtp,
+  clearOtp
 };

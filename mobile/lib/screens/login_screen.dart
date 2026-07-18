@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../core/auth_service.dart';
+import '../core/api_client.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,25 +14,79 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailCtrl = TextEditingController();
   final _passCtrl = TextEditingController();
+  final _otpCtrl = TextEditingController();
+
   bool _loading = false;
-  String? _error;
   bool _obscure = true;
+  bool _isOtpMode = false;
+  bool _otpSent = false;
+  String? _error;
+  String? _success;
 
   @override
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
+    _otpCtrl.dispose();
     super.dispose();
   }
 
   Future<void> _login() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() { _loading = true; _error = null; _success = null; });
     final err = await context.read<AuthService>().login(
       _emailCtrl.text.trim(),
       _passCtrl.text,
     );
     if (mounted) {
       setState(() { _loading = false; _error = err; });
+    }
+  }
+
+  Future<void> _sendOtp() async {
+    final email = _emailCtrl.text.trim();
+    if (email.isEmpty) {
+      setState(() => _error = 'Please enter your email address');
+      return;
+    }
+
+    setState(() { _loading = true; _error = null; _success = null; });
+    
+    final res = await ApiClient.post('/api/auth/otp/send', {
+      'email': email,
+      'purpose': 'login',
+    });
+
+    if (mounted) {
+      setState(() {
+        _loading = false;
+        if (res['success'] == true) {
+          _otpSent = true;
+          _success = res['message'] ?? 'Verification code sent successfully.';
+        } else {
+          _error = res['message'] ?? 'Failed to send verification code.';
+        }
+      });
+    }
+  }
+
+  Future<void> _verifyOtpLogin() async {
+    final email = _emailCtrl.text.trim();
+    final otp = _otpCtrl.text.trim();
+
+    if (otp.length != 6) {
+      setState(() => _error = 'Please enter a valid 6-digit verification code');
+      return;
+    }
+
+    setState(() { _loading = true; _error = null; _success = null; });
+
+    final err = await context.read<AuthService>().loginWithOtp(email, otp);
+
+    if (mounted) {
+      setState(() {
+        _loading = false;
+        _error = err;
+      });
     }
   }
 
@@ -68,9 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      const Text(
-                        'Sign in to your student account',
-                        style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                      Text(
+                        _isOtpMode ? 'Sign in using verification code' : 'Sign in to your student account',
+                        style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
                       ),
                     ],
                   ),
@@ -97,31 +153,68 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 16),
                 ],
 
+                // Success Banner
+                if (_success != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF0FDF4),
+                      border: Border.all(color: const Color(0xFFBBF7D0)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.check_circle_outline_rounded, color: Color(0xFF16A34A), size: 18),
+                        const SizedBox(width: 8),
+                        Expanded(child: Text(_success!, style: const TextStyle(color: Color(0xFF166534), fontSize: 13))),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+
                 // Email Field
                 _label('Email Address'),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
+                  readOnly: _otpSent,
                   autocorrect: false,
                   decoration: _inputDeco('you@university.edu', Icons.alternate_email_rounded),
                 ),
                 const SizedBox(height: 16),
 
-                // Password Field
-                _label('Password'),
-                const SizedBox(height: 6),
-                TextField(
-                  controller: _passCtrl,
-                  obscureText: _obscure,
-                  decoration: _inputDeco('••••••••', Icons.lock_outline_rounded).copyWith(
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20, color: const Color(0xFF94A3B8)),
-                      onPressed: () => setState(() => _obscure = !_obscure),
+                // Password Field or OTP code field
+                if (!_isOtpMode) ...[
+                  _label('Password'),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: _passCtrl,
+                    obscureText: _obscure,
+                    decoration: _inputDeco('••••••••', Icons.lock_outline_rounded).copyWith(
+                      suffixIcon: IconButton(
+                        icon: Icon(_obscure ? Icons.visibility_off_outlined : Icons.visibility_outlined, size: 20, color: const Color(0xFF94A3B8)),
+                        onPressed: () => setState(() => _obscure = !_obscure),
+                      ),
                     ),
+                    onSubmitted: (_) => _login(),
                   ),
-                  onSubmitted: (_) => _login(),
-                ),
+                ] else if (_otpSent) ...[
+                  _label('Verification Code (OTP)'),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: _otpCtrl,
+                    keyboardType: TextInputType.number,
+                    maxLength: 6,
+                    decoration: _inputDeco('e.g. 123456', Icons.password_rounded).copyWith(counterText: ''),
+                    onSubmitted: (_) => _verifyOtpLogin(),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Note: Please check your spam or junk mail folder if you do not receive the email in a few minutes.',
+                    style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontStyle: FontStyle.italic),
+                  ),
+                ],
 
                 const SizedBox(height: 28),
 
@@ -130,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: _loading ? null : _login,
+                    onPressed: _loading ? null : (_isOtpMode ? (_otpSent ? _verifyOtpLogin : _sendOtp) : _login),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
@@ -139,15 +232,35 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     child: _loading
                         ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : const Text('Sign In', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                        : Text(_isOtpMode ? (_otpSent ? 'Verify & Sign In' : 'Send Verification OTP') : 'Sign In', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                   ),
                 ),
 
                 const SizedBox(height: 16),
+
+                // Secondary toggle actions
                 Center(
-                  child: TextButton(
-                    onPressed: () {},
-                    child: const Text('Forgot password?', style: TextStyle(color: Color(0xFF2563EB), fontSize: 13)),
+                  child: Column(
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isOtpMode = !_isOtpMode;
+                            _otpSent = false;
+                            _error = null;
+                            _success = null;
+                          });
+                        },
+                        child: Text(
+                          _isOtpMode ? 'Sign In with Password' : 'Sign In with OTP',
+                          style: const TextStyle(color: Color(0xFF2563EB), fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () => context.push('/forgot-password'),
+                        child: const Text('Forgot password?', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
+                      ),
+                    ],
                   ),
                 ),
               ],

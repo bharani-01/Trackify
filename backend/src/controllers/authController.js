@@ -3,7 +3,7 @@ const userRepository = require('../repositories/userRepository');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
-const { sendResetEmail } = require('../utils/emailHelper');
+const { sendResetEmail, sendOtpEmail } = require('../utils/emailHelper');
 
 /**
  * Helper to set JWT token cookie in response
@@ -430,6 +430,136 @@ const updateProfile = async (req, res) => {
   }
 };
 
+/**
+ * Send OTP Code to user email for login or forgot password reset
+ * @route POST /api/auth/otp/send
+ */
+const sendOtp = async (req, res) => {
+  const { email, purpose } = req.body;
+  try {
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide email address' });
+    }
+
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No user account found with that email address' });
+    }
+
+    // Generate 6 digit numeric code
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiry
+
+    await userRepository.updateOtp(user.id, otp, expires);
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'OTP_REQUESTED', `OTP code sent to user email for ${purpose || 'verification'}`, ip);
+
+    // Send email enqueued
+    let emailSent = false;
+    let emailErr = null;
+    try {
+      await sendOtpEmail(user.email, user.name || 'User', otp, purpose || 'login');
+      emailSent = true;
+    } catch (e) {
+      emailErr = e.message;
+      console.error('[OTP EMAIL SEND ERROR]:', e);
+    }
+
+    const responsePayload = {
+      success: true,
+      message: emailSent
+        ? 'Verification code sent to your email successfully. (Please check your spam or junk folder if you do not see it in a few minutes.)'
+        : `Failed to deliver email: ${emailErr}. OTP code logged to console.`
+    };
+
+    if (process.env.NODE_ENV !== 'production' || !emailSent) {
+      responsePayload.devOtp = otp;
+    }
+
+    return res.status(200).json(responsePayload);
+  } catch (error) {
+    console.error('sendOtp controller error:', error);
+    return res.status(500).json({ success: false, message: 'Server error generating verification code.' });
+  }
+};
+
+/**
+ * Verify OTP and log user in
+ * @route POST /api/auth/otp/login
+ */
+const verifyOtpLogin = async (req, res) => {
+  const { email, otp } = req.body;
+  try {
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and OTP are required' });
+    }
+
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No user account found with that email address' });
+    }
+
+    if (!user.otp_code || user.otp_code !== otp || new Date(user.otp_expires) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Verification code is invalid or has expired' });
+    }
+
+    // Clear OTP code from DB
+    await userRepository.clearOtp(user.id);
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'OTP_LOGIN_VERIFIED', `User successfully authenticated via OTP login`, ip);
+
+    // Issue token cookie
+    sendTokenCookie(user, 200, res);
+  } catch (error) {
+    console.error('verifyOtpLogin controller error:', error);
+    return res.status(500).json({ success: false, message: 'Server error during OTP verification.' });
+  }
+};
+
+/**
+ * Verify OTP and reset password
+ * @route POST /api/auth/otp/reset
+ */
+const verifyOtpResetPassword = async (req, res) => {
+  const { email, otp, password, confirmPassword } = req.body;
+  try {
+    if (!email || !otp || !password || !confirmPassword) {
+      return res.status(400).json({ success: false, message: 'All inputs are required' });
+    }
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+    }
+
+    const user = await userRepository.findByEmail(email);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No user account found with that email address' });
+    }
+
+    if (!user.otp_code || user.otp_code !== otp || new Date(user.otp_expires) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Verification code is invalid or has expired' });
+    }
+
+    // Clear OTP code from DB
+    await userRepository.clearOtp(user.id);
+
+    // Update password
+    const passwordHash = await hashPassword(password);
+    await userRepository.updatePasswordAndClearToken(user.id, passwordHash);
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(user.id, 'PASSWORD_RESET_COMPLETED', `Password reset successfully completed via OTP verification`, ip);
+
+    return res.status(200).json({ success: true, message: 'Your password has been successfully reset. Please sign in.' });
+  } catch (error) {
+    console.error('verifyOtpResetPassword controller error:', error);
+    return res.status(500).json({ success: false, message: 'Server error during password reset.' });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -438,5 +568,8 @@ module.exports = {
   forgotPassword,
   resetPassword,
   getRegistrationStatus,
-  updateProfile
+  updateProfile,
+  sendOtp,
+  verifyOtpLogin,
+  verifyOtpResetPassword
 };

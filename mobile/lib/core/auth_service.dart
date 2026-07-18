@@ -81,6 +81,26 @@ class AuthService extends ChangeNotifier {
     return res['message'] ?? 'Login failed';
   }
 
+  Future<String?> loginWithOtp(String email, String otp) async {
+    final res = await ApiClient.post('/api/auth/otp/login', {
+      'email': email,
+      'otp': otp,
+    });
+    if (res['success'] == true) {
+      if (res['token'] != null) await ApiClient.saveToken(res['token']);
+      _user = res['user'];
+
+      // Persist session to SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_kCachedUser, jsonEncode(_user));
+      await prefs.setInt(_kLastValidated, DateTime.now().millisecondsSinceEpoch);
+
+      notifyListeners();
+      return null;
+    }
+    return res['message'] ?? 'Verification failed';
+  }
+
   Future<void> logout() async {
     try {
       await ApiClient.post('/api/auth/logout', {});

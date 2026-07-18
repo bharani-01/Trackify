@@ -116,6 +116,12 @@ const initMigrations = async () => {
       CREATE INDEX IF NOT EXISTS idx_timetable_user_day ON timetable(user_id, day);
     `);
 
+    // 9. Ensure OTP columns exist in users table for secure login/recovery
+    await pool.query(`
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_code VARCHAR(6);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS otp_expires TIMESTAMP;
+    `);
+
     console.log('Database self-healing table checks completed.');
   } catch (error) {
     console.error('Error during database self-healing migration:', error.message);

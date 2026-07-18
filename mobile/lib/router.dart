@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'core/auth_service.dart';
 import 'screens/login_screen.dart';
+import 'screens/forgot_password_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/attendance_screen.dart';
 import 'screens/timetable_screen.dart';
@@ -20,12 +21,14 @@ GoRouter buildRouter(AuthService auth) {
       final loading = auth.loading;
       if (loading) return null;
       final onLogin = state.matchedLocation == '/login';
-      if (!loggedIn && !onLogin) return '/login';
-      if (loggedIn && onLogin) return '/dashboard';
+      final onForgot = state.matchedLocation == '/forgot-password';
+      if (!loggedIn && !onLogin && !onForgot) return '/login';
+      if (loggedIn && (onLogin || onForgot)) return '/dashboard';
       return null;
     },
     routes: [
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      GoRoute(path: '/forgot-password', builder: (_, __) => const ForgotPasswordScreen()),
       
       // Root-level sub-routes (outside ShellRoute) to hide bottom navbar and support back pop navigation
       GoRoute(path: '/subjects', builder: (_, __) => const SubjectsScreen()),

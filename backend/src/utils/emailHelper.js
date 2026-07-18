@@ -71,8 +71,31 @@ const sendSettingsUpdatedEmail = async (email, name, details) => {
   return { success: true, queued: true };
 };
 
+const sendOtpEmail = async (email, name, otpCode, purpose) => {
+  const safeName = escapeHtml(name);
+  const safeOtp = escapeHtml(otpCode);
+  const actionText = purpose === 'login' ? 'login to your account' : 'reset your account password';
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+      <h2 style="color: #0f172a; margin-bottom: 16px;">Trackify Security Verification</h2>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Hello ${safeName},</p>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Your One-Time Verification Code (OTP) to ${actionText} is:</p>
+      <div style="margin: 24px 0; text-align: center;">
+        <span style="font-family: monospace; font-size: 32px; font-weight: 800; color: #2563eb; letter-spacing: 4px; padding: 10px 20px; background-color: #f1f5f9; border: 1px dashed #cbd5e1; display: inline-block;">${safeOtp}</span>
+      </div>
+      <p style="color: #64748b; font-size: 14px; line-height: 20px;">This verification code is valid for 5 minutes. Do not share this code with anyone.</p>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+      <p style="color: #94a3b8; font-size: 12px;">If you did not request this OTP, you can safely ignore this email.</p>
+    </div>
+  `;
+  
+  await queueEmail(email, name, `Your Trackify verification code: ${safeOtp}`, htmlContent);
+  return { success: true, queued: true };
+};
+
 module.exports = {
   sendResetEmail,
   sendSettingsUpdatedEmail,
+  sendOtpEmail,
   queueEmail
 };
