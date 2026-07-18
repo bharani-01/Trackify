@@ -24,6 +24,10 @@ class ApiClient {
     return _request('PUT', path, body: body);
   }
 
+  static Future<Map<String, dynamic>> delete(String path) async {
+    return _request('DELETE', path);
+  }
+
   static Future<Map<String, dynamic>> _request(
     String method,
     String path, {
@@ -44,6 +48,8 @@ class ApiClient {
         response = await http.get(url, headers: headers).timeout(timeout);
       } else if (method == 'PUT') {
         response = await http.put(url, headers: headers, body: jsonEncode(body)).timeout(timeout);
+      } else if (method == 'DELETE') {
+        response = await http.delete(url, headers: headers).timeout(timeout);
       } else {
         response = await http.post(url, headers: headers, body: jsonEncode(body)).timeout(timeout);
       }

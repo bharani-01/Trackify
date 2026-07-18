@@ -5,6 +5,10 @@ import 'screens/dashboard_screen.dart';
 import 'screens/attendance_screen.dart';
 import 'screens/timetable_screen.dart';
 import 'screens/profile_screen.dart';
+import 'screens/subjects_screen.dart';
+import 'screens/calculator_screen.dart';
+import 'screens/settings_screen.dart';
+import 'screens/legal_content.dart';
 import 'widgets/shell_scaffold.dart';
 
 GoRouter buildRouter(AuthService auth) {
@@ -29,6 +33,11 @@ GoRouter buildRouter(AuthService auth) {
           GoRoute(path: '/attendance', builder: (_, __) => const AttendanceScreen()),
           GoRoute(path: '/timetable', builder: (_, __) => const TimetableScreen()),
           GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
+          GoRoute(path: '/subjects', builder: (_, __) => const SubjectsScreen()),
+          GoRoute(path: '/calculator', builder: (_, __) => const CalculatorScreen()),
+          GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+          GoRoute(path: '/privacy-policy', builder: (_, __) => privacyPolicyScreen),
+          GoRoute(path: '/terms', builder: (_, __) => termsScreen),
         ],
       ),
     ],

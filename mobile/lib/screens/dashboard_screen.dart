@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../core/auth_service.dart';
 import '../core/api_client.dart';
 
@@ -24,7 +25,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final res = await ApiClient.get('/api/attendance/stats');
     if (mounted) {
       setState(() {
-        _stats = res['success'] == true ? res : null;
+        _stats = res['success'] == true ? res['stats'] : null;
         _loading = false;
       });
     }
@@ -34,7 +35,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final user = context.watch<AuthService>().user;
     final name = user?['name'] ?? 'Student';
-    final overall = _stats?['overall_percentage'] ?? 0;
+    final overall = _stats?['overallPercentage'] ?? 0;
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
@@ -42,6 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onRefresh: _loadStats,
         color: const Color(0xFF2563EB),
         child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverAppBar(
               pinned: true,
@@ -72,25 +74,53 @@ class _DashboardScreenState extends State<DashboardScreen> {
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Overall attendance card
-                  _OverallCard(percentage: overall is num ? overall.toDouble() : 0, loading: _loading),
+                  _OverallCard(percentage: overall is num ? overall.toDouble() : 0.0, loading: _loading),
                   const SizedBox(height: 16),
 
                   // Quick stats row
                   if (!_loading && _stats != null) ...[
                     Row(
                       children: [
-                        Expanded(child: _StatCard(label: 'Present', value: '${_stats!['total_present'] ?? 0}', color: const Color(0xFF16A34A), icon: Icons.check_circle_outline_rounded)),
+                        Expanded(child: _StatCard(label: 'Present', value: '${_stats!['totalPresent'] ?? 0}', color: const Color(0xFF16A34A), icon: Icons.check_circle_outline_rounded)),
                         const SizedBox(width: 12),
-                        Expanded(child: _StatCard(label: 'Absent', value: '${_stats!['total_absent'] ?? 0}', color: const Color(0xFFEF4444), icon: Icons.cancel_outlined)),
+                        Expanded(child: _StatCard(label: 'Absent', value: '${_stats!['totalAbsent'] ?? 0}', color: const Color(0xFFEF4444), icon: Icons.cancel_outlined)),
                         const SizedBox(width: 12),
-                        Expanded(child: _StatCard(label: 'On Duty', value: '${_stats!['total_od'] ?? 0}', color: const Color(0xFF2563EB), icon: Icons.work_outline_rounded)),
+                        Expanded(child: _StatCard(label: 'On Duty', value: '${_stats!['totalOD'] ?? 0}', color: const Color(0xFF2563EB), icon: Icons.work_outline_rounded)),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 20),
                   ],
 
                   if (_loading)
                     const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB))),
+
+                  // Quick Action Cards
+                  const Text('QUICK ACTIONS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ActionCard(
+                          title: 'Log Attendance',
+                          desc: 'Update today\'s classes',
+                          icon: Icons.edit_calendar_rounded,
+                          color: const Color(0xFF2563EB),
+                          onTap: () => context.go('/attendance'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _ActionCard(
+                          title: 'Predictor',
+                          desc: 'Simulate target goal',
+                          icon: Icons.calculate_outlined,
+                          color: const Color(0xFF16A34A),
+                          onTap: () => context.go('/calculator'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
                 ]),
               ),
             ),
@@ -195,6 +225,48 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
         ],
+      ),
+    );
+  }
+}
+
+class _ActionCard extends StatelessWidget {
+  final String title;
+  final String desc;
+  final IconData icon;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ActionCard({
+    required this.title,
+    required this.desc,
+    required this.icon,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: const Color(0xFFE2E8F0)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: color, size: 24),
+            const SizedBox(height: 12),
+            Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
+            const SizedBox(height: 2),
+            Text(desc, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+          ],
+        ),
       ),
     );
   }

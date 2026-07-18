@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import '../core/auth_service.dart';
 import '../env.dart';
 
@@ -18,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Profile', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: const Text('Profile & Menu', style: TextStyle(fontWeight: FontWeight.w800)),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -57,18 +58,61 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          // Details
-          _Section(title: 'Account Details', items: [
-            _InfoRow(label: 'Register Number', value: regNo.isEmpty ? '—' : regNo),
-            _InfoRow(label: 'Department', value: dept.isEmpty ? '—' : dept),
-            _InfoRow(label: 'Semester', value: sem.isEmpty ? '—' : 'Semester $sem'),
-            _InfoRow(label: 'Email', value: email.isEmpty ? '—' : email),
+          // Features Menu Section
+          _Section(title: 'Portal Menu', items: [
+            ListTile(
+              leading: const Icon(Icons.settings_outlined, color: Color(0xFF2563EB)),
+              title: const Text('Settings & Configuration', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Target, notifications, profile, app lock', style: TextStyle(fontSize: 11)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go('/settings'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.book_outlined, color: Color(0xFF16A34A)),
+              title: const Text('Manage Subjects', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Add, edit, or delete courses', style: TextStyle(fontSize: 11)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go('/subjects'),
+            ),
+            ListTile(
+              leading: const Icon(Icons.calculate_outlined, color: Color(0xFFD97706)),
+              title: const Text('Attendance Predictor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              subtitle: const Text('Simulate target predictions', style: TextStyle(fontSize: 11)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.go('/calculator'),
+            ),
           ]),
 
           const SizedBox(height: 16),
 
+          // Details Section
+          _Section(title: 'Account Details', items: [
+            _InfoRow(label: 'Register Number', value: regNo.isEmpty ? '—' : regNo),
+            _InfoRow(label: 'Department', value: dept.isEmpty ? '—' : dept),
+            _InfoRow(label: 'Semester', value: sem.isEmpty ? '—' : 'Semester $sem'),
+          ]),
+
+          const SizedBox(height: 16),
+
+          // Legal Section
+          _Section(title: 'Legal', items: [
+            ListTile(
+              title: const Text('Privacy Policy', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+              onTap: () => context.go('/privacy-policy'),
+            ),
+            ListTile(
+              title: const Text('Terms & Conditions', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+              onTap: () => context.go('/terms'),
+            ),
+          ]),
+
+          const SizedBox(height: 16),
+
+          // App Info
           _Section(title: 'App Info', items: [
             _InfoRow(label: 'Version', value: Env.appVersion),
             _InfoRow(label: 'Build', value: Env.appBuild),
