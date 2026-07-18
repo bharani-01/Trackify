@@ -1,5 +1,4 @@
-/* Trackify - Global CSS Stylesheet (Minimal Light Theme) */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --bg-primary: #f8fafc;
@@ -40,7 +39,7 @@
 
 /* Base resets and defaults */
 body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
@@ -73,19 +72,50 @@ body {
   background: #94a3b8;
 }
 
-/* Minimalist Cards */
+/* Zero-radius, flat borders, no shadow style (Industrial-Swiss) */
+.glass-card,
+.subject-table-wrapper,
+.timetable-grid-wrapper,
+.timetable-cell-card,
+.form-control,
+.form-select,
+.btn,
+.badge,
+.dropdown-menu,
+.profile-avatar-container,
+.profile-avatar-container span,
+.alert,
+.progress,
+.progress-bar,
+.modal-content,
+.subtab-link {
+  border-radius: 0px !important;
+}
+
+.glass-card,
+.subject-table-wrapper,
+.timetable-grid-wrapper,
+.timetable-cell-card,
+.dropdown-menu,
+.btn-glow,
+.btn-glass,
+.app-sidebar,
+.modal-content,
+.shadow,
+.shadow-sm,
+.shadow-lg {
+  box-shadow: none !important;
+}
+
 .glass-card {
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
-  border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.04);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 80ms ease;
 }
 
 .glass-card:hover {
   border-color: var(--border-focus);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
 /* Minimalist Navbar */
@@ -102,9 +132,10 @@ h3,
 h4,
 h5,
 h6 {
-  font-weight: 600;
+  font-family: 'Inter Tight', 'IBM Plex Sans', sans-serif;
+  font-weight: 700;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .gradient-text,
@@ -117,13 +148,30 @@ h6 {
   color: var(--text-primary);
 }
 
+/* Monospace font styling for statistics and metrics (Tabular) */
+.mono-stat,
+.percentage-val,
+.credits,
+.time,
+.stats,
+.num,
+.attendance-val,
+.timetable-table th,
+.timetable-table td.day-cell,
+.timetable-table td.break-cell,
+.slot-code,
+.slot-room,
+.timetable-cell-card.empty-cell {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Minimalist Inputs */
 .form-floating>.form-control {
   background-color: #ffffff !important;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  border-radius: 8px;
-  transition: all 0.15s ease-in-out;
+  transition: all 80ms ease-in-out;
 }
 
 .form-floating>.form-control:focus {
@@ -144,24 +192,29 @@ h6 {
   background-color: #ffffff !important;
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  border-radius: 8px;
   padding: 0.85rem 0.75rem;
 }
 
 .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
 }
 
-/* Minimal Buttons */
+/* Minimal Buttons with Snap Interaction */
+.btn {
+  transition: transform 30ms ease-out, background-color 80ms ease, border-color 80ms ease, color 80ms ease !important;
+}
+
+.btn:active {
+  transform: scale(0.97) !important;
+}
+
 .btn-glow {
   background: var(--primary);
   border: 1px solid var(--primary);
   color: #ffffff;
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.65rem 1.5rem;
-  border-radius: 8px;
-  transition: all 0.15s ease;
   box-shadow: none;
 }
 
@@ -171,21 +224,16 @@ h6 {
 
 .btn-glow:hover {
   background-color: #1d4ed8;
-  /* Darker blue */
   border-color: #1d4ed8;
   color: #ffffff;
-  transform: none;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-glass {
   background: #ffffff;
   border: 1px solid var(--border-color);
   color: var(--text-secondary);
-  font-weight: 500;
+  font-weight: 600;
   padding: 0.65rem 1.5rem;
-  border-radius: 8px;
-  transition: all 0.15s ease;
   box-shadow: none;
 }
 
@@ -193,7 +241,6 @@ h6 {
   background: #f8fafc;
   border-color: var(--border-focus);
   color: var(--text-primary);
-  transform: none;
 }
 
 /* Table Timetable Grid Layout (Spreadsheet style) */
@@ -395,15 +442,15 @@ h6 {
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  border-radius: 8px;
-  transition: all 0.15s ease;
+  border-left: 3px solid transparent;
+  transition: all 80ms ease;
 }
 
 .sidebar-link svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 80ms ease;
 }
 
 .profile-avatar-container {
@@ -414,12 +461,11 @@ h6 {
 
 .profile-avatar-container span {
   border: 2px solid #e2e8f0 !important;
-  transition: all 0.2s ease !important;
+  transition: all 80ms ease !important;
 }
 
 .app-header-profile:hover .profile-avatar-container span {
   transform: scale(1.05);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
 }
 
 .sidebar-link:hover {
@@ -428,21 +474,63 @@ h6 {
 }
 
 .sidebar-link.active {
-  background-color: #2563eb;
-  /* Royal Blue */
-  color: #ffffff;
+  background-color: rgba(37, 99, 235, 0.08) !important;
+  color: #2563eb !important;
+  border-left-color: #2563eb !important;
+  font-weight: 600;
 }
 
 .sidebar-link.logout-link {
   color: #ef4444;
-  /* Red logout text */
   margin-top: auto;
-  /* Push it to the bottom */
+  border-left-color: transparent !important;
 }
 
 .sidebar-link.logout-link:hover {
   background-color: #7f1d1d;
   color: #ffffff;
+}
+
+/* Horizontal Sub-tabs Navigation for Attendance Section */
+.scrollable-subtabs {
+  display: flex;
+  border-bottom: 2px solid var(--border-color);
+  gap: 1.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1.5rem;
+}
+
+.subtab-link {
+  padding: 0.75rem 0.25rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 3px solid transparent;
+  transition: all 80ms ease;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.subtab-link:hover {
+  color: var(--text-primary);
+}
+
+.subtab-link.active {
+  color: var(--primary) !important;
+  border-bottom-color: var(--primary) !important;
+}
+
+/* Section Separator */
+.section-separator {
+  border-bottom: 2px solid var(--text-primary);
+  padding-bottom: 0.25rem;
+  margin-bottom: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 800;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
 }
 
 .app-main-wrapper {
@@ -499,7 +587,7 @@ h6 {
     overflow: visible;
   }
 
-  /* Transform sidebar into a mobile bottom navigation bar */
+  /* Transform sidebar into a mobile bottom navigation bar (flat, non-floating) */
   .app-sidebar {
     position: fixed;
     bottom: 0;
@@ -507,14 +595,11 @@ h6 {
     right: 0;
     top: auto;
     width: 100% !important;
-    height: 68px !important;
-    background: rgba(255, 255, 255, 0.94) !important;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(226, 232, 240, 0.8) !important;
+    height: 60px !important;
+    background: #ffffff !important;
+    border-top: 1px solid var(--border-color) !important;
     border-right: none !important;
     z-index: 1000;
-    box-shadow: 0 -8px 24px -4px rgba(15, 23, 42, 0.04) !important;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -537,7 +622,7 @@ h6 {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 0.5rem 0.25rem !important;
+    padding: 0.25rem 0.25rem 0 0.25rem !important;
     font-size: 0.65rem !important;
     font-weight: 600 !important;
     border-radius: 0 !important;
@@ -545,66 +630,27 @@ h6 {
     color: #64748b !important;
     flex-grow: 1;
     height: 100%;
-    gap: 0.25rem !important;
-    transition: all 0.2s ease;
+    gap: 0.15rem !important;
+    border-top: 3px solid transparent !important;
+    border-left: none !important;
+    transition: all 80ms ease;
   }
 
   .sidebar-link.active {
     color: #2563eb !important;
     background: transparent !important;
+    border-top-color: #2563eb !important;
   }
 
   .sidebar-link svg {
-    width: 20px !important;
-    height: 20px !important;
+    width: 18px !important;
+    height: 18px !important;
     stroke: currentColor !important;
     stroke-width: 2px !important;
   }
 
-  .sidebar-link[href="/student/attendance"] {
-    position: relative;
-    top: -5px;
-    width: 58px !important;
-    height: 58px !important;
-    min-width: 58px !important;
-    max-width: 58px !important;
-    border-radius: 50% !important;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-    color: #ffffff !important;
-    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35) !important;
-    margin: 0 8px !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border: 4px solid #ffffff !important;
-    flex-grow: 0 !important;
-    padding: 0 !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .sidebar-link[href="/student/attendance"]:active {
-    transform: scale(0.92);
-  }
-
-  .sidebar-link[href="/student/attendance"] svg {
-    width: 22px !important;
-    height: 22px !important;
-    stroke: #ffffff !important;
-    stroke-width: 2.5px !important;
-    margin: 0 !important;
-  }
-
-  .sidebar-link[href="/student/attendance"] span {
-    display: none !important;
-  }
-
-  .sidebar-link[href="/student/attendance"].active {
-    color: #ffffff !important;
-  }
-
   .sidebar-link.logout-link {
     display: none !important;
-    /* Hide logout on bottom tab bar */
   }
 
   /* Adjust main wrapper to fill screen and accommodate bottom navbar */
