@@ -874,3 +874,8 @@ h6 {
   height: 38px !important;
   margin-top: -3px;
 }
+
+[data-theme="dark"] img.mobile-header-logo {
+  height: 28px !important;
+  margin-top: -2px;
+}

@@ -109,20 +109,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   updateLogos(currentTheme);
 
-  // Inject mobile header logo dynamically next to dashboard title
+  // Inject mobile header logo dynamically wrapped next to dashboard title
   const headerTitle = document.querySelector('.app-header-title');
-  if (headerTitle) {
-    if (!headerTitle.querySelector('.mobile-header-logo')) {
+  if (headerTitle && headerTitle.parentNode) {
+    let wrapper = headerTitle.parentNode.querySelector('.header-title-group');
+    if (!wrapper) {
+      wrapper = document.createElement('div');
+      wrapper.className = 'header-title-group d-flex align-items-center';
+      
+      headerTitle.parentNode.insertBefore(wrapper, headerTitle);
+      wrapper.appendChild(headerTitle);
+      
       const mobileLogo = document.createElement('img');
-      mobileLogo.className = 'mobile-header-logo d-md-none me-2';
+      mobileLogo.className = 'mobile-header-logo d-md-none';
       mobileLogo.src = currentTheme === 'dark' ? '/assets/images/logo_dark.webp' : '/assets/images/logo_light.webp';
       mobileLogo.alt = 'Trackify Logo';
-      mobileLogo.style.height = '28px';
+      mobileLogo.style.height = '24px';
       mobileLogo.style.width = 'auto';
-      mobileLogo.style.verticalAlign = 'middle';
       mobileLogo.style.marginRight = '8px';
       
-      headerTitle.insertBefore(mobileLogo, headerTitle.firstChild);
+      wrapper.insertBefore(mobileLogo, headerTitle);
     }
   }
 
