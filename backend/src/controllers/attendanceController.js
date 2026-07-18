@@ -1,6 +1,7 @@
 const attendanceRepository = require('../repositories/attendanceRepository');
 const settingsRepository = require('../repositories/settingsRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
+const holidayRepository = require('../repositories/holidayRepository');
 
 /**
  * Get attendance logs for the logged-in student (supports date range and subject filtering)
@@ -15,9 +16,18 @@ const getAttendanceLogs = async (req, res) => {
       subjectId
     });
 
+    let holiday = null;
+    if (startDate && startDate === endDate) {
+      const holidays = await holidayRepository.getByDateAndTarget(startDate, req.user.department, req.user.semester);
+      if (holidays.length > 0) {
+        holiday = holidays[0];
+      }
+    }
+
     return res.status(200).json({
       success: true,
-      logs
+      logs,
+      holiday
     });
   } catch (error) {
     console.error('getAttendanceLogs controller error:', error);
@@ -243,6 +253,11 @@ const getStats = async (req, res) => {
       overallPrediction.safeAbsences = targetPercentage > 0 ? Math.floor(numerator / targetPercentage) : 0;
     }
 
+    // Fetch active holiday for today matching student target scope
+    const todayStr = new Date().toISOString().substring(0, 10);
+    const todayHolidays = await holidayRepository.getByDateAndTarget(todayStr, req.user.department, req.user.semester);
+    const todayHoliday = todayHolidays.length > 0 ? todayHolidays[0] : null;
+
     return res.status(200).json({
       success: true,
       stats: {
@@ -255,7 +270,8 @@ const getStats = async (req, res) => {
         totalConducted,
         targetPercentage,
         overallPrediction,
-        subjectStats
+        subjectStats,
+        todayHoliday
       }
     });
   } catch (error) {

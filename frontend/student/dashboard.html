@@ -318,6 +318,17 @@
           <p class="text-muted" style="font-size: 0.875rem;" id="welcome-details">CSE | Semester 1</p>
         </div>
 
+        <!-- Holiday Alert Placeholder -->
+        <div id="holiday-alert-banner" class="mb-4 animate-fade-in-up" style="display: none;">
+          <div class="alert alert-info border border-info-subtle bg-info-subtle text-info d-flex align-items-center gap-3 p-3 rounded-3" style="border-radius: 0px !important;">
+            <span class="fs-4">🎉</span>
+            <div>
+              <div class="fw-bold fs-6">Today is a Holiday!</div>
+              <div id="holiday-banner-text" class="small text-secondary-emphasis">Gandhi Jayanti</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Subject-wise Attendance Table -->
         <div class="section-separator d-flex justify-content-between align-items-center">
           <span>Subject Directory & Performance</span>
@@ -371,6 +382,14 @@
       if (statsResult.success) {
         const stats = statsResult.stats;
         
+        // Show today's holiday if present
+        if (stats.todayHoliday) {
+          document.getElementById('holiday-banner-text').innerText = stats.todayHoliday.name;
+          document.getElementById('holiday-alert-banner').style.display = 'block';
+        } else {
+          document.getElementById('holiday-alert-banner').style.display = 'none';
+        }
+
         // Update welcome details
         const user = window.currentUser || { department: 'General', semester: 'N/A' };
         document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'}`;

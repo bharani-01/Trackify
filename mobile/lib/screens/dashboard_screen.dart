@@ -108,6 +108,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         const SizedBox(height: 20),
 
+                        // Holiday Banner
+                        if (_stats != null && _stats!['todayHoliday'] != null) ...[
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFECFEFF),
+                              border: Border.all(color: const Color(0xFF0891B2), width: 1.5),
+                            ),
+                            child: Row(
+                              children: [
+                                const Text(
+                                  '🎉 ',
+                                  style: TextStyle(fontSize: 16),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    'Today is a Holiday: ${_stats!['todayHoliday']['name'] ?? "Holiday"}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF0891B2),
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+
                         // Quick Navigation Shortcuts
                         Row(
                           children: [

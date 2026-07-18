@@ -338,6 +338,7 @@
         const rawSlots = timetableRes.timetable.filter(s => s.day === targetDayName);
         const dayLogs = logsRes.logs;
         const dayAdjustments = adjustmentsRes.adjustments;
+        const holiday = logsRes.holiday; // Capture holiday from logs request
 
         // Apply cohort adjustments to the template slots
         let daySlots = [];
@@ -447,7 +448,11 @@
           let statusAreaHtml = '';
           let cardBgStyle = '';
 
-          if (matchLog) {
+          if (holiday) {
+            statusAreaHtml = `
+              <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 fs-7">Holiday: ${holiday.name}</span>
+            `;
+          } else if (matchLog) {
             markedCount++;
             let badgeClass = 'badge-present';
             

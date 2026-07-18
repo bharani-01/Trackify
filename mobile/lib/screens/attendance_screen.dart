@@ -20,6 +20,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
   List<dynamic> _timetableSlots = [];
   List<dynamic> _adjustments = [];
   List<dynamic> _logsForDate = [];
+  Map<String, dynamic>? _holidayForDate;
 
   // General History logs state variables
   bool _loadingHistory = true;
@@ -56,6 +57,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
         _timetableSlots = timetableRes['success'] == true ? (timetableRes['timetable'] ?? []) : [];
         _adjustments = adjustmentsRes['success'] == true ? (adjustmentsRes['adjustments'] ?? []) : [];
         _logsForDate = logsRes['success'] == true ? (logsRes['logs'] ?? logsRes['records'] ?? []) : [];
+        _holidayForDate = (logsRes['success'] == true && logsRes['holiday'] != null) 
+            ? Map<String, dynamic>.from(logsRes['holiday']) 
+            : null;
         _loadingChecklist = false;
       });
     }
@@ -479,7 +483,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     Widget actionArea;
     Color cardBg = Colors.white;
 
-    if (matchLog != null) {
+    if (_holidayForDate != null) {
+      final holidayName = _holidayForDate!['name'] ?? 'Holiday';
+      actionArea = Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        color: const Color(0xFFECFEFF),
+        child: Text(
+          'HOLIDAY: ${holidayName.toUpperCase()}',
+          style: const TextStyle(color: Color(0xFF0891B2), fontSize: 10, fontWeight: FontWeight.bold),
+        ),
+      );
+    } else if (matchLog != null) {
       final status = matchLog['status'] ?? 'Present';
       Color statusColor = const Color(0xFF16A34A);
       Color badgeBg = const Color(0xFFDCFCE7);
