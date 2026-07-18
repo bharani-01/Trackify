@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileLogo.alt = 'Trackify Logo';
       mobileLogo.style.height = '24px';
       mobileLogo.style.width = 'auto';
-      mobileLogo.style.marginRight = '8px';
+      mobileLogo.style.marginRight = '12px';
       
       wrapper.insertBefore(mobileLogo, headerTitle);
     }
