@@ -218,6 +218,20 @@ const rejectUser = async (userId) => {
   return result.rows[0];
 };
 
+/**
+ * Update user's name and email profile info
+ */
+const updateProfile = async (userId, name, email) => {
+  const query = `
+    UPDATE users 
+    SET name = $1, email = $2, updated_at = CURRENT_TIMESTAMP
+    WHERE id = $3
+    RETURNING id, name, email, register_number, role, department, semester
+  `;
+  const result = await db.query(query, [name.trim(), email.toLowerCase().trim(), userId]);
+  return result.rows[0];
+};
+
 module.exports = {
   findByEmail,
   findById,
@@ -227,5 +241,6 @@ module.exports = {
   updatePasswordAndClearToken,
   findPendingUsers,
   approveUser,
-  rejectUser
+  rejectUser,
+  updateProfile
 };

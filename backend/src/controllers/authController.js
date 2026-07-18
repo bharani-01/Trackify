@@ -372,6 +372,40 @@ const getRegistrationStatus = async (req, res) => {
   }
 };
 
+/**
+ * Update Profile Name and Email
+ * @route PUT /api/auth/me
+ */
+const updateProfile = async (req, res) => {
+  const { name, email } = req.body;
+
+  try {
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name and email are required.'
+      });
+    }
+
+    const updatedUser = await userRepository.updateProfile(req.user.id, name, email);
+    
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(req.user.id, 'PROFILE_UPDATED', `Profile name/email updated: ${email}`, ip);
+
+    return res.status(200).json({
+      success: true,
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('updateProfile controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error updating profile details.'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
@@ -379,5 +413,6 @@ module.exports = {
   logout,
   forgotPassword,
   resetPassword,
-  getRegistrationStatus
+  getRegistrationStatus,
+  updateProfile
 };
