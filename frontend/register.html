@@ -86,6 +86,20 @@
               <label for="confirmPassword">Confirm Password</label>
             </div>
 
+            <!-- Terms & Privacy Acceptance -->
+            <div class="mb-4 p-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <div class="form-check d-flex align-items-start gap-2" style="margin: 0;">
+                <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="acceptTerms">
+                <label class="form-check-label" for="acceptTerms" style="font-size: 0.85rem; color: #475569; line-height: 1.6;">
+                  I have read and agree to the
+                  <a href="/terms" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Terms &amp; Conditions</a>
+                  and
+                  <a href="/privacy-policy" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Privacy Policy</a>
+                  of Trackify.
+                </label>
+              </div>
+            </div>
+
             <!-- Submit Button -->
             <button type="submit" class="btn btn-glow w-100 py-3 mb-3" id="submitBtn">Submit Request</button>
           </form>
@@ -137,8 +151,18 @@
       const semester = document.getElementById('semester').value;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
+      const acceptTerms = document.getElementById('acceptTerms').checked;
       const alertContainer = document.getElementById('alertContainer');
       const submitBtn = document.getElementById('submitBtn');
+
+      if (!acceptTerms) {
+        alertContainer.innerHTML = `
+          <div class="alert alert-danger px-3 py-2 fs-7" role="alert">
+            You must accept the Terms &amp; Conditions and Privacy Policy to register.
+          </div>
+        `;
+        return;
+      }
 
       if (password !== confirmPassword) {
         alertContainer.innerHTML = `
