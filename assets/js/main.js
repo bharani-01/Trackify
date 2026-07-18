@@ -136,6 +136,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Restore sidebar collapse state preference on page load
+  const isSidebarCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+  const appLayout = document.querySelector('.app-layout');
+  if (isSidebarCollapsed && appLayout) {
+    appLayout.classList.add('sidebar-collapsed');
+  }
+
+  // Inject desktop sidebar toggle button dynamically
+  const appHeader = document.querySelector('.app-header');
+  if (appHeader && !appHeader.querySelector('.sidebar-toggle-btn')) {
+    const sidebarToggle = document.createElement('button');
+    sidebarToggle.className = 'btn btn-glass btn-sm border-0 d-none d-md-flex align-items-center justify-content-center sidebar-toggle-btn me-3';
+    sidebarToggle.id = 'desktop-sidebar-toggle';
+    sidebarToggle.style.padding = '8px';
+    sidebarToggle.style.width = '36px';
+    sidebarToggle.style.height = '36px';
+    sidebarToggle.style.minWidth = 'unset';
+    sidebarToggle.style.color = 'var(--text-primary)';
+    sidebarToggle.style.background = 'transparent';
+    sidebarToggle.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>`;
+    
+    sidebarToggle.addEventListener('click', () => {
+      const layout = document.querySelector('.app-layout');
+      if (layout) {
+        layout.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sidebar-collapsed', layout.classList.contains('sidebar-collapsed') ? 'true' : 'false');
+      }
+    });
+
+    // Insert at the beginning of the header
+    appHeader.insertBefore(sidebarToggle, appHeader.firstChild);
+  }
+
   // Inject theme toggle button dynamically
   const navContainer = document.querySelector('nav.navbar .container, nav.navbar .container-fluid, .app-header-profile');
   if (navContainer) {

@@ -532,6 +532,13 @@ h6 {
   height: 100vh;
   position: sticky;
   top: 0;
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  overflow: hidden;
+}
+
+.sidebar-collapsed .app-sidebar {
+  width: 0px !important;
+  border-right: none !important;
 }
 
 .sidebar-logo {
@@ -563,7 +570,6 @@ h6 {
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
-  border-left: 3px solid transparent;
   transition: all 80ms ease;
 }
 
@@ -597,14 +603,12 @@ h6 {
 .sidebar-link.active {
   background-color: var(--primary-subtle) !important;
   color: var(--primary) !important;
-  border-left-color: var(--primary) !important;
   font-weight: 600;
 }
 
 .sidebar-link.logout-link {
   color: #ef4444;
   margin-top: auto;
-  border-left-color: transparent !important;
 }
 
 .sidebar-link.logout-link:hover {
