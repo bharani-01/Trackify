@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mobileLogo.className = 'mobile-header-logo d-md-none';
       mobileLogo.src = currentTheme === 'dark' ? '/assets/images/logo_dark.webp' : '/assets/images/logo_light.webp';
       mobileLogo.alt = 'Trackify Logo';
-      mobileLogo.style.height = '24px';
+      mobileLogo.style.height = '32px';
       mobileLogo.style.width = 'auto';
       mobileLogo.style.marginRight = '12px';
       
