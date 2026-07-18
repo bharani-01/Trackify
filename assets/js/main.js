@@ -118,6 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
       wrapper.className = 'header-title-group d-flex align-items-center';
       
       headerTitle.parentNode.insertBefore(wrapper, headerTitle);
+      
+      // Hide the text title on mobile viewports
+      headerTitle.classList.add('d-none', 'd-md-block');
+      
       wrapper.appendChild(headerTitle);
       
       const mobileLogo = document.createElement('img');
