@@ -136,93 +136,6 @@
       text-overflow: ellipsis;
       margin-bottom: 0;
     }
-    
-    /* Attendance displays with inline progress */
-    .percentage-display {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      max-width: 140px;
-    }
-    
-    .percentage-nums {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-    }
-    
-    .percentage-val {
-      font-size: 1.15rem;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1;
-    }
-    
-    .progress-micro {
-      height: 4px;
-      border-radius: 999px;
-      background: #f1f5f9;
-      overflow: hidden;
-    }
-    
-    .progress-micro-bar {
-      height: 100%;
-      border-radius: 999px;
-      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    /* Stripe style indicator dot badges */
-    .status-badge-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 0.25rem;
-    }
-    
-    .status-indicator {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.25rem 0.625rem;
-      border-radius: 9999px;
-      border: 1px solid transparent;
-    }
-    
-    .status-indicator.status-safe {
-      background: #ecfdf5;
-      color: #047857;
-      border-color: #a7f3d0;
-    }
-    
-    .status-indicator.status-danger {
-      background: #fff1f2;
-      color: #be123c;
-      border-color: #fecdd3;
-    }
-    
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-    
-    .status-safe .status-dot {
-      background-color: #10b981;
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-    }
-    
-    .status-danger .status-dot {
-      background-color: #f43f5e;
-      box-shadow: 0 0 0 2px rgba(244, 63, 94, 0.2);
-    }
-    
-    .forecast-message {
-      font-size: 0.7rem;
-      color: #64748b;
-      text-align: right;
-    }
 
     .table-responsive::-webkit-scrollbar {
       height: 5px;
@@ -313,17 +226,16 @@
             <thead>
               <tr>
                 <th style="min-width: 220px;">Subject</th>
-                <th class="text-center" style="width: 100px;">Conducted</th>
-                <th class="text-center" style="width: 100px;">Present</th>
-                <th class="text-center" style="width: 80px;">OD</th>
-                <th class="text-center" style="width: 100px;">Absent</th>
-                <th style="min-width: 150px;">Attendance</th>
-                <th style="min-width: 180px; text-align: right;">Status & Forecast</th>
+                <th class="text-center" style="width: 120px;">Conducted</th>
+                <th class="text-center" style="width: 120px;">Present</th>
+                <th class="text-center" style="width: 100px;">OD</th>
+                <th class="text-center" style="width: 120px;">Absent</th>
+                <th class="text-end" style="min-width: 150px; padding-right: 2rem;">Attendance</th>
               </tr>
             </thead>
             <tbody id="subject-table-body">
               <tr>
-                <td colspan="7" class="text-center py-4 text-secondary small">Loading subject stats...</td>
+                <td colspan="6" class="text-center py-4 text-secondary small">Loading subject stats...</td>
               </tr>
             </tbody>
           </table>
@@ -381,9 +293,9 @@
       if (statsResult.success) {
         const stats = statsResult.stats;
         
-        // Update welcome details to include target
+        // Update welcome details
         const user = window.currentUser || { department: 'General', semester: 'N/A' };
-        document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'} • Target Attendance: ${stats.targetPercentage}%`;
+        document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'}`;
 
         // Build Subject-wise rows inside table tbody
         const tbody = document.getElementById('subject-table-body');
@@ -392,29 +304,27 @@
         if (!stats.subjectStats || stats.subjectStats.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="7" class="text-center py-5 text-secondary small">
+              <td colspan="6" class="text-center py-5 text-secondary small">
                 No subjects registered yet.
               </td>
             </tr>
           `;
         } else {
           stats.subjectStats.forEach(subj => {
-            const pred = subj.prediction;
-            let badgeClass = 'status-safe';
-            let statusText = 'Safe';
-            let forecastMsg = '';
-
-            if (pred.status === 'Below Target') {
-              badgeClass = 'status-danger';
-              statusText = 'Below Target';
-              forecastMsg = `Attend next <strong class="text-danger" style="font-weight: 700;">${pred.classesNeeded}</strong>`;
-            } else {
-              badgeClass = 'status-safe';
-              statusText = 'Safe';
-              forecastMsg = `Can miss next <strong class="text-success" style="font-weight: 700;">${pred.safeAbsences}</strong>`;
+            const percentage = parseFloat(subj.percentage);
+            
+            // Dynamic text color thresholds:
+            // < 80% => Red (#dc2626)
+            // 80% - 90% => Amber/Yellow (#d97706)
+            // > 90% => Emerald Green (#059669)
+            let percentColor = '#059669';
+            if (percentage < 80) {
+              percentColor = '#dc2626';
+            } else if (percentage <= 90) {
+              percentColor = '#d97706';
             }
 
-            // Using unified primary brand color #2563eb for a clean single-color appearance
+            // Using unified primary brand color #2563eb for code badge
             const primaryColor = '#2563eb';
 
             tbody.innerHTML += `
@@ -429,24 +339,8 @@
                 <td class="text-center fw-semibold text-success">${subj.present_count}</td>
                 <td class="text-center fw-semibold text-primary">${subj.od_count || 0}</td>
                 <td class="text-center fw-semibold text-danger">${subj.absent_count}</td>
-                <td>
-                  <div class="percentage-display">
-                    <div class="percentage-nums">
-                      <span class="percentage-val" style="color: ${primaryColor};">${subj.percentage}%</span>
-                    </div>
-                    <div class="progress-micro">
-                      <div class="progress-micro-bar" style="width: ${subj.percentage}%; background-color: ${primaryColor};"></div>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <div class="status-badge-container">
-                    <span class="status-indicator ${badgeClass}">
-                      <span class="status-dot"></span>
-                      ${statusText}
-                    </span>
-                    <span class="forecast-message">${forecastMsg}</span>
-                  </div>
+                <td class="text-end" style="padding-right: 2rem;">
+                  <span class="percentage-val" style="color: ${percentColor}; font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em;">${subj.percentage}%</span>
                 </td>
               </tr>
             `;
