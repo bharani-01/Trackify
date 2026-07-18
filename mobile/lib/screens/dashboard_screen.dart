@@ -58,9 +58,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
-          'Student Dashboard',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.webp',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'Student Dashboard',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+            ),
+          ],
         ),
         elevation: 0,
         backgroundColor: Colors.white,

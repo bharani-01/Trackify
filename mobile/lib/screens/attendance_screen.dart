@@ -146,7 +146,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Attendance Logs', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.webp',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text('Attendance Logs', style: TextStyle(fontWeight: FontWeight.w800)),
+          ],
+        ),
         bottom: TabBar(
           controller: _tabController,
           labelColor: const Color(0xFF2563EB),

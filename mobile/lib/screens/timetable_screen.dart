@@ -66,7 +66,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Timetable Schedule', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.webp',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text('Timetable Schedule', style: TextStyle(fontWeight: FontWeight.w800)),
+          ],
+        ),
         elevation: 0,
         actions: [
           IconButton(

@@ -118,7 +118,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: const Text('Settings & Configuration', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Row(
+          children: [
+            Image.asset(
+              'assets/images/logo.webp',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+            const SizedBox(width: 8),
+            const Text('Settings & Configuration', style: TextStyle(fontWeight: FontWeight.w800)),
+          ],
+        ),
         elevation: 0,
       ),
       body: _loadingSettings

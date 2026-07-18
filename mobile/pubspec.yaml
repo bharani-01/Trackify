@@ -28,3 +28,6 @@ flutter:
   uses-material-design: true
   assets:
     - .env
+    - assets/images/logo.webp
+    - assets/images/logo_light.webp
+    - assets/images/logo_dark.webp

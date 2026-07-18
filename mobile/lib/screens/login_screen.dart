@@ -106,25 +106,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Column(
                     children: [
-                      Container(
-                        width: 56,
-                        height: 56,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF2563EB),
-                        ),
-                        child: const Icon(Icons.check_circle_outline_rounded, color: Colors.white, size: 30),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Trackify',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F172A),
-                          letterSpacing: -0.5,
+                      SizedBox(
+                        width: 160,
+                        height: 50,
+                        child: Image.asset(
+                          'assets/images/logo_light.webp',
+                          fit: BoxFit.contain,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 12),
                       Text(
                         _isOtpMode ? 'Sign in using verification code' : 'Sign in to your student account',
                         style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
