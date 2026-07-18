@@ -140,6 +140,26 @@
   color: var(--text-primary) !important;
 }
 
+[data-theme="dark"] .nav-tabs {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+  color: var(--text-secondary) !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  background-color: var(--bg-secondary) !important;
+  color: var(--primary) !important;
+  border-bottom: 2px solid var(--primary) !important;
+}
+
 /* Base resets and defaults */
 body {
   font-family: 'Inter', sans-serif;
