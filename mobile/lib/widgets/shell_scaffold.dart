@@ -7,8 +7,8 @@ class ShellScaffold extends StatelessWidget {
 
   static const _tabs = [
     (icon: Icons.grid_view_rounded, label: 'Dashboard', path: '/dashboard'),
-    (icon: Icons.check_circle_outline_rounded, label: 'Attendance', path: '/attendance'),
-    (icon: Icons.calendar_today_rounded, label: 'Timetable', path: '/timetable'),
+    (icon: Icons.playlist_add_check_rounded, label: 'Attendance', path: '/attendance'),
+    (icon: Icons.calendar_today_rounded, label: 'Academics', path: '/timetable'),
     (icon: Icons.person_outline_rounded, label: 'Profile', path: '/profile'),
   ];
 
@@ -32,40 +32,31 @@ class ShellScaffold extends StatelessWidget {
               children: List.generate(_tabs.length, (i) {
                 final tab = _tabs[i];
                 final active = i == currentIndex;
+                
                 return Expanded(
-                  child: InkWell(
-                    onTap: () => context.go(tab.path),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          tab.icon,
-                          size: 22,
-                          color: active
-                              ? const Color(0xFF2563EB)
-                              : const Color(0xFF94A3B8),
-                        ),
-                        const SizedBox(height: 3),
-                        Text(
-                          tab.label,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: active ? FontWeight.w700 : FontWeight.w500,
-                            color: active
-                                ? const Color(0xFF2563EB)
-                                : const Color(0xFF94A3B8),
+                  child: Ink(
+                    color: active ? const Color(0xFF2563EB) : Colors.white,
+                    child: InkWell(
+                      onTap: () => context.go(tab.path),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            tab.icon,
+                            size: 22,
+                            color: active ? Colors.white : const Color(0xFF475569),
                           ),
-                        ),
-                        const SizedBox(height: 2),
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          height: 2,
-                          width: active ? 20 : 0,
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF2563EB),
+                          const SizedBox(height: 3),
+                          Text(
+                            tab.label,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+                              color: active ? Colors.white : const Color(0xFF475569),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

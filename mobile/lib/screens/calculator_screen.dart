@@ -85,7 +85,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Column(
@@ -112,7 +111,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Column(
@@ -145,7 +143,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isBelow ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
-              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: isBelow ? const Color(0xFFFCA5A5) : const Color(0xFFBBF7D0)),
             ),
             child: Row(

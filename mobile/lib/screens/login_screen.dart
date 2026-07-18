@@ -52,9 +52,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         width: 56,
                         height: 56,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF2563EB),
-                          borderRadius: BorderRadius.circular(14),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF2563EB),
                         ),
                         child: const Icon(Icons.check_circle_outline_rounded, color: Colors.white, size: 30),
                       ),
@@ -86,7 +85,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEF2F2),
                       border: Border.all(color: const Color(0xFFFCA5A5)),
-                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Row(
                       children: [
@@ -136,7 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF2563EB),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                       elevation: 0,
                     ),
                     child: _loading
@@ -172,17 +170,17 @@ class _LoginScreenState extends State<LoginScreen> {
         filled: true,
         fillColor: Colors.white,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
         ),
       );
 }

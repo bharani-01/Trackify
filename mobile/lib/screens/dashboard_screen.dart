@@ -14,6 +14,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   Map<String, dynamic>? _stats;
+  List<dynamic> _subjectStats = [];
   bool _loading = true;
   String? _errorMsg;
   String? _errorDetails;
@@ -35,8 +36,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         if (res['success'] == true) {
           _stats = res['stats'];
+          _subjectStats = res['stats']?['subjectStats'] ?? [];
         } else {
           _stats = null;
+          _subjectStats = [];
           _errorMsg = res['message'] ?? 'Failed to load statistics';
           _errorDetails = res['error_details'] ?? ApiClient.lastError;
         }
@@ -49,103 +52,240 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final user = context.watch<AuthService>().user;
     final name = user?['name'] ?? 'Student';
-    final overall = _stats?['overallPercentage'] ?? 0;
+    final regNo = user?['register_number'] ?? '';
+    final sem = user?['semester']?.toString() ?? '';
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          'Student Dashboard',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 16),
+            child: Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: const Color(0xFF2563EB),
+                border: Border.all(color: const Color(0xFF2563EB), width: 1.5),
+              ),
+              child: Center(
+                child: Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : 'S',
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
       body: RefreshIndicator(
         onRefresh: _loadStats,
         color: const Color(0xFF2563EB),
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              backgroundColor: Colors.white,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Good ${_greeting()}, 👋', style: const TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w500)),
-                  Text(name.split(' ').first, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
-                ],
-              ),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16),
-                  child: CircleAvatar(
-                    backgroundColor: const Color(0xFFEFF6FF),
-                    radius: 18,
-                    child: Text(
-                      name.isNotEmpty ? name[0].toUpperCase() : 'S',
-                      style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.w800),
+        child: _loading
+            ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+            : CustomScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.all(16),
+                    sliver: SliverList(
+                      delegate: SliverChildListDelegate([
+                        // Welcome Banner
+                        Text(
+                          'Hello, $name!',
+                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.5),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${regNo.isNotEmpty ? regNo : "E02"} | Semester ${sem.isNotEmpty ? sem : "5"}',
+                          style: const TextStyle(fontSize: 14, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Quick Navigation Shortcuts
+                        Row(
+                          children: [
+                            Expanded(
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFF0F172A), width: 1.5),
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                onPressed: () => context.go('/attendance'),
+                                child: const Text(
+                                  'Mark Attendance',
+                                  style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  side: const BorderSide(color: Color(0xFF0F172A), width: 1.5),
+                                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                                onPressed: () => context.go('/timetable'),
+                                child: const Text(
+                                  'Timetable',
+                                  style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Section Title: SUBJECT DIRECTORY & PERFORMANCE
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'SUBJECT DIRECTORY & PERFORMANCE',
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF334155)),
+                            ),
+                            const SizedBox(height: 6),
+                            Container(
+                              height: 2.5,
+                              color: const Color(0xFF0F172A),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Load Error Widget
+                        if (_stats == null) ...[
+                          _buildErrorCard(),
+                          const SizedBox(height: 20),
+                        ],
+
+                        // Subject List Cards
+                        if (_subjectStats.isNotEmpty)
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _subjectStats.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 12),
+                            itemBuilder: (context, i) {
+                              final sub = _subjectStats[i];
+                              return _buildSubjectCard(sub);
+                            },
+                          )
+                        else if (!_loading && _stats != null)
+                          _buildEmptyView(),
+
+                        const SizedBox(height: 40),
+                      ]),
                     ),
                   ),
-                ),
-              ],
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverList(
-                delegate: SliverChildListDelegate([
-                  // Overall attendance card
-                  if (!_loading && _stats == null) ...[
-                    _buildErrorCard(),
-                    const SizedBox(height: 16),
-                  ] else ...[
-                    _OverallCard(percentage: overall is num ? overall.toDouble() : 0.0, loading: _loading),
-                    const SizedBox(height: 16),
-                  ],
+                ],
+              ),
+      ),
+    );
+  }
 
-                  // Quick stats row
-                  if (!_loading && _stats != null) ...[
-                    Row(
-                      children: [
-                        Expanded(child: _StatCard(label: 'Present', value: '${_stats!['totalPresent'] ?? 0}', color: const Color(0xFF16A34A), icon: Icons.check_circle_outline_rounded)),
-                        const SizedBox(width: 12),
-                        Expanded(child: _StatCard(label: 'Absent', value: '${_stats!['totalAbsent'] ?? 0}', color: const Color(0xFFEF4444), icon: Icons.cancel_outlined)),
-                        const SizedBox(width: 12),
-                        Expanded(child: _StatCard(label: 'On Duty', value: '${_stats!['totalOD'] ?? 0}', color: const Color(0xFF2563EB), icon: Icons.work_outline_rounded)),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+  Widget _buildSubjectCard(dynamic sub) {
+    final name = sub['subject_name'] ?? 'Unknown';
+    final code = sub['subject_code'] ?? '';
+    final conducted = sub['conducted_count'] ?? 0;
+    final present = sub['present_count'] ?? 0;
+    final od = sub['od_count'] ?? 0;
+    final absent = sub['absent_count'] ?? 0;
+    final pct = sub['percentage'] != null ? (sub['percentage'] as num).toDouble() : 100.0;
 
-                  if (_loading)
-                    const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB))),
+    // Color logic matching percentage thresholds
+    Color pctCol = const Color(0xFF16A34A);
+    if (pct < 75) {
+      pctCol = const Color(0xFFEF4444);
+    } else if (pct < 80) {
+      pctCol = const Color(0xFFD97706);
+    }
 
-                  // Quick Action Cards
-                  const Text('QUICK ACTIONS', style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
-                  const SizedBox(height: 8),
-                  Row(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+      ),
+      child: Column(
+        children: [
+          // Upper Info row
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: _ActionCard(
-                          title: 'Log Attendance',
-                          desc: 'Update today\'s classes',
-                          icon: Icons.edit_calendar_rounded,
-                          color: const Color(0xFF2563EB),
-                          onTap: () => context.go('/attendance'),
+                      // Code Badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        color: const Color(0xFFEFF6FF),
+                        child: Text(
+                          code,
+                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _ActionCard(
-                          title: 'Predictor',
-                          desc: 'Simulate target goal',
-                          icon: Icons.calculate_outlined,
-                          color: const Color(0xFF16A34A),
-                          onTap: () => context.go('/calculator'),
-                        ),
+                      const SizedBox(height: 6),
+                      // Name
+                      Text(
+                        name,
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24),
-                ]),
-              ),
+                ),
+                const SizedBox(width: 12),
+                // Percent
+                Text(
+                  '${pct.toStringAsFixed(0)}%',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: pctCol),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          // Divider inside card
+          Container(height: 1, color: const Color(0xFFF1F5F9)),
+          // Sub-row metrics details
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildMetricColumn('CONDUCTED', '$conducted', const Color(0xFF475569)),
+                _buildMetricColumn('PRESENT', '$present', const Color(0xFF16A34A)),
+                _buildMetricColumn('OD', '$od', const Color(0xFF2563EB)),
+                _buildMetricColumn('ABSENT', '$absent', const Color(0xFFEF4444)),
+              ],
+            ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildMetricColumn(String label, String value, Color color) {
+    return Column(
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.5, color: Color(0xFF94A3B8)),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color),
+        ),
+      ],
     );
   }
 
@@ -171,9 +311,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           const Text(
-            'Check your network connection. If the issue persists, copy the error details below.',
+            'Ensure your server/network is online. If this persists, copy technical details below.',
             style: TextStyle(color: Color(0xFFB91C1C), fontSize: 11.5, height: 1.4),
           ),
           const SizedBox(height: 12),
@@ -189,7 +329,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 onPressed: _loadStats,
                 icon: const Icon(Icons.refresh_rounded, size: 14),
-                label: const Text('Retry', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                label: const Text('Retry', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
               ),
               const SizedBox(width: 10),
               OutlinedButton.icon(
@@ -206,7 +346,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   );
                 },
                 icon: const Icon(Icons.copy_rounded, size: 14),
-                label: const Text('Copy Error', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                label: const Text('Copy Error', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
               ),
             ],
           ),
@@ -215,134 +355,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  String _greeting() {
-    final h = DateTime.now().hour;
-    if (h < 12) return 'Morning';
-    if (h < 17) return 'Afternoon';
-    return 'Evening';
-  }
-}
-
-class _OverallCard extends StatelessWidget {
-  final double percentage;
-  final bool loading;
-  const _OverallCard({required this.percentage, required this.loading});
-
-  @override
-  Widget build(BuildContext context) {
-    final Color color = percentage >= 80
-        ? const Color(0xFF16A34A)
-        : percentage >= 65
-            ? const Color(0xFFD97706)
-            : const Color(0xFFEF4444);
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: loading
-          ? const Center(child: Padding(padding: EdgeInsets.all(20), child: CircularProgressIndicator()))
-          : Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Overall Attendance', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF64748B))),
-                      const SizedBox(height: 8),
-                      Text(
-                        '${percentage.toStringAsFixed(1)}%',
-                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.w800, color: color, height: 1),
-                      ),
-                      const SizedBox(height: 10),
-                      LinearProgressIndicator(
-                        value: percentage / 100,
-                        backgroundColor: const Color(0xFFF1F5F9),
-                        valueColor: AlwaysStoppedAnimation<Color>(color),
-                        minHeight: 6,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Container(
-                  padding: const EdgeInsets.all(14),
-                  decoration: BoxDecoration(color: color.withValues(alpha: 0.08), shape: BoxShape.circle),
-                  child: Icon(
-                    percentage >= 80 ? Icons.verified_rounded : Icons.warning_amber_rounded,
-                    color: color,
-                    size: 28,
-                  ),
-                ),
-              ],
-            ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final Color color;
-  final IconData icon;
-  const _StatCard({required this.label, required this.value, required this.color, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE2E8F0)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 6),
-          Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: color)),
-          const SizedBox(height: 2),
-          Text(label, style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8))),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionCard extends StatelessWidget {
-  final String title;
-  final String desc;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _ActionCard({
-    required this.title,
-    required this.desc,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: const Color(0xFFE2E8F0)),
-        ),
+  Widget _buildEmptyView() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 40),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: color, size: 24),
+            const Icon(Icons.library_books_outlined, size: 40, color: Color(0xFFCBD5E1)),
             const SizedBox(height: 12),
-            Text(title, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
-            const SizedBox(height: 2),
-            Text(desc, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),
+            const Text('No courses found', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+            const SizedBox(height: 4),
+            const Text('Setup subjects under Profile > Manage Subjects.', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
           ],
         ),
       ),
