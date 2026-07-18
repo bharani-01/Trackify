@@ -48,6 +48,7 @@ const initMigrations = async () => {
           ip_address VARCHAR(45),
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS resolved BOOLEAN DEFAULT FALSE;
     `);
 
     // 4. Ensure schedule_adjustments table exists

@@ -25,9 +25,11 @@ router.use(authorize('admin'));
 // Global stats
 router.get('/stats', getDashboardStats);
 
-// System audit logs
-const { getAuditLogs } = require('../controllers/auditLogController');
+// System audit logs & client errors
+const { getAuditLogs, getClientErrors, resolveClientError } = require('../controllers/auditLogController');
 router.get('/audit-logs', getAuditLogs);
+router.get('/client-errors', getClientErrors);
+router.post('/client-errors/:id/resolve', resolveClientError);
 
 // Student management
 router.get('/users', getUsers);

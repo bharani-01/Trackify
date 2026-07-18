@@ -64,7 +64,49 @@ const getAuditLogs = async (limit, offset, search = '') => {
   };
 };
 
+const getClientErrors = async (limit, offset, showResolved = false) => {
+  let query = `
+    SELECT al.*, u.name as user_name, u.register_number, u.role as user_role
+    FROM audit_logs al
+    LEFT JOIN users u ON al.user_id = u.id
+    WHERE al.action = 'CLIENT_ERROR'
+  `;
+  const params = [];
+
+  if (!showResolved) {
+    query += ` AND al.resolved = false`;
+  }
+
+  // Fetch count
+  const countQuery = `SELECT COUNT(*) FROM (${query}) AS temp`;
+  const countResult = await db.query(countQuery, params);
+  const total = parseInt(countResult.rows[0].count, 10);
+
+  // Fetch logs
+  query += ` ORDER BY al.created_at DESC LIMIT $1 OFFSET $2`;
+  params.push(limit, offset);
+
+  const result = await db.query(query, params);
+  return {
+    logs: result.rows,
+    total
+  };
+};
+
+const resolveClientError = async (id) => {
+  const query = `
+    UPDATE audit_logs
+    SET resolved = true
+    WHERE id = $1 AND action = 'CLIENT_ERROR'
+    RETURNING *
+  `;
+  const result = await db.query(query, [id]);
+  return result.rows[0];
+};
+
 module.exports = {
   logAction,
-  getAuditLogs
+  getAuditLogs,
+  getClientErrors,
+  resolveClientError
 };

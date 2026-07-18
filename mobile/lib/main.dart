@@ -112,24 +112,6 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
           shadowColor: Colors.transparent,
           shape: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
         ),
-      ),
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        fontFamily: 'Inter',
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF2563EB),
-          brightness: Brightness.dark,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF000000), // Deep black theme matching web
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F172A),
-          foregroundColor: Colors.white,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          shadowColor: Colors.transparent,
-          shape: Border(bottom: BorderSide(color: Color(0xFF1E293B))),
-        ),
-      ),
         cardTheme: const CardThemeData(
           color: Colors.white,
           elevation: 0,
@@ -187,6 +169,82 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
         bottomSheetTheme: const BottomSheetThemeData(
           backgroundColor: Colors.white,
           modalBarrierColor: Colors.black26,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Inter',
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF2563EB),
+          brightness: Brightness.dark,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF000000), // Deep black theme matching web
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color(0xFF0F172A),
+          foregroundColor: Colors.white,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          shape: Border(bottom: BorderSide(color: Color(0xFF1E293B))),
+        ),
+        cardTheme: const CardThemeData(
+          color: Color(0xFF1E293B),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+            side: BorderSide(color: Color(0xFF334155)),
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: Color(0xFF1E293B),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFF334155)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFF334155)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.zero,
+            borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            elevation: 0,
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            side: const BorderSide(color: Color(0xFF334155)),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
+        ),
+        chipTheme: const ChipThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+            side: BorderSide(color: Color(0xFF334155)),
+          ),
+        ),
+        dialogTheme: const DialogThemeData(
+          backgroundColor: Color(0xFF1E293B),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Color(0xFF1E293B),
+          modalBarrierColor: Colors.black54,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
       ),
