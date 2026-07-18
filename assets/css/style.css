@@ -868,3 +868,9 @@ h6 {
     font-size: 0.65rem !important;
   }
 }
+
+/* Compulsively normalize logo scaling between light/dark themes to account for native padding differences */
+[data-theme="dark"] img[src*="logo_dark.webp"] {
+  height: 38px !important;
+  margin-top: -3px;
+}
