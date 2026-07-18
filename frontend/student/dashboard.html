@@ -227,14 +227,6 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
           <span>Forecaster</span>
         </a>
-        <a class="sidebar-link" href="/student/settings">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-          <span>Settings</span>
-        </a>
-        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          <span>Log Out</span>
-        </a>
       </div>
     </aside>
 
@@ -243,14 +235,32 @@
       <!-- Header -->
       <header class="app-header">
         <h1 class="app-header-title">Student Dashboard</h1>
-        <div class="app-header-profile">
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">S</span>
+        <div class="app-header-profile dropdown">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <div class="profile-avatar-container">
+              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;">S</span>
+            </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
               <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
               <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
             </div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" style="border-color: #f1f5f9;"></li>
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger" style="width: 16px; height: 16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Log Out</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </header>
 
@@ -286,36 +296,12 @@
             </tbody>
           </table>
         </div>
-
-        <div class="row g-4 mb-4">
-          <!-- Left: Today's Classes Check -->
-          <div class="col-md-5">
-            <div class="glass-card h-100 p-4">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2 class="h6 fw-bold mb-0 text-secondary text-uppercase" style="letter-spacing: 0.05em; font-size: 0.75rem;">Today's Schedule</h2>
-                <a href="/student/attendance" class="link-primary small text-decoration-none fw-bold" style="font-size: 0.75rem;">Mark Attendance &rarr;</a>
-              </div>
-              <div id="today-schedule-stub" class="d-flex flex-column gap-2">
-                <div class="text-center py-4 text-secondary small">Loading schedule...</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right: Analytics Chart -->
-          <div class="col-md-7">
-            <div class="glass-card h-100 p-4">
-              <h2 class="h6 fw-bold mb-3 text-secondary text-uppercase" style="letter-spacing: 0.05em; font-size: 0.75rem;">Subject Comparison %</h2>
-              <div style="position: relative; height: 200px; width: 100%;">
-                <canvas id="subjectChart"></canvas>
-              </div>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   </div>
 
   <!-- Global scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
   <script src="/assets/js/main.js"></script>
   <script>
     let myChart = null;
@@ -394,223 +380,227 @@
         }
 
         // Render Chart.js using unified primary brand color
-        const labels = stats.subjectStats.map(s => s.subject_code);
-        const data = stats.subjectStats.map(s => s.percentage);
-        const colors = stats.subjectStats.map(() => '#2563eb');
+        const chartEl = document.getElementById('subjectChart');
+        if (chartEl) {
+          const labels = stats.subjectStats.map(s => s.subject_code);
+          const data = stats.subjectStats.map(s => s.percentage);
+          const colors = stats.subjectStats.map(() => '#2563eb');
 
-        const ctx = document.getElementById('subjectChart').getContext('2d');
-        if (myChart) myChart.destroy();
+          const ctx = chartEl.getContext('2d');
+          if (myChart) myChart.destroy();
 
-        myChart = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: labels,
-            datasets: [{
-              label: 'Attendance %',
-              data: data,
-              backgroundColor: colors,
-              borderRadius: 6,
-              borderWidth: 0,
-              maxBarThickness: 28
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: { display: false },
-              tooltip: {
-                backgroundColor: '#1e293b',
-                titleFont: { family: 'Outfit', size: 12, weight: 'bold' },
-                bodyFont: { family: 'Outfit', size: 12 },
-                padding: 10,
-                cornerRadius: 8,
-                displayColors: false
-              }
+          myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: 'Attendance %',
+                data: data,
+                backgroundColor: colors,
+                borderRadius: 6,
+                borderWidth: 0,
+                maxBarThickness: 28
+              }]
             },
-            scales: {
-              y: {
-                min: 0,
-                max: 100,
-                grid: {
-                  color: '#f1f5f9',
-                  drawTicks: false
-                },
-                border: {
-                  dash: [5, 5],
-                  display: false
-                },
-                ticks: {
-                  font: { family: 'Outfit', size: 10, weight: '500' },
-                  color: '#64748b',
-                  padding: 8
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: '#1e293b',
+                  titleFont: { family: 'Outfit', size: 12, weight: 'bold' },
+                  bodyFont: { family: 'Outfit', size: 12 },
+                  padding: 10,
+                  cornerRadius: 8,
+                  displayColors: false
                 }
               },
-              x: {
-                grid: { display: false },
-                border: { display: false },
-                ticks: {
-                  font: { family: 'Outfit', size: 10, weight: '600' },
-                  color: '#475569',
-                  padding: 8
+              scales: {
+                y: {
+                  min: 0,
+                  max: 100,
+                  grid: {
+                    color: '#f1f5f9',
+                    drawTicks: false
+                  },
+                  border: {
+                    dash: [5, 5],
+                    display: false
+                  },
+                  ticks: {
+                    font: { family: 'Outfit', size: 10, weight: '500' },
+                    color: '#64748b',
+                    padding: 8
+                  }
+                },
+                x: {
+                  grid: { display: false },
+                  border: { display: false },
+                  ticks: {
+                    font: { family: 'Outfit', size: 10, weight: '600' },
+                    color: '#475569',
+                    padding: 8
+                  }
                 }
               }
             }
-          }
-        });
+          });
+        }
       }
 
       // 3. Fetch Today's schedule list
-      const today = new Date();
-      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const todayDayName = daysOfWeek[today.getDay()];
-      const todayDateFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-
-      const timetableRes = await apiCall('/api/timetable');
-      const adjustmentsRes = await apiCall(`/api/timetable/adjustments?date=${todayDateFormatted}`);
-      const logsRes = await apiCall(`/api/attendance?startDate=${todayDateFormatted}&endDate=${todayDateFormatted}`);
       const scheduleContainer = document.getElementById('today-schedule-stub');
+      if (scheduleContainer) {
+        const today = new Date();
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const todayDayName = daysOfWeek[today.getDay()];
+        const todayDateFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
-      if (timetableRes.success && adjustmentsRes.success && logsRes.success) {
-        const rawSlots = timetableRes.timetable.filter(s => s.day === todayDayName);
-        const todayLogs = logsRes.logs;
-        const dayAdjustments = adjustmentsRes.adjustments;
+        const timetableRes = await apiCall('/api/timetable');
+        const adjustmentsRes = await apiCall(`/api/timetable/adjustments?date=${todayDateFormatted}`);
+        const logsRes = await apiCall(`/api/attendance?startDate=${todayDateFormatted}&endDate=${todayDateFormatted}`);
 
-        // Apply adjustments
-        let todaySlots = [];
-        rawSlots.forEach(slot => {
-          const adj = dayAdjustments.find(a => a.period === slot.period && a.adjustment_type !== 'extra');
-          if (adj) {
-            if (adj.adjustment_type === 'cancel') {
+        if (timetableRes.success && adjustmentsRes.success && logsRes.success) {
+          const rawSlots = timetableRes.timetable.filter(s => s.day === todayDayName);
+          const todayLogs = logsRes.logs;
+          const dayAdjustments = adjustmentsRes.adjustments;
+
+          // Apply adjustments
+          let todaySlots = [];
+          rawSlots.forEach(slot => {
+            const adj = dayAdjustments.find(a => a.period === slot.period && a.adjustment_type !== 'extra');
+            if (adj) {
+              if (adj.adjustment_type === 'cancel') {
+                todaySlots.push({
+                  ...slot,
+                  is_canceled: true
+                });
+              } else if (adj.adjustment_type === 'substitution') {
+                todaySlots.push({
+                  ...slot,
+                  subject_id: adj.adjusted_subject_id,
+                  subject_name: adj.adjusted_subject_name,
+                  subject_code: adj.adjusted_subject_code,
+                  color: adj.adjusted_subject_color || slot.color,
+                  is_substituted: true,
+                  original_subject_name: slot.subject_name
+                });
+              } else if (adj.adjustment_type === 'swap') {
+                todaySlots.push({
+                  ...slot,
+                  subject_id: adj.adjusted_subject_id,
+                  subject_name: adj.adjusted_subject_name,
+                  subject_code: adj.adjusted_subject_code,
+                  color: adj.adjusted_subject_color || slot.color,
+                  is_swapped: true,
+                  swap_period_details: adj.remarks
+                });
+              }
+            } else {
+              todaySlots.push(slot);
+            }
+          });
+
+          // Add extra class periods
+          dayAdjustments.forEach(adj => {
+            if (adj.adjustment_type === 'extra') {
               todaySlots.push({
-                ...slot,
-                is_canceled: true
-              });
-            } else if (adj.adjustment_type === 'substitution') {
-              todaySlots.push({
-                ...slot,
+                id: null,
                 subject_id: adj.adjusted_subject_id,
                 subject_name: adj.adjusted_subject_name,
                 subject_code: adj.adjusted_subject_code,
-                color: adj.adjusted_subject_color || slot.color,
-                is_substituted: true,
-                original_subject_name: slot.subject_name
-              });
-            } else if (adj.adjustment_type === 'swap') {
-              todaySlots.push({
-                ...slot,
-                subject_id: adj.adjusted_subject_id,
-                subject_name: adj.adjusted_subject_name,
-                subject_code: adj.adjusted_subject_code,
-                color: adj.adjusted_subject_color || slot.color,
-                is_swapped: true,
-                swap_period_details: adj.remarks
+                color: adj.adjusted_subject_color || '#3b82f6',
+                day: todayDayName,
+                period: adj.period,
+                start_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[0].trim() + ':00' : '00:00:00',
+                end_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[1].trim() + ':00' : '00:00:00',
+                room: 'TBA',
+                is_extra: true
               });
             }
-          } else {
-            todaySlots.push(slot);
-          }
-        });
+          });
 
-        // Add extra class periods
-        dayAdjustments.forEach(adj => {
-          if (adj.adjustment_type === 'extra') {
-            todaySlots.push({
-              id: null,
-              subject_id: adj.adjusted_subject_id,
-              subject_name: adj.adjusted_subject_name,
-              subject_code: adj.adjusted_subject_code,
-              color: adj.adjusted_subject_color || '#3b82f6',
-              day: todayDayName,
-              period: adj.period,
-              start_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[0].trim() + ':00' : '00:00:00',
-              end_time: adj.remarks && adj.remarks.includes('(') ? adj.remarks.split('(').pop().split(')')[0].split('-')[1].trim() + ':00' : '00:00:00',
-              room: 'TBA',
-              is_extra: true
-            });
-          }
-        });
+          // Sort by period number
+          todaySlots.sort((a, b) => a.period - b.period);
 
-        // Sort by period number
-        todaySlots.sort((a, b) => a.period - b.period);
+          scheduleContainer.innerHTML = '';
 
-        scheduleContainer.innerHTML = '';
-
-        if (todaySlots.length === 0) {
-          scheduleContainer.innerHTML = `
-            <div class="text-center py-4 text-secondary small">
-              No classes scheduled for today.
-            </div>
-          `;
-          return;
-        }
-
-        // Limit to first 3 items
-        todaySlots.slice(0, 3).forEach(slot => {
-          if (slot.is_canceled) {
-            scheduleContainer.innerHTML += `
-              <div class="d-flex align-items-center gap-3 p-2.5 rounded-3 mb-2 animate-fade-in-up" style="background: #fff5f5; border: 1px solid #fee2e2; opacity: 0.75; width: 100%;">
-                <div class="d-flex flex-column align-items-center justify-content-center px-2 py-1.5 rounded text-white text-center" style="background-color: #dc2626; min-width: 60px; height: 42px;">
-                  <span class="fw-bold" style="font-size: 0.75rem; line-height: 1.1;">P${slot.period}</span>
-                  <span class="small" style="font-size: 0.55rem; opacity: 0.85; line-height: 1.1;">Canceled</span>
-                </div>
-                <div class="flex-grow-1 min-w-0">
-                  <div class="fw-bold text-muted text-truncate text-decoration-line-through" style="font-size: 0.85rem;">${slot.subject_code} - ${slot.subject_name}</div>
-                  <div class="text-muted" style="font-size: 0.7rem;">Class Canceled</div>
-                </div>
-                <div><span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9">Canceled</span></div>
+          if (todaySlots.length === 0) {
+            scheduleContainer.innerHTML = `
+              <div class="text-center py-4 text-secondary small">
+                No classes scheduled for today.
               </div>
             `;
             return;
           }
 
-          // Match log precisely by period
-          const matchLog = todayLogs.find(l => {
-            if (!l.remarks) return false;
-            const parts = l.remarks.split(' ');
-            return parts[0] === 'Period' && parts[1] === String(slot.period);
+          // Limit to first 3 items
+          todaySlots.slice(0, 3).forEach(slot => {
+            if (slot.is_canceled) {
+              scheduleContainer.innerHTML += `
+                <div class="d-flex align-items-center gap-3 p-2.5 rounded-3 mb-2 animate-fade-in-up" style="background: #fff5f5; border: 1px solid #fee2e2; opacity: 0.75; width: 100%;">
+                  <div class="d-flex flex-column align-items-center justify-content-center px-2 py-1.5 rounded text-white text-center" style="background-color: #dc2626; min-width: 60px; height: 42px;">
+                    <span class="fw-bold" style="font-size: 0.75rem; line-height: 1.1;">P${slot.period}</span>
+                    <span class="small" style="font-size: 0.55rem; opacity: 0.85; line-height: 1.1;">Canceled</span>
+                  </div>
+                  <div class="flex-grow-1 min-w-0">
+                    <div class="fw-bold text-muted text-truncate text-decoration-line-through" style="font-size: 0.85rem;">${slot.subject_code} - ${slot.subject_name}</div>
+                    <div class="text-muted" style="font-size: 0.7rem;">Class Canceled</div>
+                  </div>
+                  <div><span class="badge bg-danger-subtle text-danger border border-danger-subtle fs-9">Canceled</span></div>
+                </div>
+              `;
+              return;
+            }
+
+            // Match log precisely by period
+            const matchLog = todayLogs.find(l => {
+              if (!l.remarks) return false;
+              const parts = l.remarks.split(' ');
+              return parts[0] === 'Period' && parts[1] === String(slot.period);
+            });
+
+            let statusBadge = `<span class="badge bg-light text-secondary border fs-9" style="font-weight: 500;">Unmarked</span>`;
+            
+            if (matchLog) {
+              let bClass = 'badge-present';
+              if (matchLog.status === 'Absent') bClass = 'badge-absent';
+              else if (matchLog.status === 'Medical Leave') bClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+              else if (matchLog.status === 'Holiday') bClass = 'bg-info-subtle text-info border border-info-subtle';
+              else if (matchLog.status === 'On Duty') bClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+              statusBadge = `<span class="badge ${bClass} fs-9">${matchLog.status}</span>`;
+            }
+
+            let typeLabel = '';
+            if (slot.is_substituted) typeLabel = ' (Substituted)';
+            else if (slot.is_swapped) typeLabel = ' (Swapped)';
+            else if (slot.is_extra) typeLabel = ' (Extra Class)';
+
+            scheduleContainer.innerHTML += `
+              <div class="d-flex align-items-center gap-3 p-2.5 rounded-4 mb-2 border bg-white shadow-xs animate-fade-in-up" style="width: 100%;">
+                <div class="d-flex align-items-center justify-content-center rounded text-white text-center font-bold" style="background-color: ${slot.color || '#3b82f6'}; min-width: 48px; height: 42px; font-size: 0.85rem; font-weight: 800;">
+                  P${slot.period}
+                </div>
+                <div class="flex-grow-1 min-w-0">
+                  <div class="fw-bold text-dark text-truncate" style="font-size: 0.85rem;">${slot.subject_code} - ${slot.subject_name}${typeLabel}</div>
+                  <div class="text-muted" style="font-size: 0.7rem;">Room: ${slot.room || 'TBA'}</div>
+                </div>
+                <div>${statusBadge}</div>
+              </div>
+            `;
           });
 
-          let statusBadge = `<span class="badge bg-light text-secondary border fs-9" style="font-weight: 500;">Unmarked</span>`;
-          
-          if (matchLog) {
-            let bClass = 'badge-present';
-            if (matchLog.status === 'Absent') bClass = 'badge-absent';
-            else if (matchLog.status === 'Medical Leave') bClass = 'bg-warning-subtle text-warning border border-warning-subtle';
-            else if (matchLog.status === 'Holiday') bClass = 'bg-info-subtle text-info border border-info-subtle';
-            else if (matchLog.status === 'On Duty') bClass = 'bg-primary-subtle text-primary border border-primary-subtle';
-            statusBadge = `<span class="badge ${bClass} fs-9" style="font-weight: 600;">${matchLog.status}</span>`;
+          if (todaySlots.length > 3) {
+            scheduleContainer.innerHTML += `
+              <div class="text-center mt-2 small">
+                <a href="/student/attendance" class="text-decoration-none small fw-semibold">+ ${todaySlots.length - 3} more classes</a>
+              </div>
+            `;
           }
-
-          let typeLabel = '';
-          if (slot.is_substituted) typeLabel = ' (Sub)';
-          else if (slot.is_swapped) typeLabel = ' (Swap)';
-          else if (slot.is_extra) typeLabel = ' (Extra)';
-
-          scheduleContainer.innerHTML += `
-            <div class="d-flex align-items-center gap-3 p-2.5 rounded-3 mb-2 animate-fade-in-up" style="background: #ffffff; border: 1px solid #e2e8f0; transition: all 0.2s ease; width: 100%;">
-              <div class="d-flex flex-column align-items-center justify-content-center px-2 py-1.5 rounded text-white text-center" style="background-color: ${slot.color || '#cbd5e1'}; min-width: 60px; height: 42px;">
-                <span class="fw-bold" style="font-size: 0.75rem; line-height: 1.1;">P${slot.period}</span>
-                <span class="small" style="font-size: 0.55rem; opacity: 0.85; line-height: 1.1;">${slot.start_time.substring(0, 5)}</span>
-              </div>
-              <div class="flex-grow-1 min-w-0">
-                <div class="fw-bold text-dark text-truncate" style="font-size: 0.85rem;">${slot.subject_code} - ${slot.subject_name}${typeLabel}</div>
-                <div class="text-muted" style="font-size: 0.7rem;">Room: ${slot.room || 'TBA'}</div>
-              </div>
-              <div>${statusBadge}</div>
-            </div>
-          `;
-        });
-
-        if (todaySlots.length > 3) {
-          scheduleContainer.innerHTML += `
-            <div class="text-center mt-2 small">
-              <a href="/student/attendance" class="text-decoration-none small fw-semibold">+ ${todaySlots.length - 3} more classes</a>
-            </div>
-          `;
+        } else {
+          scheduleContainer.innerHTML = '<div class="text-danger small">Failed to load schedule.</div>';
         }
-      } else {
-        scheduleContainer.innerHTML = '<div class="text-danger small">Failed to load schedule.</div>';
       }
     }
 

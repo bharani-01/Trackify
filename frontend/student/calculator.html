@@ -74,14 +74,6 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
           <span>Forecaster</span>
         </a>
-        <a class="sidebar-link" href="/student/settings">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
-          <span>Settings</span>
-        </a>
-        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          <span>Log Out</span>
-        </a>
       </div>
     </aside>
 
@@ -90,14 +82,32 @@
       <!-- Header -->
       <header class="app-header">
         <h1 class="app-header-title">Forecaster & Planner</h1>
-        <div class="app-header-profile">
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;" id="profile-avatar">S</span>
+        <div class="app-header-profile dropdown">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <div class="profile-avatar-container">
+              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;" id="profile-avatar">S</span>
+            </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
               <div class="fw-bold text-dark fs-7" id="user-header-name">Student Name</div>
               <div class="text-secondary small" style="font-size: 0.65rem;" id="user-header-role">Department | Sem 1</div>
             </div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider" style="border-color: #f1f5f9;"></li>
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger" style="width: 16px; height: 16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                <span>Log Out</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </header>
 

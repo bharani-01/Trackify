@@ -380,6 +380,22 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 0.2s ease;
 }
 
+.profile-avatar-container {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar-container span {
+  border: 2px solid #e2e8f0 !important;
+  transition: all 0.2s ease !important;
+}
+
+.app-header-profile:hover .profile-avatar-container span {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
 .sidebar-link:hover {
   background-color: #1e293b;
   color: #ffffff;
