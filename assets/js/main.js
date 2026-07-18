@@ -94,3 +94,58 @@ async function handleLogout() {
     showAlert(result.message, 'danger');
   }
 }
+
+// Dynamic Theme Management (Light/Dark Mode)
+document.addEventListener('DOMContentLoaded', () => {
+  const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', currentTheme);
+
+  const updateLogos = (theme) => {
+    const logos = document.querySelectorAll('img[src*="Logo.webp"], img[src*="logo_light.webp"], img[src*="logo_dark.webp"]');
+    logos.forEach(logo => {
+      logo.src = theme === 'dark' ? '/assets/images/logo_dark.webp' : '/assets/images/logo_light.webp';
+    });
+  };
+
+  updateLogos(currentTheme);
+
+  // Inject theme toggle button dynamically
+  const navContainer = document.querySelector('nav.navbar .container, nav.navbar .container-fluid, .app-header-profile');
+  if (navContainer) {
+    if (!document.getElementById('theme-toggle-btn')) {
+      const toggleBtn = document.createElement('button');
+      toggleBtn.id = 'theme-toggle-btn';
+      toggleBtn.className = 'btn btn-glass btn-sm border-0 d-flex align-items-center justify-content-center';
+      toggleBtn.style.padding = '8px';
+      toggleBtn.style.width = '36px';
+      toggleBtn.style.height = '36px';
+      toggleBtn.style.minWidth = 'unset';
+      toggleBtn.style.color = 'var(--text-primary)';
+      toggleBtn.style.background = 'transparent';
+      
+      const setToggleIcon = (theme) => {
+        toggleBtn.innerHTML = theme === 'dark'
+          ? `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></svg>`
+          : `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+      };
+
+      setToggleIcon(currentTheme);
+
+      toggleBtn.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('theme', nextTheme);
+        setToggleIcon(nextTheme);
+        updateLogos(nextTheme);
+      });
+
+      if (navContainer.classList.contains('app-header-profile')) {
+        navContainer.insertBefore(toggleBtn, navContainer.firstChild);
+      } else {
+        navContainer.appendChild(toggleBtn);
+      }
+    }
+  }
+});

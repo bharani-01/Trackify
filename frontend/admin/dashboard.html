@@ -42,6 +42,12 @@
     .fs-8 { font-size: 0.72rem !important; }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 </head>
 <body>
 
@@ -49,7 +55,7 @@
     <!-- Sidebar -->
     <aside class="app-sidebar">
       <div class="sidebar-logo">
-        <img src="/assets/images/Logo.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
       </div>
       <div class="sidebar-menu">
         <a class="sidebar-link active" href="/admin/dashboard">Admin Overview</a>

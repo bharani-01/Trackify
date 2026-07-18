@@ -3,32 +3,43 @@ import re
 
 frontend_dir = r"d:\Trackify\frontend"
 
+theme_script = """  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>"""
+
 logo_patterns = [
     # Pattern 1: fs-3 with logo ID
     (re.compile(r'<span class="fs-3 fw-bold gradient-accent-text" id="logo">Trackify</span>', re.IGNORECASE), 
-     '<img src="/assets/images/Logo.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
+     '<img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
     
     # Pattern 2: fs-3 without logo ID
     (re.compile(r'<span class="fs-3 fw-bold gradient-accent-text">Trackify</span>', re.IGNORECASE), 
-     '<img src="/assets/images/Logo.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
+     '<img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
      
     # Pattern 3: fs-4 white text with letter spacing
     (re.compile(r'<span class="fs-4 fw-bold" style="letter-spacing: -0.03em; color: #ffffff;">Trackify</span>', re.IGNORECASE), 
-     '<img src="/assets/images/Logo.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
+     '<img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
      
     # Pattern 4: fs-4 simple
     (re.compile(r'<span class="fs-4 fw-bold">Trackify</span>', re.IGNORECASE), 
-     '<img src="/assets/images/Logo.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
+     '<img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">'),
 
     # Pattern 5: existing Logo.png text link from previous run
     (re.compile(r'/assets/images/Logo\.png', re.IGNORECASE),
-     '/assets/images/Logo.webp'),
+     '/assets/images/logo_light.webp'),
 
-    # Pattern 6: existing favicon.jpeg text link from previous run
+    # Pattern 6: existing Logo.webp text link from previous run
+    (re.compile(r'/assets/images/Logo\.webp', re.IGNORECASE),
+     '/assets/images/logo_light.webp'),
+
+    # Pattern 7: existing favicon.jpeg text link from previous run
     (re.compile(r'/assets/images/favicon\.jpeg', re.IGNORECASE),
      '/assets/images/favicon.webp'),
 
-    # Pattern 7: type="image/jpeg" to type="image/webp"
+    # Pattern 8: type="image/jpeg" to type="image/webp"
     (re.compile(r'type="image/jpeg"', re.IGNORECASE),
      'type="image/webp"')
 ]
@@ -51,6 +62,11 @@ def process_file(filepath):
     # 2. Add favicon if not present at all
     if '</head>' in new_content and 'favicon.webp' not in new_content:
         new_content = new_content.replace('</head>', f'  {favicon_tag}\n</head>')
+        modified = True
+
+    # 3. Add theme script if not present at all
+    if '</head>' in new_content and 'data-theme' not in new_content:
+        new_content = new_content.replace('</head>', f'{theme_script}\n</head>')
         modified = True
 
     if modified:
