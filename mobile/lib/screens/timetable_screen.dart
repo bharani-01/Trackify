@@ -64,7 +64,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Row(
           children: [
@@ -114,7 +114,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
                             ),
-                            backgroundColor: Colors.white,
+                            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                             side: BorderSide(color: active ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
                             showCheckmark: false,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -318,7 +318,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
         border: Border.all(color: hasSubject ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9)),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.01), blurRadius: 4, offset: const Offset(0, 1))
@@ -421,7 +421,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       builder: (ctx) {
         return StatefulBuilder(
@@ -447,7 +447,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
                     ),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(

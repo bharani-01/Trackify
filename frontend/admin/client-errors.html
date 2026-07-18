@@ -297,7 +297,7 @@
 
     async function resolveError(id) {
       if (confirm('Are you sure you want to mark this error log as resolved?')) {
-        const response = await apiCall(`/api/admin/client-errors/${id}/resolve`, 'POST');
+        const response = await apiCall(`/api/admin/client-errors/${id}/resolve`, { method: 'POST' });
         if (response.success) {
           if (!showResolved) {
             // Animate and slide out the resolved row

@@ -56,7 +56,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final sem = user?['semester']?.toString() ?? '';
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Row(
           children: [
@@ -74,7 +74,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -253,8 +253,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: const Color(0xFFE2E8F0), width: 1),
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
       ),
       child: Column(
         children: [
