@@ -67,9 +67,8 @@
     .subject-table-wrapper {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 12px;
+      border-radius: 0px;
       overflow: hidden;
-      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.01);
     }
     
     .subject-table {
@@ -98,7 +97,7 @@
     }
     
     .subject-table tbody tr {
-      transition: background-color 0.15s ease;
+      transition: background-color 80ms ease;
     }
     
     .subject-table tbody tr:hover {
@@ -122,7 +121,7 @@
       font-size: 0.65rem;
       font-weight: 700;
       padding: 0.15rem 0.45rem;
-      border-radius: 4px;
+      border-radius: 0px;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
@@ -143,57 +142,124 @@
     
     .table-responsive::-webkit-scrollbar-thumb {
       background: #cbd5e1;
-      border-radius: 4px;
+      border-radius: 0px;
     }
     
     .table-responsive::-webkit-scrollbar-track {
       background: #f1f5f9;
     }
 
-    @media (max-width: 768px) {
-      .subject-table th:nth-child(2),
-      .subject-table td:nth-child(2),
-      .subject-table th:nth-child(3),
-      .subject-table td:nth-child(3),
-      .subject-table th:nth-child(4),
-      .subject-table td:nth-child(4),
-      .subject-table th:nth-child(5),
-      .subject-table td:nth-child(5) {
-        display: none !important;
-      }
-      
-      .subject-table-wrapper {
-        overflow-x: hidden !important;
-      }
-      
-      .subject-table th, 
-      .subject-table td {
-        padding: 0.85rem 0.75rem !important;
-      }
+    /* Mobile Subject Tabs Styles */
+    .mobile-subjects-tabs-wrapper {
+      margin-bottom: 1.5rem;
+    }
 
-      .subject-table th:nth-child(1),
-      .subject-table td:nth-child(1) {
-        width: auto !important;
-        min-width: 0 !important;
-      }
-      
-      .subject-table th:nth-child(6),
-      .subject-table td:nth-child(6) {
-        width: auto !important;
-        min-width: 0 !important;
-        text-align: right !important;
-        padding-right: 0.75rem !important;
-      }
+    .mobile-subj-tabs-header {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      scrollbar-width: none;
+    }
 
-      .subject-name {
-        font-size: 0.9rem;
-        max-width: 100% !important;
-        white-space: normal !important;
-      }
-      
-      .percentage-val {
-        font-size: 1.25rem !important;
-      }
+    .mobile-subj-tabs-header::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mobile-subj-tab-btn {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #64748b;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: 'IBM Plex Mono', monospace;
+      white-space: nowrap;
+      cursor: pointer;
+      border-radius: 0px !important;
+      transition: all 80ms ease;
+    }
+
+    .mobile-subj-tab-btn.active {
+      background: rgba(37, 99, 235, 0.08);
+      border-color: #2563eb;
+      color: #2563eb;
+    }
+
+    .mobile-subj-card {
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 0px !important;
+      background: #ffffff;
+      padding: 1.25rem !important;
+    }
+
+    .mobile-subj-card-header {
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .mobile-subj-card-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+
+    .mobile-subj-card-code {
+      font-size: 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      color: #2563eb;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      display: inline-block;
+    }
+
+    .mobile-subj-metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .mobile-subj-metric-box {
+      border: 1px solid #f1f5f9;
+      background: #f8fafc;
+      padding: 0.75rem;
+      text-align: center;
+      border-radius: 0px;
+    }
+
+    .mobile-subj-metric-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .mobile-subj-metric-val {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .mobile-subj-percentage-box {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-subj-percentage-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #0f172a;
     }
   </style>
 </head>
@@ -273,7 +339,9 @@
           <span>Subject Directory & Performance</span>
           <span class="text-muted small d-none d-md-block" style="font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; text-transform: none; letter-spacing: 0;">Real-time Attendance Analytics</span>
         </div>
-        <div class="subject-table-wrapper table-responsive mb-4">
+        
+        <!-- Desktop Table View -->
+        <div class="subject-table-wrapper table-responsive mb-4 d-none d-md-block">
           <table class="subject-table">
             <thead>
               <tr>
@@ -292,6 +360,16 @@
             </tbody>
           </table>
         </div>
+
+        <!-- Mobile Tabs View -->
+        <div class="mobile-subjects-tabs-wrapper d-block d-md-none">
+          <div class="mobile-subj-tabs-header scrollable-subtabs mb-3" id="mobile-subj-tabs-list">
+            <!-- Dynamic tab buttons go here -->
+          </div>
+          <div class="mobile-subj-card bg-white p-3 border" id="mobile-subj-card-content">
+            <div class="text-center py-4 text-secondary small">Loading subject details...</div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
@@ -301,6 +379,76 @@
   <script src="/assets/js/main.js"></script>
   <script>
     let myChart = null;
+
+    function switchMobileSubjectTab(index, element) {
+      if (!window.dashboardSubjectStats || !window.dashboardSubjectStats[index]) return;
+      
+      if (element) {
+        const buttons = document.querySelectorAll('.mobile-subj-tab-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+      } else {
+        const buttons = document.querySelectorAll('.mobile-subj-tab-btn');
+        if (buttons.length > 0) {
+          buttons.forEach(btn => btn.classList.remove('active'));
+          buttons[index].classList.add('active');
+        }
+      }
+      
+      const subj = window.dashboardSubjectStats[index];
+      const percentage = parseFloat(subj.percentage);
+      
+      let percentColor = '#059669'; // Success Green
+      let statusText = 'On Track';
+      let statusBadgeClass = 'text-success bg-success-subtle border border-success-subtle';
+      
+      if (percentage < 80) {
+        percentColor = '#dc2626'; // Danger Red
+        statusText = 'Critical';
+        statusBadgeClass = 'text-danger bg-danger-subtle border border-danger-subtle';
+      } else if (percentage <= 90) {
+        percentColor = '#d97706'; // Warning Amber
+        statusText = 'Needs Improvement';
+        statusBadgeClass = 'text-warning bg-warning-subtle border border-warning-subtle';
+      }
+      
+      const cardContent = document.getElementById('mobile-subj-card-content');
+      if (cardContent) {
+        cardContent.innerHTML = `
+          <div class="mobile-subj-card-header">
+            <span class="mobile-subj-card-code">${subj.subject_code}</span>
+            <h3 class="mobile-subj-card-title">${subj.subject_name}</h3>
+          </div>
+          
+          <div class="mobile-subj-metrics-grid">
+            <div class="mobile-subj-metric-box">
+              <div class="mobile-subj-metric-label">Conducted</div>
+              <div class="mobile-subj-metric-val mono-stat text-dark" style="font-family: 'IBM Plex Mono', monospace;">${subj.conducted_count}</div>
+            </div>
+            <div class="mobile-subj-metric-box">
+              <div class="mobile-subj-metric-label">Present</div>
+              <div class="mobile-subj-metric-val mono-stat text-success" style="font-family: 'IBM Plex Mono', monospace;">${subj.present_count}</div>
+            </div>
+            <div class="mobile-subj-metric-box">
+              <div class="mobile-subj-metric-label">On Duty (OD)</div>
+              <div class="mobile-subj-metric-val mono-stat text-primary" style="font-family: 'IBM Plex Mono', monospace;">${subj.od_count || 0}</div>
+            </div>
+            <div class="mobile-subj-metric-box">
+              <div class="mobile-subj-metric-label">Absent</div>
+              <div class="mobile-subj-metric-val mono-stat text-danger" style="font-family: 'IBM Plex Mono', monospace;">${subj.absent_count}</div>
+            </div>
+          </div>
+          
+          <div class="mobile-subj-percentage-box">
+            <div>
+              <span class="mobile-subj-percentage-label">Total Attendance</span>
+              <span class="badge ${statusBadgeClass} ms-2" style="font-size: 0.65rem; border-radius: 0px; text-transform: uppercase;">${statusText}</span>
+            </div>
+            <span class="percentage-val mono-stat" style="color: ${percentColor}; font-size: 1.65rem; font-weight: 800; letter-spacing: -0.02em; font-family: 'IBM Plex Mono', monospace;">${subj.percentage}%</span>
+          </div>
+        `;
+      }
+    }
 
     async function loadDashboard() {
       // 1. Fetch profile info
@@ -325,9 +473,14 @@
         const user = window.currentUser || { department: 'General', semester: 'N/A' };
         document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'}`;
 
-        // Build Subject-wise rows inside table tbody
+        // Build Subject-wise rows inside table tbody (desktop view)
         const tbody = document.getElementById('subject-table-body');
         tbody.innerHTML = '';
+
+        // Mobile views selectors
+        const mobileTabsList = document.getElementById('mobile-subj-tabs-list');
+        const mobileCardContent = document.getElementById('mobile-subj-card-content');
+        if (mobileTabsList) mobileTabsList.innerHTML = '';
 
         if (!stats.subjectStats || stats.subjectStats.length === 0) {
           tbody.innerHTML = `
@@ -337,14 +490,13 @@
               </td>
             </tr>
           `;
+          if (mobileCardContent) {
+            mobileCardContent.innerHTML = '<div class="text-center py-4 text-secondary small">No subjects registered yet.</div>';
+          }
         } else {
+          // Render Desktop Table View
           stats.subjectStats.forEach(subj => {
             const percentage = parseFloat(subj.percentage);
-            
-            // Dynamic text color thresholds:
-            // < 80% => Red (#dc2626)
-            // 80% - 90% => Amber/Yellow (#d97706)
-            // > 90% => Emerald Green (#059669)
             let percentColor = '#059669';
             if (percentage < 80) {
               percentColor = '#dc2626';
@@ -352,7 +504,6 @@
               percentColor = '#d97706';
             }
 
-            // Using unified primary brand color #2563eb for code badge
             const primaryColor = '#2563eb';
 
             tbody.innerHTML += `
@@ -373,6 +524,20 @@
               </tr>
             `;
           });
+
+          // Render Mobile Tabs View
+          if (mobileTabsList && mobileCardContent) {
+            window.dashboardSubjectStats = stats.subjectStats;
+            stats.subjectStats.forEach((subj, idx) => {
+              const activeClass = idx === 0 ? 'active' : '';
+              mobileTabsList.innerHTML += `
+                <button class="mobile-subj-tab-btn btn ${activeClass}" onclick="switchMobileSubjectTab(${idx}, this)">
+                  ${subj.subject_code}
+                </button>
+              `;
+            });
+            switchMobileSubjectTab(0);
+          }
         }
 
         // Render Chart.js using unified primary brand color
