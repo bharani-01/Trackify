@@ -373,6 +373,13 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.15s ease;
 }
 
+.sidebar-link svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
 .sidebar-link:hover {
   background-color: #1e293b;
   color: #ffffff;
