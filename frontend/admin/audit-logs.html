@@ -14,6 +14,7 @@
     .badge-update { background-color: rgba(245, 158, 11, 0.08); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
     .badge-danger-action { background-color: rgba(220, 38, 38, 0.08); color: var(--danger); border: 1px solid rgba(220, 38, 38, 0.2); }
     .badge-settings { background-color: rgba(8, 145, 178, 0.08); color: var(--info); border: 1px solid rgba(8, 145, 178, 0.2); }
+    .badge-email { background-color: rgba(79, 70, 229, 0.08); color: #4f46e5; border: 1px solid rgba(79, 70, 229, 0.2); }
   </style>
 </head>
 <body>
@@ -64,12 +65,26 @@
           </div>
         </div>
 
+        <!-- Filter Tabs for audit categories -->
+        <ul class="nav nav-tabs border-bottom mb-3" id="auditTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-dark border-0 border-bottom-2" id="all-logs-tab" type="button" role="tab" onclick="switchFilter('all')" style="border-radius: 0px;">
+              All System Logs
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-secondary border-0 border-bottom-2" id="email-logs-tab" type="button" role="tab" onclick="switchFilter('email')" style="border-radius: 0px;">
+              Email Activity Logs Only
+            </button>
+          </li>
+        </ul>
+
         <!-- Search / Filter Card -->
-        <div class="glass-card border-glass mb-4 p-3">
+        <div class="glass-card border-glass mb-4 p-3" style="border-radius: 0px;">
           <div class="row g-2">
             <div class="col-12">
               <div class="form-floating">
-                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name, action, or details..." onkeyup="handleSearch(event)">
+                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name, action, or details..." onkeyup="handleSearch(event)" style="border-radius: 0px;">
                 <label for="searchBox">Search by Performed By, Action, details, or IP address (Press Enter to search)...</label>
               </div>
             </div>
@@ -182,6 +197,8 @@
 
           if (act.includes('LOGIN')) {
             badgeClass = 'badge-login';
+          } else if (act.includes('EMAIL')) {
+            badgeClass = 'badge-email';
           } else if (act.includes('CREATE') || act.includes('REGISTER') || act.includes('BACKUP')) {
             badgeClass = 'badge-create';
           } else if (act.includes('UPDATE') || act.includes('ADJUST') || act.includes('EDIT')) {
@@ -249,6 +266,34 @@
         offset = 0; // Reset pagination
         await fetchLogs();
       }
+    }
+
+    async function switchFilter(type) {
+      offset = 0;
+      const allTab = document.getElementById('all-logs-tab');
+      const emailTab = document.getElementById('email-logs-tab');
+      
+      if (type === 'email') {
+        allTab.classList.remove('active', 'text-dark');
+        allTab.classList.add('text-secondary');
+        emailTab.classList.add('active', 'text-dark');
+        emailTab.classList.remove('text-secondary');
+        
+        currentSearch = 'EMAIL_DISPATCHED';
+        document.getElementById('searchBox').value = 'EMAIL_DISPATCHED';
+        document.getElementById('searchBox').disabled = true;
+      } else {
+        emailTab.classList.remove('active', 'text-dark');
+        emailTab.classList.add('text-secondary');
+        allTab.classList.add('active', 'text-dark');
+        allTab.classList.remove('text-secondary');
+        
+        currentSearch = '';
+        document.getElementById('searchBox').value = '';
+        document.getElementById('searchBox').disabled = false;
+      }
+      
+      await fetchLogs();
     }
 
     window.onload = loadData;

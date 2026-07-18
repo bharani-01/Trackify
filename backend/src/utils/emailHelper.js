@@ -37,6 +37,50 @@ const sendResetEmail = async (email, resetUrl) => {
   }
 };
 
+const sendSettingsUpdatedEmail = async (email, name, details) => {
+  try {
+    const systemSettingsRepository = require('../repositories/systemSettingsRepository');
+    const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+    if (globalEmail !== 'true') {
+      console.log('[EMAIL HELPER] Global email notifications are disabled. Bypassing settings update email alert.');
+      return { success: true, bypassed: true };
+    }
+
+    const resendApiKey = process.env.RESEND_API_KEY;
+    if (!resendApiKey) {
+      console.warn('[EMAIL HELPER WARNING]: RESEND_API_KEY is not defined. Simulating send to console only.');
+      return { success: true, simulated: true };
+    }
+
+    const resend = new Resend(resendApiKey);
+    const data = await resend.emails.send({
+      from: 'Trackify <trackify@bharani-01.xyz>',
+      to: [email],
+      subject: 'Trackify Profile Settings Updated',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; background-color: #ffffff;">
+          <h2 style="color: #0f172a; margin-bottom: 16px;">Trackify Settings Alert</h2>
+          <p style="color: #475569; font-size: 16px; line-height: 24px;">Hello ${name},</p>
+          <p style="color: #475569; font-size: 16px; line-height: 24px;">This is to confirm that your Trackify profile configurations were recently updated:</p>
+          <div style="margin: 20px 0; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; font-family: monospace; font-size: 14px; color: #334155;">
+            ${details}
+          </div>
+          <p style="color: #64748b; font-size: 14px;">If you did not perform this change, please contact your university administrator immediately.</p>
+          <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+          <p style="color: #94a3b8; font-size: 12px;">This is an automated security transmission. Please do not reply directly to this message.</p>
+        </div>
+      `
+    });
+
+    console.log('[RESEND EMAIL SENT SUCCESS]:', data);
+    return { success: true, data };
+  } catch (error) {
+    console.error('[RESEND EMAIL SENT ERROR]:', error);
+    throw error;
+  }
+};
+
 module.exports = {
-  sendResetEmail
+  sendResetEmail,
+  sendSettingsUpdatedEmail
 };

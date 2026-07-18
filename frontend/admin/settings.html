@@ -57,7 +57,7 @@
               <h2 class="h5 fw-bold mb-4">Registration & System Controls</h2>
               
               <!-- Toggle Registrations Switch -->
-              <div class="form-check form-switch mb-3 p-3 rounded-4 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem;">
+              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
                 <div>
                   <label class="form-check-label fw-bold text-dark" for="regSwitch">Open Registrations</label>
                   <div class="text-secondary small" style="font-size: 0.8rem;">Allow new students to sign up.</div>
@@ -65,8 +65,17 @@
                 <input class="form-check-input ms-0" type="checkbox" role="switch" id="regSwitch" checked>
               </div>
 
+              <!-- Global Email System Toggle -->
+              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+                <div>
+                  <label class="form-check-label fw-bold text-dark" for="emailSwitch">Global Email Broadcast</label>
+                  <div class="text-secondary small" style="font-size: 0.8rem;">Allow automated settings notifications & recovery emails.</div>
+                </div>
+                <input class="form-check-input ms-0" type="checkbox" role="switch" id="emailSwitch" checked>
+              </div>
+
               <!-- Maintenance Mode -->
-              <div class="form-check form-switch mb-4 p-3 rounded-4 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem;">
+              <div class="form-check form-switch mb-4 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
                 <div>
                   <label class="form-check-label fw-bold text-dark" for="maintSwitch">Maintenance Mode</label>
                   <div class="text-secondary small" style="font-size: 0.8rem;">Block student portal access globally.</div>
@@ -74,7 +83,7 @@
                 <input class="form-check-input ms-0" type="checkbox" role="switch" id="maintSwitch">
               </div>
 
-              <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3">Save System Variables</button>
+              <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
             </div>
           </div>
 
@@ -186,6 +195,7 @@
       if (response.success && response.settings) {
         document.getElementById('regSwitch').checked = response.settings.allow_self_registration;
         document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
+        document.getElementById('emailSwitch').checked = response.settings.global_email_notifications;
       }
 
       // Fetch backups history list
@@ -251,6 +261,7 @@
     async function saveConfigs() {
       const allow_self_registration = document.getElementById('regSwitch').checked;
       const maintenance_mode = document.getElementById('maintSwitch').checked;
+      const global_email_notifications = document.getElementById('emailSwitch').checked;
       
       const saveBtn = document.querySelector('button[onclick="saveConfigs()"]');
       saveBtn.disabled = true;
@@ -258,7 +269,7 @@
 
       const response = await apiCall('/api/admin/settings', {
         method: 'PUT',
-        body: { allow_self_registration, maintenance_mode }
+        body: { allow_self_registration, maintenance_mode, global_email_notifications }
       });
 
       saveBtn.disabled = false;

@@ -42,6 +42,21 @@ const updateSettings = async (req, res) => {
       notifications
     });
 
+    // Log action to audit logs & send configuration email alert
+    const auditLogRepository = require('../repositories/auditLogRepository');
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(req.user.id, 'SETTINGS_UPDATED', `Attendance Configurations updated. Min Target: ${minimum_attendance}%, Reminders: ${notifications}`, ip);
+
+    try {
+      const { sendSettingsUpdatedEmail } = require('../utils/emailHelper');
+      const details = `Minimum Target Attendance: ${minimum_attendance}%\nReminders Enabled: ${notifications}`;
+      
+      await sendSettingsUpdatedEmail(req.user.email, req.user.name, details);
+      await auditLogRepository.logAction(req.user.id, 'EMAIL_DISPATCHED', `Settings update notification email sent to ${req.user.email}`, ip);
+    } catch (emailErr) {
+      console.error('Non-blocking error dispatching settings update email alert:', emailErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       settings: updatedSettings

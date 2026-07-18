@@ -124,13 +124,14 @@
                       <th class="ps-4">Student Details</th>
                       <th>Reg Number</th>
                       <th>Department / Sem</th>
+                      <th>Preferences</th>
                       <th>Status</th>
                       <th class="pe-4 text-end">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="users-container">
                     <tr>
-                      <td colspan="5" class="text-center py-5">
+                      <td colspan="6" class="text-center py-5">
                         <div class="spinner-border text-primary" role="status">
                           <span class="visually-hidden">Loading...</span>
                         </div>
@@ -410,6 +411,10 @@
             <td class="fw-semibold text-secondary small">${user.register_number}</td>
             <td class="text-secondary small">
               ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
+            </td>
+            <td class="text-secondary small font-monospace" style="font-size: 0.72rem; line-height: 1.2;">
+              Target: <span class="fw-bold text-dark">${user.minimum_attendance || 75}%</span><br>
+              Alerts: <span class="badge ${user.notifications ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle'} py-0.5 px-1 fw-bold fs-9" style="font-size: 0.6rem;">${user.notifications ? 'ON' : 'OFF'}</span>
             </td>
             <td>${statusBadge}</td>
             <td class="pe-4 text-end">

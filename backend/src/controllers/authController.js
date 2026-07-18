@@ -393,6 +393,22 @@ const updateProfile = async (req, res) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     await auditLogRepository.logAction(req.user.id, 'PROFILE_UPDATED', `Profile name/email updated: ${email}`, ip);
 
+    // Dispatch settings update alert emails & log email activities
+    try {
+      const { sendSettingsUpdatedEmail } = require('../utils/emailHelper');
+      const details = `Name: ${name}\nEmail: ${email}`;
+      
+      await sendSettingsUpdatedEmail(email, name, details);
+      await auditLogRepository.logAction(req.user.id, 'EMAIL_DISPATCHED', `Settings update notification email sent to ${email}`, ip);
+
+      if (req.user.email && req.user.email.toLowerCase() !== email.toLowerCase()) {
+        await sendSettingsUpdatedEmail(req.user.email, name, `Your account email address was recently updated to ${email}`);
+        await auditLogRepository.logAction(req.user.id, 'EMAIL_DISPATCHED', `Security change warning email sent to ${req.user.email}`, ip);
+      }
+    } catch (emailErr) {
+      console.error('Non-blocking error dispatching settings email alerts:', emailErr.message);
+    }
+
     return res.status(200).json({
       success: true,
       user: updatedUser

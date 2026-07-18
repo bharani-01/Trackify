@@ -8,12 +8,14 @@ const getSettings = async (req, res) => {
   try {
     const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
     const maintMode = await systemSettingsRepository.getSetting('maintenance_mode', 'false');
+    const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
 
     return res.status(200).json({
       success: true,
       settings: {
         allow_self_registration: allowSelfReg === 'true',
-        maintenance_mode: maintMode === 'true'
+        maintenance_mode: maintMode === 'true',
+        global_email_notifications: globalEmail === 'true'
       }
     });
   } catch (error) {
@@ -30,7 +32,7 @@ const getSettings = async (req, res) => {
  * @route PUT /api/admin/settings
  */
 const updateSettings = async (req, res) => {
-  const { allow_self_registration, maintenance_mode } = req.body;
+  const { allow_self_registration, maintenance_mode, global_email_notifications } = req.body;
 
   try {
     if (allow_self_registration !== undefined) {
@@ -39,6 +41,10 @@ const updateSettings = async (req, res) => {
     
     if (maintenance_mode !== undefined) {
       await systemSettingsRepository.setSetting('maintenance_mode', maintenance_mode ? 'true' : 'false');
+    }
+
+    if (global_email_notifications !== undefined) {
+      await systemSettingsRepository.setSetting('global_email_notifications', global_email_notifications ? 'true' : 'false');
     }
 
     return res.status(200).json({

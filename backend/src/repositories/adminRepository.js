@@ -6,10 +6,12 @@ const db = require('../config/db');
  */
 const getStudents = async () => {
   const query = `
-    SELECT id, name, register_number, email, department, semester, is_suspended, created_at
-    FROM users
-    WHERE role = 'student'
-    ORDER BY name ASC
+    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.created_at,
+           s.minimum_attendance, s.notifications
+    FROM users u
+    LEFT JOIN settings s ON u.id = s.user_id
+    WHERE u.role = 'student'
+    ORDER BY u.name ASC
   `;
   const result = await db.query(query);
   return result.rows;
