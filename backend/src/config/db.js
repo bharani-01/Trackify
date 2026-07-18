@@ -95,6 +95,14 @@ const initMigrations = async () => {
       );
     `);
 
+    // 8. Ensure indexes for performance optimization exist
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_email_queue_active ON email_queue(status, retry_count) WHERE status IN ('pending', 'failed');
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
+      CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON audit_logs(user_id);
+      CREATE INDEX IF NOT EXISTS idx_timetable_user_day ON timetable(user_id, day);
+    `);
+
     console.log('Database self-healing table checks completed.');
   } catch (error) {
     console.error('Error during database self-healing migration:', error.message);
