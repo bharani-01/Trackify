@@ -79,6 +79,22 @@ const initMigrations = async () => {
       ALTER TABLE settings ADD COLUMN IF NOT EXISTS low_attendance_warnings BOOLEAN DEFAULT TRUE;
     `);
 
+    // 7. Ensure email_queue table exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS email_queue (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          recipient_email VARCHAR(100) NOT NULL,
+          recipient_name VARCHAR(100) NOT NULL,
+          subject VARCHAR(200) NOT NULL,
+          html_content TEXT NOT NULL,
+          status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed')),
+          retry_count INT DEFAULT 0,
+          error_message TEXT,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
     console.log('Database self-healing table checks completed.');
   } catch (error) {
     console.error('Error during database self-healing migration:', error.message);
