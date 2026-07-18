@@ -116,7 +116,10 @@ const copyMasterSubjects = async (client, userId, department, semester) => {
       masterSub.color,
       masterSub.total_periods
     ]);
-    subjectMap[masterSub.id] = result.rows[0].id;
+    // Coerce to integer to prevent prototype pollution if DB value is unexpected
+    const masterSubId = parseInt(masterSub.id, 10);
+    if (!Number.isFinite(masterSubId)) continue;
+    subjectMap[masterSubId] = result.rows[0].id;
   }
 
   return subjectMap;
