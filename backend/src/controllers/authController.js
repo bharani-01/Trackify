@@ -206,9 +206,11 @@ const logout = async (req, res) => {
       await auditLogRepository.logAction(req.user.id, 'LOGOUT', `User logged out: ${req.user.name}`, ip);
     }
 
-    res.cookie('token', 'none', {
-      expires: new Date(Date.now() + 5000), // Expires in 5 seconds
-      httpOnly: true
+    res.cookie('token', '', {
+      expires: new Date(Date.now() + 1000), // Expire immediately (1 second)
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax'
     });
 
     return res.status(200).json({
@@ -262,8 +264,13 @@ const forgotPassword = async (req, res) => {
 
     // Build reset link (dynamic protocol & host)
     const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
-    
-    console.log(`[PASSWORD RESET LINK]: ${resetUrl}`);
+
+    // SECURITY: Never log full reset URLs — they contain secret tokens.
+    // Only log a safe prefix in non-production environments for debugging.
+    if (process.env.NODE_ENV !== 'production') {
+      const sanitizedLog = `[PASSWORD RESET] Token generated for user ID: ${user.id} (email redacted)`;
+      console.log(sanitizedLog);
+    }
 
     // Send email via Resend
     let emailSent = false;
