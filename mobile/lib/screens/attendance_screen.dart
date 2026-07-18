@@ -747,14 +747,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
   Future<void> _confirmResetMarking(String logId) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Reset Marking', style: TextStyle(fontWeight: FontWeight.bold)),
         content: const Text('Reset this attendance log? This will update stats immediately.'),
         actions: [
-          TextButton(onPressed: () => Navigator.of(context).pop(false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(dialogCtx).pop(false), child: const Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444), foregroundColor: Colors.white),
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
             child: const Text('Reset'),
           ),
         ],

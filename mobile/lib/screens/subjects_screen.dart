@@ -145,13 +145,13 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
   Future<void> _handleDelete(String id) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Delete Subject', style: TextStyle(fontWeight: FontWeight.w800)),
         content: const Text('Deleting this subject will also delete all associated attendance logs. Are you sure?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancel')),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(dialogCtx, true),
             child: const Text('Delete', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           ),
         ],

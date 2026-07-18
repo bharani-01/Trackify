@@ -129,13 +129,13 @@ class ProfileScreen extends StatelessWidget {
   Future<void> _confirmLogout(BuildContext context) async {
     final confirm = await showDialog<bool>(
       context: context,
-      builder: (_) => AlertDialog(
+      builder: (dialogCtx) => AlertDialog(
         title: const Text('Sign Out', style: TextStyle(fontWeight: FontWeight.w800)),
         content: const Text('Are you sure you want to sign out of Trackify?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancel')),
           TextButton(
-            onPressed: () => Navigator.pop(context, true),
+            onPressed: () => Navigator.pop(dialogCtx, true),
             child: const Text('Sign Out', style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700)),
           ),
         ],
