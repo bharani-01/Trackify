@@ -66,21 +66,21 @@ class ProfileScreen extends StatelessWidget {
               title: const Text('Settings & Configuration', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               subtitle: const Text('Target, notifications, profile, app lock', style: TextStyle(fontSize: 11)),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go('/settings'),
+              onTap: () => context.push('/settings'),
             ),
             ListTile(
               leading: const Icon(Icons.book_outlined, color: Color(0xFF16A34A)),
               title: const Text('Manage Subjects', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               subtitle: const Text('Add, edit, or delete courses', style: TextStyle(fontSize: 11)),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go('/subjects'),
+              onTap: () => context.push('/subjects'),
             ),
             ListTile(
               leading: const Icon(Icons.calculate_outlined, color: Color(0xFFD97706)),
               title: const Text('Attendance Predictor', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               subtitle: const Text('Simulate target predictions', style: TextStyle(fontSize: 11)),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.go('/calculator'),
+              onTap: () => context.push('/calculator'),
             ),
           ]),
 
@@ -100,12 +100,12 @@ class ProfileScreen extends StatelessWidget {
             ListTile(
               title: const Text('Privacy Policy', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
-              onTap: () => context.go('/privacy-policy'),
+              onTap: () => context.push('/privacy-policy'),
             ),
             ListTile(
               title: const Text('Terms & Conditions', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
               trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
-              onTap: () => context.go('/terms'),
+              onTap: () => context.push('/terms'),
             ),
           ]),
 

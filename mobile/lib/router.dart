@@ -26,6 +26,14 @@ GoRouter buildRouter(AuthService auth) {
     },
     routes: [
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
+      
+      // Root-level sub-routes (outside ShellRoute) to hide bottom navbar and support back pop navigation
+      GoRoute(path: '/subjects', builder: (_, __) => const SubjectsScreen()),
+      GoRoute(path: '/calculator', builder: (_, __) => const CalculatorScreen()),
+      GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+      GoRoute(path: '/privacy-policy', builder: (_, __) => privacyPolicyScreen),
+      GoRoute(path: '/terms', builder: (_, __) => termsScreen),
+      
       ShellRoute(
         builder: (context, state, child) => ShellScaffold(child: child),
         routes: [
@@ -33,11 +41,6 @@ GoRouter buildRouter(AuthService auth) {
           GoRoute(path: '/attendance', builder: (_, __) => const AttendanceScreen()),
           GoRoute(path: '/timetable', builder: (_, __) => const TimetableScreen()),
           GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
-          GoRoute(path: '/subjects', builder: (_, __) => const SubjectsScreen()),
-          GoRoute(path: '/calculator', builder: (_, __) => const CalculatorScreen()),
-          GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
-          GoRoute(path: '/privacy-policy', builder: (_, __) => privacyPolicyScreen),
-          GoRoute(path: '/terms', builder: (_, __) => termsScreen),
         ],
       ),
     ],
