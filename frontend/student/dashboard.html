@@ -13,8 +13,8 @@
   <style>
     /* State-of-the-art UI customization inspired by Stripe & Apple */
     body {
-      background-color: #f8fafc;
-      color: #0f172a;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
     }
     
     .app-main-wrapper {
@@ -22,7 +22,7 @@
     }
     
     .glass-card {
-      background: #ffffff;
+      background: var(--bg-secondary);
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px 0 rgba(0, 0, 0, 0.02);
@@ -66,7 +66,7 @@
 
     /* Table styling for subject directory */
     .subject-table-wrapper {
-      background: #ffffff;
+      background: var(--bg-secondary);
       border: 1px solid #e2e8f0;
       border-radius: 12px;
       overflow: hidden;
@@ -80,8 +80,8 @@
     }
     
     .subject-table th {
-      background: #f8fafc;
-      color: #475569;
+      background: var(--bg-primary);
+      color: var(--text-secondary);
       font-size: 0.7rem;
       font-weight: 700;
       text-transform: uppercase;
@@ -95,7 +95,7 @@
       padding: 1rem 1.25rem;
       border-bottom: 1px solid #e2e8f0;
       vertical-align: middle;
-      color: #334155;
+      color: var(--text-secondary);
     }
     
     .subject-table tbody tr {
@@ -103,7 +103,7 @@
     }
     
     .subject-table tbody tr:hover {
-      background-color: #f8fafc;
+      background-color: var(--bg-primary);
     }
     
     .subject-table tbody tr:last-child td {
@@ -131,7 +131,7 @@
     .subject-name {
       font-size: 0.95rem;
       font-weight: 600;
-      color: #0f172a;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -148,7 +148,7 @@
     }
     
     .table-responsive::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: var(--bg-primary);
     }
 
     /* Expandable detailed row styles */
@@ -219,7 +219,7 @@
         grid-template-columns: repeat(4, 1fr);
         gap: 0.5rem;
         padding: 1rem 0.75rem;
-        background-color: #f8fafc;
+        background-color: var(--bg-primary);
         border-top: 1px solid #e2e8f0;
         border-bottom: 1px solid #e2e8f0;
       }
@@ -299,7 +299,7 @@
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
             <li>
               <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
@@ -321,7 +321,7 @@
       <main class="app-content animate-fade-in-up">
         <!-- Welcome Header -->
         <div class="mb-4">
-          <h1 class="fw-bold mb-1" style="font-size: 2.25rem; letter-spacing: -0.03em; color: #0f172a;">Hello, <span id="welcome-name">Student</span>!</h1>
+          <h1 class="fw-bold mb-1" style="font-size: 2.25rem; letter-spacing: -0.03em; color: var(--text-primary);">Hello, <span id="welcome-name">Student</span>!</h1>
           <p class="text-muted" style="font-size: 0.875rem;" id="welcome-details">CSE | Semester 1</p>
         </div>
 

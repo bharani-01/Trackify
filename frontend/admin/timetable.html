@@ -15,7 +15,7 @@
       border-radius: 12px;
       border: 1px solid var(--border-color);
       box-shadow: 0 1px 3px rgba(0,0,0,0.02);
-      background: #ffffff;
+      background: var(--bg-secondary);
     }
     .timetable-table {
       table-layout: fixed;
@@ -26,7 +26,7 @@
     .timetable-table th {
       font-size: 0.68rem !important;
       padding: 0.5rem 0.25rem !important;
-      background: #f8fafc;
+      background: var(--bg-primary);
     }
     .timetable-table td {
       height: 82px !important;
@@ -47,7 +47,7 @@
     }
     .timetable-cell-card.empty-cell {
       height: 70px !important;
-      border: 1px dashed #cbd5e1;
+      border: 1px dashed var(--border-color);
     }
     .fs-9 { font-size: 0.72rem !important; }
     .fs-8 { font-size: 0.78rem !important; }
@@ -177,7 +177,7 @@
   <!-- Add Master Subject Modal -->
   <div class="modal fade" id="subjectModal" tabindex="-1" aria-labelledby="subjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary);">
         <div class="modal-header border-bottom border-light p-4">
           <h5 class="modal-title fw-bold" id="subjectModalLabel">Add Template Subject</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -222,7 +222,7 @@
   <!-- Add Master Timetable Slot Modal -->
   <div class="modal fade" id="slotModal" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: rgba(255, 255, 255, 0.98);">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary);">
         <div class="modal-header border-bottom border-light p-4">
           <h5 class="modal-title fw-bold" id="slotModalLabel">Add Timetable Slot Template</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
