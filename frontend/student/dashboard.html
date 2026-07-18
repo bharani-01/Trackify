@@ -223,41 +223,6 @@
       color: #64748b;
       text-align: right;
     }
-    
-    /* Clean welcome header banner */
-    .welcome-banner-clean {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: #ffffff;
-      border-radius: 16px;
-      padding: 1.75rem 2rem;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
-    }
-    
-    .welcome-banner-clean::after {
-      content: '';
-      position: absolute;
-      top: -30%;
-      right: -10%;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
-      border-radius: 50%;
-      pointer-events: none;
-    }
-    
-    .welcome-banner-clean h1 {
-      color: #ffffff;
-      font-weight: 800;
-      font-size: 1.75rem;
-      margin-bottom: 0.25rem;
-      letter-spacing: -0.02em;
-    }
-    
-    .welcome-banner-clean p {
-      margin-bottom: 0;
-    }
 
     .table-responsive::-webkit-scrollbar {
       height: 5px;
@@ -332,40 +297,10 @@
 
       <!-- Content -->
       <main class="app-content animate-fade-in-up">
-        <!-- Welcome Banner (Minimal) -->
-        <div class="welcome-banner-clean mb-4">
-          <div class="row align-items-center g-3">
-            <div class="col-lg-6">
-              <span class="badge bg-primary text-white px-2.5 py-1.5 mb-2 fs-8 fw-semibold" id="dashboard-target-badge">TARGET: 80%</span>
-              <h1>Hello, <span id="welcome-name">Student</span>!</h1>
-              <p class="text-white-50 small mb-0" id="welcome-details">CSE | Semester 1</p>
-            </div>
-            <div class="col-lg-6">
-              <div class="row g-2 justify-content-lg-end">
-                <div class="col-6 col-sm-4">
-                  <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <div class="text-white-50 fs-9 text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Overall</div>
-                    <div class="fs-4 fw-bold mt-1 text-white" id="overall-percentage-val">-</div>
-                  </div>
-                </div>
-                <div class="col-6 col-sm-4">
-                  <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);">
-                    <div class="text-white-50 fs-9 text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Status</div>
-                    <div class="fs-6 fw-bold mt-2" id="overall-status-val">-</div>
-                  </div>
-                </div>
-                <div class="col-12 col-sm-4">
-                  <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); height: 100%;">
-                    <div class="text-white-50 fs-9 text-uppercase fw-semibold" style="letter-spacing: 0.05em;">Summary</div>
-                    <div class="fs-8 mt-1.5 text-white" style="line-height: 1.3;">
-                      <div class="d-flex justify-content-between"><span>Present:</span> <strong id="overall-present">-</strong></div>
-                      <div class="d-flex justify-content-between"><span>Conducted:</span> <strong id="overall-conducted">-</strong></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <!-- Welcome Header -->
+        <div class="mb-4">
+          <h1 class="fw-bold mb-1" style="font-size: 2.25rem; letter-spacing: -0.03em; color: #0f172a;">Hello, <span id="welcome-name">Student</span>!</h1>
+          <p class="text-muted" style="font-size: 0.875rem;" id="welcome-details">CSE | Semester 1</p>
         </div>
 
         <!-- Subject-wise Attendance Table -->
@@ -435,6 +370,7 @@
         document.getElementById('user-header-name').innerText = user.name;
         document.getElementById('welcome-name').innerText = user.name;
         document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'}`;
+        window.currentUser = user;
       } else {
         window.location.href = '/login';
         return;
@@ -445,21 +381,9 @@
       if (statsResult.success) {
         const stats = statsResult.stats;
         
-        // Populate stats target
-        document.getElementById('dashboard-target-badge').innerText = `TARGET: ${stats.targetPercentage}%`;
-        
-        // Populate overall stats
-        document.getElementById('overall-percentage-val').innerText = `${stats.overallPercentage}%`;
-        document.getElementById('overall-present').innerText = (stats.totalPresent || 0) + (stats.totalOD || 0);
-        document.getElementById('overall-conducted').innerText = stats.totalConducted || 0;
-        
-        const overallStatusEl = document.getElementById('overall-status-val');
-        const overallPred = stats.overallPrediction;
-        if (overallPred && overallPred.status === 'Below Target') {
-          overallStatusEl.innerHTML = `<span style="color: #f87171;">• Below Target</span>`;
-        } else {
-          overallStatusEl.innerHTML = `<span style="color: #4ade80;">• Safe</span>`;
-        }
+        // Update welcome details to include target
+        const user = window.currentUser || { department: 'General', semester: 'N/A' };
+        document.getElementById('welcome-details').innerText = `${user.department || 'General'} | Semester ${user.semester || 'N/A'} • Target Attendance: ${stats.targetPercentage}%`;
 
         // Build Subject-wise rows inside table tbody
         const tbody = document.getElementById('subject-table-body');
