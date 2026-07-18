@@ -702,4 +702,48 @@ h6 {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
   }
+
+  /* Flat Apple-segmented subtabs navigation for mobile viewports */
+  .scrollable-subtabs {
+    background-color: #f1f5f9;
+    padding: 0.25rem;
+    gap: 0.25rem !important;
+    border-bottom: none !important;
+    margin-bottom: 1.25rem;
+    overflow-x: visible;
+  }
+
+  .subtab-link {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0.25rem !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    border-bottom: none !important;
+    color: #64748b !important;
+    transition: all 80ms ease;
+  }
+
+  .subtab-link.active {
+    background-color: #ffffff !important;
+    color: var(--primary) !important;
+    font-weight: 800 !important;
+    border-bottom-color: transparent !important;
+  }
+
+  /* History Logs Table Mobile Optimizations */
+  .table th:nth-child(4),
+  .table td:nth-child(4) {
+    display: none !important; /* Hide Remarks on mobile */
+  }
+
+  .table th, .table td {
+    padding: 0.75rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .table td .btn {
+    padding: 0.25rem 0.4rem !important;
+    font-size: 0.65rem !important;
+  }
 }

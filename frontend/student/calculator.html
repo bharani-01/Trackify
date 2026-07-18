@@ -10,22 +10,19 @@
   <style>
     .slider-container {
       background: rgba(255, 255, 255, 0.5);
-      border-radius: 12px;
+      border-radius: 0px;
       padding: 1rem;
       border: 1px solid var(--border-color);
     }
     .subject-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .subject-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+      transition: background-color 80ms ease, border-color 80ms ease;
     }
     .badge-status {
       font-size: 0.72rem;
-      font-weight: 600;
+      font-weight: 700;
       padding: 0.35rem 0.6rem;
-      border-radius: 6px;
+      border-radius: 0px;
+      text-transform: uppercase;
     }
     .badge-status.success {
       background-color: rgba(16, 185, 129, 0.1);
@@ -410,15 +407,15 @@
             <div class="row g-2 align-items-center mt-2 border-bottom border-light pb-3">
               <div class="col-6 col-md-3">
                 <div class="text-secondary small" style="font-size:0.75rem;">Conducted So Far</div>
-                <div class="fw-bold text-dark fs-7">${conducted} periods</div>
+                <div class="fw-bold text-dark fs-7"><span class="mono-stat">${conducted}</span> periods</div>
               </div>
               <div class="col-6 col-md-3">
                 <div class="text-secondary small" style="font-size:0.75rem;">Attended (Present + OD)</div>
-                <div class="fw-bold text-dark fs-7">${presentOD} periods <span class="text-secondary small" style="font-size: 0.65rem;">(OD: ${subj.od_count || 0})</span></div>
+                <div class="fw-bold text-dark fs-7"><span class="mono-stat">${presentOD}</span> periods <span class="text-secondary small font-monospace" style="font-size: 0.65rem;">(OD: <span class="mono-stat">${subj.od_count || 0}</span>)</span></div>
               </div>
               <div class="col-6 col-md-3">
                 <div class="text-secondary small" style="font-size:0.75rem;">Current Percentage</div>
-                <div class="fw-bold fs-7 text-dark">${roundedPercentage}%</div>
+                <div class="fw-bold fs-7 text-dark mono-stat">${roundedPercentage}%</div>
               </div>
               <div class="col-6 col-md-3">
                 <div class="text-secondary small" style="font-size:0.75rem;">Semester Goal Limits</div>
