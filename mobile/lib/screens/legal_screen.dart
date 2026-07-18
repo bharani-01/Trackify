@@ -21,25 +21,25 @@ class LegalScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w800)),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.w800)),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        foregroundColor: const Color(0xFF0F172A),
+        foregroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
         elevation: 0,
         scrolledUnderElevation: 1,
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 40),
+        padding: EdgeInsets.fromLTRB(16, 20, 16, 40),
         children: [
           // Badge
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xFFCBD5E1)),
               borderRadius: BorderRadius.zero,
             ),
             child: Text(
               badge.toUpperCase(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 0.8,
@@ -47,39 +47,39 @@ class LegalScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w800,
-              color: Color(0xFF0F172A),
+              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
               letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: 4),
-          const Text(
+          SizedBox(height: 4),
+          Text(
             'Last updated: July 18, 2026  ·  Effective immediately',
             style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
           ),
 
           if (highlightNote != null) ...[
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Container(
-              padding: const EdgeInsets.all(14),
+              padding: EdgeInsets.all(14),
               decoration: BoxDecoration(
                 color: const Color(0xFFEFF6FF),
-                border: const Border(left: BorderSide(color: Color(0xFF2563EB), width: 3)),
+                border: Border(left: BorderSide(color: Color(0xFF2563EB), width: 3)),
                 borderRadius: BorderRadius.zero,
               ),
               child: Text(
                 highlightNote!,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF1E40AF), height: 1.5),
+                style: TextStyle(fontSize: 13, color: Color(0xFF1E40AF), height: 1.5),
               ),
             ),
           ],
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
 
           ...sections.map((s) => _SectionWidget(section: s)),
         ],
@@ -95,45 +95,45 @@ class _SectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.only(bottom: 8),
             child: Row(
               children: [
                 Text(
                   section.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A),
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
                   ),
                 ),
               ],
             ),
           ),
           Container(height: 1, color: const Color(0xFFE2E8F0)),
-          const SizedBox(height: 10),
+          SizedBox(height: 10),
           if (section.body != null)
             Text(
               section.body!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 13.5,
                 color: Color(0xFF475569),
                 height: 1.75,
               ),
             ),
           if (section.bullets != null) ...[
-            if (section.body != null) const SizedBox(height: 8),
+            if (section.body != null) SizedBox(height: 8),
             ...section.bullets!.map(
               (b) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: EdgeInsets.only(bottom: 6),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.only(top: 6, right: 10),
                       child: CircleAvatar(
                         radius: 3,
@@ -143,7 +143,7 @@ class _SectionWidget extends StatelessWidget {
                     Expanded(
                       child: Text(
                         b,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 13.5,
                           color: Color(0xFF475569),
                           height: 1.7,

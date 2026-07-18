@@ -93,13 +93,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 40),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -107,40 +106,50 @@ class _LoginScreenState extends State<LoginScreen> {
                 Center(
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: isDark ? 176 : 160,
-                        height: isDark ? 56 : 50,
-                        child: Image.asset(
-                          isDark ? 'assets/images/logo_dark.webp' : 'assets/images/logo_light.webp',
-                          fit: BoxFit.contain,
+                      Container(
+                        width: 56,
+                        height: 56,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF2563EB),
+                        ),
+                        child: Icon(Icons.check_circle_outline_rounded, color: Colors.white, size: 30),
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Trackify',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
+                          letterSpacing: -0.5,
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 6),
                       Text(
                         _isOtpMode ? 'Sign in using verification code' : 'Sign in to your student account',
-                        style: const TextStyle(fontSize: 14, color: Color(0xFF64748B)),
+                        style: TextStyle(fontSize: 14, color: Color(0xFF64748B)),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(height: 40),
+                SizedBox(height: 40),
 
                 // Error Banner
                 if (_error != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFFEF2F2),
                       border: Border.all(color: const Color(0xFFFCA5A5)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 18),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(_error!, style: const TextStyle(color: Color(0xFFB91C1C), fontSize: 13))),
+                        Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444), size: 18),
+                        SizedBox(width: 8),
+                        Expanded(child: Text(_error!, style: TextStyle(color: Color(0xFFB91C1C), fontSize: 13))),
                         IconButton(
-                          icon: const Icon(Icons.copy_rounded, color: Color(0xFFEF4444), size: 18),
+                          icon: Icon(Icons.copy_rounded, color: Color(0xFFEF4444), size: 18),
                           tooltip: 'Copy Error',
                           onPressed: () {
                             Clipboard.setData(ClipboardData(text: ApiClient.lastError ?? _error ?? ''));
@@ -154,31 +163,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
 
                 // Success Banner
                 if (_success != null) ...[
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: const Color(0xFFF0FDF4),
                       border: Border.all(color: const Color(0xFFBBF7D0)),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.check_circle_outline_rounded, color: Color(0xFF16A34A), size: 18),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(_success!, style: const TextStyle(color: Color(0xFF166534), fontSize: 13))),
+                        Icon(Icons.check_circle_outline_rounded, color: Color(0xFF16A34A), size: 18),
+                        SizedBox(width: 8),
+                        Expanded(child: Text(_success!, style: TextStyle(color: Color(0xFF166534), fontSize: 13))),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
 
                 // Email Field
                 _label('Email Address'),
-                const SizedBox(height: 6),
+                SizedBox(height: 6),
                 TextField(
                   controller: _emailCtrl,
                   keyboardType: TextInputType.emailAddress,
@@ -186,12 +195,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   autocorrect: false,
                   decoration: _inputDeco('you@university.edu', Icons.alternate_email_rounded),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // Password Field or OTP code field
                 if (!_isOtpMode) ...[
                   _label('Password'),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   TextField(
                     controller: _passCtrl,
                     obscureText: _obscure,
@@ -205,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ] else if (_otpSent) ...[
                   _label('Verification Code (OTP)'),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   TextField(
                     controller: _otpCtrl,
                     keyboardType: TextInputType.number,
@@ -213,14 +222,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     decoration: _inputDeco('e.g. 123456', Icons.password_rounded).copyWith(counterText: ''),
                     onSubmitted: (_) => _verifyOtpLogin(),
                   ),
-                  const SizedBox(height: 8),
-                  const Text(
+                  SizedBox(height: 8),
+                  Text(
                     'Note: Please check your spam or junk mail folder if you do not receive the email in a few minutes.',
                     style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontStyle: FontStyle.italic),
                   ),
                 ],
 
-                const SizedBox(height: 28),
+                SizedBox(height: 28),
 
                 // Login Button
                 SizedBox(
@@ -235,12 +244,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       elevation: 0,
                     ),
                     child: _loading
-                        ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                        : Text(_isOtpMode ? (_otpSent ? 'Verify & Sign In' : 'Send Verification OTP') : 'Sign In', style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
+                        ? SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                        : Text(_isOtpMode ? (_otpSent ? 'Verify & Sign In' : 'Send Verification OTP') : 'Sign In', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700)),
                   ),
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: 16),
 
                 // Secondary toggle actions
                 Center(
@@ -257,12 +266,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         child: Text(
                           _isOtpMode ? 'Sign In with Password' : 'Sign In with OTP',
-                          style: const TextStyle(color: Color(0xFF2563EB), fontSize: 13, fontWeight: FontWeight.bold),
+                          style: TextStyle(color: Color(0xFF2563EB), fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                       ),
                       TextButton(
                         onPressed: () => context.push('/forgot-password'),
-                        child: const Text('Forgot password?', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
+                        child: Text('Forgot password?', style: TextStyle(color: Color(0xFF64748B), fontSize: 13)),
                       ),
                     ],
                   ),
@@ -275,39 +284,29 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _label(String text) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Text(
-      text,
-      style: TextStyle(
-        fontSize: 13,
-        fontWeight: FontWeight.w600,
-        color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF374151),
-      ),
-    );
-  }
+  Widget _label(String text) => Text(
+        text,
+        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF374151)),
+      );
 
-  InputDecoration _inputDeco(String hint, IconData icon) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return InputDecoration(
-      hintText: hint,
-      hintStyle: TextStyle(color: isDark ? const Color(0xFF64748B) : const Color(0xFFCBD5E1)),
-      prefixIcon: Icon(icon, size: 18, color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
-      filled: true,
-      fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
-      ),
-      focusedBorder: const OutlineInputBorder(
-        borderRadius: BorderRadius.zero,
-        borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
-      ),
-    );
-  }
+  InputDecoration _inputDeco(String hint, IconData icon) => InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Color(0xFFCBD5E1)),
+        prefixIcon: Icon(icon, size: 18, color: const Color(0xFF94A3B8)),
+        filled: true,
+        fillColor: Colors.white,
+        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+        ),
+        enabledBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFFE2E8F0)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.zero,
+          borderSide: BorderSide(color: Color(0xFF2563EB), width: 1.5),
+        ),
+      );
 }

@@ -38,11 +38,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Attendance Predictor', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Text('Attendance Predictor', style: TextStyle(fontWeight: FontWeight.w800)),
         elevation: 0,
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+          ? Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
           : _stats == null
               ? _error()
               : _buildContent(),
@@ -78,19 +78,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       onRefresh: _load,
       color: const Color(0xFF2563EB),
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         children: [
           // Stat card
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
               border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             ),
             child: Column(
               children: [
-                const Text('Current Overall Attendance', style: TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-                const SizedBox(height: 8),
+                Text('Current Overall Attendance', style: TextStyle(fontSize: 12, color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+                SizedBox(height: 8),
                 Text(
                   '${overallPercentage.toStringAsFixed(1)}%',
                   style: TextStyle(
@@ -99,18 +99,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     color: overallPercentage >= _customTarget ? const Color(0xFF16A34A) : const Color(0xFFEF4444),
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text('$present present out of $conducted total classes', style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                SizedBox(height: 6),
+                Text('$present present out of $conducted total classes', style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Custom Target Slider
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
               border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             ),
             child: Column(
@@ -119,11 +119,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Simulate Target Goal', style: TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF0F172A))),
-                    Text('${_customTarget.round()}%', style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF2563EB))),
+                    Text('Simulate Target Goal', style: TextStyle(fontWeight: FontWeight.w700, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A))),
+                    Text('${_customTarget.round()}%', style: TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF2563EB))),
                   ],
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: 8),
                 Slider(
                   value: _customTarget,
                   min: 50,
@@ -136,11 +136,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Prediction result card
           Container(
-            padding: const EdgeInsets.all(20),
+            padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isBelow ? const Color(0xFFFEF2F2) : const Color(0xFFF0FDF4),
               border: Border.all(color: isBelow ? const Color(0xFFFCA5A5) : const Color(0xFFBBF7D0)),
@@ -152,7 +152,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   color: isBelow ? const Color(0xFFEF4444) : const Color(0xFF16A34A),
                   size: 32,
                 ),
-                const SizedBox(width: 16),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +165,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                           fontSize: 15,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: 4),
                       Text(
                         isBelow
                             ? 'You need to attend next $classesNeeded classes consecutively to achieve your target.'
@@ -187,7 +187,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget _error() => const Center(
+  Widget _error() => Center(
         child: Text('Failed to load predictions. Ensure you have added subjects.', style: TextStyle(color: Color(0xFF64748B))),
       );
 }

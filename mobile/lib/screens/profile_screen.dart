@@ -19,16 +19,16 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Profile & Menu', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Text('Profile & Menu', style: TextStyle(fontWeight: FontWeight.w800)),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         children: [
           // Avatar card
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
               border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             ),
             child: Column(
@@ -38,14 +38,14 @@ class ProfileScreen extends StatelessWidget {
                   backgroundColor: const Color(0xFFEFF6FF),
                   child: Text(
                     name.isNotEmpty ? name[0].toUpperCase() : 'S',
-                    style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: Color(0xFF2563EB)),
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w800, color: Color(0xFF2563EB)),
                   ),
                 ),
-                const SizedBox(height: 12),
-                Text(name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF0F172A))),
-                const SizedBox(height: 4),
-                Text(email, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
+                Text(name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A))),
+                SizedBox(height: 4),
+                Text(email, style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+                SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   children: [
@@ -57,20 +57,20 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Features Menu Section
           _Section(title: 'Portal Menu', items: [
             ListTile(
-              leading: const Icon(Icons.settings_outlined, color: Color(0xFF2563EB)),
-              title: const Text('Settings & Configuration', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              subtitle: const Text('Target, notifications, profile, app lock', style: TextStyle(fontSize: 11)),
-              trailing: const Icon(Icons.chevron_right),
+              leading: Icon(Icons.settings_outlined, color: Color(0xFF2563EB)),
+              title: Text('Settings & Configuration', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              subtitle: Text('Target, notifications, profile, app lock', style: TextStyle(fontSize: 11)),
+              trailing: Icon(Icons.chevron_right),
               onTap: () => context.push('/settings'),
             ),
           ]),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Details Section
           _Section(title: 'Account Details', items: [
@@ -79,23 +79,23 @@ class ProfileScreen extends StatelessWidget {
             _InfoRow(label: 'Semester', value: sem.isEmpty ? '—' : 'Semester $sem'),
           ]),
 
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Legal Section
           _Section(title: 'Legal', items: [
             ListTile(
-              title: const Text('Privacy Policy', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+              title: Text('Privacy Policy', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              trailing: Icon(Icons.keyboard_arrow_right, size: 18),
               onTap: () => context.push('/privacy-policy'),
             ),
             ListTile(
-              title: const Text('Terms & Conditions', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-              trailing: const Icon(Icons.keyboard_arrow_right, size: 18),
+              title: Text('Terms & Conditions', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              trailing: Icon(Icons.keyboard_arrow_right, size: 18),
               onTap: () => context.push('/terms'),
             ),
           ]),
 
-          const SizedBox(height: 24),
+          SizedBox(height: 24),
 
           // Logout
           SizedBox(
@@ -103,40 +103,40 @@ class ProfileScreen extends StatelessWidget {
             height: 50,
             child: OutlinedButton.icon(
               onPressed: () => _confirmLogout(context),
-              icon: const Icon(Icons.logout_rounded, size: 18, color: Color(0xFFEF4444)),
-              label: const Text('Sign Out', style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700)),
+              icon: Icon(Icons.logout_rounded, size: 18, color: Color(0xFFEF4444)),
+              label: Text('Sign Out', style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700)),
               style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: Color(0xFFFCA5A5)),
+                side: BorderSide(color: Color(0xFFFCA5A5)),
                 shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
               ),
             ),
           ),
 
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
         ],
       ),
     );
   }
 
   Widget _chip(String text) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: const BoxDecoration(
           color: Color(0xFFEFF6FF),
         ),
-        child: Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF2563EB))),
+        child: Text(text, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF2563EB))),
       );
 
   Future<void> _confirmLogout(BuildContext context) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Sign Out', style: TextStyle(fontWeight: FontWeight.w800)),
-        content: const Text('Are you sure you want to sign out of Trackify?'),
+        title: Text('Sign Out', style: TextStyle(fontWeight: FontWeight.w800)),
+        content: Text('Are you sure you want to sign out of Trackify?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('Sign Out', style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700)),
+            child: Text('Sign Out', style: TextStyle(color: Color(0xFFEF4444), fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -161,13 +161,13 @@ class _Section extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: EdgeInsets.only(left: 4, bottom: 8),
           child: Text(title.toUpperCase(),
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
             border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
           ),
           child: Column(children: items),
@@ -185,15 +185,15 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 13),
       decoration: const BoxDecoration(
         border: Border(bottom: BorderSide(color: Color(0xFFF1F5F9))),
       ),
       child: Row(
         children: [
-          Text(label, style: const TextStyle(fontSize: 13, color: Color(0xFF64748B))),
+          Text(label, style: TextStyle(fontSize: 13, color: Color(0xFF64748B))),
           const Spacer(),
-          Text(value, style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF0F172A))),
+          Text(value, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A))),
         ],
       ),
     );

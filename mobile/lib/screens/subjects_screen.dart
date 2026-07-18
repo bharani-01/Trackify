@@ -43,20 +43,20 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Manage Subjects', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: Text('Manage Subjects', style: TextStyle(fontWeight: FontWeight.w800)),
         elevation: 0,
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+          ? Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
           : _subjects.isEmpty
               ? _empty()
               : RefreshIndicator(
                   onRefresh: _load,
                   color: const Color(0xFF2563EB),
                   child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     itemCount: _subjects.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, __) => SizedBox(height: 12),
                     itemBuilder: (context, i) {
                       final sub = _subjects[i];
                       return _buildSubjectItem(sub);
@@ -67,8 +67,8 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
         onPressed: () => _showForm(null),
         backgroundColor: const Color(0xFF2563EB),
         foregroundColor: Colors.white,
-        icon: const Icon(Icons.add),
-        label: const Text('Add Subject', style: TextStyle(fontWeight: FontWeight.bold)),
+        icon: Icon(Icons.add),
+        label: Text('Add Subject', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
     );
   }
@@ -76,9 +76,9 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
   Widget _buildSubjectItem(dynamic sub) {
     final colorVal = _parseColor(sub['color']);
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
         border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
       ),
       child: Row(
@@ -90,29 +90,29 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
               color: colorVal,
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   sub['subject_name'] ?? 'Unknown',
-                  style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFF0F172A)),
+                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4),
                 Text(
                   '${sub['subject_code'] ?? ''}  ·  ${sub['credits'] ?? 0} Credits  ·  ${sub['total_periods'] ?? 0} Periods',
-                  style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                  style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
                 ),
               ],
             ),
           ),
           IconButton(
-            icon: const Icon(Icons.edit_outlined, color: Color(0xFF64748B), size: 20),
+            icon: Icon(Icons.edit_outlined, color: Color(0xFF64748B), size: 20),
             onPressed: () => _showForm(sub),
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 20),
+            icon: Icon(Icons.delete_outline_rounded, color: Colors.redAccent, size: 20),
             onPressed: () => _handleDelete(sub['id'].toString()),
           ),
         ],
@@ -133,11 +133,11 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.menu_book_outlined, size: 48, color: Color(0xFFCBD5E1)),
-            const SizedBox(height: 12),
-            const Text('No subjects added yet', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w500)),
-            const SizedBox(height: 4),
-            const Text('Tap add to create subjects', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+            Icon(Icons.menu_book_outlined, size: 48, color: Color(0xFFCBD5E1)),
+            SizedBox(height: 12),
+            Text('No subjects added yet', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w500)),
+            SizedBox(height: 4),
+            Text('Tap add to create subjects', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
           ],
         ),
       );
@@ -146,13 +146,13 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Delete Subject', style: TextStyle(fontWeight: FontWeight.w800)),
-        content: const Text('Deleting this subject will also delete all associated attendance logs. Are you sure?'),
+        title: Text('Delete Subject', style: TextStyle(fontWeight: FontWeight.w800)),
+        content: Text('Deleting this subject will also delete all associated attendance logs. Are you sure?'),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(dialogCtx, false), child: Text('Cancel')),
           TextButton(
             onPressed: () => Navigator.pop(dialogCtx, true),
-            child: const Text('Delete', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            child: Text('Delete', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -197,9 +197,9 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                 children: [
                   Text(
                     isEdit ? 'Edit Subject' : 'Add Subject',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                   TextField(
                     controller: nameCtrl,
                     decoration: const InputDecoration(
@@ -208,7 +208,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   TextField(
                     controller: codeCtrl,
                     decoration: const InputDecoration(
@@ -217,7 +217,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   Row(
                     children: [
                       Expanded(
@@ -230,7 +230,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: TextField(
                           controller: periodsCtrl,
@@ -243,15 +243,15 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  const Text('Select Theme Color', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 16),
+                  Text('Select Theme Color', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                  SizedBox(height: 8),
                   SizedBox(
                     height: 40,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: colors.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
+                      separatorBuilder: (_, __) => SizedBox(width: 8),
                       itemBuilder: (_, idx) {
                         final hex = colors[idx];
                         final active = hex == selectedColor;
@@ -270,7 +270,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -316,7 +316,7 @@ class _SubjectsScreenState extends State<SubjectsScreen> {
                           });
                         }
                       },
-                      child: const Text('Save Subject', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text('Save Subject', style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import '../core/api_client.dart';
 import '../core/app_lock_service.dart';
 import '../core/auth_service.dart';
-import '../core/theme_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -115,46 +114,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final appLock = context.watch<AppLockService>();
-    final themeSvc = context.watch<ThemeService>();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/logo.webp',
-              height: 24,
-              width: 24,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: 8),
-            const Text('Settings & Configuration', style: TextStyle(fontWeight: FontWeight.w800)),
-          ],
-        ),
+        title: Text('Settings & Configuration', style: TextStyle(fontWeight: FontWeight.w800)),
         elevation: 0,
       ),
       body: _loadingSettings
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+          ? Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
           : ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(16),
               children: [
                 // Profile Section
                 _Section(title: 'Edit Profile details', items: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     child: Column(
                       children: [
                         TextField(
                           controller: _nameCtrl,
                           decoration: const InputDecoration(labelText: 'Full Name', border: UnderlineInputBorder()),
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: 12),
                         TextField(
                           controller: _emailCtrl,
                           decoration: const InputDecoration(labelText: 'Email Address', border: UnderlineInputBorder()),
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -166,8 +153,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             onPressed: _savingProfile ? null : _saveProfile,
                             child: _savingProfile
-                                ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                : const Text('Save Profile Details', style: TextStyle(fontWeight: FontWeight.bold)),
+                                ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                                : Text('Save Profile Details', style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ),
                       ],
@@ -175,20 +162,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ]),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // Attendance Settings Section
                 _Section(title: 'Attendance Targets', items: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                    padding: EdgeInsets.fromLTRB(16, 16, 16, 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Target Percentage', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF374151))),
-                            Text('${_minTarget.round()}%', style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                            Text('Target Percentage', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: Color(0xFF374151))),
+                            Text('${_minTarget.round()}%', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
                           ],
                         ),
                         Slider(
@@ -203,16 +190,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   SwitchListTile(
-                    title: const Text('Daily Marking Reminder', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                    subtitle: const Text('Get notified if you forgot to mark attendance', style: TextStyle(fontSize: 11)),
+                    title: Text('Daily Marking Reminder', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    subtitle: Text('Get notified if you forgot to mark attendance', style: TextStyle(fontSize: 11)),
                     value: _dailyReminders,
                     activeThumbColor: const Color(0xFF2563EB),
                     onChanged: (v) => setState(() => _dailyReminders = v),
                   ),
                   if (_dailyReminders)
                     ListTile(
-                      title: const Text('Reminder Time', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                      trailing: Text(_reminderTime, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                      title: Text('Reminder Time', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      trailing: Text(_reminderTime, style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
                       onTap: () async {
                         final parsedTime = TimeOfDay(
                           hour: int.parse(_reminderTime.split(':')[0]),
@@ -229,37 +216,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       },
                     ),
                   SwitchListTile(
-                    title: const Text('Low Attendance Alarm', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                    subtitle: const Text('Alert when attendance falls below target', style: TextStyle(fontSize: 11)),
+                    title: Text('Low Attendance Alarm', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    subtitle: Text('Alert when attendance falls below target', style: TextStyle(fontSize: 11)),
                     value: _lowAttendanceWarn,
                     activeThumbColor: const Color(0xFF2563EB),
                     onChanged: (v) => setState(() => _lowAttendanceWarn = v),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     child: SizedBox(
                       width: double.infinity,
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFF2563EB)),
+                          side: BorderSide(color: Color(0xFF2563EB)),
                           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                         ),
                         onPressed: _savingSettings ? null : _saveSettings,
                         child: _savingSettings
-                            ? const SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
-                            : const Text('Save Attendance Configurations', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+                            ? SizedBox(width: 18, height: 18, child: CircularProgressIndicator(strokeWidth: 2))
+                            : Text('Save Attendance Configurations', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
                       ),
                     ),
                   ),
                 ]),
 
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
 
                 // App Lock Security settings
                 _Section(title: 'App Lock & Security', items: [
                   SwitchListTile(
-                    title: const Text('Enable Secure App Lock', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                    subtitle: const Text('Lock app using PIN or fingerprint', style: TextStyle(fontSize: 11)),
+                    title: Text('Enable Secure App Lock', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                    subtitle: Text('Lock app using PIN or fingerprint', style: TextStyle(fontSize: 11)),
                     value: appLock.lockEnabled,
                     activeThumbColor: const Color(0xFF2563EB),
                     onChanged: (val) async {
@@ -280,14 +267,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   if (appLock.lockEnabled) ...[
                     ListTile(
-                      title: const Text('Configure / Change PIN', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                      trailing: const Icon(Icons.keyboard_arrow_right),
+                      title: Text('Configure / Change PIN', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                      trailing: Icon(Icons.keyboard_arrow_right),
                       onTap: () => _setupPinSheet(appLock),
                     ),
                     if (appLock.biometricAvailable)
                       SwitchListTile(
-                        title: const Text('Use Biometric Login', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                        subtitle: const Text('Unlock with Fingerprint or Face ID', style: TextStyle(fontSize: 11)),
+                        title: Text('Use Biometric Login', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        subtitle: Text('Unlock with Fingerprint or Face ID', style: TextStyle(fontSize: 11)),
                         value: appLock.biometricEnabled,
                         activeThumbColor: const Color(0xFF2563EB),
                         onChanged: (val) async {
@@ -296,67 +283,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                   ],
                 ]),
-                const SizedBox(height: 20),
-
-                // Theme settings section
-                _Section(title: 'App Theme Preference', items: [
-                  ListTile(
-                    title: const Text('Theme Mode', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                    subtitle: Text(
-                      themeSvc.themeMode == ThemeMode.light
-                          ? 'Light Mode'
-                          : themeSvc.themeMode == ThemeMode.dark
-                              ? 'Dark Mode'
-                              : 'System Default',
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                    trailing: const Icon(Icons.arrow_drop_down),
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                        builder: (ctx) {
-                          return SafeArea(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                ListTile(
-                                  title: const Text('System Default'),
-                                  leading: const Icon(Icons.brightness_auto_rounded),
-                                  trailing: themeSvc.themeMode == ThemeMode.system ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
-                                  onTap: () {
-                                    themeSvc.setThemeMode(ThemeMode.system);
-                                    Navigator.pop(ctx);
-                                  },
-                                ),
-                                ListTile(
-                                  title: const Text('Light Mode'),
-                                  leading: const Icon(Icons.light_mode_rounded),
-                                  trailing: themeSvc.themeMode == ThemeMode.light ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
-                                  onTap: () {
-                                    themeSvc.setThemeMode(ThemeMode.light);
-                                    Navigator.pop(ctx);
-                                  },
-                                ),
-                                ListTile(
-                                  title: const Text('Dark Mode'),
-                                  leading: const Icon(Icons.dark_mode_rounded),
-                                  trailing: themeSvc.themeMode == ThemeMode.dark ? const Icon(Icons.check, color: Color(0xFF2563EB)) : null,
-                                  onTap: () {
-                                    themeSvc.setThemeMode(ThemeMode.dark);
-                                    Navigator.pop(ctx);
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ]),
-                const SizedBox(height: 40),
+                SizedBox(height: 40),
               ],
             ),
     );
@@ -381,8 +308,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Set App Security PIN', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 16),
+                  Text('Set App Security PIN', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+                  SizedBox(height: 16),
                   TextField(
                     controller: pin1Ctrl,
                     obscureText: true,
@@ -390,7 +317,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     maxLength: 4,
                     decoration: const InputDecoration(labelText: 'Enter 4-Digit PIN', border: OutlineInputBorder()),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12),
                   TextField(
                     controller: pin2Ctrl,
                     obscureText: true,
@@ -399,10 +326,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     decoration: const InputDecoration(labelText: 'Confirm 4-Digit PIN', border: OutlineInputBorder()),
                   ),
                   if (error.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Text(error, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                    SizedBox(height: 8),
+                    Text(error, style: TextStyle(color: Colors.red, fontSize: 12)),
                   ],
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     height: 48,
@@ -429,7 +356,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           );
                         }
                       },
-                      child: const Text('Save PIN', style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text('Save PIN', style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -453,13 +380,13 @@ class _Section extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: EdgeInsets.only(left: 4, bottom: 8),
           child: Text(title.toUpperCase(),
-              style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.8, color: Color(0xFF94A3B8))),
         ),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
             borderRadius: BorderRadius.zero,
             border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
           ),

@@ -181,15 +181,15 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
         ),
         scaffoldBackgroundColor: const Color(0xFF000000), // Deep black theme matching web
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F172A),
+          backgroundColor: Color(0xFF000000), // Pure black appBar
           foregroundColor: Colors.white,
           elevation: 0,
           scrolledUnderElevation: 0,
           shadowColor: Colors.transparent,
-          shape: Border(bottom: BorderSide(color: Color(0xFF1E293B))),
+          shape: Border(bottom: BorderSide(color: const Color(0xFF000000))),
         ),
         cardTheme: const CardThemeData(
-          color: Color(0xFF1E293B),
+          color: Color(0xFF000000), // Pure black card background
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
@@ -198,7 +198,7 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
         ),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
-          fillColor: Color(0xFF1E293B),
+          fillColor: Color(0xFF000000), // Pure black input fields
           border: OutlineInputBorder(
             borderRadius: BorderRadius.zero,
             borderSide: BorderSide(color: Color(0xFF334155)),
@@ -239,11 +239,11 @@ class _TrackifyAppState extends State<TrackifyApp> with WidgetsBindingObserver {
           ),
         ),
         dialogTheme: const DialogThemeData(
-          backgroundColor: Color(0xFF1E293B),
+          backgroundColor: Color(0xFF000000), // Pure black dialogs
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
         bottomSheetTheme: const BottomSheetThemeData(
-          backgroundColor: Color(0xFF1E293B),
+          backgroundColor: Color(0xFF000000), // Pure black bottom sheets
           modalBarrierColor: Colors.black54,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
         ),
@@ -389,7 +389,7 @@ class _DigitBtn extends StatelessWidget {
       onTap: () => onTap(d),
       child: Container(
         height: 64, width: 64,
-        decoration: const BoxDecoration(color: Color(0xFF1E293B), shape: BoxShape.circle),
+        decoration: const BoxDecoration(color: const Color(0xFF000000), shape: BoxShape.circle),
         child: Center(child: Text(d, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white))),
       ),
     ),

@@ -146,18 +146,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/logo.webp',
-              height: 24,
-              width: 24,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: 8),
-            const Text('Attendance Logs', style: TextStyle(fontWeight: FontWeight.w800)),
-          ],
-        ),
+        title: Text('Attendance Logs', style: TextStyle(fontWeight: FontWeight.w800)),
         bottom: TabBar(
           controller: _tabController,
           labelColor: const Color(0xFF2563EB),
@@ -272,22 +261,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
       onRefresh: _loadChecklistData,
       color: const Color(0xFF2563EB),
       child: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         children: [
           // Subheader Info
-          const Text(
+          Text(
             'Log your presence for scheduled classes dynamically by selecting dates or shortcuts.',
             style: TextStyle(fontSize: 12, color: Color(0xFF64748B), height: 1.4),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Date Selector Header Row (Yesterday, Today, Tomorrow, Custom Date)
           _buildDateSelectorRow(),
-          const SizedBox(height: 16),
+          SizedBox(height: 16),
 
           // Day Progress Tracker Card
           Container(
-            padding: const EdgeInsets.all(14),
+            padding: EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: const Color(0xFFF8FAFC),
               border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
@@ -304,24 +293,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                         children: [
                           Text(
                             dateFormattedTitle,
-                            style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Color(0xFF0F172A)),
+                            style: TextStyle(fontWeight: FontWeight.w800, fontSize: 13, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                           ),
-                          const SizedBox(height: 3),
+                          SizedBox(height: 3),
                           Text(
                             'You have marked $markedCount of $activeTotal classes scheduled for this date.',
-                            style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                            style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    SizedBox(width: 8),
                     Text(
                       '${(checklistProgress * 100).round()}%',
-                      style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: Color(0xFF0F172A)),
+                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: 10),
                 LinearProgressIndicator(
                   value: checklistProgress,
                   backgroundColor: const Color(0xFFE2E8F0),
@@ -331,11 +320,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
 
           // Log Checklist Slots List
           if (_loadingChecklist)
-            const Center(child: Padding(padding: EdgeInsets.all(40), child: CircularProgressIndicator(color: Color(0xFF2563EB))))
+            Center(child: Padding(padding: EdgeInsets.all(40), child: CircularProgressIndicator(color: Color(0xFF2563EB))))
           else if (processedSlots.isEmpty)
             _buildEmptyDaySlots(targetDayName)
           else
@@ -343,7 +332,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: processedSlots.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              separatorBuilder: (_, __) => SizedBox(height: 12),
               itemBuilder: (context, i) {
                 final slot = processedSlots[i];
                 return _buildChecklistCard(slot);
@@ -367,22 +356,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
       children: [
         // Yesterday shortcut button
         Expanded(child: _dateShortcutButton('Yesterday', yesterdayStr, isYesterday, () => _selectRelativeDate(-1))),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         // Today shortcut button
         Expanded(child: _dateShortcutButton('Today', todayStr, isToday, () => _selectRelativeDate(0))),
-        const SizedBox(width: 6),
+        SizedBox(width: 6),
         // Tomorrow shortcut button
         Expanded(child: _dateShortcutButton('Tomorrow', tomorrowStr, isTomorrow, () => _selectRelativeDate(1))),
-        const SizedBox(width: 8),
+        SizedBox(width: 8),
         // Custom Date calendar button
         OutlinedButton(
           style: OutlinedButton.styleFrom(
-            side: const BorderSide(color: Color(0xFF0F172A), width: 1.2),
+            side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), width: 1.2),
             shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           ),
           onPressed: _selectCustomDate,
-          child: const Icon(Icons.calendar_month_outlined, size: 18, color: Color(0xFF0F172A)),
+          child: Icon(Icons.calendar_month_outlined, size: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
         ),
       ],
     );
@@ -392,7 +381,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
           color: isActive ? const Color(0xFF2563EB) : Colors.white,
           border: Border.all(color: isActive ? const Color(0xFF2563EB) : const Color(0xFFCBD5E1), width: 1.2),
@@ -403,7 +392,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
               title,
               style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: isActive ? Colors.white70 : const Color(0xFF64748B)),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2),
             Text(
               val,
               style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, color: isActive ? Colors.white : const Color(0xFF0F172A)),
@@ -431,7 +420,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
 
     if (isCanceled) {
       return Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         decoration: const BoxDecoration(
           color: Color(0xFFF1F5F9),
           border: Border(
@@ -449,30 +438,30 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     color: const Color(0xFFE2E8F0),
                     child: Text(
                       'Period $period',
-                      style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
+                      style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF64748B)),
                     ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6),
                   Text(
                     code.isNotEmpty ? '$name ($code)' : name,
-                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), decoration: TextDecoration.lineThrough),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), decoration: TextDecoration.lineThrough),
                   ),
-                  const SizedBox(height: 3),
+                  SizedBox(height: 3),
                   Text(
                     'Time: $start - $end | Canceled Class',
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                    style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
                   ),
                 ],
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               color: const Color(0xFFFEE2E2),
-              child: const Text(
+              child: Text(
                 'CANCELED',
                 style: TextStyle(color: Color(0xFFEF4444), fontSize: 10, fontWeight: FontWeight.bold),
               ),
@@ -497,11 +486,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     if (_holidayForDate != null) {
       final holidayName = _holidayForDate!['name'] ?? 'Holiday';
       actionArea = Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         color: const Color(0xFFECFEFF),
         child: Text(
           'HOLIDAY: ${holidayName.toUpperCase()}',
-          style: const TextStyle(color: Color(0xFF0891B2), fontSize: 10, fontWeight: FontWeight.bold),
+          style: TextStyle(color: Color(0xFF0891B2), fontSize: 10, fontWeight: FontWeight.bold),
         ),
       );
     } else if (matchLog != null) {
@@ -529,22 +518,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             color: badgeBg,
             child: Text(
               status.toUpperCase(),
               style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold),
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8),
           OutlinedButton(
             style: OutlinedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              side: const BorderSide(color: Color(0xFF94A3B8)),
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              side: BorderSide(color: Color(0xFF94A3B8)),
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
             ),
             onPressed: () => _deleteMarking(matchLog['id'].toString()),
-            child: const Text('Reset', style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
+            child: Text('Reset', style: TextStyle(fontSize: 10, color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
           ),
         ],
       );
@@ -553,23 +542,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
         mainAxisSize: MainAxisSize.min,
         children: [
           _quickMarkButton('Present', const Color(0xFF16A34A), () => _markQuick(slot['subject_id'].toString(), period, 'Present')),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           _quickMarkButton('Absent', const Color(0xFFEF4444), () => _markQuick(slot['subject_id'].toString(), period, 'Absent')),
-          const SizedBox(width: 4),
+          SizedBox(width: 4),
           _quickMarkButton('OD', const Color(0xFF2563EB), () => _markQuick(slot['subject_id'].toString(), period, 'On Duty')),
         ],
       );
     }
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cardBg,
         border: Border(
           left: BorderSide(color: color, width: 5),
-          top: const BorderSide(color: Color(0xFFE2E8F0)),
-          right: const BorderSide(color: Color(0xFFE2E8F0)),
-          bottom: const BorderSide(color: Color(0xFFE2E8F0)),
+          top: BorderSide(color: Color(0xFFE2E8F0)),
+          right: BorderSide(color: Color(0xFFE2E8F0)),
+          bottom: BorderSide(color: Color(0xFFE2E8F0)),
         ),
       ),
       child: Column(
@@ -584,47 +573,47 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                       color: color.withValues(alpha: 0.1),
                       child: Text(
                         'Period $period',
                         style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: color),
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    SizedBox(height: 6),
                     Text(
                       code.isNotEmpty ? '$name ($code)' : name,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2),
                     Text(
                       'Time: $start - $end | Room: $room',
-                      style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                      style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               actionArea,
             ],
           ),
           if (isSubstituted) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               '★ Substituted from ${slot['original_subject_name']}',
-              style: const TextStyle(color: Color(0xFFD97706), fontSize: 11, fontWeight: FontWeight.w600),
+              style: TextStyle(color: Color(0xFFD97706), fontSize: 11, fontWeight: FontWeight.w600),
             ),
           ],
           if (isSwapped) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(
               '⇆ ${slot['swap_period_details']}',
-              style: const TextStyle(color: Color(0xFF0891B2), fontSize: 11, fontWeight: FontWeight.w600),
+              style: TextStyle(color: Color(0xFF0891B2), fontSize: 11, fontWeight: FontWeight.w600),
             ),
           ],
           if (isExtra) ...[
-            const SizedBox(height: 8),
-            const Text(
+            SizedBox(height: 8),
+            Text(
               '✚ Extra Period',
               style: TextStyle(color: Color(0xFF16A34A), fontSize: 11, fontWeight: FontWeight.w600),
             ),
@@ -637,7 +626,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
   Widget _quickMarkButton(String label, Color color, VoidCallback onTap) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         side: BorderSide(color: color, width: 1),
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
@@ -652,17 +641,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
   Widget _buildEmptyDaySlots(String day) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 50),
+        padding: EdgeInsets.symmetric(vertical: 50),
         child: Column(
           children: [
-            const Icon(Icons.weekend_outlined, size: 40, color: Color(0xFFCBD5E1)),
-            const SizedBox(height: 12),
+            Icon(Icons.weekend_outlined, size: 40, color: Color(0xFFCBD5E1)),
+            SizedBox(height: 12),
             Text(
               'No classes scheduled for $day',
-              style: const TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+              style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 4),
-            const Text('Enjoy your day off or select another date.', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+            SizedBox(height: 4),
+            Text('Enjoy your day off or select another date.', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
           ],
         ),
       ),
@@ -671,7 +660,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
 
   Widget _buildHistoryTab() {
     if (_loadingHistory) {
-      return const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)));
+      return Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)));
     }
     if (_historyLogs.isEmpty) {
       return _emptyHistory();
@@ -680,9 +669,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
       onRefresh: _loadHistoryLogs,
       color: const Color(0xFF2563EB),
       child: ListView.separated(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16),
         itemCount: _historyLogs.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, __) => SizedBox(height: 12),
         itemBuilder: (context, i) {
           final log = _historyLogs[i];
           final subjectName = log['subject_name'] ?? 'Unknown Subject';
@@ -703,9 +692,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
           if (status == 'Medical Leave') statusCol = const Color(0xFFD97706);
 
           return Container(
-            padding: const EdgeInsets.all(14),
+            padding: EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+              color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
               border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             ),
             child: Row(
@@ -717,34 +706,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                       Row(
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                             decoration: BoxDecoration(color: statusCol.withValues(alpha: 0.1)),
                             child: Text(
                               status,
                               style: TextStyle(color: statusCol, fontSize: 10, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text(dateStr, style: const TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
+                          SizedBox(width: 8),
+                          Text(dateStr, style: TextStyle(fontSize: 11, color: Color(0xFF64748B), fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: 8),
                       Text(
                         subjectName,
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF0F172A)),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                       ),
                       if (remarks.isNotEmpty) ...[
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           remarks,
-                          style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                          style: TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                         ),
                       ],
                     ],
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline_rounded, color: Color(0xFFEF4444), size: 20),
+                  icon: Icon(Icons.delete_outline_rounded, color: Color(0xFFEF4444), size: 20),
                   onPressed: () => _confirmResetMarking(log['id'].toString()),
                 ),
               ],
@@ -759,14 +748,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     final confirm = await showDialog<bool>(
       context: context,
       builder: (dialogCtx) => AlertDialog(
-        title: const Text('Reset Marking', style: TextStyle(fontWeight: FontWeight.bold)),
-        content: const Text('Reset this attendance log? This will update stats immediately.'),
+        title: Text('Reset Marking', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text('Reset this attendance log? This will update stats immediately.'),
         actions: [
-          TextButton(onPressed: () => Navigator.of(dialogCtx).pop(false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.of(dialogCtx).pop(false), child: Text('Cancel')),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444), foregroundColor: Colors.white),
             onPressed: () => Navigator.of(dialogCtx).pop(true),
-            child: const Text('Reset'),
+            child: Text('Reset'),
           ),
         ],
       ),
@@ -780,18 +769,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
   Widget _emptyHistory() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 60),
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 60),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.history_edu_outlined, size: 48, color: Color(0xFFCBD5E1)),
-            const SizedBox(height: 12),
-            const Text(
+            Icon(Icons.history_edu_outlined, size: 48, color: Color(0xFFCBD5E1)),
+            SizedBox(height: 12),
+            Text(
               'No attendance logs logged yet',
-              style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+              style: TextStyle(fontWeight: FontWeight.bold, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
             ),
-            const SizedBox(height: 6),
-            const Text(
+            SizedBox(height: 6),
+            Text(
               'Logs will appear here once you mark scheduled class slots in the checklist.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),

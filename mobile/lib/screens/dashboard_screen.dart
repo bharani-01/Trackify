@@ -58,26 +58,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/logo.webp',
-              height: 24,
-              width: 24,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: 8),
-            const Text(
-              'Student Dashboard',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
-            ),
-          ],
+        title: Text(
+          'Student Dashboard',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
         ),
         elevation: 0,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: EdgeInsets.only(right: 16),
             child: Container(
               width: 36,
               height: 36,
@@ -88,7 +77,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Center(
                 child: Text(
                   name.isNotEmpty ? name[0].toUpperCase() : 'S',
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w900, fontSize: 16),
                 ),
               ),
             ),
@@ -99,45 +88,45 @@ class _DashboardScreenState extends State<DashboardScreen> {
         onRefresh: _loadStats,
         color: const Color(0xFF2563EB),
         child: _loading
-            ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+            ? Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
             : CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 slivers: [
                   SliverPadding(
-                    padding: const EdgeInsets.all(16),
+                    padding: EdgeInsets.all(16),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         // Welcome Banner
                         Text(
                           'Hello, $name!',
-                          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Color(0xFF0F172A), letterSpacing: -0.5),
+                          style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), letterSpacing: -0.5),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4),
                         Text(
                           '${regNo.isNotEmpty ? regNo : "E02"} | Semester ${sem.isNotEmpty ? sem : "5"}',
-                          style: const TextStyle(fontSize: 14, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                          style: TextStyle(fontSize: 14, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: 20),
 
                         // Holiday Banner
                         if (_stats != null && _stats!['todayHoliday'] != null) ...[
                           Container(
                             width: double.infinity,
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                             decoration: BoxDecoration(
                               color: const Color(0xFFECFEFF),
                               border: Border.all(color: const Color(0xFF0891B2), width: 1.5),
                             ),
                             child: Row(
                               children: [
-                                const Text(
+                                Text(
                                   '🎉 ',
                                   style: TextStyle(fontSize: 16),
                                 ),
                                 Expanded(
                                   child: Text(
                                     'Today is a Holiday: ${_stats!['todayHoliday']['name'] ?? "Holiday"}',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Color(0xFF0891B2),
                                       fontWeight: FontWeight.w800,
                                       fontSize: 13,
@@ -147,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20),
                         ],
 
                         // Quick Navigation Shortcuts
@@ -156,57 +145,57 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             Expanded(
                               child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Color(0xFF0F172A), width: 1.5),
+                                  side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), width: 1.5),
                                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: EdgeInsets.symmetric(vertical: 12),
                                 ),
                                 onPressed: () => context.go('/attendance'),
-                                child: const Text(
+                                child: Text(
                                   'Mark Attendance',
-                                  style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
+                                  style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: 12),
                             Expanded(
                               child: OutlinedButton(
                                 style: OutlinedButton.styleFrom(
-                                  side: const BorderSide(color: Color(0xFF0F172A), width: 1.5),
+                                  side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), width: 1.5),
                                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: EdgeInsets.symmetric(vertical: 12),
                                 ),
                                 onPressed: () => context.go('/timetable'),
-                                child: const Text(
+                                child: Text(
                                   'Timetable',
-                                  style: TextStyle(color: Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
+                                  style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A), fontWeight: FontWeight.w800, fontSize: 13),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 28),
+                        SizedBox(height: 28),
 
                         // Section Title: SUBJECT DIRECTORY & PERFORMANCE
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                            Text(
                               'SUBJECT DIRECTORY & PERFORMANCE',
                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.w900, letterSpacing: 0.8, color: Color(0xFF334155)),
                             ),
-                            const SizedBox(height: 6),
+                            SizedBox(height: 6),
                             Container(
                               height: 2.5,
-                              color: const Color(0xFF0F172A),
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 16),
+                        SizedBox(height: 16),
 
                         // Load Error Widget
                         if (_stats == null) ...[
                           _buildErrorCard(),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20),
                         ],
 
                         // Subject List Cards
@@ -215,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: _subjectStats.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 12),
+                            separatorBuilder: (_, __) => SizedBox(height: 12),
                             itemBuilder: (context, i) {
                               final sub = _subjectStats[i];
                               return _buildSubjectCard(sub);
@@ -224,7 +213,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         else if (!_loading && _stats != null)
                           _buildEmptyView(),
 
-                        const SizedBox(height: 40),
+                        SizedBox(height: 40),
                       ]),
                     ),
                   ),
@@ -253,14 +242,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
         border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
       ),
       child: Column(
         children: [
           // Upper Info row
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(16),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -270,23 +259,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       // Code Badge
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                         color: const Color(0xFFEFF6FF),
                         child: Text(
                           code,
-                          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
+                          style: TextStyle(fontSize: 10, fontWeight: FontWeight.w900, color: Color(0xFF2563EB)),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: 6),
                       // Name
                       Text(
                         name,
-                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: 12),
                 // Percent
                 Text(
                   '${pct.toStringAsFixed(0)}%',
@@ -299,7 +288,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           Container(height: 1, color: const Color(0xFFF1F5F9)),
           // Sub-row metrics details
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -320,9 +309,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.5, color: Color(0xFF94A3B8)),
+          style: TextStyle(fontSize: 9, fontWeight: FontWeight.w900, letterSpacing: 0.5, color: Color(0xFF94A3B8)),
         ),
-        const SizedBox(height: 4),
+        SizedBox(height: 4),
         Text(
           value,
           style: TextStyle(fontSize: 14, fontWeight: FontWeight.w900, color: color),
@@ -333,7 +322,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildErrorCard() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: const Color(0xFFFEF2F2),
         border: Border.all(color: const Color(0xFFFCA5A5)),
@@ -343,22 +332,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444)),
-              const SizedBox(width: 8),
+              Icon(Icons.error_outline_rounded, color: Color(0xFFEF4444)),
+              SizedBox(width: 8),
               Expanded(
                 child: Text(
                   _errorMsg ?? 'Failed to load statistics',
-                  style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF991B1B), fontSize: 13),
+                  style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF991B1B), fontSize: 13),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text(
+          SizedBox(height: 8),
+          Text(
             'Ensure your server/network is online. If this persists, copy technical details below.',
             style: TextStyle(color: Color(0xFFB91C1C), fontSize: 11.5, height: 1.4),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Row(
             children: [
               ElevatedButton.icon(
@@ -366,19 +355,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   backgroundColor: const Color(0xFFEF4444),
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                 ),
                 onPressed: _loadStats,
-                icon: const Icon(Icons.refresh_rounded, size: 14),
-                label: const Text('Retry', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                icon: Icon(Icons.refresh_rounded, size: 14),
+                label: Text('Retry', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   foregroundColor: const Color(0xFFB91C1C),
-                  side: const BorderSide(color: Color(0xFFFCA5A5)),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  side: BorderSide(color: Color(0xFFFCA5A5)),
+                  padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                 ),
                 onPressed: () {
@@ -387,8 +376,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SnackBar(content: Text('Technical error details copied to clipboard')),
                   );
                 },
-                icon: const Icon(Icons.copy_rounded, size: 14),
-                label: const Text('Copy Error', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                icon: Icon(Icons.copy_rounded, size: 14),
+                label: Text('Copy Error', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
               ),
             ],
           ),
@@ -400,14 +389,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildEmptyView() {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
+        padding: EdgeInsets.symmetric(vertical: 40),
         child: Column(
           children: [
-            const Icon(Icons.library_books_outlined, size: 40, color: Color(0xFFCBD5E1)),
-            const SizedBox(height: 12),
-            const Text('No courses found', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
-            const SizedBox(height: 4),
-            const Text('Setup subjects under Profile > Manage Subjects.', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
+            Icon(Icons.library_books_outlined, size: 40, color: Color(0xFFCBD5E1)),
+            SizedBox(height: 12),
+            Text('No courses found', style: TextStyle(color: Color(0xFF64748B), fontWeight: FontWeight.w600)),
+            SizedBox(height: 4),
+            Text('Setup subjects under Profile > Manage Subjects.', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11)),
           ],
         ),
       ),

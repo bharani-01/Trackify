@@ -66,18 +66,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Row(
-          children: [
-            Image.asset(
-              'assets/images/logo.webp',
-              height: 24,
-              width: 24,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(width: 8),
-            const Text('Timetable Schedule', style: TextStyle(fontWeight: FontWeight.w800)),
-          ],
-        ),
+        title: Text('Timetable Schedule', style: TextStyle(fontWeight: FontWeight.w800)),
         elevation: 0,
         actions: [
           IconButton(
@@ -88,7 +77,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         ],
       ),
       body: _loading
-          ? const Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
+          ? Center(child: CircularProgressIndicator(color: Color(0xFF2563EB)))
           : Column(
               children: [
                 if (!_isTableFormat) ...[
@@ -97,13 +86,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     height: 48,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       itemCount: _days.length,
                       itemBuilder: (_, i) {
                         final day = _days[i];
                         final active = day == _selectedDay;
                         return Padding(
-                          padding: const EdgeInsets.only(right: 6),
+                          padding: EdgeInsets.only(right: 6),
                           child: ChoiceChip(
                             label: Text(day.substring(0, 3)),
                             selected: active,
@@ -117,7 +106,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                             side: BorderSide(color: active ? const Color(0xFF2563EB) : const Color(0xFFE2E8F0)),
                             showCheckmark: false,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(horizontal: 10),
                           ),
                         );
                       },
@@ -126,9 +115,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
                   // Period Slots List (1 to 8)
                   Expanded(
                     child: ListView.separated(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(16),
                       itemCount: 8,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      separatorBuilder: (_, __) => SizedBox(height: 10),
                       itemBuilder: (ctx, i) {
                         final periodNum = i + 1;
                         final slot = slotsByPeriod[periodNum];
@@ -178,7 +167,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16.0),
             child: Table(
               defaultColumnWidth: const FixedColumnWidth(110),
               columnWidths: const {
@@ -193,10 +182,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 TableRow(
                   decoration: const BoxDecoration(color: Color(0xFFF8FAFC)),
                   children: cols.map((col) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                     child: Text(
                       col,
-                      style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 9, color: Color(0xFF475569)),
+                      style: TextStyle(fontWeight: FontWeight.w800, fontSize: 9, color: Color(0xFF475569)),
                       textAlign: TextAlign.center,
                     ),
                   )).toList(),
@@ -207,10 +196,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
                     children: [
                       // Day Column cell
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 18),
+                        padding: EdgeInsets.symmetric(vertical: 18),
                         child: Text(
                           day.substring(0, 3),
-                          style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Color(0xFF0F172A)),
+                          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 11, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -250,7 +239,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
         quarterTurns: 1, // Vertical text display for break columns
         child: Text(
           text,
-          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), letterSpacing: 0.5),
+          style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF94A3B8), letterSpacing: 0.5),
           textAlign: TextAlign.center,
         ),
       ),
@@ -267,7 +256,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
     return Container(
       height: 52,
       color: hasClass ? color.withValues(alpha: 0.05) : Colors.transparent,
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(4),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -283,20 +272,20 @@ class _TimetableScreenState extends State<TimetableScreen> {
             overflow: TextOverflow.ellipsis,
           ),
           if (hasClass && name.isNotEmpty) ...[
-            const SizedBox(height: 1),
+            SizedBox(height: 1),
             Text(
               name,
-              style: const TextStyle(fontSize: 8, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 8, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
           ],
           if (hasClass && room.isNotEmpty) ...[
-            const SizedBox(height: 1),
+            SizedBox(height: 1),
             Text(
               'Rm $room',
-              style: const TextStyle(fontSize: 7, color: Color(0xFF94A3B8)),
+              style: TextStyle(fontSize: 7, color: Color(0xFF94A3B8)),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -316,9 +305,9 @@ class _TimetableScreenState extends State<TimetableScreen> {
     final color = hasSubject ? _parseColor(slot['color']) : const Color(0xFFCBD5E1);
 
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
+        color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF000000) : Colors.white,
         border: Border.all(color: hasSubject ? const Color(0xFFE2E8F0) : const Color(0xFFF1F5F9)),
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.01), blurRadius: 4, offset: const Offset(0, 1))
@@ -344,7 +333,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 ),
               ),
             ),
-            const SizedBox(width: 14),
+            SizedBox(width: 14),
             // Subject Details
             Expanded(
               child: Column(
@@ -358,23 +347,23 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       color: hasSubject ? const Color(0xFF0F172A) : const Color(0xFF94A3B8),
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2),
                   Text(
                     hasSubject
                         ? '$subjectCode ${room.isNotEmpty ? " · Room $room" : ""}'
                         : 'Tap to configure class slot',
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                    style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
                   ),
                 ],
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10),
             // Time Badge
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(times.$1, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
-                Text(times.$2, style: const TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                Text(times.$1, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF475569))),
+                Text(times.$2, style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
               ],
             ),
           ],
@@ -434,18 +423,18 @@ class _TimetableScreenState extends State<TimetableScreen> {
                 children: [
                   Text(
                     isEdit ? 'Configure Slot P$periodNum' : 'Assign Slot P$periodNum',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
                   ),
-                  const SizedBox(height: 4),
-                  Text('Selected day: $_selectedDay', style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 4),
+                  Text('Selected day: $_selectedDay', style: TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+                  SizedBox(height: 16),
 
                   // Subject dropdown
-                  const Text('Select Course Subject', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                  const SizedBox(height: 6),
+                  Text('Select Course Subject', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                  SizedBox(height: 6),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       border: Border.all(color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
                     ),
@@ -465,7 +454,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   // Times input
                   Row(
@@ -474,8 +463,8 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Start Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                            const SizedBox(height: 6),
+                            Text('Start Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                            SizedBox(height: 6),
                             TextField(
                               controller: startCtrl,
                               decoration: const InputDecoration(
@@ -486,13 +475,13 @@ class _TimetableScreenState extends State<TimetableScreen> {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('End Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                            const SizedBox(height: 6),
+                            Text('End Time', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                            SizedBox(height: 6),
                             TextField(
                               controller: endCtrl,
                               decoration: const InputDecoration(
@@ -505,11 +494,11 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
 
                   // Room Input
-                  const Text('Class Room (Optional)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
-                  const SizedBox(height: 6),
+                  Text('Class Room (Optional)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF64748B))),
+                  SizedBox(height: 6),
                   TextField(
                     controller: roomCtrl,
                     decoration: const InputDecoration(
@@ -517,7 +506,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                       border: OutlineInputBorder(),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // Save & Delete buttons
                   Row(
@@ -526,7 +515,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                         Expanded(
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              side: const BorderSide(color: Colors.redAccent),
+                              side: BorderSide(color: Colors.redAccent),
                               foregroundColor: Colors.redAccent,
                               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
                             ),
@@ -545,10 +534,10 @@ class _TimetableScreenState extends State<TimetableScreen> {
                                 });
                               }
                             },
-                            child: const Text('Delete Slot', style: TextStyle(fontWeight: FontWeight.bold)),
+                            child: Text('Delete Slot', style: TextStyle(fontWeight: FontWeight.bold)),
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        SizedBox(width: 12),
                       ],
                       Expanded(
                         child: ElevatedButton(
@@ -588,7 +577,7 @@ class _TimetableScreenState extends State<TimetableScreen> {
                               });
                             }
                           },
-                          child: const Text('Save Slot', style: TextStyle(fontWeight: FontWeight.bold)),
+                          child: Text('Save Slot', style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],

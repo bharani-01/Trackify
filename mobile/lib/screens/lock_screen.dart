@@ -55,26 +55,27 @@ class _LockScreenState extends State<LockScreen> {
   @override
   Widget build(BuildContext context) {
     final svc = context.watch<AppLockService>();
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
       body: SafeArea(
         child: Column(
           children: [
             const Spacer(),
             // Logo
-            SizedBox(
-              width: isDark ? 176 : 160,
-              height: isDark ? 56 : 50,
-              child: Image.asset(
-                isDark ? 'assets/images/logo_dark.webp' : 'assets/images/logo_light.webp',
-                fit: BoxFit.contain,
+            Container(
+              width: 64, height: 64,
+              decoration: const BoxDecoration(
+                color: Color(0xFF2563EB),
+                borderRadius: BorderRadius.zero,
               ),
+              child: Icon(Icons.lock_outline_rounded, color: Colors.white, size: 32),
             ),
-            const SizedBox(height: 16),
-            Text('Enter your 4-digit PIN', style: TextStyle(color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B), fontSize: 14)),
+            SizedBox(height: 20),
+            Text('Trackify', style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800, color: Colors.white)),
+            SizedBox(height: 8),
+            Text('Enter your 4-digit PIN', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14)),
 
-            const SizedBox(height: 36),
+            SizedBox(height: 36),
 
             // PIN dots
             Row(
@@ -83,7 +84,7 @@ class _LockScreenState extends State<LockScreen> {
                 final filled = i < _pin.length;
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 150),
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  margin: EdgeInsets.symmetric(horizontal: 10),
                   width: 16, height: 16,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -91,22 +92,22 @@ class _LockScreenState extends State<LockScreen> {
                         ? const Color(0xFFEF4444)
                         : filled
                             ? const Color(0xFF2563EB)
-                            : isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                            : const Color(0xFF334155),
                   ),
                 );
               }),
             ),
 
             if (_error) ...[
-              const SizedBox(height: 12),
-              const Text('Incorrect PIN. Try again.', style: TextStyle(color: Color(0xFFEF4444), fontSize: 13)),
+              SizedBox(height: 12),
+              Text('Incorrect PIN. Try again.', style: TextStyle(color: Color(0xFFEF4444), fontSize: 13)),
             ],
 
             const Spacer(),
 
             // Keypad
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 48),
+              padding: EdgeInsets.symmetric(horizontal: 48),
               child: Column(
                 children: [
                   for (final row in [['1','2','3'], ['4','5','6'], ['7','8','9']])
@@ -123,7 +124,7 @@ class _LockScreenState extends State<LockScreen> {
                                 onTap: _tryBiometric,
                                 color: const Color(0xFF2563EB),
                               )
-                            : const SizedBox(),
+                            : SizedBox(),
                       ),
                       Expanded(child: _DigitKey(digit: '0', onTap: _onDigit)),
                       Expanded(
@@ -138,7 +139,7 @@ class _LockScreenState extends State<LockScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: 40),
           ],
         ),
       ),
@@ -154,25 +155,18 @@ class _DigitKey extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(40),
         onTap: () => onTap(digit),
         child: Container(
           height: 64,
           decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
+            color: const Color(0xFF000000),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: Text(
-              digit,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A),
-              ),
-            ),
+            child: Text(digit, style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white)),
           ),
         ),
       ),
@@ -189,7 +183,7 @@ class _IconKey extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8),
       child: InkWell(
         borderRadius: BorderRadius.circular(40),
         onTap: onTap,
