@@ -63,36 +63,50 @@
       color: #ffffff;
     }
 
-    /* Table-like row components for subject directory */
-    .subject-row {
+    /* Table styling for subject directory */
+    .subject-table-wrapper {
       background: #ffffff;
       border: 1px solid #e2e8f0;
-      border-radius: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.01);
+    }
+    
+    .subject-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+    }
+    
+    .subject-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       padding: 1rem 1.25rem;
-      margin-bottom: 0.75rem;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: grid;
-      grid-template-columns: 2fr 1.5fr 2fr 1.5fr;
-      align-items: center;
-      gap: 1.25rem;
-      position: relative;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
     }
     
-    .subject-row::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 12px;
-      bottom: 12px;
-      width: 4px;
-      border-radius: 0 4px 4px 0;
-      background-color: var(--row-color, #cbd5e1);
+    .subject-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: middle;
+      color: #334155;
     }
     
-    .subject-row:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
-      border-color: #cbd5e1;
+    .subject-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+    
+    .subject-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+    
+    .subject-table tbody tr:last-child td {
+      border-bottom: none;
     }
     
     .subject-info {
@@ -123,37 +137,12 @@
       margin-bottom: 0;
     }
     
-    .stats-table-cols {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      text-align: center;
-      gap: 0.25rem;
-    }
-    
-    .stats-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .stats-col-val {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #0f172a;
-    }
-    
-    .stats-col-lbl {
-      font-size: 0.65rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    
     /* Attendance displays with inline progress */
     .percentage-display {
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
+      max-width: 140px;
     }
     
     .percentage-nums {
@@ -163,15 +152,10 @@
     }
     
     .percentage-val {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
       letter-spacing: -0.02em;
       line-height: 1;
-    }
-    
-    .percentage-lbl {
-      font-size: 0.7rem;
-      color: #64748b;
     }
     
     .progress-micro {
@@ -274,56 +258,18 @@
     .welcome-banner-clean p {
       margin-bottom: 0;
     }
-    
-    /* Responsive overrides */
-    @media (max-width: 991px) {
-      .subject-row {
-        grid-template-columns: 1fr 1.2fr 1fr;
-        gap: 1rem;
-      }
-      .subject-row::before {
-        top: 0;
-        bottom: 0;
-        border-radius: 10px 0 0 10px;
-      }
-      .status-badge-container {
-        align-items: flex-start;
-      }
-      .forecast-message {
-        text-align: left;
-      }
+
+    .table-responsive::-webkit-scrollbar {
+      height: 5px;
     }
     
-    @media (max-width: 768px) {
-      .subject-row {
-        grid-template-columns: 1fr 1fr;
-      }
-      .status-badge-container {
-        grid-column: span 2;
-        align-items: flex-start;
-        border-top: 1px solid #f1f5f9;
-        padding-top: 0.5rem;
-      }
-      .forecast-message {
-        text-align: left;
-      }
+    .table-responsive::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
     }
     
-    @media (max-width: 576px) {
-      .subject-row {
-        grid-template-columns: 1fr;
-        gap: 0.75rem;
-      }
-      .stats-table-cols {
-        grid-template-columns: repeat(4, 1fr);
-        text-align: left;
-        background: #f8fafc;
-        padding: 0.5rem;
-        border-radius: 8px;
-      }
-      .status-badge-container {
-        grid-column: span 1;
-      }
+    .table-responsive::-webkit-scrollbar-track {
+      background: #f1f5f9;
     }
   </style>
 </head>
@@ -422,13 +368,30 @@
           </div>
         </div>
 
-        <!-- Subject-wise Attendance Cards Grid -->
+        <!-- Subject-wise Attendance Table -->
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2 class="h6 fw-bold mb-0 text-secondary text-uppercase" style="letter-spacing: 0.05em; font-size: 0.75rem;">Subject Directory & Performance</h2>
           <span class="text-muted small d-none d-md-block" style="font-size: 0.7rem;">Real-time Attendance Analytics</span>
         </div>
-        <div class="mb-4" id="subject-cards-grid">
-          <div class="text-center py-4 text-secondary small w-100">Loading subject stats...</div>
+        <div class="subject-table-wrapper table-responsive mb-4">
+          <table class="subject-table">
+            <thead>
+              <tr>
+                <th style="min-width: 220px;">Subject</th>
+                <th class="text-center" style="width: 100px;">Conducted</th>
+                <th class="text-center" style="width: 100px;">Present</th>
+                <th class="text-center" style="width: 80px;">OD</th>
+                <th class="text-center" style="width: 100px;">Absent</th>
+                <th style="min-width: 150px;">Attendance</th>
+                <th style="min-width: 180px; text-align: right;">Status & Forecast</th>
+              </tr>
+            </thead>
+            <tbody id="subject-table-body">
+              <tr>
+                <td colspan="7" class="text-center py-4 text-secondary small">Loading subject stats...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div class="row g-4 mb-4">
@@ -498,15 +461,17 @@
           overallStatusEl.innerHTML = `<span style="color: #4ade80;">• Safe</span>`;
         }
 
-        // Build Subject-wise rows
-        const grid = document.getElementById('subject-cards-grid');
-        grid.innerHTML = '';
+        // Build Subject-wise rows inside table tbody
+        const tbody = document.getElementById('subject-table-body');
+        tbody.innerHTML = '';
 
         if (!stats.subjectStats || stats.subjectStats.length === 0) {
-          grid.innerHTML = `
-            <div class="text-center py-5 text-secondary small border rounded-3 bg-white">
-              No subjects registered yet.
-            </div>
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center py-5 text-secondary small">
+                No subjects registered yet.
+              </td>
+            </tr>
           `;
         } else {
           stats.subjectStats.forEach(subj => {
@@ -518,65 +483,56 @@
             if (pred.status === 'Below Target') {
               badgeClass = 'status-danger';
               statusText = 'Below Target';
-              forecastMsg = `Attend next <strong class="text-danger" style="font-weight: 700;">${pred.classesNeeded}</strong> classes`;
+              forecastMsg = `Attend next <strong class="text-danger" style="font-weight: 700;">${pred.classesNeeded}</strong>`;
             } else {
               badgeClass = 'status-safe';
               statusText = 'Safe';
-              forecastMsg = `Can miss next <strong class="text-success" style="font-weight: 700;">${pred.safeAbsences}</strong> classes`;
+              forecastMsg = `Can miss next <strong class="text-success" style="font-weight: 700;">${pred.safeAbsences}</strong>`;
             }
 
-            grid.innerHTML += `
-              <div class="subject-row" style="--row-color: ${subj.color || '#cbd5e1'};">
-                <div class="subject-info">
-                  <span class="subject-code-badge" style="background-color: ${subj.color ? subj.color + '12' : '#f1f5f9'}; color: ${subj.color || '#475569'};">${subj.subject_code}</span>
-                  <h3 class="subject-name" title="${subj.subject_name}">${subj.subject_name}</h3>
-                </div>
-                
-                <div class="stats-table-cols">
-                  <div class="stats-col">
-                    <span class="stats-col-val">${subj.conducted_count}</span>
-                    <span class="stats-col-lbl">Cond</span>
+            // Using unified primary brand color #2563eb for a clean single-color appearance
+            const primaryColor = '#2563eb';
+
+            tbody.innerHTML += `
+              <tr class="animate-fade-in-up">
+                <td>
+                  <div class="subject-info">
+                    <span class="subject-code-badge" style="background-color: rgba(37, 99, 235, 0.08); color: ${primaryColor};">${subj.subject_code}</span>
+                    <h3 class="subject-name" title="${subj.subject_name}">${subj.subject_name}</h3>
                   </div>
-                  <div class="stats-col">
-                    <span class="stats-col-val" style="color: #059669;">${subj.present_count}</span>
-                    <span class="stats-col-lbl">Pres</span>
+                </td>
+                <td class="text-center fw-semibold text-dark">${subj.conducted_count}</td>
+                <td class="text-center fw-semibold text-success">${subj.present_count}</td>
+                <td class="text-center fw-semibold text-primary">${subj.od_count || 0}</td>
+                <td class="text-center fw-semibold text-danger">${subj.absent_count}</td>
+                <td>
+                  <div class="percentage-display">
+                    <div class="percentage-nums">
+                      <span class="percentage-val" style="color: ${primaryColor};">${subj.percentage}%</span>
+                    </div>
+                    <div class="progress-micro">
+                      <div class="progress-micro-bar" style="width: ${subj.percentage}%; background-color: ${primaryColor};"></div>
+                    </div>
                   </div>
-                  <div class="stats-col">
-                    <span class="stats-col-val" style="color: #2563eb;">${subj.od_count || 0}</span>
-                    <span class="stats-col-lbl">OD</span>
+                </td>
+                <td>
+                  <div class="status-badge-container">
+                    <span class="status-indicator ${badgeClass}">
+                      <span class="status-dot"></span>
+                      ${statusText}
+                    </span>
+                    <span class="forecast-message">${forecastMsg}</span>
                   </div>
-                  <div class="stats-col">
-                    <span class="stats-col-val" style="color: #dc2626;">${subj.absent_count}</span>
-                    <span class="stats-col-lbl">Abs</span>
-                  </div>
-                </div>
-                
-                <div class="percentage-display">
-                  <div class="percentage-nums">
-                    <span class="percentage-val" style="color: ${subj.color || '#0f172a'};">${subj.percentage}%</span>
-                    <span class="percentage-lbl">Attendance</span>
-                  </div>
-                  <div class="progress-micro">
-                    <div class="progress-micro-bar" style="width: ${subj.percentage}%; background-color: ${subj.color || '#cbd5e1'};"></div>
-                  </div>
-                </div>
-                
-                <div class="status-badge-container">
-                  <span class="status-indicator ${badgeClass}">
-                    <span class="status-dot"></span>
-                    ${statusText}
-                  </span>
-                  <span class="forecast-message">${forecastMsg}</span>
-                </div>
-              </div>
+                </td>
+              </tr>
             `;
           });
         }
 
-        // Render Chart.js
+        // Render Chart.js using unified primary brand color
         const labels = stats.subjectStats.map(s => s.subject_code);
         const data = stats.subjectStats.map(s => s.percentage);
-        const colors = stats.subjectStats.map(s => s.color);
+        const colors = stats.subjectStats.map(() => '#2563eb');
 
         const ctx = document.getElementById('subjectChart').getContext('2d');
         if (myChart) myChart.destroy();
