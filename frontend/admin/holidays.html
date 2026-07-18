@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Holidays Manager - Admin Portal</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <span class="fs-4 fw-bold">Trackify</span>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard">Admin Overview</a>
+        <a class="sidebar-link" href="/admin/users">Manage Users</a>
+        <a class="sidebar-link" href="/admin/departments">Departments</a>
+        <a class="sidebar-link" href="/admin/timetable">Timetable Builder</a>
+        <a class="sidebar-link" href="/admin/adjustments">Schedule Adjustments</a>
+        <a class="sidebar-link active" href="/admin/holidays">Holidays Manager</a>
+        <a class="sidebar-link" href="/admin/announcements">Announcements</a>
+        <a class="sidebar-link" href="/admin/audit-logs">Activity Audit Logs</a>
+        <a class="sidebar-link" href="/admin/subject-hours">Subject Hours</a>
+        <a class="sidebar-link" href="/admin/settings">System Settings</a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">Log Out</a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <h1 class="app-header-title">Holidays Manager</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Manage Academic Holidays</h2>
+            <p class="text-secondary small mb-0">Define holidays that apply globally or target specific cohorts. Holiday dates block student marking and adjust stats.</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Left: Add Holiday Form -->
+          <div class="col-md-5">
+            <div class="glass-card border-glass">
+              <h2 class="h5 fw-bold mb-4">Add Holiday</h2>
+              <form id="holidayForm" onsubmit="createHoliday(event)">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="holidayName" placeholder="Gandhi Jayanti" required>
+                  <label for="holidayName">Holiday Name / Description</label>
+                </div>
+                
+                <div class="form-floating mb-3">
+                  <input type="date" class="form-control" id="holidayDate" required>
+                  <label for="holidayDate">Date</label>
+                </div>
+
+                <div class="form-floating mb-3">
+                  <select class="form-select" id="targetDept">
+                    <option value="">Global (All Departments)</option>
+                  </select>
+                  <label for="targetDept">Target Department</label>
+                </div>
+
+                <div class="form-floating mb-4">
+                  <select class="form-select" id="targetSem">
+                    <option value="">Global (All Semesters)</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                  </select>
+                  <label for="targetSem">Target Semester</label>
+                </div>
+
+                <button type="submit" class="btn btn-glow w-100 py-3">Register Holiday</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Active Holidays List -->
+          <div class="col-md-7">
+            <div class="glass-card border-glass p-0 overflow-hidden">
+              <div class="p-4 border-bottom border-light">
+                <h2 class="h5 fw-bold mb-0">Active Holiday Registry</h2>
+              </div>
+              <div class="table-responsive" style="max-height: 500px;">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light border-bottom">
+                    <tr>
+                      <th class="ps-4">Date</th>
+                      <th>Name / Event</th>
+                      <th>Target Scope</th>
+                      <th class="pe-4 text-end" style="width: 100px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="holidays-container">
+                    <tr>
+                      <td colspan="4" class="text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">Loading...</span>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    async function loadData() {
+      // Fetch admin session
+      const meRes = await apiCall('/api/auth/me');
+      if (meRes.success && meRes.user) {
+        document.getElementById('user-header-name').innerText = meRes.user.name;
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      await Promise.all([
+        fetchDepartments(),
+        fetchHolidays()
+      ]);
+    }
+
+    async function fetchDepartments() {
+      const res = await apiCall('/api/departments');
+      if (res.success && res.departments) {
+        const select = document.getElementById('targetDept');
+        // Clear except first
+        select.innerHTML = '<option value="">Global (All Departments)</option>';
+        res.departments.forEach(dept => {
+          const opt = document.createElement('option');
+          opt.value = dept.code;
+          opt.textContent = `${dept.name} (${dept.code})`;
+          select.appendChild(opt);
+        });
+      }
+    }
+
+    async function fetchHolidays() {
+      const res = await apiCall('/api/admin/holidays');
+      const container = document.getElementById('holidays-container');
+      
+      if (res.success && res.holidays) {
+        container.innerHTML = '';
+        if (res.holidays.length === 0) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="4" class="text-center py-5 text-secondary">
+                No holidays registered yet. Use the registration form to add one.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        res.holidays.forEach(h => {
+          // Format date YYYY-MM-DD
+          const dStr = h.date.substring(0, 10);
+          
+          let scope = 'Global';
+          if (h.department && h.semester) {
+            scope = `${h.department} (Sem ${h.semester})`;
+          } else if (h.department) {
+            scope = `${h.department} (All Sems)`;
+          } else if (h.semester) {
+            scope = `All Depts (Sem ${h.semester})`;
+          }
+
+          container.innerHTML += `
+            <tr>
+              <td class="ps-4 fw-bold text-dark font-monospace">${dStr}</td>
+              <td><span class="fw-semibold">${h.name}</span></td>
+              <td><span class="badge bg-light text-secondary border px-2.5 py-1.5">${scope}</span></td>
+              <td class="pe-4 text-end">
+                <button onclick="deleteHoliday('${h.id}')" class="btn btn-outline-danger btn-sm px-2.5 py-1">Delete</button>
+              </td>
+            </tr>
+          `;
+        });
+      } else {
+        container.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-5 text-danger">
+              Failed to load holidays database logs.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    async function createHoliday(e) {
+      e.preventDefault();
+      const name = document.getElementById('holidayName').value.trim();
+      const date = document.getElementById('holidayDate').value;
+      const department = document.getElementById('targetDept').value;
+      const semester = document.getElementById('targetSem').value;
+
+      const res = await apiCall('/api/admin/holidays', {
+        method: 'POST',
+        body: { name, date, department, semester }
+      });
+
+      if (res.success) {
+        showAlert('Holiday registered successfully', 'success');
+        document.getElementById('holidayForm').reset();
+        await fetchHolidays();
+      } else {
+        showAlert(res.message || 'Failed to register holiday', 'danger');
+      }
+    }
+
+    async function deleteHoliday(id) {
+      if (!confirm('Are you sure you want to delete this holiday record?')) return;
+      const res = await apiCall(`/api/admin/holidays/${id}`, { method: 'DELETE' });
+      if (res.success) {
+        showAlert('Holiday deleted successfully', 'success');
+        await fetchHolidays();
+      } else {
+        showAlert(res.message || 'Failed to delete holiday', 'danger');
+      }
+    }
+
+    window.onload = loadData;
+  </script>
+</body>
+</html>

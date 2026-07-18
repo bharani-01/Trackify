@@ -79,4 +79,12 @@ router.route('/adjustments')
   .get(getAdminAdjustments)
   .post(saveAdminAdjustments);
 
+// Holidays management
+const { getAdminHolidays, createAdminHoliday, deleteAdminHoliday } = require('../controllers/holidayController');
+router.route('/holidays')
+  .get(getAdminHolidays)
+  .post(createAdminHoliday);
+router.route('/holidays/:id')
+  .delete(deleteAdminHoliday);
+
 module.exports = router;

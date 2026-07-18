@@ -5,15 +5,26 @@ const systemSettingsRepository = require('../repositories/systemSettingsReposito
 // Sleep helper to throttle email dispatches to prevent rate-limiting on Resend
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+const escapeHtml = (str) => {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
 /**
  * Queue an automated daily attendance marking reminder
  */
 const sendDailyMarkingReminder = async (email, name) => {
   const { queueEmail } = require('../utils/emailHelper');
+  const safeName = escapeHtml(name);
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; background-color: #ffffff;">
       <h2 style="color: #2563eb; margin-bottom: 16px;">Daily Log Reminder</h2>
-      <p style="color: #475569; font-size: 16px;">Hello ${name},</p>
+      <p style="color: #475569; font-size: 16px;">Hello ${safeName},</p>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">This is your scheduled daily reminder to mark your attendance logs in the Trackify student portal today.</p>
       <div style="margin: 24px 0;">
         <a href="http://localhost:3000/student/attendance" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; display: inline-block;">Mark Attendance Now</a>
@@ -31,14 +42,17 @@ const sendDailyMarkingReminder = async (email, name) => {
  */
 const sendLowAttendanceWarning = async (email, name, percentage, target) => {
   const { queueEmail } = require('../utils/emailHelper');
+  const safeName = escapeHtml(name);
+  const safePercent = escapeHtml(percentage?.toString());
+  const safeTarget = escapeHtml(target?.toString());
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ef4444; background-color: #ffffff;">
       <h2 style="color: #ef4444; margin-bottom: 16px;">Attendance Threshold Warning</h2>
-      <p style="color: #475569; font-size: 16px;">Hello ${name},</p>
+      <p style="color: #475569; font-size: 16px;">Hello ${safeName},</p>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">Your attendance average has fallen below your configured minimum academic target percentage threshold:</p>
       <div style="margin: 20px 0; padding: 15px; background-color: #fef2f2; border: 1px solid #fca5a5; font-family: monospace; font-size: 16px; color: #b91c1c; font-weight: bold;">
-        Current Attendance: ${percentage}%<br>
-        Configured target: ${target}%
+        Current Attendance: ${safePercent}%<br>
+        Configured target: ${safeTarget}%
       </div>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">Please review your class schedules and log outstanding OD/ML records immediately to ensure compliance.</p>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />

@@ -67,6 +67,19 @@ const initMigrations = async () => {
       );
     `);
 
+    // 4.5. Ensure holidays table exists
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS holidays (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          name VARCHAR(255) NOT NULL,
+          date DATE NOT NULL,
+          department VARCHAR(100), -- NULL means global/all departments
+          semester INT,            -- NULL means global/all semesters
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(date, department, semester)
+      );
+    `);
+
     // 5. Ensure total_periods column exists in subjects table
     await pool.query(`
       ALTER TABLE subjects ADD COLUMN IF NOT EXISTS total_periods INT DEFAULT 45;
