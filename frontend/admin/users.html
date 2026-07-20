@@ -425,7 +425,7 @@
               ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
             </td>
             <td class="text-secondary small font-monospace" style="font-size: 0.72rem; line-height: 1.2;">
-              Target: <span class="fw-bold text-dark">${user.minimum_attendance || 75}%</span><br>
+              Target: <span class="fw-bold text-dark">${user.minimum_attendance || 80}%</span><br>
               Alerts: <span class="badge ${user.notifications ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle'} py-0.5 px-1 fw-bold fs-9" style="font-size: 0.6rem;">${user.notifications ? 'ON' : 'OFF'}</span>
             </td>
             <td>${statusBadge}</td>

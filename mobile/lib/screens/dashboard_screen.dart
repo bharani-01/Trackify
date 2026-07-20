@@ -234,9 +234,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     // Color logic matching percentage thresholds
     Color pctCol = const Color(0xFF16A34A);
-    if (pct < 75) {
+    if (pct < 80) {
       pctCol = const Color(0xFFEF4444);
-    } else if (pct < 80) {
+    } else if (pct <= 90) {
       pctCol = const Color(0xFFD97706);
     }
 

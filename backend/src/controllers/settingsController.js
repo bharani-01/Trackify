@@ -10,7 +10,7 @@ const getSettings = async (req, res) => {
     // Create defaults if somehow not set yet
     if (!settings) {
       settings = await settingsRepository.update(req.user.id, {
-        minimum_attendance: 75,
+        minimum_attendance: 80,
         theme: 'light',
         notifications: true
       });

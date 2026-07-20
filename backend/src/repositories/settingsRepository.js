@@ -21,7 +21,7 @@ const update = async (userId, settings) => {
   const { minimum_attendance, theme, notifications, daily_reminders, email_timer, low_attendance_warnings } = settings;
   
   // Set fallback values
-  const minAttendance = minimum_attendance ? parseInt(minimum_attendance, 10) : 75;
+  const minAttendance = minimum_attendance ? parseInt(minimum_attendance, 10) : 80;
   const activeTheme = theme || 'light';
   const notifsActive = notifications !== undefined ? !!notifications : true;
   const dailyRem = daily_reminders !== undefined ? !!daily_reminders : true;

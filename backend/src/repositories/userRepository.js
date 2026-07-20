@@ -61,7 +61,7 @@ const createUser = async (user) => {
       // Create settings record
       const insertSettingsQuery = `
         INSERT INTO settings (user_id, minimum_attendance, theme, notifications)
-        VALUES ($1, 75, 'light', TRUE)
+        VALUES ($1, 80, 'light', TRUE)
       `;
       await client.query(insertSettingsQuery, [createdUser.id]);
 
@@ -176,7 +176,7 @@ const approveUser = async (userId) => {
     if (user.role === 'student') {
       const insertSettingsQuery = `
         INSERT INTO settings (user_id, minimum_attendance, theme, notifications)
-        VALUES ($1, 75, 'light', TRUE)
+        VALUES ($1, 80, 'light', TRUE)
         ON CONFLICT DO NOTHING
       `;
       await client.query(insertSettingsQuery, [user.id]);
