@@ -1085,3 +1085,17 @@ h6 {
   color: #ffffff !important;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35) !important;
 }
+
+/* Edit Pencil Icon Button on Card */
+.edit-pencil-btn {
+  opacity: 0.6;
+  transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  cursor: pointer;
+  background: transparent;
+}
+
+.edit-pencil-btn:hover {
+  opacity: 1;
+  color: var(--primary) !important;
+  transform: scale(1.12);
+}

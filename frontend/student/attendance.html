@@ -516,6 +516,7 @@
 
           let statusAreaHtml = '';
           let cardBgStyle = '';
+          let editIconHtml = '';
 
           if (holiday) {
             statusAreaHtml = `
@@ -532,14 +533,22 @@
             else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.02);';
             else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.02);';
 
+            editIconHtml = `
+              <button type="button" onclick="deleteMarking('${logId}')" class="btn btn-sm text-secondary p-1 border-0 position-absolute top-0 end-0 m-3 edit-pencil-btn" title="Edit / Reset marking">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            `;
+
             statusAreaHtml = `
-              <div class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
+              <div class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end me-md-4">
                 <div class="apple-segmented-pill">
                   <button type="button" class="segmented-item ${isPresent ? 'active-present' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present', '${logId}')">Present</button>
                   <button type="button" class="segmented-item ${isAbsent ? 'active-absent' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent', '${logId}')">Absent</button>
                   <button type="button" class="segmented-item ${isOD ? 'active-od' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty', '${logId}')">OD</button>
                 </div>
-                <button onclick="deleteMarking('${logId}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5 fs-8" title="Reset marking">Reset</button>
               </div>
             `;
           } else {
@@ -564,9 +573,10 @@
           }
 
           container.innerHTML += `
-            <div class="p-3 mb-3 rounded-4 border bg-white shadow-sm gap-3 class-attendance-card" style="border-left: 5px solid ${slot.color} !important; ${cardBgStyle}">
+            <div class="p-3 mb-3 rounded-4 border bg-white shadow-sm gap-3 class-attendance-card position-relative" style="${cardBgStyle}">
+              ${editIconHtml}
               <div>
-                <span class="badge text-white px-2 py-0.5 fs-9 mb-1" style="background-color: ${slot.color};">Period ${slot.period}</span>
+                <span class="badge bg-secondary-subtle text-secondary border px-2 py-0.5 fs-9 mb-1 fw-semibold">Period ${slot.period}</span>
                 <h3 class="fs-6 fw-bold mb-1">${slot.subject_name} <span class="text-secondary small font-monospace">(${slot.subject_code})</span></h3>
                 <div class="text-secondary small mb-1">Time: ${start} - ${end} ${slot.room ? `| Room: ${slot.room}` : ''}</div>
                 ${subLabel}
