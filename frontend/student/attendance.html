@@ -115,6 +115,7 @@
   </script>
   <!-- PWA Support -->
   <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
@@ -382,9 +383,12 @@
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const targetDayName = daysOfWeek[targetDate.getDay()];
 
-      // Update date title inside status bar
+      // Update date title inside status bar (if element exists)
       const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      document.getElementById('progress-date-title').innerText = `${targetDayName}, ${months[targetDate.getMonth()]} ${targetDate.getDate()}, ${targetDate.getFullYear()}`;
+      const dateTitleEl = document.getElementById('progress-date-title');
+      if (dateTitleEl) {
+        dateTitleEl.innerText = `${targetDayName}, ${months[targetDate.getMonth()]} ${targetDate.getDate()}, ${targetDate.getFullYear()}`;
+      }
 
       // Fetch student's timetable schedule, adjustments, and log entries for the selected date
       const timetableRes = await apiCall('/api/timetable');

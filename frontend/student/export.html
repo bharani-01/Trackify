@@ -71,6 +71,7 @@
   </script>
   <!-- PWA Support -->
   <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
@@ -467,13 +468,31 @@
       }
     }
 
+    function parsePeriodNumber(log) {
+      if (log.period && !isNaN(parseInt(log.period, 10)) && parseInt(log.period, 10) > 0) {
+        return parseInt(log.period, 10);
+      }
+      if (log.remarks) {
+        const match = String(log.remarks).match(/Period\s*(\d+)/i) || String(log.remarks).match(/(\d+)/);
+        if (match && match[1]) {
+          return parseInt(match[1], 10);
+        }
+      }
+      return 1;
+    }
+
+    function getPeriodLabel(log) {
+      const pNum = parsePeriodNumber(log);
+      return `Period ${pNum}`;
+    }
+
     // RENDER TABLE & METRICS WITH ABSENT ROW HIGHLIGHTING
     function renderTable(logs, emptyMsg = 'No records found.') {
       const tbody = document.getElementById('export-table-body');
       tbody.innerHTML = '';
 
       if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">${emptyMsg}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">${emptyMsg}</td></tr>`;
         document.getElementById('stat-total').innerText = '0';
         document.getElementById('stat-present').innerText = '0';
         document.getElementById('stat-absent').innerText = '0';
@@ -481,27 +500,39 @@
         return;
       }
 
-      let total = logs.length;
+      // Sort chronologically by date, then Period 1 to Period 7
+      const sortedLogs = [...logs].sort((a, b) => {
+        const dateA = String(a.date).split('T')[0];
+        const dateB = String(b.date).split('T')[0];
+        if (dateA !== dateB) {
+          return dateA.localeCompare(dateB);
+        }
+        return parsePeriodNumber(a) - parsePeriodNumber(b);
+      });
+
+      let total = sortedLogs.length;
       let present = 0;
       let absent = 0;
 
-      logs.forEach(log => {
+      sortedLogs.forEach(log => {
         const isAbsent = log.status === 'Absent';
         const isPresent = log.status === 'Present';
         if (isPresent) present++;
         if (isAbsent) absent++;
+
+        const cleanDate = String(log.date).split('T')[0];
+        const periodStr = getPeriodLabel(log);
 
         const rowClass = isAbsent ? 'row-absent' : '';
         const badgeClass = isPresent ? 'bg-success text-white' : isAbsent ? 'bg-danger text-white' : 'bg-primary text-white';
 
         tbody.innerHTML += `
           <tr class="${rowClass}">
-            <td class="fw-bold font-monospace">${log.date}</td>
-            <td class="fw-semibold">Period ${log.period || '1'}</td>
+            <td class="fw-bold font-monospace">${cleanDate}</td>
+            <td class="fw-semibold">${periodStr}</td>
             <td class="font-monospace fw-semibold">${log.subject_code || '-'}</td>
             <td class="fw-semibold">${log.subject_name || 'Subject'}</td>
             <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1 fs-9">${log.status}</span></td>
-            <td class="small text-secondary">${log.remarks || '-'}</td>
           </tr>
         `;
       });
@@ -540,18 +571,31 @@
 
     function generateAndDownloadCSV(logs, filename) {
       let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Student Name,Unique ID,Date,Period,Subject Code,Subject Name,Status,Remarks\n";
+      csvContent += "Student Name,Unique ID,Date,Period,Subject Code,Subject Name,Status\n";
 
-      logs.forEach(log => {
+      // Sort logs chronologically by date and ascending by period (Period 1 to Period 7)
+      const sortedLogs = [...logs].sort((a, b) => {
+        const dateA = String(a.date).split('T')[0];
+        const dateB = String(b.date).split('T')[0];
+        if (dateA !== dateB) {
+          return dateA.localeCompare(dateB);
+        }
+        return parsePeriodNumber(a) - parsePeriodNumber(b);
+      });
+
+      sortedLogs.forEach(log => {
+        const cleanDate = String(log.date).split('T')[0];
+        const periodStr = getPeriodLabel(log);
+        const statusStr = log.status === 'Absent' ? 'ABSENT' : log.status;
+
         const row = [
           `"${currentUser ? currentUser.name : 'Student'}"`,
           `"${currentUser ? (currentUser.register_number || currentUser.id) : ''}"`,
-          `"${log.date}"`,
-          `"Period ${log.period || 1}"`,
+          `"${cleanDate}"`,
+          `"${periodStr}"`,
           `"${log.subject_code || ''}"`,
           `"${log.subject_name || ''}"`,
-          `"${log.status}"`,
-          `"${log.remarks || ''}"`
+          `"${statusStr}"`
         ].join(",");
         csvContent += row + "\n";
       });
