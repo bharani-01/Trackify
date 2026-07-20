@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Attendance Forecaster - Student Portal</title>
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
   <style>
     .slider-container {
@@ -14,9 +16,11 @@
       padding: 1rem;
       border: 1px solid var(--border-color);
     }
+
     .subject-card {
       transition: background-color 80ms ease, border-color 80ms ease;
     }
+
     .badge-status {
       font-size: 0.72rem;
       font-weight: 700;
@@ -24,16 +28,19 @@
       border-radius: 0px;
       text-transform: uppercase;
     }
+
     .badge-status.success {
       background-color: rgba(16, 185, 129, 0.1);
       color: var(--success);
       border: 1px solid rgba(16, 185, 129, 0.2);
     }
+
     .badge-status.warning {
       background-color: rgba(245, 158, 11, 0.1);
       color: var(--warning);
       border: 1px solid rgba(245, 158, 11, 0.2);
     }
+
     .badge-status.danger {
       background-color: rgba(239, 68, 68, 0.1);
       color: var(--danger);
@@ -41,8 +48,8 @@
     }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-    <script>
-    (function() {
+  <script>
+    (function () {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
       if (localStorage.getItem('sidebar-collapsed') === 'true') {
@@ -57,6 +64,7 @@
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
 </head>
+
 <body>
 
   <div class="app-layout">
@@ -67,19 +75,39 @@
       </div>
       <div class="sidebar-menu">
         <a class="sidebar-link" href="/student/dashboard">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
           <span>Dashboard</span>
         </a>
         <a class="sidebar-link active" href="/student/attendance">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
           <span>Attendance</span>
         </a>
         <a class="sidebar-link" href="/student/timetable">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          <span>Academics</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Time Table</span>
         </a>
         <a class="sidebar-link" href="/student/settings">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
           <span>Profile</span>
         </a>
       </div>
@@ -91,27 +119,57 @@
       <header class="app-header">
         <h1 class="app-header-title">Attendance</h1>
         <div class="app-header-profile dropdown">
-          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
+            style="cursor: pointer;">
             <div class="profile-avatar-container">
-              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;" id="profile-avatar">S</span>
+              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6"
+                style="width: 36px; height: 36px; border-radius: 50%;" id="profile-avatar">S</span>
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
               <div class="fw-bold text-dark fs-7" id="user-header-name">Student Name</div>
-              <div class="text-secondary small" style="font-size: 0.65rem;" id="user-header-role">Department | Sem 1</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;" id="user-header-role">Department | Sem 1
+              </div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2"
+            style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
             <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2"
+                href="/student/settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"
+                  style="width: 16px; height: 16px;">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
                 <span>Settings</span>
               </a>
             </li>
-            <li><hr class="dropdown-divider" style="border-color: #f1f5f9;"></li>
             <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger" style="width: 16px; height: 16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+              <hr class="dropdown-divider" style="border-color: #f1f5f9;">
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#"
+                onclick="handleLogout()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger"
+                  style="width: 16px; height: 16px;">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
                 <span>Log Out</span>
               </a>
             </li>
@@ -132,7 +190,8 @@
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
           <div>
             <h2 class="h5 fw-bold mb-1">Attendance Calculations & Targets</h2>
-            <p class="text-secondary small mb-0">Forecast safe absences, attendance requirements, and simulate target achievements based on fixed semester classes.</p>
+            <p class="text-secondary small mb-0">Forecast safe absences, attendance requirements, and simulate target
+              achievements based on fixed semester classes.</p>
           </div>
         </div>
 
@@ -141,7 +200,8 @@
           <div class="row align-items-center">
             <div class="col-md-7 mb-3 mb-md-0">
               <h3 class="h6 fw-bold mb-1">Interactive Target Percentage</h3>
-              <p class="text-secondary small mb-0">Adjust this slider to dynamically plan for different attendance goals (e.g. 80% college minimum vs 90% safety buffer).</p>
+              <p class="text-secondary small mb-0">Adjust this slider to dynamically plan for different attendance goals
+                (e.g. 80% college minimum vs 90% safety buffer).</p>
             </div>
             <div class="col-md-5">
               <div class="slider-container">
@@ -149,7 +209,8 @@
                   <span class="small fw-semibold text-secondary">Target Attendance Goal:</span>
                   <span class="fw-bold text-primary fs-5" id="targetVal">80%</span>
                 </div>
-                <input type="range" class="form-range" id="targetSlider" min="50" max="100" value="80" oninput="updateTargetValue(this.value)">
+                <input type="range" class="form-range" id="targetSlider" min="50" max="100" value="80"
+                  oninput="updateTargetValue(this.value)">
               </div>
             </div>
           </div>
@@ -162,7 +223,7 @@
               <h3 class="h6 fw-bold mb-0 text-uppercase tracking-wide text-secondary">Subject Predictions</h3>
               <span class="text-secondary small" id="subject-count-label">Loading subjects...</span>
             </div>
-            
+
             <div id="subject-forecast-list" class="d-flex flex-column gap-3">
               <!-- Rendered via JS -->
             </div>
@@ -183,27 +244,32 @@
                 <div class="row">
                   <div class="col-6 mb-3">
                     <label for="simAttend" class="form-label small fw-semibold text-secondary">Attend Next</label>
-                    <input type="number" class="form-control border-light" id="simAttend" min="0" value="0" oninput="runSimulation()">
+                    <input type="number" class="form-control border-light" id="simAttend" min="0" value="0"
+                      oninput="runSimulation()">
                     <div class="form-text small">classes</div>
                   </div>
                   <div class="col-6 mb-3">
                     <label for="simMiss" class="form-label small fw-semibold text-secondary">Miss Next</label>
-                    <input type="number" class="form-control border-light" id="simMiss" min="0" value="0" oninput="runSimulation()">
+                    <input type="number" class="form-control border-light" id="simMiss" min="0" value="0"
+                      oninput="runSimulation()">
                     <div class="form-text small">classes</div>
                   </div>
                 </div>
 
                 <div class="form-check form-switch mb-3 text-start">
-                  <input class="form-check-input" type="checkbox" id="simToggleHistory" checked onchange="runSimulation()">
-                  <label class="form-check-label small text-secondary fw-semibold" for="simToggleHistory">Include current attendance history</label>
+                  <input class="form-check-input" type="checkbox" id="simToggleHistory" checked
+                    onchange="runSimulation()">
+                  <label class="form-check-label small text-secondary fw-semibold" for="simToggleHistory">Include
+                    current attendance history</label>
                 </div>
-                
+
                 <!-- Simulated Result Area -->
                 <div id="sim-result-card" class="p-3 rounded-3 mt-3 border bg-light text-center" style="display: none;">
                   <div class="text-secondary small mb-1">Simulated Final Attendance</div>
                   <div class="fw-bold fs-4 text-dark mb-1" id="sim-percentage">0%</div>
                   <div class="small fw-semibold" id="sim-badge">Safe</div>
-                  <div class="text-secondary fs-9 mt-2" id="sim-explanation">Select a subject and add simulated classes to start.</div>
+                  <div class="text-secondary fs-9 mt-2" id="sim-explanation">Select a subject and add simulated classes
+                    to start.</div>
                 </div>
               </form>
             </div>
@@ -234,9 +300,11 @@
               <!-- Weekly Leave Capacity table -->
               <div class="border-top mt-4 pt-3">
                 <h5 class="fs-7 fw-bold mb-1 text-dark">Weekly Leave Capacity</h5>
-                <p class="text-secondary" style="font-size: 0.7rem; line-height: 1.3;">Maximum day-offs allowed for each weekday based on your live statistics, and overall projected average if you skip once.</p>
+                <p class="text-secondary" style="font-size: 0.7rem; line-height: 1.3;">Maximum day-offs allowed for each
+                  weekday based on your live statistics, and overall projected average if you skip once.</p>
                 <div class="table-responsive">
-                  <table class="table table-sm table-borderless align-middle mb-0 text-start" style="font-size: 0.75rem;">
+                  <table class="table table-sm table-borderless align-middle mb-0 text-start"
+                    style="font-size: 0.75rem;">
                     <thead>
                       <tr class="border-bottom text-secondary" style="font-size: 0.65rem;">
                         <th class="ps-0">Day</th>
@@ -257,9 +325,13 @@
             <div class="glass-card border-glass p-4 bg-light-subtle shadow-sm">
               <h4 class="fs-6 fw-bold mb-2">How Forecasts Work</h4>
               <ul class="small text-secondary ps-3 mb-0" style="line-height: 1.5;">
-                <li class="mb-2"><strong>Total Periods:</strong> The semester duration limit (hours) of this subject. You can edit this field for any subject in the list.</li>
-                <li class="mb-2"><strong>Safe Absences:</strong> The maximum remaining classes you can miss to still finish the semester with at least the target percentage.</li>
-                <li class="mb-2"><strong>Classes Needed:</strong> The minimum remaining classes you must attend to secure the target. If the remaining classes are too few, it marks it as <strong>Impossible</strong>.</li>
+                <li class="mb-2"><strong>Total Periods:</strong> The semester duration limit (hours) of this subject.
+                  You can edit this field for any subject in the list.</li>
+                <li class="mb-2"><strong>Safe Absences:</strong> The maximum remaining classes you can miss to still
+                  finish the semester with at least the target percentage.</li>
+                <li class="mb-2"><strong>Classes Needed:</strong> The minimum remaining classes you must attend to
+                  secure the target. If the remaining classes are too few, it marks it as <strong>Impossible</strong>.
+                </li>
               </ul>
             </div>
           </div>
@@ -283,7 +355,7 @@
         document.getElementById('user-header-name').innerText = meResult.user.name;
         document.getElementById('user-header-role').innerText = `${meResult.user.department} | Semester ${meResult.user.semester}`;
         document.getElementById('profile-avatar').innerText = meResult.user.name[0];
-        
+
         // Grab student target from user settings if available
         if (meResult.user.attendance_target) {
           currentTarget = parseInt(meResult.user.attendance_target, 10);
@@ -300,10 +372,10 @@
       if (statsRes.success && statsRes.stats) {
         subjectsStats = statsRes.stats.subjectStats || [];
         document.getElementById('subject-count-label').innerText = `${subjectsStats.length} Subjects`;
-        
+
         // Populate simulator dropdown
         populateSimulatorDropdown();
-        
+
         // Render lists
         renderForecasts();
       } else {
@@ -353,7 +425,7 @@
         const conducted = subj.conducted_count;
         const totalPeriods = subj.total_periods || 45;
         const remaining = Math.max(0, totalPeriods - conducted);
-        
+
         // Calculate current attendance %
         const currentPercentage = conducted > 0 ? (presentOD / conducted) * 100 : 100;
         const roundedPercentage = Math.round(currentPercentage * 100) / 100;
@@ -793,4 +865,5 @@
     window.onload = loadData;
   </script>
 </body>
+
 </html>

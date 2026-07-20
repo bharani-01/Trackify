@@ -8,7 +8,7 @@ class ShellScaffold extends StatelessWidget {
   static const _tabs = [
     (icon: Icons.grid_view_rounded, label: 'Dashboard', path: '/dashboard'),
     (icon: Icons.playlist_add_check_rounded, label: 'Attendance', path: '/attendance'),
-    (icon: Icons.calendar_today_rounded, label: 'Academics', path: '/timetable'),
+    (icon: Icons.calendar_today_rounded, label: 'Time Table', path: '/timetable'),
     (icon: Icons.person_outline_rounded, label: 'Profile', path: '/profile'),
   ];
 
