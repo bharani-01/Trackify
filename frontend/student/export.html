@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trackify - Export Attendance Reports</title>
-
-  <!-- Google Fonts & Bootstrap 5 -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <title>Export Attendance Reports - Trackify</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
 
   <style>
     .export-card-option {
@@ -46,7 +43,7 @@
       .app-sidebar, .app-header, .no-print {
         display: none !important;
       }
-      .app-content {
+      .app-main-wrapper {
         margin: 0 !important;
         padding: 0 !important;
       }
@@ -61,95 +58,147 @@
       }
     }
   </style>
+
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+  <!-- PWA Support -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trackify">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
 </head>
 
 <body>
   <div class="app-layout">
-    <!-- Sidebar -->
+    <!-- Sidebar (Identical to attendance.html & all student pages) -->
     <aside class="app-sidebar">
-      <div class="sidebar-header">
-        <a href="/student/dashboard" class="sidebar-brand text-decoration-none">
-          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo me-2">
+      <div class="sidebar-logo">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/student/dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="sidebar-link active" href="/student/attendance">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>Attendance</span>
+        </a>
+        <a class="sidebar-link" href="/student/timetable">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Time Table</span>
+        </a>
+        <a class="sidebar-link" href="/student/settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Profile</span>
         </a>
       </div>
-
-      <nav class="sidebar-nav">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link" href="/student/dashboard">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" href="/student/attendance">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              <span>Attendance</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/student/subjects">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-              <span>Subjects</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/student/timetable">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              <span>Timetable</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/student/settings">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-              <span>Settings</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
     </aside>
 
-    <!-- Main Workspace -->
-    <div class="app-main">
-      <!-- Header -->
-      <header class="app-header no-print">
-        <div class="header-left">
-          <button class="btn btn-icon sidebar-toggle d-md-none me-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-          </button>
-          <h1 class="app-header-title">Export Reports</h1>
-        </div>
-
-        <div class="header-right">
-          <div class="profile-avatar-container dropdown">
-            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
-              <span class="badge bg-primary rounded-circle text-white me-2">S</span>
-              <span class="d-none d-md-inline fw-semibold" id="user-header-name">Student</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-              <li><a class="dropdown-item" href="/student/settings">Settings</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()">Logout</a></li>
-            </ul>
+    <!-- Main Wrapper -->
+    <div class="app-main-wrapper">
+      <!-- Header (Identical to attendance.html) -->
+      <header class="app-header">
+        <h1 class="app-header-title">Export Reports</h1>
+        <div class="app-header-profile dropdown">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
+            style="cursor: pointer;">
+            <div class="profile-avatar-container">
+              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6"
+                style="width: 36px; height: 36px; border-radius: 50%;" id="header-avatar-badge">S</span>
+            </div>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
           </div>
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2"
+            style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2"
+                href="/student/settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"
+                  style="width: 16px; height: 16px;">
+                  <line x1="4" y1="21" x2="4" y2="14"></line>
+                  <line x1="4" y1="10" x2="4" y2="3"></line>
+                  <line x1="12" y1="21" x2="12" y2="12"></line>
+                  <line x1="12" y1="8" x2="12" y2="3"></line>
+                  <line x1="20" y1="21" x2="20" y2="16"></line>
+                  <line x1="20" y1="12" x2="20" y2="3"></line>
+                  <line x1="1" y1="14" x2="7" y2="14"></line>
+                  <line x1="9" y1="8" x2="15" y2="8"></line>
+                  <line x1="17" y1="16" x2="23" y2="16"></line>
+                </svg>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider" style="border-color: #f1f5f9;">
+            </li>
+            <li>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#"
+                onclick="handleLogout()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger"
+                  style="width: 16px; height: 16px;">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                  <polyline points="16 17 21 12 16 7"></polyline>
+                  <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+                <span>Log Out</span>
+              </a>
+            </li>
+          </ul>
         </div>
       </header>
 
       <!-- Content -->
       <main class="app-content animate-fade-in-up">
-        <!-- Oval Chip Sub-tabs Navigation & Download Action (no-print) -->
+        <!-- Sub-header bar with back link to Attendance page -->
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3 no-print">
-          <div class="d-flex align-items-center gap-2">
-            <a href="/student/attendance" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-semibold btn-glass text-secondary">Mark Attendance</a>
+          <div>
+            <h2 class="h5 fw-bold mb-1">Export Attendance Records</h2>
+            <p class="text-secondary small mb-0">Generate CSV exports or print official Academic Attendance Statements.</p>
           </div>
 
-          <a href="/student/export" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-bold btn-primary d-inline-flex align-items-center gap-2" title="Export Reports">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Download Reports</span>
+          <a href="/student/attendance" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-secondary border d-inline-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span>Back to Attendance</span>
           </a>
         </div>
 
@@ -318,11 +367,13 @@
       const meRes = await apiCall('/api/auth/me');
       if (meRes.success && meRes.user) {
         currentUser = meRes.user;
+        const initial = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'S';
         document.getElementById('user-header-name').innerText = currentUser.name;
+        document.getElementById('header-avatar-badge').innerText = initial;
         document.getElementById('stmt-user-name').innerText = currentUser.name;
         document.getElementById('stmt-user-id').innerText = currentUser.register_number || currentUser.id || 'N/A';
         document.getElementById('stmt-user-dept').innerText = currentUser.department_name || 'CSE';
-        document.getElementById('stmt-user-sem').innerText = currentUser.semester || 'S1';
+        document.getElementById('stmt-user-sem').innerText = currentUser.semester ? `Semester ${currentUser.semester}` : 'S1';
       } else {
         window.location.href = '/login';
         return;
@@ -335,14 +386,16 @@
       document.getElementById('exportStartDate').value = getFormattedDate(firstDay);
       document.getElementById('exportEndDate').value = getFormattedDate(today);
 
-      // 3. Fetch student subjects dropdown options
+      // 3. Fetch student subjects dropdown options safely
       const subRes = await apiCall('/api/subjects');
       if (subRes.success && subRes.subjects) {
         studentSubjects = subRes.subjects;
         const select = document.getElementById('exportSubjectSelect');
         select.innerHTML = '<option value="">Choose a subject...</option>';
         studentSubjects.forEach(s => {
-          select.innerHTML += `<option value="${s.id}">${s.code} - ${s.name}</option>`;
+          const code = s.subject_code || s.code || 'SUB';
+          const name = s.subject_name || s.name || 'Subject';
+          select.innerHTML += `<option value="${s.id}">${code} - ${name}</option>`;
         });
         if (studentSubjects.length > 0) {
           select.value = studentSubjects[0].id;
@@ -379,8 +432,11 @@
       }
 
       const selectedSub = studentSubjects.find(s => String(s.id) === String(subjectId));
-      document.getElementById('stmt-main-title').innerText = `Subject Report: ${selectedSub ? selectedSub.name : ''}`;
-      document.getElementById('stmt-period-lbl').innerText = `Subject Code: ${selectedSub ? selectedSub.code : ''}`;
+      const code = selectedSub ? (selectedSub.subject_code || selectedSub.code || '') : '';
+      const name = selectedSub ? (selectedSub.subject_name || selectedSub.name || '') : '';
+
+      document.getElementById('stmt-main-title').innerText = `Subject Report: ${name}`;
+      document.getElementById('stmt-period-lbl').innerText = `Subject Code: ${code}`;
 
       // Fetch all attendance logs for this subject
       const res = await apiCall(`/api/attendance?subjectId=${subjectId}`);
@@ -465,7 +521,8 @@
       }
       const subId = document.getElementById('exportSubjectSelect').value;
       const selectedSub = studentSubjects.find(s => String(s.id) === String(subId));
-      const filename = `Attendance_Subject_${selectedSub ? selectedSub.code : 'Export'}_${new Date().toISOString().slice(0,10)}.csv`;
+      const code = selectedSub ? (selectedSub.subject_code || selectedSub.code || 'Export') : 'Export';
+      const filename = `Attendance_Subject_${code}_${new Date().toISOString().slice(0,10)}.csv`;
       generateAndDownloadCSV(currentLogsData, filename);
     }
 
@@ -492,6 +549,7 @@
           `"${log.date}"`,
           `"Period ${log.period || 1}"`,
           `"${log.subject_code || ''}"`,
+          `"${log.subject_name || ''}"`,
           `"${log.status}"`,
           `"${log.remarks || ''}"`
         ].join(",");

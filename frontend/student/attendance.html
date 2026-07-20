@@ -268,23 +268,6 @@
                 </div>
               </div>
 
-              <!-- Day Progress Tracker -->
-              <div
-                class="p-3 bg-light rounded-4 border mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
-                <div>
-                  <div class="fw-bold text-dark fs-7" id="progress-date-title">Date Schedule</div>
-                  <div class="text-secondary small" style="font-size: 0.75rem;" id="progress-text">Loading checklist
-                    parameters...</div>
-                </div>
-                <div class="d-flex align-items-center gap-3">
-                  <div class="progress" style="width: 140px; height: 8px; border-radius: 4px; background: #e2e8f0;">
-                    <div class="progress-bar bg-primary" id="checklist-progress-bar" role="progressbar"
-                      style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <span class="fw-bold text-dark small" id="progress-percentage">0%</span>
-                </div>
-              </div>
-
               <!-- Quick Bulk Actions Bar (Apple/Stripe Style Single Row) -->
               <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-nowrap" id="bulk-actions-container" style="display: none !important;">
                 <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
@@ -619,11 +602,15 @@
 
     function updateProgressBar(marked, total) {
       const percentage = total > 0 ? Math.round((marked / total) * 100) : 0;
-
-      document.getElementById('checklist-progress-bar').style.width = `${percentage}%`;
-      document.getElementById('checklist-progress-bar').setAttribute('aria-valuenow', percentage);
-      document.getElementById('progress-percentage').innerText = `${percentage}%`;
-      document.getElementById('progress-text').innerText = `You have marked ${marked} of ${total} classes scheduled for this date.`;
+      const bar = document.getElementById('checklist-progress-bar');
+      if (bar) {
+        bar.style.width = `${percentage}%`;
+        bar.setAttribute('aria-valuenow', percentage);
+      }
+      const pct = document.getElementById('progress-percentage');
+      if (pct) pct.innerText = `${percentage}%`;
+      const txt = document.getElementById('progress-text');
+      if (txt) txt.innerText = `You have marked ${marked} of ${total} classes scheduled for this date.`;
     }
 
     async function onDateChanged(dateVal) {
