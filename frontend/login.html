@@ -78,8 +78,35 @@
             <button type="submit" id="submitBtn" class="btn btn-glow w-100 py-3 mb-3">Log In</button>
 
             <!-- Toggle Mode link -->
-            <div class="text-center mb-2">
+            <div class="text-center mb-3">
               <a href="#" id="toggleModeBtn" class="text-primary small text-decoration-none fw-semibold">Log In with OTP</a>
+            </div>
+
+            <!-- Divider -->
+            <div class="d-flex align-items-center mb-3">
+              <hr class="flex-grow-1 border-secondary opacity-25">
+              <span class="px-2 text-secondary small text-uppercase" style="font-size: 0.68rem; font-weight: 600; letter-spacing: 0.5px;">OR CONTINUE WITH</span>
+              <hr class="flex-grow-1 border-secondary opacity-25">
+            </div>
+
+            <!-- Google Sign In Container -->
+            <div class="mb-3 d-flex justify-content-center" id="google-btn-container">
+              <div id="g_id_onload"
+                   data-client_id="388282063241-r6vm9q8utpahsohnt2pcsi56skrckij8.apps.googleusercontent.com"
+                   data-context="signin"
+                   data-ux_mode="popup"
+                   data-callback="handleGoogleSignIn"
+                   data-auto_prompt="false">
+              </div>
+              <div class="g_id_signin"
+                   data-type="standard"
+                   data-shape="pill"
+                   data-theme="outline"
+                   data-text="signin_with"
+                   data-size="large"
+                   data-logo_alignment="left"
+                   data-width="320">
+              </div>
             </div>
           </form>
 
@@ -91,6 +118,8 @@
     </div>
   </main>
 
+  <!-- Google Identity Services SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- Global scripts -->
   <script src="/assets/js/main.js"></script>
   <script>
@@ -224,6 +253,31 @@
         }
       }
     });
+
+    // Handle Google Sign-In Callback
+    async function handleGoogleSignIn(googleResponse) {
+      if (!googleResponse || !googleResponse.credential) return;
+
+      showAlert('Authenticating with Google...', 'info');
+
+      const response = await apiCall('/api/auth/google', {
+        method: 'POST',
+        body: { idToken: googleResponse.credential }
+      });
+
+      if (response.success) {
+        if (response.pendingApproval) {
+          showAlert(response.message, 'info');
+        } else {
+          showAlert('Google login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = response.redirectUrl || '/student/dashboard';
+          }, 800);
+        }
+      } else {
+        showAlert(response.message || 'Google authentication failed.', 'danger');
+      }
+    }
   </script>
 </body>
 </html>

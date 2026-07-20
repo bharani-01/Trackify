@@ -369,7 +369,8 @@ const getRegistrationStatus = async (req, res) => {
     const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
     return res.status(200).json({
       success: true,
-      allowSelfRegistration: allowSelfReg === 'true'
+      allowSelfRegistration: allowSelfReg === 'true',
+      googleClientId: process.env.GOOGLE_CLIENT_ID || ''
     });
   } catch (error) {
     console.error('getRegistrationStatus error:', error);
@@ -585,9 +586,135 @@ const logError = async (req, res) => {
   }
 };
 
+/**
+ * Helper to decode and verify Google ID token payload
+ */
+const verifyGoogleToken = (idToken) => {
+  try {
+    const parts = idToken.split('.');
+    if (parts.length !== 3) return null;
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString('utf8'));
+    
+    if (payload.iss !== 'accounts.google.com' && payload.iss !== 'https://accounts.google.com') {
+      return null;
+    }
+    if (payload.exp && payload.exp < Date.now() / 1000) {
+      return null;
+    }
+    
+    return {
+      email: payload.email,
+      name: payload.name,
+      googleId: payload.sub,
+      emailVerified: payload.email_verified
+    };
+  } catch (err) {
+    console.error('Error parsing Google ID token:', err.message);
+    return null;
+  }
+};
+
+/**
+ * Authenticate or Register via Google OAuth
+ * @route POST /api/auth/google
+ */
+const googleAuth = async (req, res) => {
+  const { idToken } = req.body;
+
+  if (!idToken) {
+    return res.status(400).json({
+      success: false,
+      message: 'Google credential ID token is required'
+    });
+  }
+
+  try {
+    const googleUser = verifyGoogleToken(idToken);
+    if (!googleUser || !googleUser.email) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid or expired Google authentication token.'
+      });
+    }
+
+    // 1. Check if user already exists
+    let user = await userRepository.findByEmail(googleUser.email);
+
+    if (user) {
+      if (user.is_suspended) {
+        return res.status(403).json({
+          success: false,
+          message: 'Your account has been suspended by the administrator.'
+        });
+      }
+
+      if (user.is_approved === false) {
+        return res.status(403).json({
+          success: false,
+          message: 'Your registration is pending administrator approval.'
+        });
+      }
+
+      const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      await auditLogRepository.logAction(
+        user.id,
+        'GOOGLE_LOGIN_SUCCESS',
+        `Logged in via Google OAuth (${user.email})`,
+        ip
+      );
+
+      return sendTokenCookie(user, 200, res);
+    }
+
+    // 2. User does not exist -> Self registration check
+    const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
+    if (allowSelfReg !== 'true') {
+      return res.status(403).json({
+        success: false,
+        message: 'Public self-registration is currently disabled. Please contact your administrator.'
+      });
+    }
+
+    const defaultRegNumber = `GGL-${Date.now().toString().slice(-6)}`;
+    const randomPasswordHash = await hashPassword(crypto.randomBytes(16).toString('hex'));
+
+    user = await userRepository.createUser({
+      name: googleUser.name || googleUser.email.split('@')[0],
+      register_number: defaultRegNumber,
+      email: googleUser.email,
+      password_hash: randomPasswordHash,
+      role: 'student',
+      department: 'CSE',
+      semester: 1
+    });
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      user.id,
+      'GOOGLE_REGISTER_REQUEST',
+      `New Google user created: ${user.name} (${user.email}). Pending approval.`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      pendingApproval: true,
+      message: 'Account created with Google! Your registration request is pending administrator approval.'
+    });
+
+  } catch (error) {
+    console.error('googleAuth controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error authenticating with Google.'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  googleAuth,
   getMe,
   logout,
   forgotPassword,

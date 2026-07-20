@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { login, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus, updateProfile, sendOtp, verifyOtpLogin, verifyOtpResetPassword, logError } = require('../controllers/authController');
+const { login, googleAuth, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus, updateProfile, sendOtp, verifyOtpLogin, verifyOtpResetPassword, logError } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
 
 // Public routes
 router.post('/register', register);
 router.get('/registration-status', getRegistrationStatus);
 router.post('/login', login);
+router.post('/google', googleAuth);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.post('/log-error', logError);

@@ -31,9 +31,10 @@ app.use(cookieParser());
 // Security Headers and File Protections Middleware
 app.use((req, res, next) => {
   // Set security headers to prevent clickjacking, MIME sniffing, and XSS
-  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Referrer-Policy', 'no-referrer');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   res.setHeader('X-XSS-Protection', '1; mode=block');
 
   const url = req.path.toLowerCase();
