@@ -2,6 +2,7 @@ const adminRepository = require('../repositories/adminRepository');
 const userRepository = require('../repositories/userRepository');
 const { hashPassword } = require('../utils/authHelper');
 const auditLogRepository = require('../repositories/auditLogRepository');
+const settingsRepository = require('../repositories/settingsRepository');
 
 /**
  * Get all registered student users
@@ -315,7 +316,7 @@ const deleteMasterTimetableSlot = async (req, res) => {
  */
 const updateStudentProfile = async (req, res) => {
   const { id } = req.params;
-  const { department, semester } = req.body;
+  const { department, semester, minimum_attendance } = req.body;
 
   if (!department || !semester) {
     return res.status(400).json({
@@ -336,9 +337,31 @@ const updateStudentProfile = async (req, res) => {
     // Initialize subjects and timetable templates according to the new department/semester
     await adminRepository.initializeStudentSubjectsAndTimetable(id, department, parseInt(semester, 10));
 
+    // Admin override of student minimum attendance configuration settings
+    if (minimum_attendance !== undefined) {
+      const existingSettings = await settingsRepository.getByUserId(id);
+      await settingsRepository.update(id, {
+        minimum_attendance: parseInt(minimum_attendance, 10),
+        theme: existingSettings ? existingSettings.theme : 'light',
+        notifications: existingSettings ? existingSettings.notifications : true,
+        daily_reminders: existingSettings ? existingSettings.daily_reminders : true,
+        email_timer: existingSettings ? existingSettings.email_timer : '18:00',
+        low_attendance_warnings: existingSettings ? existingSettings.low_attendance_warnings : true
+      });
+    }
+
+    // Log action to audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_UPDATE_STUDENT_PROFILE',
+      `Updated profile for student ID ${id}: Dept ${department}, Sem ${semester}, Min Target: ${minimum_attendance || 'unchanged'}%`,
+      ip
+    );
+
     return res.status(200).json({
       success: true,
-      message: 'Student department and semester updated and schedule initialized successfully'
+      message: 'Student department, semester, and attendance parameters updated successfully'
     });
   } catch (error) {
     console.error('updateStudentProfile controller error:', error);

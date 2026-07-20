@@ -292,7 +292,7 @@
               </select>
             </div>
             
-            <div class="mb-4">
+            <div class="mb-3">
               <label for="edit-semester" class="form-label small fw-bold text-secondary">Semester</label>
               <select class="form-select bg-white text-dark border-secondary-subtle" id="edit-semester" required>
                 <option value="" disabled selected>Select Semester</option>
@@ -305,6 +305,11 @@
                 <option value="7">Semester 7</option>
                 <option value="8">Semester 8</option>
               </select>
+            </div>
+            
+            <div class="mb-4">
+              <label for="edit-min-attendance" class="form-label small fw-bold text-secondary">Minimum Target Attendance (%)</label>
+              <input type="number" class="form-control bg-white text-dark border-secondary-subtle" id="edit-min-attendance" placeholder="80" min="50" max="100" required>
             </div>
             
             <button type="submit" class="btn btn-glow w-100 py-2.5">Save Changes & Initialize Templates</button>
@@ -437,7 +442,7 @@
             <td>${statusBadge}</td>
             <td class="pe-4 text-end">
               <div class="d-flex gap-1 justify-content-end">
-                <button onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}')" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
+                <button onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}', ${user.minimum_attendance || 80})" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
                   Edit
                 </button>
                 <button onclick="openAdminResetPasswordModal('${user.id}', '${user.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
@@ -508,11 +513,12 @@
       }
     }
 
-    function openEditModal(id, name, dept, sem) {
+    function openEditModal(id, name, dept, sem, minAttendance) {
       document.getElementById('edit-user-id').value = id;
       document.getElementById('edit-user-name').value = name;
       document.getElementById('edit-department').value = dept || '';
       document.getElementById('edit-semester').value = sem || '';
+      document.getElementById('edit-min-attendance').value = minAttendance || 80;
       
       const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
       modal.show();
@@ -524,6 +530,7 @@
       const id = document.getElementById('edit-user-id').value;
       const department = document.getElementById('edit-department').value;
       const semester = document.getElementById('edit-semester').value;
+      const minimum_attendance = document.getElementById('edit-min-attendance').value;
       
       const submitBtn = e.target.querySelector('button[type="submit"]');
       submitBtn.disabled = true;
@@ -531,7 +538,7 @@
       
       const response = await apiCall(`/api/admin/users/${id}`, {
         method: 'PUT',
-        body: { department, semester }
+        body: { department, semester, minimum_attendance }
       });
       
       submitBtn.disabled = false;
