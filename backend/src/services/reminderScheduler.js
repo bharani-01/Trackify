@@ -138,13 +138,26 @@ const processEmailQueue = async () => {
 const startScheduler = () => {
   console.log('[REMINDER SCHEDULER SERVICE]: Initializing background cron task daemon...');
 
-  // 1. Run the checker loop every 60 seconds for daily schedule matching
   setInterval(async () => {
     try {
+      const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+      if (globalEmail !== 'true') {
+        return; // Email service is globally disabled by admin
+      }
+
       const now = new Date();
-      // Format time as HH:MM matching student configuration inputs
-      const currentHours = String(now.getHours()).padStart(2, '0');
-      const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+      // Convert current time to IST (Asia/Kolkata) to align schedule triggers with student timezone
+      const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Kolkata',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      });
+      const parts = formatter.formatToParts(now);
+      const hourPart = parts.find(p => p.type === 'hour').value;
+      const minutePart = parts.find(p => p.type === 'minute').value;
+      const currentHours = hourPart === '24' ? '00' : hourPart;
+      const currentMinutes = minutePart;
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
 
       // Process Daily Marking Reminders
@@ -153,14 +166,14 @@ const startScheduler = () => {
         FROM users u
         JOIN settings s ON u.id = s.user_id
         WHERE u.role = 'student' 
-          AND s.daily_reminders = TRUE 
-          AND s.email_timer = $1
-          AND u.is_suspended = FALSE
+        AND s.daily_reminders = TRUE 
+        AND s.email_timer = $1
+        AND u.is_suspended = FALSE
       `;
       const dailyRes = await db.query(dailyReminderQuery, [currentTimeStr]);
       for (const row of dailyRes.rows) {
         await sendDailyMarkingReminder(row.email, row.name);
-        await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder queued automatically at ${currentTimeStr}`, '127.0.0.1');
+        await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder queued automatically at ${currentTimeStr} IST`, '127.0.0.1');
       }
 
       // Process Low Attendance warnings (Only once per day at 18:00 Dinner hour to prevent spamming)
@@ -185,7 +198,7 @@ const startScheduler = () => {
           const target = student.minimum_attendance || 80;
           if (currentPercentage !== null && currentPercentage < target) {
             await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target);
-            await auditLogRepository.logAction(student.id, 'EMAIL_DISPATCHED', `Automated low attendance warning email queued (${currentPercentage}% vs target ${target}%)`, '127.0.0.1');
+            await auditLogRepository.logAction(student.id, 'EMAIL_DISPATCHED', `Automated low attendance warning email queued (${currentPercentage}% vs target ${target}% at 18:00 IST)`, '127.0.0.1');
           }
         }
       }
