@@ -902,3 +902,14 @@ h6 {
   height: 38px !important;
   margin-top: -3px;
 }
+
+/* Ensure the header profile avatar is a perfect circular symbol, overriding bootstrap badge styles */
+.profile-avatar-container span {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
