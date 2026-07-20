@@ -179,20 +179,21 @@
 
       <!-- Content -->
       <main class="app-content animate-fade-in-up">
-        <!-- Sub-tabs Navigation -->
-        <div class="scrollable-subtabs">
-          <a href="/student/attendance" class="subtab-link">Mark Attendance</a>
-          <a href="/student/history" class="subtab-link">Attendance History</a>
-          <a href="/student/calculator" class="subtab-link active">Forecaster</a>
-        </div>
-
-        <!-- Sub-header -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-          <div>
-            <h2 class="h5 fw-bold mb-1">Attendance Calculations & Targets</h2>
-            <p class="text-secondary small mb-0">Forecast safe absences, attendance requirements, and simulate target
-              achievements based on fixed semester classes.</p>
+        <!-- Oval Chip Sub-tabs Navigation & Download Action -->
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+          <div class="d-flex align-items-center gap-2">
+            <a href="/student/attendance" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-semibold btn-glass text-secondary">Mark Attendance</a>
+            <a href="/student/calculator" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-bold btn-primary">Forecaster</a>
           </div>
+
+          <a href="/student/export" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-primary border-primary d-inline-flex align-items-center gap-2" title="Export & Download Attendance Reports">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download</span>
+          </a>
         </div>
 
         <!-- Global Target Config Card -->

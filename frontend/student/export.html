@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trackify - Export Attendance Reports</title>
+
+  <!-- Google Fonts & Bootstrap 5 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+
+  <style>
+    .export-card-option {
+      transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    .export-card-option:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    .export-card-option.active-option {
+      border-color: var(--primary) !important;
+      background-color: var(--bg-secondary) !important;
+    }
+    
+    /* Highlight Absent rows in soft red */
+    .row-absent {
+      background-color: rgba(239, 68, 68, 0.08) !important;
+      color: #dc2626 !important;
+    }
+    .row-absent td {
+      border-color: rgba(239, 68, 68, 0.15) !important;
+    }
+
+    /* Print / PDF Statement Styling */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .app-sidebar, .app-header, .no-print {
+        display: none !important;
+      }
+      .app-content {
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+      .printable-statement-container {
+        display: block !important;
+        width: 100% !important;
+      }
+      .row-absent {
+        background-color: #fee2e2 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <a href="/student/dashboard" class="sidebar-brand text-decoration-none">
+          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo me-2">
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="/student/dashboard">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="/student/attendance">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <span>Attendance</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/subjects">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              <span>Subjects</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/timetable">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <span>Timetable</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/student/settings">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="app-main">
+      <!-- Header -->
+      <header class="app-header no-print">
+        <div class="header-left">
+          <button class="btn btn-icon sidebar-toggle d-md-none me-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <h1 class="app-header-title">Export Reports</h1>
+        </div>
+
+        <div class="header-right">
+          <div class="profile-avatar-container dropdown">
+            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+              <span class="badge bg-primary rounded-circle text-white me-2">S</span>
+              <span class="d-none d-md-inline fw-semibold" id="user-header-name">Student</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+              <li><a class="dropdown-item" href="/student/settings">Settings</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="#" onclick="handleLogout()">Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="app-content animate-fade-in-up">
+        <!-- Oval Chip Sub-tabs Navigation & Download Action (no-print) -->
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3 no-print">
+          <div class="d-flex align-items-center gap-2">
+            <a href="/student/attendance" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-semibold btn-glass text-secondary">Mark Attendance</a>
+            <a href="/student/calculator" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-semibold btn-glass text-secondary">Forecaster</a>
+          </div>
+
+          <a href="/student/export" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-bold btn-primary d-inline-flex align-items-center gap-2" title="Export Reports">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download Reports</span>
+          </a>
+        </div>
+
+        <!-- Mode Selector Cards (no-print) -->
+        <div class="row g-3 mb-4 no-print">
+          <div class="col-md-6">
+            <div class="glass-card p-3 rounded-4 export-card-option active-option" id="card-mode-subject" onclick="switchExportMode('subject')">
+              <div class="d-flex align-items-center gap-3">
+                <div class="p-2.5 rounded-circle bg-primary-subtle text-primary">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div>
+                  <h3 class="fs-6 fw-bold mb-0">Export by Subject</h3>
+                  <p class="text-secondary small mb-0">Filter and export attendance history for a specific course</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="glass-card p-3 rounded-4 export-card-option" id="card-mode-date" onclick="switchExportMode('date')">
+              <div class="d-flex align-items-center gap-3">
+                <div class="p-2.5 rounded-circle bg-success-subtle text-success">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+                <div>
+                  <h3 class="fs-6 fw-bold mb-0">Export by Date Range</h3>
+                  <p class="text-secondary small mb-0">Generate an Academic Bank Statement for a date period</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM 1: EXPORT BY SUBJECT -->
+        <div id="section-export-subject" class="glass-card p-4 rounded-4 mb-4 border-glass no-print">
+          <h2 class="h6 fw-bold text-uppercase tracking-wide text-secondary mb-3">Option 1: Subject Attendance Export</h2>
+          
+          <div class="row g-3 align-items-end mb-4">
+            <div class="col-md-6">
+              <label for="exportSubjectSelect" class="form-label small fw-semibold text-secondary">Select Subject</label>
+              <select id="exportSubjectSelect" class="form-select border-light fw-semibold" onchange="previewSubjectExport()">
+                <option value="">Loading subjects...</option>
+              </select>
+            </div>
+            <div class="col-md-6 d-flex gap-2 justify-content-md-end">
+              <button type="button" class="btn btn-outline-success rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadSubjectCSV()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Download CSV</span>
+              </button>
+              <button type="button" class="btn btn-primary rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadSubjectPDF()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download PDF Report</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- FORM 2: EXPORT BY DATE RANGE (BANK STATEMENT STYLE) -->
+        <div id="section-export-date" class="glass-card p-4 rounded-4 mb-4 border-glass no-print" style="display: none;">
+          <h2 class="h6 fw-bold text-uppercase tracking-wide text-secondary mb-3">Option 2: Academic Bank Statement Export</h2>
+          
+          <div class="row g-3 align-items-end mb-4">
+            <div class="col-md-4">
+              <label for="exportStartDate" class="form-label small fw-semibold text-secondary">From Date</label>
+              <input type="date" id="exportStartDate" class="form-control border-light fw-bold" onchange="previewDateExport()">
+            </div>
+            <div class="col-md-4">
+              <label for="exportEndDate" class="form-label small fw-semibold text-secondary">To Date</label>
+              <input type="date" id="exportEndDate" class="form-control border-light fw-bold" onchange="previewDateExport()">
+            </div>
+            <div class="col-md-4 d-flex gap-2 justify-content-md-end">
+              <button type="button" class="btn btn-outline-success rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadDateCSV()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <span>Download CSV</span>
+              </button>
+              <button type="button" class="btn btn-primary rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadDatePDF()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download Statement PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- REPORT / STATEMENT PREVIEW CONTAINER -->
+        <div class="glass-card p-4 rounded-4 border-glass shadow-sm printable-statement-container">
+          <!-- Official Academic Bank Statement Header Block -->
+          <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+              <div class="text-uppercase tracking-wider text-primary fw-extrabold fs-7 mb-1" id="stmt-org-title">TRACKIFY ACADEMIC ATTENDANCE STATEMENT</div>
+              <h2 class="h5 fw-bold mb-1" id="stmt-main-title">Official Student Attendance Ledger</h2>
+              <div class="text-secondary small" id="stmt-period-lbl">Statement Period: Loading...</div>
+            </div>
+            <div class="text-end">
+              <div class="fw-bold text-dark fs-6" id="stmt-user-name">Student Name</div>
+              <div class="text-secondary small">ID / Reg No: <span class="fw-semibold font-monospace" id="stmt-user-id">-</span></div>
+              <div class="text-secondary small">Dept: <span id="stmt-user-dept">-</span> | Sem: <span id="stmt-user-sem">-</span></div>
+            </div>
+          </div>
+
+          <!-- Summary Metrics Cards -->
+          <div class="row g-3 mb-4 text-center">
+            <div class="col-3">
+              <div class="p-2.5 bg-light rounded-3 border">
+                <div class="text-secondary small fs-9 uppercase font-semibold">Total Classes</div>
+                <div class="fs-5 fw-bold text-dark" id="stat-total">0</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2.5 bg-success-subtle rounded-3 border border-success-subtle">
+                <div class="text-success small fs-9 uppercase font-semibold">Attended (P)</div>
+                <div class="fs-5 fw-bold text-success" id="stat-present">0</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2.5 bg-danger-subtle rounded-3 border border-danger-subtle">
+                <div class="text-danger small fs-9 uppercase font-semibold">Absences (A)</div>
+                <div class="fs-5 fw-bold text-danger" id="stat-absent">0</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2.5 bg-primary-subtle rounded-3 border border-primary-subtle">
+                <div class="text-primary small fs-9 uppercase font-semibold">Attendance %</div>
+                <div class="fs-5 fw-bold text-primary" id="stat-percent">0%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabular Ledger -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle" id="export-preview-table">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col" class="py-2 fs-8">Date</th>
+                  <th scope="col" class="py-2 fs-8">Period</th>
+                  <th scope="col" class="py-2 fs-8">Subject Code</th>
+                  <th scope="col" class="py-2 fs-8">Subject Name</th>
+                  <th scope="col" class="py-2 fs-8 text-center">Status</th>
+                  <th scope="col" class="py-2 fs-8">Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="export-table-body">
+                <tr>
+                  <td colspan="6" class="text-center py-4 text-secondary">Loading attendance entries...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Global scripts -->
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let currentMode = 'subject'; // 'subject' or 'date'
+    let currentUser = null;
+    let studentSubjects = [];
+    let currentLogsData = [];
+
+    window.onload = async () => {
+      // 1. Fetch current student session profile
+      const meRes = await apiCall('/api/auth/me');
+      if (meRes.success && meRes.user) {
+        currentUser = meRes.user;
+        document.getElementById('user-header-name').innerText = currentUser.name;
+        document.getElementById('stmt-user-name').innerText = currentUser.name;
+        document.getElementById('stmt-user-id').innerText = currentUser.register_number || currentUser.id || 'N/A';
+        document.getElementById('stmt-user-dept').innerText = currentUser.department_name || 'CSE';
+        document.getElementById('stmt-user-sem').innerText = currentUser.semester || 'S1';
+      } else {
+        window.location.href = '/login';
+        return;
+      }
+
+      // 2. Default date inputs to current month range
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      
+      document.getElementById('exportStartDate').value = getFormattedDate(firstDay);
+      document.getElementById('exportEndDate').value = getFormattedDate(today);
+
+      // 3. Fetch student subjects dropdown options
+      const subRes = await apiCall('/api/subjects');
+      if (subRes.success && subRes.subjects) {
+        studentSubjects = subRes.subjects;
+        const select = document.getElementById('exportSubjectSelect');
+        select.innerHTML = '<option value="">Choose a subject...</option>';
+        studentSubjects.forEach(s => {
+          select.innerHTML += `<option value="${s.id}">${s.code} - ${s.name}</option>`;
+        });
+        if (studentSubjects.length > 0) {
+          select.value = studentSubjects[0].id;
+          await previewSubjectExport();
+        }
+      }
+    };
+
+    function getFormattedDate(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function switchExportMode(mode) {
+      currentMode = mode;
+      document.getElementById('card-mode-subject').classList.toggle('active-option', mode === 'subject');
+      document.getElementById('card-mode-date').classList.toggle('active-option', mode === 'date');
+
+      document.getElementById('section-export-subject').style.display = mode === 'subject' ? 'block' : 'none';
+      document.getElementById('section-export-date').style.display = mode === 'date' ? 'block' : 'none';
+
+      if (mode === 'subject') {
+        previewSubjectExport();
+      } else {
+        previewDateExport();
+      }
+    }
+
+    // PREVIEW SUBJECT EXPORT
+    async function previewSubjectExport() {
+      const subjectId = document.getElementById('exportSubjectSelect').value;
+      if (!subjectId) {
+        renderTable([], 'Please select a subject above.');
+        return;
+      }
+
+      const selectedSub = studentSubjects.find(s => String(s.id) === String(subjectId));
+      document.getElementById('stmt-main-title').innerText = `Subject Report: ${selectedSub ? selectedSub.name : ''}`;
+      document.getElementById('stmt-period-lbl').innerText = `Subject Code: ${selectedSub ? selectedSub.code : ''}`;
+
+      // Fetch all attendance logs for this subject
+      const res = await apiCall(`/api/attendance?subjectId=${subjectId}`);
+      if (res.success && res.logs) {
+        currentLogsData = res.logs;
+        renderTable(currentLogsData);
+      } else {
+        renderTable([], 'No attendance records found for this subject.');
+      }
+    }
+
+    // PREVIEW DATE RANGE EXPORT (BANK STATEMENT STYLE)
+    async function previewDateExport() {
+      const startDate = document.getElementById('exportStartDate').value;
+      const endDate = document.getElementById('exportEndDate').value;
+
+      document.getElementById('stmt-main-title').innerText = `Official Student Attendance Statement`;
+      document.getElementById('stmt-period-lbl').innerText = `Statement Period: ${startDate} to ${endDate}`;
+
+      if (!startDate || !endDate) return;
+
+      const res = await apiCall(`/api/attendance?startDate=${startDate}&endDate=${endDate}`);
+      if (res.success && res.logs) {
+        currentLogsData = res.logs;
+        renderTable(currentLogsData);
+      } else {
+        renderTable([], 'No attendance entries recorded in this date range.');
+      }
+    }
+
+    // RENDER TABLE & METRICS WITH ABSENT ROW HIGHLIGHTING
+    function renderTable(logs, emptyMsg = 'No records found.') {
+      const tbody = document.getElementById('export-table-body');
+      tbody.innerHTML = '';
+
+      if (!logs || logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">${emptyMsg}</td></tr>`;
+        document.getElementById('stat-total').innerText = '0';
+        document.getElementById('stat-present').innerText = '0';
+        document.getElementById('stat-absent').innerText = '0';
+        document.getElementById('stat-percent').innerText = '0%';
+        return;
+      }
+
+      let total = logs.length;
+      let present = 0;
+      let absent = 0;
+
+      logs.forEach(log => {
+        const isAbsent = log.status === 'Absent';
+        const isPresent = log.status === 'Present';
+        if (isPresent) present++;
+        if (isAbsent) absent++;
+
+        const rowClass = isAbsent ? 'row-absent' : '';
+        const badgeClass = isPresent ? 'bg-success text-white' : isAbsent ? 'bg-danger text-white' : 'bg-primary text-white';
+
+        tbody.innerHTML += `
+          <tr class="${rowClass}">
+            <td class="fw-bold font-monospace">${log.date}</td>
+            <td class="fw-semibold">Period ${log.period || '1'}</td>
+            <td class="font-monospace fw-semibold">${log.subject_code || '-'}</td>
+            <td class="fw-semibold">${log.subject_name || 'Subject'}</td>
+            <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1 fs-9">${log.status}</span></td>
+            <td class="small text-secondary">${log.remarks || '-'}</td>
+          </tr>
+        `;
+      });
+
+      const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-present').innerText = present;
+      document.getElementById('stat-absent').innerText = absent;
+      document.getElementById('stat-percent').innerText = `${percentage}%`;
+    }
+
+    // DOWNLOAD CSV FOR SUBJECT
+    function downloadSubjectCSV() {
+      if (!currentLogsData || currentLogsData.length === 0) {
+        showAlert('No data to export', 'danger');
+        return;
+      }
+      const subId = document.getElementById('exportSubjectSelect').value;
+      const selectedSub = studentSubjects.find(s => String(s.id) === String(subId));
+      const filename = `Attendance_Subject_${selectedSub ? selectedSub.code : 'Export'}_${new Date().toISOString().slice(0,10)}.csv`;
+      generateAndDownloadCSV(currentLogsData, filename);
+    }
+
+    // DOWNLOAD CSV FOR DATE STATEMENT
+    function downloadDateCSV() {
+      if (!currentLogsData || currentLogsData.length === 0) {
+        showAlert('No statement data to export', 'danger');
+        return;
+      }
+      const startDate = document.getElementById('exportStartDate').value;
+      const endDate = document.getElementById('exportEndDate').value;
+      const filename = `Attendance_Statement_${startDate}_to_${endDate}.csv`;
+      generateAndDownloadCSV(currentLogsData, filename);
+    }
+
+    function generateAndDownloadCSV(logs, filename) {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += "Student Name,Unique ID,Date,Period,Subject Code,Subject Name,Status,Remarks\n";
+
+      logs.forEach(log => {
+        const row = [
+          `"${currentUser ? currentUser.name : 'Student'}"`,
+          `"${currentUser ? (currentUser.register_number || currentUser.id) : ''}"`,
+          `"${log.date}"`,
+          `"Period ${log.period || 1}"`,
+          `"${log.subject_code || ''}"`,
+          `"${log.subject_name || ''}"`,
+          `"${log.status}"`,
+          `"${log.remarks || ''}"`
+        ].join(",");
+        csvContent += row + "\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showAlert(`Downloaded ${filename} successfully!`, 'success');
+    }
+
+    // DOWNLOAD PDF REPORT
+    function downloadSubjectPDF() {
+      window.print();
+    }
+
+    function downloadDatePDF() {
+      window.print();
+    }
+  </script>
+</body>
+
+</html>
