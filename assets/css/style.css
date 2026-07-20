@@ -915,15 +915,16 @@ h6 {
   justify-content: center !important;
 }
 
-/* Rolling Days Calendar Strip (Apple/Stripe Style) */
+/* Rolling Days Calendar Strip (Apple/Stripe Style Extended Sliding Track) */
 .day-strip-container {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   overflow-x: auto;
-  padding: 4px 2px;
+  padding: 6px 4px;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
 }
 
 .day-strip-container::-webkit-scrollbar {
@@ -931,9 +932,10 @@ h6 {
 }
 
 .day-strip-card {
-  flex: 1 0 48px;
-  min-width: 48px;
-  height: 66px;
+  flex: 0 0 54px;
+  min-width: 54px;
+  height: 68px;
+  scroll-snap-align: center;
   border-radius: 12px !important;
   border: 1px solid var(--border-color);
   background-color: var(--bg-secondary);

@@ -304,9 +304,10 @@
     </div>
   </div>
 
-  <!-- Global scripts -->
+  <!-- Global scripts & PDF generator -->
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     let currentMode = 'subject'; // 'subject' or 'date'
     let currentUser = null;
@@ -492,7 +493,6 @@
           `"${log.date}"`,
           `"Period ${log.period || 1}"`,
           `"${log.subject_code || ''}"`,
-          `"${log.subject_name || ''}"`,
           `"${log.status}"`,
           `"${log.remarks || ''}"`
         ].join(",");
@@ -509,13 +509,43 @@
       showAlert(`Downloaded ${filename} successfully!`, 'success');
     }
 
-    // DOWNLOAD PDF REPORT
+    // DOWNLOAD PDF REPORT VIA HTML2PDF / JSPDF
     function downloadSubjectPDF() {
-      window.print();
+      if (!currentLogsData || currentLogsData.length === 0) {
+        showAlert('No data available to generate PDF', 'danger');
+        return;
+      }
+      generateAndDownloadPDF('Attendance_Subject_Report.pdf');
     }
 
     function downloadDatePDF() {
-      window.print();
+      if (!currentLogsData || currentLogsData.length === 0) {
+        showAlert('No statement data available to generate PDF', 'danger');
+        return;
+      }
+      generateAndDownloadPDF('Academic_Attendance_Statement.pdf');
+    }
+
+    function generateAndDownloadPDF(filename) {
+      const element = document.querySelector('.printable-statement-container');
+      if (window.html2pdf && element) {
+        showAlert('Generating PDF statement, please wait...', 'info');
+        const opt = {
+          margin:       0.3,
+          filename:     filename,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save().then(() => {
+          showAlert(`Downloaded ${filename} successfully!`, 'success');
+        }).catch(err => {
+          console.error('PDF export fallback:', err);
+          window.print();
+        });
+      } else {
+        window.print();
+      }
     }
   </script>
 </body>

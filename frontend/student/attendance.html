@@ -238,7 +238,6 @@
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
           <div class="d-flex align-items-center gap-2">
             <a href="/student/attendance" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-bold btn-primary">Mark Attendance</a>
-            <a href="/student/calculator" class="btn btn-sm rounded-pill px-3.5 py-1.5 fw-semibold btn-glass text-secondary">Forecaster</a>
           </div>
 
           <a href="/student/export" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-primary border-primary d-inline-flex align-items-center gap-2" title="Export & Download Attendance Reports">
@@ -256,19 +255,11 @@
           <div class="col-lg-12">
             <div class="glass-card border-glass">
 
-              <!-- Premium Rolling Date Selection (Apple/Stripe Style 6-Card Strip with Slide Nav) -->
-              <div class="d-flex align-items-center justify-content-between mb-4 gap-2 flex-nowrap w-100">
-                <button type="button" class="btn btn-glass btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center text-secondary border" style="width: 38px; height: 38px; flex-shrink: 0;" onclick="shiftStripDate(-1)" title="Previous Day">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-
+              <!-- Premium Rolling Date Selection (Apple/Stripe Style Extended Sliding Track) -->
+              <div class="d-flex align-items-center justify-content-between mb-4 gap-3 flex-nowrap w-100">
                 <div class="day-strip-container flex-grow-1" id="rolling-days-strip">
-                  <!-- Rendered dynamically via JavaScript (6 Cards) -->
+                  <!-- Rendered dynamically via JavaScript (Extended 15-Card Sliding Track) -->
                 </div>
-
-                <button type="button" class="btn btn-glass btn-sm rounded-circle p-2 d-flex align-items-center justify-content-center text-secondary border" style="width: 38px; height: 38px; flex-shrink: 0;" onclick="shiftStripDate(1)" title="Next Day">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
 
                 <div class="calendar-trigger-btn" style="flex-shrink: 0;" title="Select custom date">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
@@ -337,7 +328,7 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    // Render dynamic rolling days strip (Apple/Stripe style - 6 Cards)
+    // Render dynamic rolling days strip (Apple/Stripe style - Extended 15-Card Sliding Track)
     function renderRollingDaysStrip(centerDateStr) {
       const parts = centerDateStr.split('-');
       const centerDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -346,8 +337,8 @@
       if (!container) return;
       container.innerHTML = '';
       
-      // Render 6 cards: centerDate - 2, centerDate - 1, centerDate, centerDate + 1, centerDate + 2, centerDate + 3
-      for (let offset = -2; offset <= 3; offset++) {
+      // Render 15 cards: centerDate - 7 to centerDate + 7
+      for (let offset = -7; offset <= 7; offset++) {
         const current = new Date(centerDate);
         current.setDate(centerDate.getDate() + offset);
         
@@ -359,22 +350,23 @@
         
         const isActive = offset === 0;
         const activeClass = isActive ? 'active-day-card' : '';
+        const idAttr = isActive ? 'id="active-day-strip-card"' : '';
         
         container.innerHTML += `
-          <button type="button" class="day-strip-card ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
+          <button type="button" ${idAttr} class="day-strip-card ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
             <span class="day-name-lbl">${dayName}</span>
             <span class="day-num-lbl">${dayNum}</span>
           </button>
         `;
       }
-    }
 
-    async function shiftStripDate(deltaDays) {
-      const parts = currentSelectedDate.split('-');
-      const current = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-      current.setDate(current.getDate() + deltaDays);
-      const newDateStr = getFormattedDateString(current);
-      await selectDateFromStrip(newDateStr);
+      // Auto-scroll active day card smoothly to center
+      setTimeout(() => {
+        const activeCard = document.getElementById('active-day-strip-card');
+        if (activeCard) {
+          activeCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }, 50);
     }
 
     async function selectDateFromStrip(dateStr) {
