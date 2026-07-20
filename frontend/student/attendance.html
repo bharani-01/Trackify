@@ -523,35 +523,33 @@
             `;
           } else if (matchLog) {
             markedCount++;
-            let badgeClass = 'badge-present';
+            const logId = matchLog.id;
+            const isPresent = matchLog.status === 'Present';
+            const isAbsent = matchLog.status === 'Absent';
+            const isOD = matchLog.status === 'On Duty';
 
-            if (matchLog.status === 'Absent') {
-              badgeClass = 'badge-absent';
-              cardBgStyle = 'background: rgba(239, 68, 68, 0.02);';
-            } else if (matchLog.status === 'Present') {
-              cardBgStyle = 'background: rgba(16, 185, 129, 0.02);';
-            } else if (matchLog.status === 'Medical Leave') {
-              badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
-              cardBgStyle = 'background: rgba(245, 158, 11, 0.02);';
-            } else if (matchLog.status === 'Holiday') {
-              badgeClass = 'bg-info-subtle text-info border border-info-subtle';
-            } else if (matchLog.status === 'On Duty') {
-              badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
-              cardBgStyle = 'background: rgba(37, 99, 235, 0.02);';
-            }
+            if (isPresent) cardBgStyle = 'background: rgba(16, 185, 129, 0.02);';
+            else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.02);';
+            else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.02);';
 
             statusAreaHtml = `
-              <div class="status-marked-container">
-                <span class="badge ${badgeClass} px-3 py-2 fs-7">${matchLog.status}</span>
-                <button onclick="deleteMarking('${matchLog.id}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1.5 px-3 fs-8 fw-semibold" title="Reset marking">Reset</button>
+              <div class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
+                <div class="apple-segmented-pill">
+                  <button type="button" class="segmented-item ${isPresent ? 'active-present' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present', '${logId}')">Present</button>
+                  <button type="button" class="segmented-item ${isAbsent ? 'active-absent' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent', '${logId}')">Absent</button>
+                  <button type="button" class="segmented-item ${isOD ? 'active-od' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty', '${logId}')">OD</button>
+                </div>
+                <button onclick="deleteMarking('${logId}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5 fs-8" title="Reset marking">Reset</button>
               </div>
             `;
           } else {
             statusAreaHtml = `
-              <div class="d-flex gap-2 align-items-center justify-content-md-end attendance-btn-group">
-                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'Present')" class="action-circle-btn btn-p" title="Mark Present">P</button>
-                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'Absent')" class="action-circle-btn btn-a" title="Mark Absent">A</button>
-                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'On Duty')" class="action-circle-btn btn-od" title="Mark On Duty">OD</button>
+              <div class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
+                <div class="apple-segmented-pill">
+                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present')">Present</button>
+                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent')">Absent</button>
+                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty')">OD</button>
+                </div>
               </div>
             `;
           }
@@ -631,50 +629,34 @@
       await fetchChecklist();
     }
 
-    async function handleAnimatedMark(btnEl, subjectId, period, status) {
+    async function handleSegmentClick(btnEl, subjectId, period, status, existingLogId) {
       if (!btnEl) return;
-      
-      // Smoothly fade & scale out sibling buttons
-      const parent = btnEl.parentElement;
-      if (parent) {
-        Array.from(parent.children).forEach(child => {
-          if (child !== btnEl) {
-            child.style.transition = 'all 0.15s cubic-bezier(0.32, 0.72, 0, 1)';
-            child.style.opacity = '0';
-            child.style.transform = 'scale(0.7)';
-            child.style.pointerEvents = 'none';
-          }
+
+      const container = btnEl.parentElement;
+      if (container) {
+        Array.from(container.children).forEach(child => {
+          child.classList.remove('active-present', 'active-absent', 'active-od');
         });
       }
-      
-      // Expand and morph the clicked button into a full status pill
-      btnEl.innerText = status;
-      btnEl.style.width = '100px';
-      btnEl.style.borderRadius = '24px';
-      btnEl.style.fontSize = '0.8rem';
-      btnEl.style.fontWeight = '700';
-      
-      if (status === 'Present') {
-        btnEl.style.backgroundColor = 'var(--success)';
-        btnEl.style.color = '#ffffff';
-        btnEl.style.borderColor = 'var(--success)';
-        btnEl.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
-      } else if (status === 'Absent') {
-        btnEl.style.backgroundColor = 'var(--danger)';
-        btnEl.style.color = '#ffffff';
-        btnEl.style.borderColor = 'var(--danger)';
-        btnEl.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
-      } else if (status === 'On Duty') {
-        btnEl.style.backgroundColor = 'var(--primary)';
-        btnEl.style.color = '#ffffff';
-        btnEl.style.borderColor = 'var(--primary)';
-        btnEl.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
-      }
-      
-      // Dispatch API request after small morph transition delay
-      setTimeout(async () => {
+
+      if (status === 'Present') btnEl.classList.add('active-present');
+      else if (status === 'Absent') btnEl.classList.add('active-absent');
+      else if (status === 'On Duty') btnEl.classList.add('active-od');
+
+      if (existingLogId) {
+        const response = await apiCall(`/api/attendance/${existingLogId}`, {
+          method: 'PUT',
+          body: { status, remarks: `Period ${period}` }
+        });
+        if (response.success) {
+          showAlert(`Updated status to ${status} for Period ${period}`, 'success');
+          await fetchChecklist();
+        } else {
+          showAlert(response.message, 'danger');
+        }
+      } else {
         await markQuick(subjectId, period, status);
-      }, 160);
+      }
     }
 
     async function markQuick(subjectId, period, status) {
