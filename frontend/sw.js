@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trackify-cache-v1';
+const CACHE_NAME = 'trackify-cache-v2';
 const OFFLINE_URL = '/login.html';
 
 const ASSETS_TO_CACHE = [
@@ -12,6 +12,10 @@ const ASSETS_TO_CACHE = [
   '/assets/js/main.js',
   '/assets/images/favicon.png',
   '/assets/images/favicon.webp',
+  '/assets/images/favicon-192.png',
+  '/assets/images/favicon-192.webp',
+  '/assets/images/favicon-512.png',
+  '/assets/images/favicon-512.webp',
   '/assets/images/logo_light.webp',
   '/assets/images/logo_dark.webp',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css',
