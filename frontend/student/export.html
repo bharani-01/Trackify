@@ -585,6 +585,8 @@
 
     function generateAndDownloadPDF(filename) {
       const element = document.querySelector('.printable-statement-container');
+      if (element) element.style.display = 'block';
+
       if (window.html2pdf && element) {
         showAlert('Generating PDF statement, please wait...', 'info');
         const opt = {
@@ -595,13 +597,16 @@
           jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save().then(() => {
+          if (element) element.style.display = 'none';
           showAlert(`Downloaded ${filename} successfully!`, 'success');
         }).catch(err => {
           console.error('PDF export fallback:', err);
           window.print();
+          if (element) element.style.display = 'none';
         });
       } else {
         window.print();
+        if (element) element.style.display = 'none';
       }
     }
   </script>
