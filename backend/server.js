@@ -449,6 +449,36 @@ const protectHtml = (roleRequired) => {
   };
 };
 
+// Middleware to redirect logged-in users away from public auth pages
+const redirectIfLoggedIn = async (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return next();
+  }
+
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    res.clearCookie('token');
+    return next();
+  }
+
+  try {
+    const user = await userRepository.findById(decoded.id);
+    if (!user || user.is_suspended) {
+      res.clearCookie('token');
+      return next();
+    }
+
+    if (user.role === 'admin') {
+      return res.redirect('/admin/dashboard');
+    }
+    return res.redirect('/student/dashboard');
+  } catch (err) {
+    console.error('redirectIfLoggedIn middleware error:', err.message);
+    return next();
+  }
+};
+
 // Mount route guards for student and admin static folders
 app.get('/student', protectHtml('student'), (req, res) => {
   res.redirect('/student/dashboard');
@@ -463,7 +493,20 @@ app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../
 // Serve assets globally
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 
-app.get('/register', async (req, res) => {
+// Apply redirectIfLoggedIn to public entry routes
+app.get('/', redirectIfLoggedIn, (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+});
+
+app.get('/login', redirectIfLoggedIn, (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/login.html'));
+});
+
+app.get('/login.html', redirectIfLoggedIn, (req, res) => {
+  res.redirect('/login');
+});
+
+app.get('/register', redirectIfLoggedIn, async (req, res) => {
   try {
     const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
     if (allowSelfReg === 'true') {

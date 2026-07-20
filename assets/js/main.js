@@ -34,6 +34,14 @@ async function apiCall(url, options = {}) {
       };
     }
 
+    // Dynamic dynamic avatar letter initialization
+    if (url.endsWith('/api/auth/me') && data.success && data.user) {
+      const avatarSpan = document.querySelector('.profile-avatar-container span');
+      if (avatarSpan && data.user.name) {
+        avatarSpan.innerText = data.user.name.trim().charAt(0).toUpperCase();
+      }
+    }
+
     return {
       success: true,
       status: response.status,
