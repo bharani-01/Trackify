@@ -250,31 +250,20 @@
           <div class="col-lg-12">
             <div class="glass-card border-glass">
 
-              <!-- Quick Date Selection & Custom Picker -->
-              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
-                <div class="d-flex gap-2 flex-wrap" id="quick-dates-container">
-                  <button type="button" class="btn btn-glass quick-date-btn py-2" id="btn-yesterday"
-                    onclick="selectRelativeDate(-1)">
-                    <div class="text-muted small fs-9">Yesterday</div>
-                    <div class="fw-bold" id="lbl-yesterday">-</div>
-                  </button>
-                  <button type="button" class="btn btn-glass quick-date-btn py-2" id="btn-today"
-                    onclick="selectRelativeDate(0)">
-                    <div class="text-muted small fs-9">Today</div>
-                    <div class="fw-bold" id="lbl-today">-</div>
-                  </button>
-                  <button type="button" class="btn btn-glass quick-date-btn py-2" id="btn-tomorrow"
-                    onclick="selectRelativeDate(1)">
-                    <div class="text-muted small fs-9">Tomorrow</div>
-                    <div class="fw-bold" id="lbl-tomorrow">-</div>
-                  </button>
+              <!-- Premium Rolling Date Selection (Apple/Stripe Style) -->
+              <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+                <div class="day-strip-container" id="rolling-days-strip">
+                  <!-- Rendered dynamically via JavaScript -->
                 </div>
-
-                <div class="d-flex align-items-center gap-2 custom-date-container">
-                  <span class="text-secondary small fw-semibold">Custom Date:</span>
-                  <input type="date" class="form-control form-control-sm border-light fw-bold px-2 py-1.5"
-                    style="width: 160px; font-size: 0.8rem;" id="attendanceDateSelect"
-                    onchange="onDateChanged(this.value)">
+                
+                <div class="calendar-trigger-btn" title="Select custom date">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  <input type="date" id="attendanceDateSelect" onchange="onDateChanged(this.value)">
                 </div>
               </div>
 
@@ -326,28 +315,50 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    function formatShortDate(date) {
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-      return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+    // Render dynamic rolling days strip (Apple/Stripe style)
+    function renderRollingDaysStrip(centerDateStr) {
+      const parts = centerDateStr.split('-');
+      const centerDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      
+      const container = document.getElementById('rolling-days-strip');
+      if (!container) return;
+      container.innerHTML = '';
+      
+      // Render: centerDate - 2, centerDate - 1, centerDate, centerDate + 1, centerDate + 2
+      for (let offset = -2; offset <= 2; offset++) {
+        const current = new Date(centerDate);
+        current.setDate(centerDate.getDate() + offset);
+        
+        const formattedDate = getFormattedDateString(current);
+        const dayNum = current.getDate();
+        
+        const daysAbbrev = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const dayName = daysAbbrev[current.getDay()];
+        
+        const isActive = offset === 0;
+        const activeClass = isActive ? 'active-day-card' : '';
+        
+        container.innerHTML += `
+          <button type="button" class="day-strip-card ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
+            <span class="day-name-lbl">${dayName}</span>
+            <span class="day-num-lbl">${dayNum}</span>
+          </button>
+        `;
+      }
     }
 
-    // Initialize date labels
-    function initDateLabels() {
-      const yesterday = new Date();
-      yesterday.setDate(todayObj.getDate() - 1);
-
-      const tomorrow = new Date();
-      tomorrow.setDate(todayObj.getDate() + 1);
-
-      document.getElementById('lbl-yesterday').innerText = formatShortDate(yesterday);
-      document.getElementById('lbl-today').innerText = formatShortDate(todayObj);
-      document.getElementById('lbl-tomorrow').innerText = formatShortDate(tomorrow);
+    async function selectDateFromStrip(dateStr) {
+      currentSelectedDate = dateStr;
+      document.getElementById('attendanceDateSelect').value = dateStr;
+      renderRollingDaysStrip(dateStr);
+      await fetchChecklist();
     }
 
     async function loadData() {
-      initDateLabels();
-      updateQuickButtonActiveState();
+      // Set input element value
+      document.getElementById('attendanceDateSelect').value = currentSelectedDate;
+      // Render strip centered at today
+      renderRollingDaysStrip(currentSelectedDate);
 
       // Fetch user profile session
       const meResult = await apiCall('/api/auth/me');
@@ -358,45 +369,6 @@
         return;
       }
 
-      await fetchChecklist();
-    }
-
-    // Update active quick shortcut highlighting
-    function updateQuickButtonActiveState() {
-      document.getElementById('attendanceDateSelect').value = currentSelectedDate;
-
-      const yesterday = new Date();
-      yesterday.setDate(todayObj.getDate() - 1);
-      const yesterdayStr = getFormattedDateString(yesterday);
-
-      const tomorrow = new Date();
-      tomorrow.setDate(todayObj.getDate() + 1);
-      const tomorrowStr = getFormattedDateString(tomorrow);
-
-      const btnYes = document.getElementById('btn-yesterday');
-      const btnTod = document.getElementById('btn-today');
-      const btnTom = document.getElementById('btn-tomorrow');
-
-      // Clear all active classes
-      btnYes.classList.remove('active');
-      btnTod.classList.remove('active');
-      btnTom.classList.remove('active');
-
-      if (currentSelectedDate === yesterdayStr) {
-        btnYes.classList.add('active');
-      } else if (currentSelectedDate === todayDateFormatted) {
-        btnTod.classList.add('active');
-      } else if (currentSelectedDate === tomorrowStr) {
-        btnTom.classList.add('active');
-      }
-    }
-
-    // Select relative dates (shortcuts)
-    async function selectRelativeDate(offset) {
-      const d = new Date();
-      d.setDate(todayObj.getDate() + offset);
-      currentSelectedDate = getFormattedDateString(d);
-      updateQuickButtonActiveState();
       await fetchChecklist();
     }
 
@@ -613,8 +585,9 @@
     }
 
     async function onDateChanged(dateVal) {
+      if (!dateVal) return;
       currentSelectedDate = dateVal;
-      updateQuickButtonActiveState();
+      renderRollingDaysStrip(dateVal);
       await fetchChecklist();
     }
 
