@@ -284,12 +284,11 @@
                 </div>
               </div>
 
-              <!-- Quick Bulk Actions Bar (Apple/Stripe Style) -->
-              <div class="d-flex align-items-center gap-2 mb-4 flex-wrap" id="bulk-actions-container" style="display: none !important;">
-                <span class="text-secondary small fw-semibold">Quick Actions:</span>
-                <button type="button" class="btn btn-sm btn-glass border-success text-success px-3 py-1.5 fs-8" onclick="markAll('Present')">Mark All Present</button>
-                <button type="button" class="btn btn-sm btn-glass border-danger text-danger px-3 py-1.5 fs-8" onclick="markAll('Absent')">Mark All Absent</button>
-                <button type="button" class="btn btn-sm btn-glass border-primary text-primary px-3 py-1.5 fs-8" onclick="markAll('On Duty')">Mark All OD</button>
+              <!-- Quick Bulk Actions Bar (Apple/Stripe Style Single Row) -->
+              <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-nowrap" id="bulk-actions-container" style="display: none !important;">
+                <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
+                <button type="button" class="btn btn-sm btn-glass border-danger text-danger flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Absent')">✗ Mark All Absent</button>
+                <button type="button" class="btn btn-sm btn-glass border-primary text-primary flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('On Duty')">ℹ Mark All OD</button>
               </div>
 
               <!-- Checklist Cards container -->
@@ -563,7 +562,6 @@
                   <button type="button" class="segmented-item ${isAbsent ? 'active-absent' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent', '${logId}')">Absent</button>
                   <button type="button" class="segmented-item ${isOD ? 'active-od' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty', '${logId}')">OD</button>
                 </div>
-                <button onclick="deleteMarking('${logId}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5 fs-8" title="Reset marking">Reset</button>
               </div>
             `;
           } else {
