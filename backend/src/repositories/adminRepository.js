@@ -6,11 +6,26 @@ const db = require('../config/db');
  */
 const getStudents = async () => {
   const query = `
-    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.created_at,
+    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.is_approved, u.created_at,
            s.minimum_attendance, s.notifications
     FROM users u
     LEFT JOIN settings s ON u.id = s.user_id
-    WHERE u.role = 'student'
+    WHERE u.role = 'student' AND (u.is_approved IS TRUE OR u.is_approved IS NULL)
+    ORDER BY u.name ASC
+  `;
+  const result = await db.query(query);
+  return result.rows;
+};
+
+/**
+ * Get all administrator users
+ * @returns {Promise<Array>}
+ */
+const getAdmins = async () => {
+  const query = `
+    SELECT u.id, u.name, u.email, u.role, u.is_suspended, u.is_approved, u.created_at
+    FROM users u
+    WHERE u.role = 'admin'
     ORDER BY u.name ASC
   `;
   const result = await db.query(query);
@@ -41,16 +56,16 @@ const deleteUser = async (userId) => {
 };
 
 /**
- * Get global stats for Admin Dashboard
+ * Get global stats & dashboard widgets data for Admin Dashboard
  * @returns {Promise<object>}
  */
 const getStats = async () => {
-  // 1. User counts
+  // 1. User counts (Only approved and non-suspended count as Active)
   const countQuery = `
     SELECT 
       COUNT(*)::int AS total_students,
-      SUM(CASE WHEN is_suspended = FALSE THEN 1 ELSE 0 END)::int AS active_students,
-      SUM(CASE WHEN is_suspended = TRUE THEN 1 ELSE 0 END)::int AS suspended_students
+      SUM(CASE WHEN is_suspended = FALSE AND (is_approved IS TRUE OR is_approved IS NULL) THEN 1 ELSE 0 END)::int AS active_students,
+      SUM(CASE WHEN is_suspended = TRUE OR is_approved = FALSE THEN 1 ELSE 0 END)::int AS suspended_students
     FROM users
     WHERE role = 'student'
   `;
@@ -72,11 +87,65 @@ const getStats = async () => {
   const avgResult = await db.query(avgQuery);
   const overallAvg = avgResult.rows[0].overall_avg;
 
+  // 3. Pending Registration Requests (Unapproved sign-ups)
+  const pendingQuery = `
+    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.is_approved, u.created_at
+    FROM users u
+    WHERE u.role = 'student' AND u.is_approved = FALSE
+    ORDER BY u.created_at DESC
+  `;
+  const pendingResult = await db.query(pendingQuery);
+
+  // 4. Suspended Accounts List
+  const suspendedQuery = `
+    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.is_approved, u.created_at
+    FROM users u
+    WHERE u.role = 'student' AND u.is_suspended = TRUE AND (u.is_approved IS TRUE OR u.is_approved IS NULL)
+    ORDER BY u.name ASC
+  `;
+  const suspendedResult = await db.query(suspendedQuery);
+
+  // 4. Low Attendance Defaulters List (< 80%)
+  const defaultersQuery = `
+    SELECT * FROM (
+      SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester,
+             COALESCE(
+               ROUND(
+                 (SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END)::numeric / 
+                  NULLIF(SUM(CASE WHEN a.status IN ('Present', 'Absent') THEN 1 ELSE 0 END), 0)) * 100, 1
+               ), 0
+             )::float AS attendance_pct,
+             COUNT(a.id)::int AS total_records
+      FROM users u
+      LEFT JOIN attendance a ON u.id = a.user_id
+      WHERE u.role = 'student' AND u.is_approved = TRUE AND u.is_suspended = FALSE
+      GROUP BY u.id, u.name, u.register_number, u.email, u.department, u.semester
+    ) student_stats
+    WHERE student_stats.total_records > 0 AND student_stats.attendance_pct < 80
+    ORDER BY student_stats.attendance_pct ASC
+    LIMIT 10
+  `;
+  const defaultersResult = await db.query(defaultersQuery);
+
+  // 5. Recent System Audit Trail
+  const auditQuery = `
+    SELECT al.id, al.action, al.details, al.created_at, u.name as user_name
+    FROM audit_logs al
+    LEFT JOIN users u ON al.user_id = u.id
+    ORDER BY al.created_at DESC
+    LIMIT 5
+  `;
+  const auditResult = await db.query(auditQuery);
+
   return {
-    total_students: counts.total_students,
-    active_students: counts.active_students,
-    suspended_students: counts.suspended_students,
-    overall_avg_attendance: Math.round(overallAvg * 10) / 10 // round to 1 decimal place
+    total_students: counts.total_students || 0,
+    active_students: counts.active_students || 0,
+    suspended_students: counts.suspended_students || 0,
+    overall_avg_attendance: Math.round(overallAvg * 10) / 10,
+    pending_registrations: pendingResult.rows || [],
+    suspended_users: suspendedResult.rows || [],
+    defaulters: defaultersResult.rows || [],
+    recent_activity: auditResult.rows || []
   };
 };
 
@@ -270,6 +339,7 @@ const initializeStudentSubjectsAndTimetable = async (userId, department, semeste
 
 module.exports = {
   getStudents,
+  getAdmins,
   setSuspension,
   deleteUser,
   updateStudentProfile,

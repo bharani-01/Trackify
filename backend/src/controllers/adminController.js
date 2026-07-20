@@ -24,6 +24,25 @@ const getUsers = async (req, res) => {
 };
 
 /**
+ * Get all administrator users
+ */
+const getAdmins = async (req, res) => {
+  try {
+    const admins = await adminRepository.getAdmins();
+    return res.status(200).json({
+      success: true,
+      admins
+    });
+  } catch (error) {
+    console.error('getAdmins controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve administrator accounts'
+    });
+  }
+};
+
+/**
  * Toggle user account suspension
  */
 const toggleUserSuspension = async (req, res) => {
@@ -550,6 +569,7 @@ const bulkUpdateSubjectHours = async (req, res) => {
 
 module.exports = {
   getUsers,
+  getAdmins,
   toggleUserSuspension,
   deleteUser,
   updateStudentProfile,

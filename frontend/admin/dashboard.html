@@ -1,49 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - Trackify</title>
+  <title>Executive Admin Dashboard - Trackify</title>
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.3">
+
   <style>
-    /* Premium KPI Card Layout and Animations */
+    :root {
+      --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      font-family: var(--font-main);
+    }
+
+    /* Executive Hero Banner */
+    .hero-banner {
+      position: relative;
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(99, 102, 241, 0.04) 100%);
+      border: 1px solid rgba(37, 99, 235, 0.12);
+      border-radius: 18px;
+      padding: 24px 28px;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+    }
+
+    /* KPI Stat Cards */
     .kpi-card {
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      border-radius: 14px !important;
-      background: var(--bg-secondary) !important;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 16px !important;
+      background: var(--bg-secondary, #ffffff) !important;
+      border: 1px solid rgba(0, 0, 0, 0.07) !important;
       position: relative;
       overflow: hidden;
     }
+
     .kpi-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.04) !important;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.05) !important;
+      border-color: rgba(37, 99, 235, 0.2) !important;
     }
-    .kpi-icon-container {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
+
+    .kpi-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      transition: transform 0.2s ease;
     }
-    .bg-primary-glow { background-color: rgba(37, 99, 235, 0.08); }
-    .bg-success-glow { background-color: rgba(5, 150, 105, 0.08); }
-    .bg-danger-glow { background-color: rgba(220, 38, 38, 0.08); }
-    .bg-info-glow { background-color: rgba(8, 145, 178, 0.08); }
 
-    .border-start-glow-primary { border-left: 4px solid var(--primary) !important; }
-    .border-start-glow-success { border-left: 4px solid var(--success) !important; }
-    .border-start-glow-danger { border-left: 4px solid var(--danger) !important; }
-    .border-start-glow-info { border-left: 4px solid var(--info) !important; }
+    .kpi-card:hover .kpi-icon-box {
+      transform: scale(1.08);
+    }
 
-    .fs-8 { font-size: 0.72rem !important; }
+    .bg-primary-glow {
+      background-color: rgba(37, 99, 235, 0.1);
+      color: #2563eb;
+    }
+
+    .bg-success-glow {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .bg-danger-glow {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    .bg-info-glow {
+      background-color: rgba(6, 182, 212, 0.1);
+      color: #06b6d4;
+    }
+
+    .bg-warning-glow {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+
+    .bg-secondary-glow {
+      background-color: rgba(100, 116, 139, 0.1);
+      color: #64748b;
+    }
+
+    /* Custom Glass Panel Headers */
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    /* Live Activity Stream Items */
+    .audit-card-item {
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--bg-secondary, #ffffff);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+      transition: background 0.15s ease;
+    }
+
+    .audit-card-item:hover {
+      background: rgba(37, 99, 235, 0.02);
+    }
+
+    .audit-card-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .audit-card-item .action-title {
+      font-weight: 700;
+      font-size: 0.78rem;
+      color: var(--primary, #2563eb);
+      letter-spacing: 0.2px;
+      margin-bottom: 2px;
+    }
+
+    .audit-card-item .action-desc {
+      font-size: 0.78rem;
+      color: var(--text-secondary, #64748b);
+      line-height: 1.35;
+    }
+
+    .audit-card-item .action-time {
+      font-size: 0.70rem;
+      font-weight: 600;
+      color: #64748b;
+      background: rgba(148, 163, 184, 0.12);
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    /* Command Shortcut Buttons */
+    .command-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(0, 0, 0, 0.07) !important;
+      background: var(--bg-secondary, #ffffff) !important;
+      border-radius: 14px !important;
+    }
+
+    .command-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.08) !important;
+      border-color: var(--primary, #2563eb) !important;
+    }
+
+    .fs-7 {
+      font-size: 0.85rem !important;
+    }
+
+    .fs-8 {
+      font-size: 0.75rem !important;
+    }
+
+    .fs-9 {
+      font-size: 0.70rem !important;
+    }
   </style>
+
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-    <script>
-    (function() {
+  <script>
+    (function () {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
       if (localStorage.getItem('sidebar-collapsed') === 'true') {
@@ -53,13 +204,14 @@
   </script>
   <!-- PWA Support -->
   <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
 </head>
-<body>
 
+<body>
   <div class="app-layout">
     <!-- Sidebar -->
     <aside class="app-sidebar">
@@ -67,122 +219,455 @@
         <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
       </div>
       <div class="sidebar-menu">
-        <a class="sidebar-link active" href="/admin/dashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg><span>Admin Overview</span></a>
-        <a class="sidebar-link" href="/admin/users"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Manage Users</span></a>
-        <a class="sidebar-link" href="/admin/departments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polyline points="12 2 2 7 12 12 22 7 12 2"></polyline><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span>Departments</span></a>
-        <a class="sidebar-link" href="/admin/timetable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable Builder</span></a>
-        <a class="sidebar-link" href="/admin/adjustments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span>Schedule Adjustments</span></a>
-        <a class="sidebar-link" href="/admin/holidays"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></svg><span>Holidays Manager</span></a>
-        <a class="sidebar-link" href="/admin/announcements"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span>Announcements</span></a>
-        <a class="sidebar-link" href="/admin/audit-logs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Activity Audit Logs</span></a>
-        <a class="sidebar-link" href="/admin/client-errors"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>App Crash Logs</span></a>
-        <a class="sidebar-link" href="/admin/subject-hours"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Subject Hours</span></a>
-        <a class="sidebar-link" href="/admin/settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg><span>System Settings</span></a>
-        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span>Log Out</span></a>
+        <a class="sidebar-link active" href="/admin/dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect>
+            <rect x="14" y="3" width="7" height="5"></rect>
+            <rect x="14" y="12" width="7" height="9"></rect>
+            <rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span>Admin Overview</span>
+        </a>
+        <a class="sidebar-link" href="/admin/users">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Manage Users</span>
+        </a>
+        <a class="sidebar-link" href="/admin/departments">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="12 2 2 7 12 12 22 7 12 2"></polyline>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+          <span>Departments</span>
+        </a>
+        <a class="sidebar-link" href="/admin/timetable">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Timetable Builder</span>
+        </a>
+        <a class="sidebar-link" href="/admin/adjustments">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          <span>Schedule Adjustments</span>
+        </a>
+        <a class="sidebar-link" href="/admin/holidays">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path
+              d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <span>Holidays Manager</span>
+        </a>
+        <a class="sidebar-link" href="/admin/announcements">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>Announcements</span>
+        </a>
+        <a class="sidebar-link" href="/admin/audit-logs">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>Activity Audit Logs</span>
+        </a>
+        <a class="sidebar-link" href="/admin/client-errors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>App Crash Logs</span>
+        </a>
+        <a class="sidebar-link" href="/admin/subject-hours">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          <span>Subject Hours</span>
+        </a>
+        <a class="sidebar-link" href="/admin/settings">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          <span>System Settings</span>
+        </a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Log Out</span>
+        </a>
       </div>
     </aside>
 
     <!-- Main Wrapper -->
     <div class="app-main-wrapper">
-      <!-- Header -->
+      <!-- Top Navigation Header -->
       <header class="app-header">
-        <h1 class="app-header-title">Admin Overview</h1>
+        <h1 class="app-header-title mb-0"> </h1>
         <div class="app-header-profile">
-          <div class="d-flex align-items-center gap-2">
-            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
-            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
-              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
-              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+          <div class="d-flex align-items-center gap-2.5">
+            <span
+              class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7 shadow-sm"
+              style="width: 36px; height: 36px; border-radius: 10px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.2;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Administrator</div>
+              <div class="text-secondary small" style="font-size: 0.68rem;">System Admin</div>
             </div>
           </div>
         </div>
       </header>
 
-      <!-- Content -->
+      <!-- Main Content Container -->
       <main class="app-content animate-fade-in-up">
-        <!-- Welcome Banner -->
-        <div class="glass-card border-glass mb-4">
+        <!-- Hero Welcome Banner -->
+        <div class="hero-banner mb-4">
           <div class="row align-items-center">
-            <div class="col-md-12">
-              <span class="badge badge-absent px-3 py-2 mb-2 fs-7 text-uppercase" style="color: var(--primary); background: var(--primary-glow); border-color: rgba(99,102,241,0.2);">ADMIN PORTAL ACTIVE</span>
-              <h1 class="h2 fw-bold mb-1">Welcome, <span id="welcome-name">Administrator</span>!</h1>
-              <p class="text-secondary mb-0">Monitor registration metrics and global averages for the Trackify application.</p>
+            <div class="col-lg-8">
+              <span
+                class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1.5 mb-2 fs-8 text-uppercase tracking-wider fw-bold">EXECUTIVE
+                COMMAND CENTER</span>
+              <h1 class="h2 fw-extrabold mb-1.5 text-dark">Welcome back, <span id="welcome-name">Administrator</span>
+              </h1>
+              <p class="text-secondary mb-0 fs-7">Real-time attendance telemetries, student registration queue, and
+                institution audit stream.</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+              <a href="/admin/users"
+                class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                <span>User Directory</span>
+              </a>
             </div>
           </div>
         </div>
 
-        <!-- Global Metrics Grid -->
-        <div class="row g-4 mb-4">
-          <!-- Total Registered -->
-          <div class="col-md-6 col-xl-3">
-            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-primary">
-              <div class="text-start">
-                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Total Students</div>
-                <div class="fs-4 fw-extrabold text-dark mt-1" id="stats-total">0</div>
+        <!-- Global Performance Metrics Grid -->
+        <div class="row g-3.5 mb-4">
+          <!-- Total Registered Students -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="glass-card border-glass p-3.5 h-100 d-flex align-items-center justify-content-between kpi-card">
+              <div>
+                <div class="fs-8 text-secondary fw-bold text-uppercase tracking-wider">Total Registered</div>
+                <div class="fs-3 fw-extrabold text-dark mt-1" id="stats-total">0</div>
+                <div class="text-muted small mt-1 fs-9">Enrolled students</div>
               </div>
-              <div class="kpi-icon-container bg-primary-glow text-primary">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              <div class="kpi-icon-box bg-primary-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
               </div>
             </div>
           </div>
-          
-          <!-- Active Accounts -->
-          <div class="col-md-6 col-xl-3">
-            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-success">
-              <div class="text-start">
-                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Active Accounts</div>
-                <div class="fs-4 fw-extrabold text-success mt-1" id="stats-active">0</div>
+
+          <!-- Active Verified Accounts -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="glass-card border-glass p-3.5 h-100 d-flex align-items-center justify-content-between kpi-card">
+              <div>
+                <div class="fs-8 text-secondary fw-bold text-uppercase tracking-wider">Active Verified</div>
+                <div class="fs-3 fw-extrabold text-success mt-1" id="stats-active">0</div>
+                <div class="text-success small mt-1 fs-9 fw-semibold">✓ Account Sync active</div>
               </div>
-              <div class="kpi-icon-container bg-success-glow text-success">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <div class="kpi-icon-box bg-success-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
               </div>
             </div>
           </div>
 
           <!-- Suspended Accounts -->
-          <div class="col-md-6 col-xl-3">
-            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-danger">
-              <div class="text-start">
-                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Suspended</div>
-                <div class="fs-4 fw-extrabold text-danger mt-1" id="stats-suspended">0</div>
+          <div class="col-sm-6 col-xl-3">
+            <div class="glass-card border-glass p-3.5 h-100 d-flex align-items-center justify-content-between kpi-card">
+              <div>
+                <div class="fs-8 text-secondary fw-bold text-uppercase tracking-wider">Suspended Accounts</div>
+                <div class="fs-3 fw-extrabold text-danger mt-1" id="stats-suspended">0</div>
+                <div class="text-danger small mt-1 fs-9 fw-semibold">Access restricted</div>
               </div>
-              <div class="kpi-icon-container bg-danger-glow text-danger">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-slash"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+              <div class="kpi-icon-box bg-danger-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                </svg>
               </div>
             </div>
           </div>
 
-          <!-- Global Avg Attendance -->
-          <div class="col-md-6 col-xl-3">
-            <div class="glass-card border-glass p-3 h-100 d-flex align-items-center justify-content-between kpi-card border-start-glow-info">
-              <div class="text-start">
-                <div class="fs-8 text-secondary fw-semibold text-uppercase tracking-wider">Global Average</div>
-                <div class="fs-4 fw-extrabold text-info mt-1" id="stats-avg">0.0%</div>
+          <!-- Institution Global Average Attendance -->
+          <div class="col-sm-6 col-xl-3">
+            <div class="glass-card border-glass p-3.5 h-100 d-flex align-items-center justify-content-between kpi-card">
+              <div>
+                <div class="fs-8 text-secondary fw-bold text-uppercase tracking-wider">Global Average</div>
+                <div class="fs-3 fw-extrabold text-info mt-1" id="stats-avg">0.0%</div>
+                <div class="text-muted small mt-1 fs-9">Overall percentage</div>
               </div>
-              <div class="kpi-icon-container bg-info-glow text-info">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-activity"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+              <div class="kpi-icon-box bg-info-glow">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Admin Quick Actions Card -->
-        <div class="glass-card border-glass">
-          <h2 class="h5 fw-bold mb-4">Administrator Quick Commands</h2>
+        <!-- MAIN DASHBOARD CONTENT GRID -->
+        <div class="row g-4 mb-4">
+          <!-- Left Column: Student Approvals Queue & Defaulters Watchlist -->
+          <div class="col-lg-7">
+            <!-- 1. STUDENT REGISTRATION APPROVALS QUEUE -->
+            <div class="glass-card border-glass mb-4 p-4 shadow-sm">
+              <div class="panel-header">
+                <div>
+                  <h2 class="h6 fw-extrabold text-uppercase tracking-wide text-dark mb-0">Student Registration Approvals
+                  </h2>
+                  <span class="text-secondary small">Review new student sign-up requests requiring initial account
+                    approval.</span>
+                </div>
+                <a href="/admin/users" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold fs-8">View
+                  Directory →</a>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light fs-8 text-uppercase">
+                    <tr>
+                      <th scope="col" class="py-2.5">Student Details</th>
+                      <th scope="col" class="py-2.5">Dept / Sem</th>
+                      <th scope="col" class="py-2.5 text-center">Status</th>
+                      <th scope="col" class="py-2.5 text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="approvals-list-body">
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-secondary">Loading pending approvals...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 2. LOW ATTENDANCE DEFAULTERS WATCHLIST (< 80%) -->
+            <div class="glass-card border-glass p-4 shadow-sm">
+              <div class="panel-header">
+                <div>
+                  <h2 class="h6 fw-extrabold text-uppercase tracking-wide text-danger mb-0">Low Attendance Watchlist (<
+                      80%)</h2>
+                      <span class="text-secondary small">Students currently falling below the target attendance
+                        requirement.</span>
+                </div>
+                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1 fs-9 fw-bold"
+                  id="defaulter-count-badge">0 Defaulters</span>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light fs-8 text-uppercase">
+                    <tr>
+                      <th scope="col" class="py-2.5">Student Name</th>
+                      <th scope="col" class="py-2.5">Reg No / Email</th>
+                      <th scope="col" class="py-2.5 text-center">Attendance</th>
+                      <th scope="col" class="py-2.5 text-end">Audit</th>
+                    </tr>
+                  </thead>
+                  <tbody id="defaulters-list-body">
+                    <tr>
+                      <td colspan="4" class="text-center py-4 text-secondary">Loading defaulters watchlist...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Quick Broadcast Announcement & Live Audit Stream -->
+          <div class="col-lg-5">
+            <!-- 3. INSTANT ANNOUNCEMENT BROADCAST WIDGET -->
+            <div class="glass-card border-glass mb-4 p-4 shadow-sm">
+              <div class="panel-header">
+                <div>
+                  <h2 class="h6 fw-extrabold text-uppercase tracking-wide text-dark mb-0">Instant Announcement Broadcast
+                  </h2>
+                  <span class="text-secondary small">Broadcast emergency notices to all registered students.</span>
+                </div>
+              </div>
+
+              <form id="quickAnnouncementForm" onsubmit="handleQuickBroadcast(event)">
+                <div class="mb-2.5">
+                  <input type="text" class="form-control form-control-sm border-light fw-bold px-3 py-2"
+                    id="broadcastTitle" placeholder="Notice Title (e.g. Exam Schedule Update)" required>
+                </div>
+                <div class="mb-3">
+                  <textarea class="form-control form-control-sm border-light px-3 py-2" id="broadcastMessage" rows="2.5"
+                    placeholder="Write broadcast message details..." required></textarea>
+                </div>
+                <button type="submit"
+                  class="btn btn-sm btn-primary rounded-pill w-100 py-2.5 fw-bold d-inline-flex align-items-center justify-content-center gap-2 shadow-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                  <span>Broadcast Notice</span>
+                </button>
+              </form>
+            </div>
+
+            <!-- 4. LIVE ACTIVITY AUDIT STREAM -->
+            <div class="glass-card border-glass p-4 shadow-sm">
+              <div class="panel-header">
+                <div>
+                  <h2 class="h6 fw-extrabold text-uppercase tracking-wide text-dark mb-0">Live Activity Audit Stream
+                  </h2>
+                  <span class="text-secondary small">Real-time system action events.</span>
+                </div>
+                <a href="/admin/audit-logs" class="text-primary fs-8 fw-semibold text-decoration-none">Logs →</a>
+              </div>
+
+              <div id="audit-activity-list" class="d-flex flex-column">
+                <div class="text-center py-3 text-secondary small">Loading live activity feed...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command Directory Grid -->
+        <div class="glass-card border-glass p-4 shadow-sm">
+          <h2 class="h6 fw-extrabold text-uppercase tracking-wide text-dark mb-3">Administrator Command Directory</h2>
           <div class="row g-3">
-            <div class="col-sm-6 col-md-4">
-              <a href="/admin/users" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
-                <span>User Management</span>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/users"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-primary-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                  </svg>
+                </div>
+                <span class="small">Manage Users</span>
               </a>
             </div>
-            <div class="col-sm-6 col-md-4">
-              <a href="/admin/timetable" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
-                <span>Master Timetable Builder</span>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/timetable"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-success-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                </div>
+                <span class="small">Timetable Builder</span>
               </a>
             </div>
-            <div class="col-sm-6 col-md-4">
-              <a href="/admin/announcements" class="btn btn-glass w-100 py-3 d-flex flex-column align-items-center gap-2">
-                <span>Announcements Board</span>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/adjustments"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-warning-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                  </svg>
+                </div>
+                <span class="small">Adjustments</span>
+              </a>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/holidays"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-danger-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path
+                      d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                  </svg>
+                </div>
+                <span class="small">Holidays</span>
+              </a>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/announcements"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-info-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                  </svg>
+                </div>
+                <span class="small">Announcements</span>
+              </a>
+            </div>
+            <div class="col-6 col-md-4 col-xl-2">
+              <a href="/admin/settings"
+                class="btn command-btn w-100 p-3.5 d-flex flex-column align-items-center gap-2 text-decoration-none text-dark fw-bold">
+                <div class="kpi-icon-box bg-secondary-glow">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                  </svg>
+                </div>
+                <span class="small">Settings</span>
               </a>
             </div>
           </div>
@@ -191,11 +676,11 @@
     </div>
   </div>
 
-  <!-- Global scripts -->
+  <!-- Global JavaScript -->
   <script src="/assets/js/main.js"></script>
   <script>
     async function loadData() {
-      // Fetch user profile session
+      // 1. Fetch authenticated administrator profile
       const meResult = await apiCall('/api/auth/me');
       if (meResult.success && meResult.user) {
         document.getElementById('user-header-name').innerText = meResult.user.name;
@@ -205,20 +690,183 @@
         return;
       }
 
-      // Fetch global statistics
+      // 2. Fetch executive dashboard telemetry & statistics
       const response = await apiCall('/api/admin/stats');
       if (response.success && response.stats) {
         const stats = response.stats;
-        document.getElementById('stats-total').innerText = stats.total_students;
-        document.getElementById('stats-active').innerText = stats.active_students;
-        document.getElementById('stats-suspended').innerText = stats.suspended_students;
-        document.getElementById('stats-avg').innerText = `${stats.overall_avg_attendance}%`;
+        document.getElementById('stats-total').innerText = stats.total_students || 0;
+        document.getElementById('stats-active').innerText = stats.active_students || 0;
+        document.getElementById('stats-suspended').innerText = stats.suspended_students || 0;
+        document.getElementById('stats-avg').innerText = `${stats.overall_avg_attendance || 0}%`;
+
+        // Render Pending Registrations Widget
+        renderApprovalsList(stats.pending_registrations || []);
+
+        // Render Low Attendance Defaulters Watchlist
+        renderDefaultersList(stats.defaulters || []);
+
+        // Render Audit Activity Feed
+        renderAuditList(stats.recent_activity || []);
       } else {
-        showAlert('Failed to load system metrics statistics.', 'danger');
+        showAlert('Failed to load executive admin statistics.', 'danger');
+      }
+    }
+
+    // RENDER PENDING REGISTRATION REQUESTS ONLY
+    function renderApprovalsList(users) {
+      const tbody = document.getElementById('approvals-list-body');
+      tbody.innerHTML = '';
+
+      if (!users || users.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-4 text-success fw-semibold">
+              ✓ All student registration requests verified! No pending sign-ups.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      users.forEach(user => {
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <div class="fw-bold text-dark fs-7">${user.name}</div>
+              <div class="text-secondary small" style="font-size:0.75rem;">${user.register_number || user.email}</div>
+            </td>
+            <td>
+              <div class="fw-semibold text-secondary small">${user.department || 'CSE'}</div>
+              <div class="text-muted small fs-9">Sem ${user.semester || 1}</div>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-0.5 fs-9">Pending Approval</span>
+            </td>
+            <td class="text-end">
+              <div class="d-flex justify-content-end gap-1.5">
+                <button class="btn btn-sm btn-success rounded-pill px-2.5 py-1 fs-9 fw-bold d-inline-flex align-items-center gap-1 shadow-sm" onclick="approveUserRegistration('${user.id}')">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>Approve</span>
+                </button>
+                <button class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 fs-9 fw-bold" onclick="rejectUserRegistration('${user.id}')">
+                  Reject
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // APPROVE USER REGISTRATION DIRECTLY FROM DASHBOARD
+    async function approveUserRegistration(userId) {
+      if (!confirm('Approve student registration request and provision account access?')) return;
+      const res = await apiCall(`/api/admin/approvals/${userId}/approve`, 'PUT');
+      if (res.success) {
+        showAlert('Student account approved successfully!', 'success');
+        await loadData();
+      } else {
+        showAlert(res.message || 'Failed to approve user', 'danger');
+      }
+    }
+
+    // REJECT USER REGISTRATION DIRECTLY FROM DASHBOARD
+    async function rejectUserRegistration(userId) {
+      if (!confirm('Reject and remove this student registration request?')) return;
+      const res = await apiCall(`/api/admin/approvals/${userId}/reject`, 'DELETE');
+      if (res.success) {
+        showAlert('Student registration request rejected.', 'info');
+        await loadData();
+      } else {
+        showAlert(res.message || 'Failed to reject user', 'danger');
+      }
+    }
+
+    // RENDER LOW ATTENDANCE DEFAULTERS WATCHLIST
+    function renderDefaultersList(defaulters) {
+      const tbody = document.getElementById('defaulters-list-body');
+      tbody.innerHTML = '';
+      document.getElementById('defaulter-count-badge').innerText = `${defaulters.length} Defaulters`;
+
+      if (!defaulters || defaulters.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-success fw-semibold">✓ Outstanding! No students below 80% threshold.</td></tr>';
+        return;
+      }
+
+      defaulters.forEach(student => {
+        tbody.innerHTML += `
+          <tr>
+            <td>
+              <div class="fw-bold text-dark fs-7">${student.name}</div>
+              <div class="text-secondary small" style="font-size:0.75rem;">${student.department} | Sem ${student.semester}</div>
+            </td>
+            <td>
+              <div class="text-secondary small font-monospace">${student.register_number || student.email}</div>
+            </td>
+            <td class="text-center">
+              <span class="badge bg-danger text-white px-2.5 py-1 fs-9 fw-bold">${student.attendance_pct}%</span>
+            </td>
+            <td class="text-end">
+              <a href="/admin/users" class="btn btn-sm btn-glass border rounded-circle p-1.5 d-inline-flex align-items-center justify-content-center" title="Audit User">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </a>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // RENDER AUDIT ACTIVITY STREAM
+    function renderAuditList(activities) {
+      const container = document.getElementById('audit-activity-list');
+      container.innerHTML = '';
+
+      if (!activities || activities.length === 0) {
+        container.innerHTML = '<div class="text-center py-3 text-secondary small">No recent activity logged.</div>';
+        return;
+      }
+
+      activities.forEach(act => {
+        const timeStr = act.created_at ? new Date(act.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : 'Just now';
+        container.innerHTML += `
+          <div class="audit-card-item">
+            <div>
+              <div class="action-title">${act.action}</div>
+              <div class="action-desc">${act.details || '-'}</div>
+            </div>
+            <div class="action-time">${timeStr}</div>
+          </div>
+        `;
+      });
+    }
+
+    // QUICK BROADCAST ANNOUNCEMENT
+    async function handleQuickBroadcast(e) {
+      e.preventDefault();
+      const title = document.getElementById('broadcastTitle').value.trim();
+      const message = document.getElementById('broadcastMessage').value.trim();
+
+      if (!title || !message) return;
+
+      const res = await apiCall('/api/admin/announcements', 'POST', {
+        title,
+        message,
+        target_department: 'ALL',
+        target_semester: null
+      });
+
+      if (res.success) {
+        showAlert('Broadcast Announcement published successfully!', 'success');
+        document.getElementById('broadcastTitle').value = '';
+        document.getElementById('broadcastMessage').value = '';
+        await loadData();
+      } else {
+        showAlert(res.message || 'Failed to broadcast announcement', 'danger');
       }
     }
 
     window.onload = loadData;
   </script>
 </body>
+
 </html>

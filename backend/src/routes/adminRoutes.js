@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { 
   getUsers, 
+  getAdmins,
   toggleUserSuspension, 
   deleteUser, 
   updateStudentProfile,
@@ -31,8 +32,9 @@ router.get('/audit-logs', getAuditLogs);
 router.get('/client-errors', getClientErrors);
 router.post('/client-errors/:id/resolve', resolveClientError);
 
-// Student management
+// User & Admin management
 router.get('/users', getUsers);
+router.get('/administrators', getAdmins);
 router.post('/users', createUser);
 router.route('/users/:id')
   .put(updateStudentProfile)

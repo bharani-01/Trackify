@@ -100,27 +100,33 @@ const copyMasterSubjects = async (client, userId, department, semester) => {
     WHERE user_id IS NULL AND department = $1 AND semester = $2
   `;
   const masterResult = await client.query(getMasterQuery, [department, semester]);
+  if (masterResult.rows.length === 0) return {};
+
+  const valueRows = [];
+  const queryParams = [userId];
+  let paramIndex = 2;
+
+  masterResult.rows.forEach(sub => {
+    valueRows.push(`($1, $${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, $${paramIndex+4})`);
+    queryParams.push(sub.subject_code, sub.subject_name, sub.credits, sub.color, sub.total_periods);
+    paramIndex += 5;
+  });
+
+  const insertQuery = `
+    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, total_periods)
+    VALUES ${valueRows.join(', ')}
+    RETURNING id, subject_code
+  `;
+
+  const insertedResult = await client.query(insertQuery, queryParams);
   const subjectMap = {};
 
-  for (const masterSub of masterResult.rows) {
-    const insertQuery = `
-      INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, total_periods)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING id
-    `;
-    const result = await client.query(insertQuery, [
-      userId,
-      masterSub.subject_code,
-      masterSub.subject_name,
-      masterSub.credits,
-      masterSub.color,
-      masterSub.total_periods
-    ]);
-    // Coerce to integer to prevent prototype pollution if DB value is unexpected
-    const masterSubId = parseInt(masterSub.id, 10);
-    if (!Number.isFinite(masterSubId)) continue;
-    subjectMap[masterSubId] = result.rows[0].id;
-  }
+  masterResult.rows.forEach(masterSub => {
+    const match = insertedResult.rows.find(r => r.subject_code === masterSub.subject_code);
+    if (match) {
+      subjectMap[masterSub.id] = match.id;
+    }
+  });
 
   return subjectMap;
 };

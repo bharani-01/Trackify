@@ -129,27 +129,42 @@ const copyMasterTimetable = async (client, userId, department, semester, subject
     WHERE user_id IS NULL AND department = $1 AND semester = $2
   `;
   const masterResult = await client.query(getMasterQuery, [department, semester]);
+  if (masterResult.rows.length === 0) return;
 
+  const validSlots = [];
   for (const masterSlot of masterResult.rows) {
     const studentSubjectId = subjectMap[masterSlot.subject_id];
-    
-    // Only copy if the associated subject was also successfully copied
     if (studentSubjectId) {
-      const insertQuery = `
-        INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-      `;
-      await client.query(insertQuery, [
-        userId,
-        studentSubjectId,
-        masterSlot.day,
-        masterSlot.period,
-        masterSlot.start_time,
-        masterSlot.end_time,
-        masterSlot.room
-      ]);
+      validSlots.push({
+        user_id: userId,
+        subject_id: studentSubjectId,
+        day: masterSlot.day,
+        period: masterSlot.period,
+        start_time: masterSlot.start_time,
+        end_time: masterSlot.end_time,
+        room: masterSlot.room
+      });
     }
   }
+
+  if (validSlots.length === 0) return;
+
+  const valueRows = [];
+  const queryParams = [];
+  let paramIndex = 1;
+
+  validSlots.forEach(slot => {
+    valueRows.push(`($${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, $${paramIndex+4}, $${paramIndex+5}, $${paramIndex+6})`);
+    queryParams.push(slot.user_id, slot.subject_id, slot.day, slot.period, slot.start_time, slot.end_time, slot.room);
+    paramIndex += 7;
+  });
+
+  const bulkInsertQuery = `
+    INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room)
+    VALUES ${valueRows.join(', ')}
+  `;
+
+  await client.query(bulkInsertQuery, queryParams);
 };
 
 module.exports = {

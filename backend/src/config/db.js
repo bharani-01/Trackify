@@ -6,6 +6,9 @@ const connectionString = process.env.DATABASE_URL || `postgresql://${process.env
 
 const pool = new Pool({
   connectionString,
+  max: 20, // Support up to 20 concurrent DB connections for peak traffic bursts
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000,
   // Add SSL settings if connecting to Supabase (in production or with DB_SSL enabled)
   ssl: process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
 });
@@ -115,6 +118,9 @@ const initMigrations = async () => {
       CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON audit_logs(created_at DESC);
       CREATE INDEX IF NOT EXISTS idx_audit_logs_user_id ON audit_logs(user_id);
       CREATE INDEX IF NOT EXISTS idx_timetable_user_day ON timetable(user_id, day);
+      CREATE INDEX IF NOT EXISTS idx_attendance_user_date ON attendance(user_id, date);
+      CREATE INDEX IF NOT EXISTS idx_attendance_user_subject ON attendance(user_id, subject_id);
+      CREATE INDEX IF NOT EXISTS idx_users_approval_suspended ON users(is_approved, is_suspended);
     `);
 
     // 9. Ensure OTP columns exist in users table for secure login/recovery

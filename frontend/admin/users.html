@@ -97,7 +97,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
           <div>
             <h2 class="h5 fw-bold mb-1">User Account Directory</h2>
-            <p class="text-secondary small mb-0">Suspend active sessions or remove student registrations.</p>
+            <p class="text-secondary small mb-0">Manage student registrations, approvals, and administrator accounts.</p>
           </div>
           <button class="btn btn-glow" data-bs-toggle="modal" data-bs-target="#addUserModal" onclick="openAddUserModal()">
             + Add New User
@@ -116,7 +116,7 @@
           </div>
         </div>
 
-        <!-- Navigation Tabs for Active vs Pending -->
+        <!-- Navigation Tabs for Active vs Pending vs Suspended -->
         <ul class="nav nav-tabs border-bottom mb-3" id="userDirectoryTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link active fw-bold text-dark border-0 border-bottom-2" id="active-students-tab" data-bs-toggle="tab" data-bs-target="#active-students-pane" type="button" role="tab" aria-controls="active-students-pane" aria-selected="true" onclick="switchTab('active')">
@@ -126,6 +126,16 @@
           <li class="nav-item" role="presentation">
             <button class="nav-link fw-bold text-secondary border-0 border-bottom-2 position-relative" id="pending-approvals-tab" data-bs-toggle="tab" data-bs-target="#pending-approvals-pane" type="button" role="tab" aria-controls="pending-approvals-pane" aria-selected="false" onclick="switchTab('pending')">
               Pending Approvals (<span id="pending-count">0</span>)
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-danger border-0 border-bottom-2 position-relative" id="suspended-accounts-tab" data-bs-toggle="tab" data-bs-target="#suspended-accounts-pane" type="button" role="tab" aria-controls="suspended-accounts-pane" aria-selected="false" onclick="switchTab('suspended')">
+              Suspended Accounts (<span id="suspended-count">0</span>)
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-primary border-0 border-bottom-2 position-relative" id="system-admins-tab" data-bs-toggle="tab" data-bs-target="#system-admins-pane" type="button" role="tab" aria-controls="system-admins-pane" aria-selected="false" onclick="switchTab('admins')">
+              System Administrators (<span id="admins-count">0</span>)
             </button>
           </li>
         </ul>
@@ -177,8 +187,70 @@
                   </thead>
                   <tbody id="approvals-container">
                     <tr>
-                      <td colspan="5" class="text-center py-5">
+                      <td colspan="5" class="text-center py-5 text-secondary">
                         No pending registration requests.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suspended Accounts Tab Pane -->
+          <div class="tab-pane fade" id="suspended-accounts-pane" role="tabpanel" aria-labelledby="suspended-accounts-tab">
+            <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="suspended-table">
+                  <thead class="table-light border-bottom">
+                    <tr>
+                      <th class="ps-4">Student Details</th>
+                      <th>Reg Number</th>
+                      <th>Department / Sem</th>
+                      <th>Status</th>
+                      <th class="pe-4 text-end">Account Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="suspended-container">
+                    <tr>
+                      <td colspan="5" class="text-center py-5 text-secondary">
+                        No student accounts currently suspended.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Administrators Tab Pane -->
+          <div class="tab-pane fade" id="system-admins-pane" role="tabpanel" aria-labelledby="system-admins-tab">
+            <div class="glass-card border-glass p-0 overflow-hidden shadow-sm">
+              <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light-subtle flex-wrap gap-2">
+                <div>
+                  <h3 class="h6 fw-bold mb-0 text-dark">System Administrator Directory</h3>
+                  <span class="text-secondary small">Full administrative accounts with system control.</span>
+                </div>
+                <button class="btn btn-sm btn-primary rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#addAdminModal">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>Add Admin User</span>
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="admins-table">
+                  <thead class="table-light border-bottom">
+                    <tr>
+                      <th class="ps-4">Administrator Name</th>
+                      <th>Email Address</th>
+                      <th>Account Role</th>
+                      <th>Created Date</th>
+                      <th class="pe-4 text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admins-container">
+                    <tr>
+                      <td colspan="5" class="text-center py-5 text-secondary">
+                        Loading administrator accounts...
                       </td>
                     </tr>
                   </tbody>
@@ -188,6 +260,43 @@
           </div>
         </div>
       </main>
+    </div>
+  </div>
+
+  <!-- Create System Administrator Modal -->
+  <div class="modal fade" id="addAdminModal" tabindex="-1" aria-labelledby="addAdminModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass text-white bg-dark">
+        <div class="modal-header border-glass">
+          <h5 class="modal-title fw-bold text-white" id="addAdminModalLabel">Provision System Administrator</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="addAdminForm" onsubmit="handleCreateAdmin(event)">
+            <!-- Full Name -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control bg-white text-dark border-secondary-subtle" id="add-admin-name" placeholder="Administrator Name" required>
+              <label for="add-admin-name" class="text-secondary small">Administrator Full Name</label>
+            </div>
+
+            <!-- Email Address -->
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control bg-white text-dark border-secondary-subtle" id="add-admin-email" placeholder="admin@domain.com" required>
+              <label for="add-admin-email" class="text-secondary small">Official Email Address</label>
+            </div>
+
+            <!-- Password -->
+            <div class="form-floating mb-4">
+              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-admin-password" placeholder="Password" required minlength="6">
+              <label for="add-admin-password" class="text-secondary small">Set Account Password (min 6 chars)</label>
+            </div>
+
+            <button type="submit" class="btn btn-glow w-100 py-2.5 fw-bold">
+              Create System Administrator
+            </button>
+          </form>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -352,12 +461,14 @@
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let usersList = [];
+    let activeUsersList = [];
+    let suspendedUsersList = [];
     let pendingList = [];
-    let activeTab = 'active'; // 'active' or 'pending'
+    let adminsList = [];
+    let activeTab = 'active'; // 'active', 'pending', 'suspended', 'admins'
 
     async function loadData() {
-      // Fetch session
+      // 1. Fetch user session
       const meResult = await apiCall('/api/auth/me');
       if (meResult.success && meResult.user) {
         document.getElementById('user-header-name').innerText = meResult.user.name;
@@ -366,7 +477,7 @@
         return;
       }
 
-      // Fetch departments list
+      // 2. Fetch departments list
       const deptsResponse = await apiCall('/api/departments');
       if (deptsResponse.success && deptsResponse.departments) {
         departmentsList = deptsResponse.departments;
@@ -380,28 +491,43 @@
         });
       }
 
-      // Fetch active students list
+      // 3. Fetch active & suspended students list
       const response = await apiCall('/api/admin/users');
-      if (response.success) {
-        usersList = response.users;
-        document.getElementById('active-count').innerText = usersList.length;
-        renderUsers(usersList);
+      if (response.success && response.users) {
+        activeUsersList = response.users.filter(u => !u.is_suspended);
+        suspendedUsersList = response.users.filter(u => u.is_suspended);
+
+        document.getElementById('active-count').innerText = activeUsersList.length;
+        document.getElementById('suspended-count').innerText = suspendedUsersList.length;
+
+        renderUsers(activeUsersList);
+        renderSuspendedUsers(suspendedUsersList);
       } else {
-        document.getElementById('users-container').innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
+        document.getElementById('users-container').innerHTML = '<tr><td colspan="6" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
       }
 
-      // Fetch pending approvals list
+      // 4. Fetch pending approvals list
       const pendingResponse = await apiCall('/api/admin/approvals');
-      if (pendingResponse.success) {
+      if (pendingResponse.success && pendingResponse.users) {
         pendingList = pendingResponse.users;
         document.getElementById('pending-count').innerText = pendingList.length;
         renderPending(pendingList);
       } else {
         document.getElementById('approvals-container').innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load pending requests.</td></tr>';
       }
+
+      // 5. Fetch administrator accounts list
+      const adminsResponse = await apiCall('/api/admin/administrators');
+      if (adminsResponse.success && adminsResponse.admins) {
+        adminsList = adminsResponse.admins;
+        document.getElementById('admins-count').innerText = adminsList.length;
+        renderAdmins(adminsList);
+      } else {
+        document.getElementById('admins-container').innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load administrator accounts.</td></tr>';
+      }
     }
 
-    // Render users table rows
+    // Render active users table rows
     function renderUsers(list) {
       const container = document.getElementById('users-container');
       container.innerHTML = '';
@@ -409,8 +535,8 @@
       if (list.length === 0) {
         container.innerHTML = `
           <tr>
-            <td colspan="5" class="text-center py-5 text-secondary">
-              No students registered yet.
+            <td colspan="6" class="text-center py-5 text-secondary">
+              No active students registered yet.
             </td>
           </tr>
         `;
@@ -418,12 +544,7 @@
       }
 
       list.forEach(user => {
-        const statusBadge = user.is_suspended
-          ? '<span class="badge badge-absent px-2 py-1 fs-8">Suspended</span>'
-          : '<span class="badge badge-present px-2 py-1 fs-8">Active</span>';
-
-        const suspendBtnText = user.is_suspended ? 'Activate' : 'Suspend';
-        const suspendBtnClass = user.is_suspended ? 'border-success text-success' : 'border-warning text-warning';
+        const statusBadge = '<span class="badge badge-present px-2 py-1 fs-8">Active</span>';
 
         container.innerHTML += `
           <tr class="user-row border-bottom" data-name="${user.name}" data-reg="${user.register_number}">
@@ -448,8 +569,53 @@
                 <button onclick="openAdminResetPasswordModal('${user.id}', '${user.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
                   Password
                 </button>
-                <button onclick="toggleSuspension('${user.id}', ${user.is_suspended})" class="btn btn-glass btn-sm ${suspendBtnClass} py-1 px-2.5" style="font-size: 0.8rem;">
-                  ${suspendBtnText}
+                <button onclick="toggleSuspension('${user.id}', ${user.is_suspended})" class="btn btn-glass btn-sm border-warning text-warning py-1 px-2.5" style="font-size: 0.8rem;">
+                  Suspend
+                </button>
+                <button onclick="deleteUserAccount('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    // Render suspended users table rows
+    function renderSuspendedUsers(list) {
+      const container = document.getElementById('suspended-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-5 text-success font-semibold">
+              ✓ No student accounts are currently suspended.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(user => {
+        container.innerHTML += `
+          <tr class="suspended-row border-bottom" data-name="${user.name}" data-reg="${user.register_number}">
+            <td class="ps-4">
+              <div class="fw-semibold text-dark">${user.name}</div>
+              <div class="text-secondary small" style="font-size: 0.8rem;">${user.email}</div>
+            </td>
+            <td class="fw-semibold text-secondary small">${user.register_number || '-'}</td>
+            <td class="text-secondary small">
+              ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
+            </td>
+            <td>
+              <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fs-8">Suspended</span>
+            </td>
+            <td class="pe-4 text-end">
+              <div class="d-flex gap-1 justify-content-end">
+                <button onclick="toggleSuspension('${user.id}', true)" class="btn btn-sm btn-success rounded-pill px-3 py-1 fw-bold fs-9">
+                  Unsuspend Account
                 </button>
                 <button onclick="deleteUserAccount('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
                   Delete
@@ -464,12 +630,14 @@
     // Client-side search filtration
     function filterUsers() {
       const query = document.getElementById('searchBox').value.toLowerCase().trim();
-      const selector = activeTab === 'active' ? '.user-row' : '.pending-row';
-      const rows = document.querySelectorAll(selector);
+      let selector = '.user-row';
+      if (activeTab === 'pending') selector = '.pending-row';
+      if (activeTab === 'suspended') selector = '.suspended-row';
 
+      const rows = document.querySelectorAll(selector);
       rows.forEach(row => {
-        const name = row.getAttribute('data-name').toLowerCase();
-        const reg = row.getAttribute('data-reg').toLowerCase();
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
+        const reg = (row.getAttribute('data-reg') || '').toLowerCase();
         
         if (name.includes(query) || reg.includes(query)) {
           row.style.display = '';
@@ -732,6 +900,119 @@
       }
     }
 
+    async function handleCreateAdmin(e) {
+      e.preventDefault();
+      const name = document.getElementById('add-admin-name').value.trim();
+      const email = document.getElementById('add-admin-email').value.trim();
+      const password = document.getElementById('add-admin-password').value;
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'Creating Administrator...';
+
+      const response = await apiCall('/api/admin/users', 'POST', {
+        name,
+        email,
+        password,
+        role: 'admin'
+      });
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Create System Administrator';
+
+      if (response.success) {
+        showAlert(`System Administrator '${name}' provisioned successfully!`, 'success');
+        const modalEl = document.getElementById('addAdminModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        document.getElementById('addAdminForm').reset();
+        await loadData();
+      } else {
+        showAlert(response.message || 'Failed to create administrator account', 'danger');
+      }
+    }
+
+    // Render system administrators table rows
+    function renderAdmins(list) {
+      const container = document.getElementById('admins-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="5" class="text-center py-5 text-secondary">
+              No administrator accounts found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(admin => {
+        const dateStr = admin.created_at ? new Date(admin.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        }) : '-';
+
+        container.innerHTML += `
+          <tr class="admin-row border-bottom" data-name="${admin.name}" data-reg="${admin.email}">
+            <td class="ps-4">
+              <div class="fw-bold text-dark">${admin.name}</div>
+            </td>
+            <td class="fw-semibold text-secondary small">${admin.email}</td>
+            <td>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fs-8">System Admin</span>
+            </td>
+            <td class="text-secondary small">${dateStr}</td>
+            <td class="pe-4 text-end">
+              <div class="d-flex gap-1 justify-content-end">
+                <button onclick="openAdminResetPasswordModal('${admin.id}', '${admin.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
+                  Password
+                </button>
+                <button onclick="deleteAdminAccount('${admin.id}', '${admin.name}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function deleteAdminAccount(id, name) {
+      if (confirm(`Are you sure you want to delete administrator account '${name}'? This action cannot be undone.`)) {
+        const response = await apiCall(`/api/admin/users/${id}`, { method: 'DELETE' });
+        if (response.success) {
+          showAlert(`Administrator account '${name}' removed.`, 'success');
+          loadData();
+        } else {
+          showAlert(response.message || 'Failed to delete administrator account.', 'danger');
+        }
+      }
+    }
+
+    // Client-side search filtration
+    function filterUsers() {
+      const query = document.getElementById('searchBox').value.toLowerCase().trim();
+      let selector = '.user-row';
+      if (activeTab === 'pending') selector = '.pending-row';
+      if (activeTab === 'suspended') selector = '.suspended-row';
+      if (activeTab === 'admins') selector = '.admin-row';
+
+      const rows = document.querySelectorAll(selector);
+      rows.forEach(row => {
+        const name = (row.getAttribute('data-name') || '').toLowerCase();
+        const reg = (row.getAttribute('data-reg') || '').toLowerCase();
+        
+        if (name.includes(query) || reg.includes(query)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+
     async function rejectRegistration(id) {
       if (!confirm('Are you sure you want to reject and delete this registration request?')) return;
 
@@ -750,25 +1031,39 @@
     function switchTab(tab) {
       activeTab = tab;
       
-      // Update tab styles
       const activeTabBtn = document.getElementById('active-students-tab');
       const pendingTabBtn = document.getElementById('pending-approvals-tab');
+      const suspendedTabBtn = document.getElementById('suspended-accounts-tab');
+      const adminsTabBtn = document.getElementById('system-admins-tab');
       
+      [activeTabBtn, pendingTabBtn, suspendedTabBtn, adminsTabBtn].forEach(btn => {
+        if (btn) btn.classList.remove('text-dark', 'text-secondary', 'text-danger', 'text-primary');
+      });
+
       if (tab === 'active') {
-        activeTabBtn.classList.remove('text-secondary');
         activeTabBtn.classList.add('text-dark');
-        pendingTabBtn.classList.remove('text-dark');
         pendingTabBtn.classList.add('text-secondary');
-      } else {
-        pendingTabBtn.classList.remove('text-secondary');
+        suspendedTabBtn.classList.add('text-secondary');
+        adminsTabBtn.classList.add('text-secondary');
+      } else if (tab === 'pending') {
         pendingTabBtn.classList.add('text-dark');
-        activeTabBtn.classList.remove('text-dark');
         activeTabBtn.classList.add('text-secondary');
+        suspendedTabBtn.classList.add('text-secondary');
+        adminsTabBtn.classList.add('text-secondary');
+      } else if (tab === 'suspended') {
+        suspendedTabBtn.classList.add('text-danger');
+        activeTabBtn.classList.add('text-secondary');
+        pendingTabBtn.classList.add('text-secondary');
+        adminsTabBtn.classList.add('text-secondary');
+      } else if (tab === 'admins') {
+        adminsTabBtn.classList.add('text-primary');
+        activeTabBtn.classList.add('text-secondary');
+        pendingTabBtn.classList.add('text-secondary');
+        suspendedTabBtn.classList.add('text-secondary');
       }
       
-      // Clear and re-filter search box
       document.getElementById('searchBox').value = '';
-      const allRows = document.querySelectorAll('.user-row, .pending-row');
+      const allRows = document.querySelectorAll('.user-row, .pending-row, .suspended-row, .admin-row');
       allRows.forEach(r => r.style.display = '');
     }
 
