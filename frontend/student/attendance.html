@@ -284,6 +284,14 @@
                 </div>
               </div>
 
+              <!-- Quick Bulk Actions Bar (Apple/Stripe Style) -->
+              <div class="d-flex align-items-center gap-2 mb-4 flex-wrap" id="bulk-actions-container" style="display: none !important;">
+                <span class="text-secondary small fw-semibold">Quick Actions:</span>
+                <button type="button" class="btn btn-sm btn-glass border-success text-success px-3 py-1.5 fs-8" onclick="markAll('Present')">Mark All Present</button>
+                <button type="button" class="btn btn-sm btn-glass border-danger text-danger px-3 py-1.5 fs-8" onclick="markAll('Absent')">Mark All Absent</button>
+                <button type="button" class="btn btn-sm btn-glass border-primary text-primary px-3 py-1.5 fs-8" onclick="markAll('On Duty')">Mark All OD</button>
+              </div>
+
               <!-- Checklist Cards container -->
               <div id="today-schedule-container">
                 <div class="text-center py-5">
@@ -305,6 +313,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     let currentSelectedDate = '';
+    let daySlots = [];
 
     // Initialize dates
     const todayObj = new Date();
@@ -397,7 +406,7 @@
         const holiday = logsRes.holiday; // Capture holiday from logs request
 
         // Apply cohort adjustments to the template slots
-        let daySlots = [];
+        daySlots = [];
         rawSlots.forEach(slot => {
           const adj = dayAdjustments.find(a => a.period === slot.period && a.adjustment_type !== 'extra');
           if (adj) {
@@ -457,6 +466,7 @@
         container.innerHTML = '';
 
         if (daySlots.length === 0) {
+          document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
           container.innerHTML = `
             <div class="text-center py-5">
               <h3 class="h6 fw-semibold text-secondary">No classes scheduled for this date</h3>
@@ -466,6 +476,9 @@
           updateProgressBar(0, 0);
           return;
         }
+
+        // Show bulk actions container since there are slots
+        document.getElementById('bulk-actions-container').style.setProperty('display', 'flex', 'important');
 
         let markedCount = 0;
         let activeTotal = 0;
@@ -535,12 +548,10 @@
             `;
           } else {
             statusAreaHtml = `
-              <div class="d-flex gap-1 flex-wrap justify-content-md-end attendance-btn-group">
-                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Present')" class="btn btn-sm btn-outline-success px-3">Present</button>
-                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Absent')" class="btn btn-sm btn-outline-danger px-3">Absent</button>
-                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'On Duty')" class="btn btn-sm btn-outline-primary px-3">OD</button>
-                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Medical Leave')" class="btn btn-sm btn-outline-warning px-3">ML</button>
-                <button onclick="markQuick('${slot.subject_id}', '${slot.period}', 'Holiday')" class="btn btn-sm btn-outline-info px-3">Holiday</button>
+              <div class="d-flex gap-2 align-items-center justify-content-md-end attendance-btn-group">
+                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'Present')" class="action-circle-btn btn-p" title="Mark Present">P</button>
+                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'Absent')" class="action-circle-btn btn-a" title="Mark Absent">A</button>
+                <button onclick="handleAnimatedMark(this, '${slot.subject_id}', '${slot.period}', 'On Duty')" class="action-circle-btn btn-od" title="Mark On Duty">OD</button>
               </div>
             `;
           }
@@ -589,6 +600,81 @@
       currentSelectedDate = dateVal;
       renderRollingDaysStrip(dateVal);
       await fetchChecklist();
+    }
+
+    async function markAll(status) {
+      if (!confirm(`Are you sure you want to mark all scheduled classes on this day as ${status}?`)) {
+        return;
+      }
+      
+      const activeSlots = daySlots.filter(s => !s.is_canceled);
+      if (activeSlots.length === 0) return;
+      
+      showAlert(`Logging bulk ${status} markings, please wait...`, 'info');
+      
+      const promises = activeSlots.map(slot => {
+        return apiCall('/api/attendance', {
+          method: 'POST',
+          body: {
+            subject_id: slot.subject_id,
+            date: currentSelectedDate,
+            status: status,
+            remarks: `Period ${slot.period}`
+          }
+        });
+      });
+      
+      const results = await Promise.all(promises);
+      const successfulCount = results.filter(r => r.success).length;
+      
+      showAlert(`Successfully marked ${successfulCount} classes as ${status}`, 'success');
+      await fetchChecklist();
+    }
+
+    async function handleAnimatedMark(btnEl, subjectId, period, status) {
+      if (!btnEl) return;
+      
+      // Smoothly fade & scale out sibling buttons
+      const parent = btnEl.parentElement;
+      if (parent) {
+        Array.from(parent.children).forEach(child => {
+          if (child !== btnEl) {
+            child.style.transition = 'all 0.15s cubic-bezier(0.32, 0.72, 0, 1)';
+            child.style.opacity = '0';
+            child.style.transform = 'scale(0.7)';
+            child.style.pointerEvents = 'none';
+          }
+        });
+      }
+      
+      // Expand and morph the clicked button into a full status pill
+      btnEl.innerText = status;
+      btnEl.style.width = '100px';
+      btnEl.style.borderRadius = '24px';
+      btnEl.style.fontSize = '0.8rem';
+      btnEl.style.fontWeight = '700';
+      
+      if (status === 'Present') {
+        btnEl.style.backgroundColor = 'var(--success)';
+        btnEl.style.color = '#ffffff';
+        btnEl.style.borderColor = 'var(--success)';
+        btnEl.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+      } else if (status === 'Absent') {
+        btnEl.style.backgroundColor = 'var(--danger)';
+        btnEl.style.color = '#ffffff';
+        btnEl.style.borderColor = 'var(--danger)';
+        btnEl.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.4)';
+      } else if (status === 'On Duty') {
+        btnEl.style.backgroundColor = 'var(--primary)';
+        btnEl.style.color = '#ffffff';
+        btnEl.style.borderColor = 'var(--primary)';
+        btnEl.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.4)';
+      }
+      
+      // Dispatch API request after small morph transition delay
+      setTimeout(async () => {
+        await markQuick(subjectId, period, status);
+      }, 160);
     }
 
     async function markQuick(subjectId, period, status) {
