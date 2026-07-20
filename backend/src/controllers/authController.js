@@ -11,7 +11,7 @@ const { sendResetEmail, sendOtpEmail } = require('../utils/emailHelper');
 const sendTokenCookie = (user, statusCode, res) => {
   const token = generateToken({ id: user.id, role: user.role, email: user.email });
 
-  const cookieExpireDays = parseInt(process.env.COOKIE_EXPIRE || '1', 10);
+  const cookieExpireDays = parseInt(process.env.COOKIE_EXPIRE || '180', 10);
   const cookieOptions = {
     expires: new Date(Date.now() + cookieExpireDays * 24 * 60 * 60 * 1000),
     httpOnly: true,
