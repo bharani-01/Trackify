@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Subject Hours override - Admin Portal</title>
-  <!-- Bootstrap 5 CSS -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
@@ -17,7 +17,7 @@
       }
     })();
   </script>
-  <!-- PWA Support -->
+  
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -27,7 +27,7 @@
 <body>
 
   <div class="app-layout">
-    <!-- Sidebar -->
+    
     <aside class="app-sidebar">
       <div class="sidebar-logo">
         <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
@@ -48,9 +48,9 @@
       </div>
     </aside>
 
-    <!-- Main Wrapper -->
+    
     <div class="app-main-wrapper">
-      <!-- Header -->
+      
       <header class="app-header">
         <h1 class="app-header-title">Subject Hours Manager</h1>
         <div class="app-header-profile">
@@ -64,9 +64,9 @@
         </div>
       </header>
 
-      <!-- Content -->
+      
       <main class="app-content animate-fade-in-up">
-        <!-- Sub-header -->
+        
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
           <div>
             <h2 class="h5 fw-bold mb-1">Alter Subject Hours (Semester Limits)</h2>
@@ -74,7 +74,7 @@
           </div>
         </div>
 
-        <!-- Cohort Select Card -->
+        
         <div class="glass-card border-glass mb-4 p-4">
           <form id="cohortForm" class="row g-3 align-items-end" onsubmit="handleLoadCohort(event)">
             <div class="col-md-4">
@@ -103,7 +103,7 @@
           </form>
         </div>
 
-        <!-- Workspace -->
+        
         <div id="workspace-area" style="display: none;">
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="h6 fw-bold mb-0 text-uppercase tracking-wide text-secondary" id="cohort-title">Cohort: CSE Sem 1</h3>
@@ -122,7 +122,7 @@
                   </tr>
                 </thead>
                 <tbody id="subject-table-body">
-                  <!-- Loaded dynamically -->
+                  
                 </tbody>
               </table>
             </div>
@@ -132,7 +132,7 @@
     </div>
   </div>
 
-  <!-- Global scripts -->
+  
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>

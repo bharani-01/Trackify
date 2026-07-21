@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
   <title>Timetable Builder - Admin Portal</title>
-  <!-- Bootstrap 5 CSS -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
   <style>
@@ -63,7 +63,7 @@
       }
     })();
   </script>
-  <!-- PWA Support -->
+  
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -73,7 +73,7 @@
 <body>
 
   <div class="app-layout">
-    <!-- Sidebar -->
+    
     <aside class="app-sidebar">
       <div class="sidebar-logo">
         <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
@@ -94,9 +94,9 @@
       </div>
     </aside>
 
-    <!-- Main Wrapper -->
+    
     <div class="app-main-wrapper">
-      <!-- Header -->
+      
       <header class="app-header">
         <h1 class="app-header-title">Timetable Builder</h1>
         <div class="app-header-profile">
@@ -110,9 +110,9 @@
         </div>
       </header>
 
-      <!-- Content -->
+      
       <main class="app-content animate-fade-in-up">
-        <!-- Selector Controls -->
+        
         <div class="glass-card border-glass mb-3 p-3">
           <form id="templateSelector" class="row g-2 align-items-center" onsubmit="loadTemplate(event)">
             <div class="col-md-5">
@@ -144,7 +144,7 @@
         </div>
 
         <div id="template-editor-area" style="display:none;">
-          <!-- 1. Master Subjects section -->
+          
           <div class="glass-card border-glass mb-4 p-4">
             <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
               <h2 class="h5 fw-bold mb-0">Subjects Template List</h2>
@@ -153,11 +153,11 @@
               </button>
             </div>
             <div class="row g-2" id="master-subjects-container">
-              <!-- Rendered subjects -->
+              
             </div>
           </div>
 
-          <!-- 2. Timetable Grid -->
+          
           <div class="timetable-grid-wrapper shadow-sm">
             <table class="timetable-table">
               <thead>
@@ -176,7 +176,7 @@
                 </tr>
               </thead>
               <tbody id="master-timetable-grid-body">
-                <!-- Grid body -->
+                
               </tbody>
             </table>
           </div>
@@ -185,7 +185,7 @@
     </div>
   </div>
 
-  <!-- Add Master Subject Modal -->
+  
   <div class="modal fade" id="subjectModal" tabindex="-1" aria-labelledby="subjectModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary);">
@@ -230,7 +230,7 @@
     </div>
   </div>
 
-  <!-- Add Master Timetable Slot Modal -->
+  
   <div class="modal fade" id="slotModal" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary);">
@@ -249,7 +249,7 @@
               <label for="slotSubject">Subject</label>
             </div>
 
-            <!-- Day & Period Selection -->
+            
             <div class="row g-2 mb-3">
               <div class="col-md-6">
                 <div class="form-floating">
@@ -280,7 +280,7 @@
               </div>
             </div>
 
-            <!-- Start / End Timing (Auto-filled) -->
+            
             <div class="row g-2 mb-3">
               <div class="col-md-6">
                 <div class="form-floating">
@@ -312,7 +312,7 @@
     </div>
   </div>
 
-  <!-- Global scripts -->
+  
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>

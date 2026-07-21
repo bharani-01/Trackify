@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Settings - Trackify</title>
-  <!-- Bootstrap 5 CSS -->
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
@@ -17,7 +17,7 @@
       }
     })();
   </script>
-  <!-- PWA Support -->
+  
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,7 +26,7 @@
 </head>
 <body>
 
-  <!-- Navigation Bar -->
+  
   <nav class="navbar navbar-expand-lg glass-nav sticky-top">
     <div class="container py-2">
       <span class="navbar-brand fs-3 fw-bold gradient-accent-text">Trackify</span>
@@ -40,7 +40,7 @@
   <div class="container my-5">
     <div class="row g-4">
       
-      <!-- Sidebar -->
+      
       <aside class="col-lg-3">
         <div class="glass-card border-glass p-3 h-100">
           <div class="nav flex-column nav-pills gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
@@ -66,26 +66,26 @@
         </div>
       </aside>
 
-      <!-- Main Content -->
+      
       <main class="col-lg-9 animate-fade-in-up">
         
         <h1 class="h3 fw-bold mb-1">Preferences & Target</h1>
         <p class="text-secondary mb-4">Configure your minimum attendance threshold and account settings.</p>
 
         <div class="row g-4">
-          <!-- Left: Settings Form -->
+          
           <div class="col-md-6">
             <div class="glass-card border-glass h-100">
               <h2 class="h5 fw-bold mb-4">Attendance Configurations</h2>
               <form id="settingsForm">
-                <!-- Minimum Attendance Target -->
+                
                 <div class="form-floating mb-3">
                   <input type="number" class="form-control" id="minAttendance" placeholder="80" required min="50" max="100">
                   <label for="minAttendance">Minimum Target Attendance (%)</label>
                   <div class="form-text text-secondary mt-1 small">Typically set to 80% according to academic standards.</div>
                 </div>
 
-                <!-- Notifications Toggle -->
+                
                 <div class="form-check form-switch mb-4 p-3 rounded-4 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem;">
                   <div>
                     <label class="form-check-label fw-bold text-dark" for="notifsToggle">Enable Reminders</label>
@@ -99,7 +99,7 @@
             </div>
           </div>
 
-          <!-- Right: Profile Info Display -->
+          
           <div class="col-md-6">
             <div class="glass-card border-glass h-100">
               <h2 class="h5 fw-bold mb-4">Account Information</h2>
@@ -124,7 +124,7 @@
     </div>
   </div>
 
-  <!-- Global scripts -->
+  
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>

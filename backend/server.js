@@ -17,6 +17,7 @@ const userRepository = require('./src/repositories/userRepository');
 const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
 
 const app = express();
+app.disable('x-powered-by');
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 3000;
 
@@ -31,12 +32,19 @@ app.use(cookieParser());
 
 // Security Headers and File Protections Middleware
 app.use((req, res, next) => {
-  // Set security headers to prevent clickjacking, MIME sniffing, and XSS
+  // Disable server disclosure & set production security headers
+  res.removeHeader('X-Powered-By');
+  res.setHeader('Server', 'Trackify-Security');
   res.setHeader('X-Frame-Options', 'SAMEORIGIN');
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   res.setHeader('X-XSS-Protection', '1; mode=block');
+
+  // Hardened Security Headers (HSTS, CSP, Permissions-Policy)
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://v2.jokeapi.dev https://accounts.google.com; frame-src 'self' https://accounts.google.com;");
 
   const url = req.path.toLowerCase();
 
