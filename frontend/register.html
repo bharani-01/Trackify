@@ -201,7 +201,10 @@
       if (response.success) {
         document.getElementById('registerForm').classList.add('d-none');
         document.getElementById('successArea').classList.remove('d-none');
-        document.getElementById('successMsg').innerText = response.message;
+        document.getElementById('successMsg').innerText = 'Registration request submitted! Redirecting to waiting lounge...';
+        setTimeout(() => {
+          window.location.href = response.redirectUrl || '/pending-approval';
+        }, 1000);
       } else {
         submitBtn.disabled = false;
         submitBtn.innerText = 'Submit Request';

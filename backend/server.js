@@ -433,6 +433,10 @@ const protectHtml = (roleRequired) => {
         return res.redirect('/login?suspended=true');
       }
 
+      if (user.is_approved === false) {
+        return res.redirect('/pending-approval');
+      }
+
       if (roleRequired && user.role !== roleRequired) {
         // If they are an admin trying to access student pages, redirect to admin dashboard
         if (user.role === 'admin') {
@@ -468,6 +472,10 @@ const redirectIfLoggedIn = async (req, res, next) => {
     if (!user || user.is_suspended) {
       res.clearCookie('token');
       return next();
+    }
+
+    if (user.is_approved === false) {
+      return res.redirect('/pending-approval');
     }
 
     if (user.role === 'admin') {
@@ -518,6 +526,42 @@ app.get('/register', redirectIfLoggedIn, async (req, res) => {
   } catch (error) {
     console.error('Error checking self registration status:', error);
     res.redirect('/login');
+  }
+});
+
+// Dedicated Waiting Lounge route for pending account approvals
+app.get(['/pending-approval', '/pending-approval.html'], async (req, res) => {
+  const token = req.cookies.token;
+  if (!token) {
+    return res.redirect('/login');
+  }
+
+  const decoded = verifyToken(token);
+  if (!decoded) {
+    res.clearCookie('token');
+    return res.redirect('/login');
+  }
+
+  try {
+    const user = await userRepository.findById(decoded.id);
+    if (!user) {
+      res.clearCookie('token');
+      return res.redirect('/login');
+    }
+
+    if (user.is_suspended) {
+      res.clearCookie('token');
+      return res.redirect('/login?suspended=true');
+    }
+
+    if (user.is_approved !== false) {
+      return res.redirect(user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard');
+    }
+
+    res.sendFile(path.join(__dirname, '../frontend/pending-approval.html'));
+  } catch (err) {
+    console.error('Pending approval route error:', err.message);
+    return res.redirect('/login');
   }
 });
 

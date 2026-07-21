@@ -19,7 +19,7 @@ const findByEmail = async (email) => {
  * @returns {Promise<object|null>}
  */
 const findById = async (id) => {
-  const query = 'SELECT id, name, register_number, email, role, avatar, department, semester, is_suspended, created_at, updated_at FROM users WHERE id = $1';
+  const query = 'SELECT id, name, register_number, email, role, avatar, department, semester, is_suspended, is_approved, created_at, updated_at FROM users WHERE id = $1';
   const result = await db.query(query, [id]);
   return result.rows[0] || null;
 };

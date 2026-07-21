@@ -118,13 +118,71 @@
     </div>
   </main>
 
+  <!-- Google Complete Registration Modal -->
+  <div class="modal fade" id="googleDetailsModal" tabindex="-1" aria-labelledby="googleDetailsModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass shadow-lg p-4">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold" id="googleDetailsModalLabel">Complete Student Profile</h5>
+        </div>
+        <div class="modal-body">
+          <p class="text-secondary small mb-3">Welcome! Please fill in your student details to submit your account for admin approval.</p>
+          <form id="googleDetailsForm">
+            <!-- Full Name -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="gName" placeholder="Full Name" required>
+              <label for="gName">Full Name</label>
+            </div>
+            <!-- Email (Disabled) -->
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control bg-light" id="gEmail" placeholder="Email" readonly disabled>
+              <label for="gEmail">Google Email</label>
+            </div>
+            <!-- Register Number -->
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control text-uppercase" id="gRegNumber" placeholder="Register Number (e.g. 21CS101)" required>
+              <label for="gRegNumber">Register / Roll Number (Unique ID)</label>
+            </div>
+            <!-- Department -->
+            <div class="form-floating mb-3">
+              <select class="form-select bg-white text-dark" id="gDepartment" required>
+                <option value="" disabled selected>Select Department</option>
+              </select>
+              <label for="gDepartment">Department</label>
+            </div>
+            <!-- Semester -->
+            <div class="form-floating mb-4">
+              <select class="form-select bg-white text-dark" id="gSemester" required>
+                <option value="" disabled selected>Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+              <label for="gSemester">Semester</label>
+            </div>
+            <button type="submit" id="gSubmitBtn" class="btn btn-glow w-100 py-3">Submit for Approval</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Google Identity Services SDK -->
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Bootstrap 5 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- Global scripts -->
   <script src="/assets/js/main.js"></script>
   <script>
     let isOtpMode = false;
     let otpSent = false;
+    let currentGoogleIdToken = null;
+    let googleModalInstance = null;
 
     // Check URL parameters for status alerts
     const urlParams = new URLSearchParams(window.location.search);
@@ -145,6 +203,33 @@
       }
     }
     checkRegistration();
+
+    // Fetch departments for Google modal
+    async function loadGoogleDepartments() {
+      const select = document.getElementById('gDepartment');
+      const response = await apiCall('/api/departments');
+      if (response.success && response.departments) {
+        select.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        response.departments.forEach(dept => {
+          const opt = document.createElement('option');
+          opt.value = dept.code;
+          opt.textContent = `${dept.name} (${dept.code})`;
+          select.appendChild(opt);
+        });
+      } else {
+        select.innerHTML = `
+          <option value="" disabled selected>Select Department</option>
+          <option value="CSE">Computer Science & Engineering (CSE)</option>
+          <option value="ECE">Electronics & Communication (ECE)</option>
+          <option value="EEE">Electrical & Electronics (EEE)</option>
+          <option value="MECH">Mechanical Engineering (MECH)</option>
+          <option value="CIVIL">Civil Engineering (CIVIL)</option>
+          <option value="IT">Information Technology (IT)</option>
+          <option value="AIDS">AI & Data Science (AIDS)</option>
+          <option value="AIML">AI & Machine Learning (AIML)</option>
+        `;
+      }
+    }
 
     // Toggle Login Mode
     const toggleModeBtn = document.getElementById('toggleModeBtn');
@@ -195,10 +280,10 @@
         });
 
         if (response.success) {
-          showAlert('Login successful! Redirecting...', 'success');
+          showAlert(response.pendingApproval ? 'Registration pending review! Redirecting to waiting lounge...' : 'Login successful! Redirecting...', 'success');
           setTimeout(() => {
-            window.location.href = response.redirectUrl;
-          }, 1000);
+            window.location.href = response.redirectUrl || '/student/dashboard';
+          }, 800);
         } else {
           showAlert(response.message, 'danger');
           submitBtn.disabled = false;
@@ -241,10 +326,10 @@
           });
 
           if (response.success) {
-            showAlert('Verification successful! Redirecting...', 'success');
+            showAlert(response.pendingApproval ? 'Registration pending review! Redirecting to waiting lounge...' : 'Verification successful! Redirecting...', 'success');
             setTimeout(() => {
-              window.location.href = response.redirectUrl;
-            }, 1000);
+              window.location.href = response.redirectUrl || '/student/dashboard';
+            }, 800);
           } else {
             showAlert(response.message, 'danger');
             submitBtn.disabled = false;
@@ -258,18 +343,26 @@
     async function handleGoogleSignIn(googleResponse) {
       if (!googleResponse || !googleResponse.credential) return;
 
+      currentGoogleIdToken = googleResponse.credential;
       showAlert('Authenticating with Google...', 'info');
 
       const response = await apiCall('/api/auth/google', {
         method: 'POST',
-        body: { idToken: googleResponse.credential }
+        body: { idToken: currentGoogleIdToken }
       });
 
       if (response.success) {
-        if (response.pendingApproval) {
-          showAlert(response.message, 'info');
+        if (response.requiresDetails) {
+          // Populate Google modal details
+          document.getElementById('gName').value = response.googleUser.name || '';
+          document.getElementById('gEmail').value = response.googleUser.email || '';
+          await loadGoogleDepartments();
+          
+          googleModalInstance = new bootstrap.Modal(document.getElementById('googleDetailsModal'));
+          googleModalInstance.show();
+          showAlert('New Google Account detected! Please complete your student profile details.', 'info');
         } else {
-          showAlert('Google login successful! Redirecting...', 'success');
+          showAlert(response.pendingApproval ? 'Your request is pending approval! Redirecting to waiting lounge...' : 'Google login successful! Redirecting...', 'success');
           setTimeout(() => {
             window.location.href = response.redirectUrl || '/student/dashboard';
           }, 800);
@@ -278,6 +371,43 @@
         showAlert(response.message || 'Google authentication failed.', 'danger');
       }
     }
+
+    // Modal submit handler for Google registration details
+    document.getElementById('googleDetailsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('gName').value;
+      const register_number = document.getElementById('gRegNumber').value;
+      const department = document.getElementById('gDepartment').value;
+      const semester = document.getElementById('gSemester').value;
+      const gSubmitBtn = document.getElementById('gSubmitBtn');
+
+      gSubmitBtn.disabled = true;
+      gSubmitBtn.innerText = 'Submitting Request...';
+
+      const response = await apiCall('/api/auth/google', {
+        method: 'POST',
+        body: {
+          idToken: currentGoogleIdToken,
+          name,
+          register_number,
+          department,
+          semester
+        }
+      });
+
+      if (response.success) {
+        if (googleModalInstance) googleModalInstance.hide();
+        showAlert('Registration details submitted successfully! Redirecting to waiting lounge...', 'success');
+        setTimeout(() => {
+          window.location.href = response.redirectUrl || '/pending-approval';
+        }, 800);
+      } else {
+        showAlert(response.message || 'Error submitting registration details.', 'danger');
+        gSubmitBtn.disabled = false;
+        gSubmitBtn.innerText = 'Submit for Approval';
+      }
+    });
   </script>
 </body>
 </html>

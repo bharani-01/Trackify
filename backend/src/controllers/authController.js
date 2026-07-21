@@ -19,8 +19,11 @@ const sendTokenCookie = (user, statusCode, res) => {
     sameSite: 'lax'
   };
 
-  // Determine redirection target based on role
-  const redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+  // Determine redirection target based on role and approval status
+  let redirectUrl = '/pending-approval';
+  if (user.is_approved !== false) {
+    redirectUrl = user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+  }
 
   res
     .status(statusCode)
@@ -28,6 +31,7 @@ const sendTokenCookie = (user, statusCode, res) => {
     .json({
       success: true,
       token, // Include token in body to simplify mobile app authorization headers
+      pendingApproval: user.is_approved === false,
       user: {
         id: user.id,
         name: user.name,
@@ -35,7 +39,8 @@ const sendTokenCookie = (user, statusCode, res) => {
         role: user.role,
         register_number: user.register_number,
         department: user.department,
-        semester: user.semester
+        semester: user.semester,
+        is_approved: user.is_approved
       },
       redirectUrl
     });
@@ -93,10 +98,7 @@ const register = async (req, res) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     await auditLogRepository.logAction(newUser.id, 'REGISTER', `User registered pending approval: ${name} (${register_number})`, ip);
 
-    return res.status(201).json({
-      success: true,
-      message: 'Your registration request has been submitted successfully! An administrator will review and approve your account shortly.'
-    });
+    return sendTokenCookie(newUser, 201, res);
   } catch (error) {
     console.error('Registration controller error:', error);
     
@@ -144,13 +146,6 @@ const login = async (req, res) => {
       return res.status(403).json({
         success: false,
         message: 'Your account has been suspended by an administrator.'
-      });
-    }
-
-    if (!user.is_approved) {
-      return res.status(403).json({
-        success: false,
-        message: 'Your registration request is pending administrator approval.'
       });
     }
 
@@ -648,13 +643,6 @@ const googleAuth = async (req, res) => {
         });
       }
 
-      if (user.is_approved === false) {
-        return res.status(403).json({
-          success: false,
-          message: 'Your registration is pending administrator approval.'
-        });
-      }
-
       const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
       await auditLogRepository.logAction(
         user.id,
@@ -675,32 +663,44 @@ const googleAuth = async (req, res) => {
       });
     }
 
-    const defaultRegNumber = `GGL-${Date.now().toString().slice(-6)}`;
+    // Check if extra registration details were provided in request body
+    const { register_number, department, semester, name } = req.body;
+
+    if (!register_number || !department || !semester) {
+      // Prompt user on frontend to fill in required department, semester, and register number
+      return res.status(200).json({
+        success: true,
+        requiresDetails: true,
+        googleUser: {
+          name: googleUser.name || '',
+          email: googleUser.email
+        },
+        message: 'Please complete your student profile details to finalize registration.'
+      });
+    }
+
     const randomPasswordHash = await hashPassword(crypto.randomBytes(16).toString('hex'));
 
     user = await userRepository.createUser({
-      name: googleUser.name || googleUser.email.split('@')[0],
-      register_number: defaultRegNumber,
+      name: (name || googleUser.name || googleUser.email.split('@')[0]).trim(),
+      register_number: register_number.trim(),
       email: googleUser.email,
       password_hash: randomPasswordHash,
       role: 'student',
-      department: 'CSE',
-      semester: 1
+      department: department.trim(),
+      semester: parseInt(semester, 10),
+      is_approved: false
     });
 
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     await auditLogRepository.logAction(
       user.id,
       'GOOGLE_REGISTER_REQUEST',
-      `New Google user created: ${user.name} (${user.email}). Pending approval.`,
+      `New Google user registered with details: ${user.name} (${user.register_number}, ${user.department}, Sem ${user.semester}). Pending approval.`,
       ip
     );
 
-    return res.status(200).json({
-      success: true,
-      pendingApproval: true,
-      message: 'Account created with Google! Your registration request is pending administrator approval.'
-    });
+    return sendTokenCookie(user, 201, res);
 
   } catch (error) {
     console.error('googleAuth controller error:', error);
