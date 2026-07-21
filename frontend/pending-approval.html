@@ -494,10 +494,9 @@
           <span class="queue-dot"></span>
           Pending Admin Approval
         </div>
-        <span class="hero-emoji" id="heroEmoji" aria-hidden="true">🕐</span>
         <h1 class="hero-title">Your account's in the queue.</h1>
         <p class="hero-sub">
-          The admin is <em>definitely</em> reviewing this right now and <em>absolutely</em> not watching YouTube.<br>
+          The admin is reviewing your account details right now.<br>
           Hang tight — we'll notify you the second you're in!
         </p>
 
@@ -512,7 +511,7 @@
             <div class="q-step-label">Received</div>
           </div>
           <div class="q-step active">
-            <div class="q-step-circle">⏳</div>
+            <div class="q-step-circle">3</div>
             <div class="q-step-label">Reviewing</div>
           </div>
           <div class="q-step">
@@ -541,8 +540,8 @@
 
         <div class="joke-footer">
           <div class="joke-rating">
-            <button class="rating-btn" id="rateUp" title="Good one">😂 Ha!</button>
-            <button class="rating-btn" id="rateDn" title="Too dark">🙈 Too dark</button>
+            <button class="rating-btn" id="rateUp" title="Good one">Ha!</button>
+            <button class="rating-btn" id="rateDn" title="Too dark">Too dark</button>
           </div>
           <button class="btn-next-joke" id="nextJokeBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.13"/></svg>
@@ -555,13 +554,11 @@
       <div class="status-panel">
         <div class="status-row">
           <div class="status-label">
-            <span class="status-label-icon">💬</span>
             Admin Simulation
           </div>
         </div>
         <div class="roast-box" id="roastBox">
-          <span class="roast-icon">🤔</span>
-          <span id="roastText">Admin is squinting very hard at your register number right now…</span>
+          <span id="roastText">Admin is reviewing your register number right now...</span>
         </div>
       </div>
 
@@ -599,37 +596,24 @@
       toastTimer = setTimeout(() => { el.className = ''; }, duration);
     }
 
-    // ── Rotating hero emoji ───────────────────────────────────
-    const emojis = ['🕐','🕑','🕒','🕓','🕔','🕕','🕖','🕗','🕘','🕙','🕚','🕛'];
-    let emojiIdx = 0;
-    setInterval(() => {
-      emojiIdx = (emojiIdx + 1) % emojis.length;
-      $('heroEmoji').textContent = emojis[emojiIdx];
-    }, 1000);
-
-    // ── Roast messages ────────────────────────────────────────
+    // ── Status messages ──────────────────────────────────────
     const roasts = [
-      { icon: '🤔', text: 'Admin is squinting very hard at your register number right now…' },
-      { icon: '☕', text: 'First coffee, then your approval. Admin has priorities.' },
-      { icon: '📋', text: 'Your form was filed. Under a pile of other forms. Progress!' },
-      { icon: '🎲', text: 'Fun fact: Your approval odds increase 0% each time you refresh.' },
-      { icon: '🔍', text: 'Admin searched for your name. Got distracted by a meme. Back soon.' },
-      { icon: '🐌', text: 'Processing… in geological time. Only 3–4 more eons!' },
-      { icon: '🎸', text: 'Admin is doing a quick guitar solo before approving. For morale.' },
-      { icon: '📺', text: '"Definitely not watching YouTube." — Admin, probably.' },
-      { icon: '🎯', text: 'Your application has been placed on the urgent-ish priority list.' },
-      { icon: '🧃', text: 'Admin took a juice box break. They deserved it, honestly.' },
+      { text: 'Admin is reviewing your register number right now...' },
+      { text: 'Reviewing application credentials and department assignment.' },
+      { text: 'Verifying student account registration details.' },
+      { text: 'Account pending administrative sign-off.' },
+      { text: 'Checking verification records...' }
     ];
     let roastIdx = 0;
     const roastBox = $('roastBox');
     const roastText = $('roastText');
 
     function cycleRoast() {
+      if (!roastBox || !roastText) return;
       roastBox.classList.add('fading');
       setTimeout(() => {
         roastIdx = (roastIdx + 1) % roasts.length;
         const r = roasts[roastIdx];
-        roastBox.querySelector('.roast-icon').textContent = r.icon;
         roastText.textContent = r.text;
         roastBox.classList.remove('fading');
       }, 250);

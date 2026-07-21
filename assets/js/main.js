@@ -3,22 +3,30 @@
  */
 
 // Helper to make API requests with credentials (cookies)
-async function apiCall(url, options = {}) {
+async function apiCall(url, options = {}, optionalBody = null) {
+  let opts = options;
+  if (typeof options === 'string') {
+    opts = {
+      method: options,
+      body: optionalBody
+    };
+  }
+
   const defaultHeaders = {
     'Content-Type': 'application/json',
   };
 
   const config = {
-    method: options.method || 'GET',
+    method: opts.method || 'GET',
     headers: {
       ...defaultHeaders,
-      ...options.headers,
+      ...opts.headers,
     },
     credentials: 'include', // Crucial for sending and receiving HttpOnly cookies
   };
 
-  if (options.body) {
-    config.body = JSON.stringify(options.body);
+  if (opts.body) {
+    config.body = typeof opts.body === 'string' ? opts.body : JSON.stringify(opts.body);
   }
 
   try {

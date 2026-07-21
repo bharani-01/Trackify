@@ -1,0 +1,15 @@
+id,user_id,minimum_attendance,theme,notifications,daily_reminders,email_timer,low_attendance_warnings
+3d1b8b6a-6e92-4113-a428-beaa2cbfa29b,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,80,light,true,true,18:00,true
+d0a53b06-2481-4861-9fb0-aa3869cea6de,18d61081-d3de-4ace-9910-bd077d9211c9,80,light,true,true,18:00,true
+98249f0a-734b-4d6e-9af0-5aafa6e1751b,a46113b2-b8bb-4498-9d23-89c29d559d00,80,light,true,true,18:00,true
+cde905df-a7af-4a1a-b47e-4f908af2b773,c5e46aab-8c7f-450c-b381-90a98f7b00ef,80,light,true,true,18:00,true
+5c76ee03-799d-4167-baab-3790ff958b47,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,80,light,true,true,18:00,true
+802517c3-caf8-41ed-a7c3-b0878c917b30,a7fcea66-7f01-442d-8e78-7aa530d326fd,75,light,true,true,18:00,true
+e45ac2dd-5217-4d54-abc8-4732838fbe2e,11d8b1b0-f602-49f8-8373-1cc102adba4c,75,light,true,true,18:00,true
+c2b8837c-95fa-4086-b3ac-650af7e9fce0,37759354-d6f9-4226-8e95-8c0d3fa88bb2,75,light,true,true,18:00,true
+91d0b49f-69f1-48d8-8d8f-bd88de671b85,a734d53f-2da4-4304-a488-3a53d7fcb3ff,75,light,true,true,18:00,true
+e64cfc5a-e3f9-4455-bd0e-d2e28b122fdd,28407805-812d-4952-aaee-0ddb18697e85,85,light,true,true,18:00,true
+421b3c49-8b49-446e-8e87-07a6a62fb2f5,0db74300-755a-4700-ad0c-7736f8f434a4,80,light,true,true,18:00,true
+686923c2-4b4b-4907-bdd8-ce8849860fbe,7fbc691b-e49b-4dfd-a242-8189df61ba40,80,light,true,true,18:00,true
+c43b966b-88cb-4f53-874b-2ac06b36793d,d2b75637-ca0f-4886-b38e-622eee3277af,80,light,true,true,18:00,true
+75fe315c-153f-4c57-aa15-bb08041ec7ce,65063158-a019-4bc7-adfe-7662cab0a6db,80,light,true,true,18:00,true

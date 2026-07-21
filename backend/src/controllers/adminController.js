@@ -148,16 +148,17 @@ const getDashboardStats = async (req, res) => {
  */
 const getMasterSubjects = async (req, res) => {
   const { department, semester } = req.query;
+  const parsedSem = parseInt(semester, 10);
 
-  if (!department || !semester) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please provide department and semester'
+  if (!department || !semester || isNaN(parsedSem)) {
+    return res.status(200).json({
+      success: true,
+      subjects: []
     });
   }
 
   try {
-    const subjects = await adminRepository.getMasterSubjects(department, semester);
+    const subjects = await adminRepository.getMasterSubjects(department, parsedSem);
     return res.status(200).json({
       success: true,
       subjects
@@ -241,16 +242,17 @@ const deleteMasterSubject = async (req, res) => {
  */
 const getMasterTimetable = async (req, res) => {
   const { department, semester } = req.query;
+  const parsedSem = parseInt(semester, 10);
 
-  if (!department || !semester) {
-    return res.status(400).json({
-      success: false,
-      message: 'Please provide department and semester'
+  if (!department || !semester || isNaN(parsedSem)) {
+    return res.status(200).json({
+      success: true,
+      timetable: []
     });
   }
 
   try {
-    const timetable = await adminRepository.getMasterTimetable(department, semester);
+    const timetable = await adminRepository.getMasterTimetable(department, parsedSem);
     return res.status(200).json({
       success: true,
       timetable

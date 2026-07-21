@@ -1,0 +1,201 @@
+id,code,subject_code,name,subject_name,department,department_id,semester,color,credits,total_periods,user_id,created_at
+b47bbb5a-2456-4809-aea8-9988529da10a,CS301-S1,CS301-S1,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,1,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+9709fd7e-4752-435d-89d1-4cdd6f398190,CS302-S1,CS302-S1,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+46ba1932-22c8-430a-bb9d-336ad7ffe9ad,CS303-S1,CS303-S1,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+e861c22e-feff-494b-a7f6-31ecce2a3e5b,CS304-S1,CS304-S1,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+e09d57ba-b52e-440d-8eae-236e3d720320,CS305-S1,CS305-S1,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,1,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+4655dae5-a129-4b45-b20b-383da9922a59,CS301-S2,CS301-S2,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,2,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+613e32fc-bcba-41af-b73f-0834588d87b2,CS302-S2,CS302-S2,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+6d894afb-8359-43bc-b58c-1d6891e8c12f,CS303-S2,CS303-S2,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+35b93e4f-df9c-47fc-b335-986a10a416cb,CS304-S2,CS304-S2,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+a332fab5-d6d0-41ec-b341-f2ac2c7d8f2e,CS305-S2,CS305-S2,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,2,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+ae98622d-3326-44e0-8086-ce5f843ae309,CS301-S3,CS301-S3,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,3,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+2eeb7c67-69d2-47e9-bcae-3d6089483a0a,CS302-S3,CS302-S3,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+0e38c99b-c078-455f-87d1-2520f5925722,CS303-S3,CS303-S3,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+bdaa3f81-0fbc-4b63-9799-47536c3973b9,CS304-S3,CS304-S3,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+71a032de-7432-4289-bec2-310a458ce559,CS305-S3,CS305-S3,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,3,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+1ecb624f-14b6-4c61-93d4-43523777c1c9,CS301-S4,CS301-S4,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,4,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+8f328f0c-c411-489b-9504-525993163446,CS302-S4,CS302-S4,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7451a1fd-8108-4bfe-a9df-9f15ce5d4dc6,CS303-S4,CS303-S4,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+3d8a5f34-0839-45fe-81f2-b44b2e211121,CS304-S4,CS304-S4,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ce2b8b98-865d-4c79-89c5-e758dc2122f0,CS305-S4,CS305-S4,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,4,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+67ba2543-ecb9-4a8d-9fc5-563e80205d1d,CS301-S5,CS301-S5,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,5,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+54186598-1fc4-457d-852a-53e3961c6552,CS302-S5,CS302-S5,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+22b7a8d6-1d08-4e90-aea0-9d8b926cee2c,CS303-S5,CS303-S5,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+4fbb191b-cfe3-4639-99a4-1cc70416530b,CS304-S5,CS304-S5,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+99d867d4-f59b-4b43-bcfe-917a6c1eb177,CS305-S5,CS305-S5,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,5,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+728daaee-c9ed-4657-9b72-faa116bc9175,CS301-S6,CS301-S6,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,6,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+5c641d67-2732-471e-affe-db36e0904f4d,CS302-S6,CS302-S6,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+8431836f-3882-402c-8075-14c7f21f6f1b,CS303-S6,CS303-S6,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+a3dddf20-1167-40cd-809b-d9f3cf4c481f,CS304-S6,CS304-S6,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+02696263-9a46-40ed-8169-97bee016d7a3,CS305-S6,CS305-S6,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,6,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+d80d65a6-fab7-403b-af9a-9c7daf73af0c,CS301-S7,CS301-S7,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,7,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+8e249e39-7f53-4a74-aa58-9bada740028a,CS302-S7,CS302-S7,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+53bbd2cd-d35b-40a3-893a-b273b0b48682,CS303-S7,CS303-S7,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+6e96ca42-edb5-4eef-a727-1577d7cf4092,CS304-S7,CS304-S7,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+b5175e28-3166-4494-a67e-965bd4620661,CS305-S7,CS305-S7,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,7,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+383fb8b1-ee8a-4a08-ab7f-e6ba313d404d,CS301-S8,CS301-S8,Data Structures & Algorithms,Data Structures & Algorithms,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,8,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+377cf281-60aa-43ed-96aa-a01ab1fdb4ab,CS302-S8,CS302-S8,Database Management Systems,Database Management Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+03f42e6d-6e8f-4340-80b7-2de41b084549,CS303-S8,CS303-S8,Operating Systems,Operating Systems,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+b4fd407e-0cbc-47b9-a19a-9a275dda26cd,CS304-S8,CS304-S8,Computer Networks,Computer Networks,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d37874eb-df82-4751-a548-ff7caff9cd84,CS305-S8,CS305-S8,Web Technology Lab,Web Technology Lab,CSE,c3c1a8d8-ca97-4499-b728-3331d505079f,8,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+b2d1fd22-4fd7-459c-94c2-be79f7a43947,EC301-S1,EC301-S1,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,1,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+09add080-23c1-456d-89cc-b4877bf3019c,EC302-S1,EC302-S1,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+14939217-3a2b-43d6-9fc5-da49343aafe9,EC303-S1,EC303-S1,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+781664a6-9236-467b-99a1-5622cbc543c3,EC304-S1,EC304-S1,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5a6509db-1ad8-4933-8d20-444970f2c617,EC305-S1,EC305-S1,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,1,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+814c85fd-0602-461a-b036-fd6b6452c47c,EC301-S2,EC301-S2,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,2,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+45ef1c0c-a8c1-49cd-8447-591a45041d00,EC302-S2,EC302-S2,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d1918b5c-0302-4d6e-ab10-470e375835a0,EC303-S2,EC303-S2,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+2890df7d-9419-4503-9484-54468599a013,EC304-S2,EC304-S2,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+85eaf467-8dd2-4633-8ff8-1375387eb171,EC305-S2,EC305-S2,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,2,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+ff5d64b7-9154-4112-b968-6ee118c12fe8,EC301-S3,EC301-S3,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,3,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+4ab84cb5-2e99-471b-b320-202a6972e6b5,EC302-S3,EC302-S3,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d48128a2-420d-4be2-8f48-90096c46a38a,EC303-S3,EC303-S3,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+70b272ac-06fb-4ced-a43f-96ce1fb4adfc,EC304-S3,EC304-S3,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+a1af193b-ba1e-447f-a16c-73c243d03a87,EC305-S3,EC305-S3,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,3,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+955a7c2c-91bb-4c00-a3bb-fe3e4d0813f6,EC301-S4,EC301-S4,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,4,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+1c23d22d-9b1d-47f7-9eff-1066a4a97935,EC302-S4,EC302-S4,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+e17bdb13-614a-41f0-83b1-11ab92e62313,EC303-S4,EC303-S4,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+89720cfd-1db1-49f2-9e13-7de3f43a101d,EC304-S4,EC304-S4,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+dad8652d-6fdd-419b-b5e0-0b724208f0b4,EC305-S4,EC305-S4,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,4,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+dffe103d-a63c-4d40-abb3-4324dff85352,EC301-S5,EC301-S5,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,5,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+d9ab38f5-638c-4a68-8e86-ab137ef937a2,EC302-S5,EC302-S5,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+44d6955a-b80b-44c1-9854-533abe6ce018,EC303-S5,EC303-S5,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5d9e22cd-27f4-4c25-a2cb-4e1ca0022d0a,EC304-S5,EC304-S5,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+26537ae5-b569-4812-98e8-20df61b832c2,EC305-S5,EC305-S5,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,5,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+22bf8b32-7b2e-4f56-a26c-1ccc8e348a34,EC301-S6,EC301-S6,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,6,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+26425fb5-4817-44bb-a905-ee65d447336b,EC302-S6,EC302-S6,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7b95a768-827c-4ed2-9997-fb24e8df97db,EC303-S6,EC303-S6,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+4f53986b-81fb-4cbc-b833-a95e48dd53be,EC304-S6,EC304-S6,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+deec9a4f-ced0-4ec9-8918-4f545a2945a6,EC305-S6,EC305-S6,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,6,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+29c987c2-8b72-47a1-ba23-bf9353931db1,EC301-S7,EC301-S7,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,7,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+e501d22d-98e3-4b87-bf4a-f43b1fae6138,EC302-S7,EC302-S7,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+fc266889-d38e-43f6-8b8e-bd31e91dd8a2,EC303-S7,EC303-S7,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+0d6e1764-5c3e-4251-b8e3-fec828969a73,EC304-S7,EC304-S7,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+eacd1829-13a9-4089-99e0-96635d9d4760,EC305-S7,EC305-S7,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,7,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+83fe5f55-d8d8-44d7-9aef-92d023e03f9f,EC301-S8,EC301-S8,Digital Signal Processing,Digital Signal Processing,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,8,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+51701bb3-14c2-448d-b3ca-656c533dee4e,EC302-S8,EC302-S8,VLSI Design,VLSI Design,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+6068ccc1-241f-41cc-878c-d5fe4478e062,EC303-S8,EC303-S8,Microcontrollers & Embedded Systems,Microcontrollers & Embedded Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+1eeaca43-c36b-4dd7-8ac1-04ea80e4e4ed,EC304-S8,EC304-S8,Signals & Systems,Signals & Systems,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ac029438-7e3c-47b3-a6ba-abe3ac494487,EC305-S8,EC305-S8,Communication Engineering Lab,Communication Engineering Lab,ECE,09c3a0df-d76f-44db-8fdf-2c773592de4a,8,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+33d5b531-107b-4234-9d7b-d05049cc2db5,ME301-S1,ME301-S1,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,1,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+ff01f5a1-ceec-48cc-a3eb-ebd0a4562b33,ME302-S1,ME302-S1,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+c2f572b2-e70b-4656-9cc8-e1326d237573,ME303-S1,ME303-S1,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+9cdc60f4-12fc-4370-94a3-0eb623e055b0,ME304-S1,ME304-S1,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+06d98e83-8cf7-44a4-975f-7a546dcd0517,ME305-S1,ME305-S1,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,1,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+4be3440d-8c18-4903-a496-07fee51d0f0a,ME301-S2,ME301-S2,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,2,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+a16d4ee4-6174-490d-843a-80ad680099b6,ME302-S2,ME302-S2,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7d485be5-c393-4f9d-9690-17f7f7bc8467,ME303-S2,ME303-S2,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ab0581a5-10d0-45ad-8485-ec4368109e50,ME304-S2,ME304-S2,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+6522876b-9b26-4f7e-8cb9-e573211ecca1,ME305-S2,ME305-S2,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,2,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+8d049396-0adc-4414-a992-af12fa65806a,ME301-S3,ME301-S3,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,3,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+74593e9d-bcb1-4927-b15e-2b9c8774bfee,ME302-S3,ME302-S3,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+fed12846-78d4-4c28-bcb9-6959b4651b97,ME303-S3,ME303-S3,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+29e49ff6-9018-4b5a-97e9-fa7b0cb3e734,ME304-S3,ME304-S3,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ce83d82a-1431-49d1-b663-5660d6ebfd5a,ME305-S3,ME305-S3,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,3,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+b0d7bcc2-12b5-41e1-bc69-ba16f58a6c65,ME301-S4,ME301-S4,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,4,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+d6be3814-6e13-42d1-8567-874fe1080cf5,ME302-S4,ME302-S4,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+4109b069-cd19-493e-a277-95defdc22790,ME303-S4,ME303-S4,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5eab1be3-dff9-419f-82e1-28f6801a0b25,ME304-S4,ME304-S4,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+2b0f7811-caf2-480c-b6f3-18918809dbde,ME305-S4,ME305-S4,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,4,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+eb41dbc4-76e4-4b62-a600-275537b2bf65,ME301-S5,ME301-S5,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,5,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+2063760c-b39a-4a43-a945-87d6cd313269,ME302-S5,ME302-S5,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+c0c58954-542f-43b7-bbce-669246d6d82b,ME303-S5,ME303-S5,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7acdafdd-34b0-4b18-845d-8eabbec60e56,ME304-S5,ME304-S5,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+868f8301-665f-4f65-b64a-f165b4a68c6e,ME305-S5,ME305-S5,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,5,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+301aa7d2-8367-4268-9355-464330612b75,ME301-S6,ME301-S6,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,6,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+96694fe0-09e2-40ec-b440-676556280611,ME302-S6,ME302-S6,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+16dfbc19-8db9-4cdc-8d7f-fda8723c3efd,ME303-S6,ME303-S6,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+123374ad-d0ae-4c42-9e93-0182122aa3f3,ME304-S6,ME304-S6,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+60a9bffa-3d6f-4e39-adf1-049eae7c2f15,ME305-S6,ME305-S6,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,6,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+9af19c49-5bed-45c3-85e4-affb647a4dbe,ME301-S7,ME301-S7,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,7,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+d5a46408-bcb7-4d35-beac-1fa84a273dd1,ME302-S7,ME302-S7,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+2bdb2546-d29a-437e-98ce-1cd0317e3de0,ME303-S7,ME303-S7,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+e6788baa-48cc-4d95-b8be-682e34a9cf31,ME304-S7,ME304-S7,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+56ecd3cd-e698-40b3-b93a-24c7b2a14007,ME305-S7,ME305-S7,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,7,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+e3563475-324b-4f49-8409-dc995e59ecfe,ME301-S8,ME301-S8,Thermodynamics & Heat Transfer,Thermodynamics & Heat Transfer,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,8,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+7b564cd1-fa7e-46f0-9ef2-d591128cc7b6,ME302-S8,ME302-S8,Fluid Mechanics & Machinery,Fluid Mechanics & Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+2f5f18f4-e3ff-4f6f-b70c-ed5ef3f7b35e,ME303-S8,ME303-S8,Kinematics of Machinery,Kinematics of Machinery,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+cf9c0dde-3381-4d24-9331-768a80f6500d,ME304-S8,ME304-S8,Manufacturing Processes,Manufacturing Processes,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+356da39b-9f58-438a-af74-f84b16b2a6e2,ME305-S8,ME305-S8,CAD/CAM Lab,CAD/CAM Lab,MECH,0ec99bc0-5dea-409d-8c1a-3420280d4e09,8,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+4074379e-35db-4d0c-8898-4f6752b6c7ca,EE301-S1,EE301-S1,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,1,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+11b914b6-15c6-43dd-a721-0ea7820bb113,EE302-S1,EE302-S1,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+11cefe6f-e4f9-4856-8a0d-e8df50cc46a0,EE303-S1,EE303-S1,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5fd72d2f-3bdd-4a6b-ae83-06b289bef3d7,EE304-S1,EE304-S1,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+aab53fc1-53e3-4b6c-94a6-61adf57f2fb5,EE305-S1,EE305-S1,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,1,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+2f37f127-969d-41bf-aed9-efab85adfd9b,EE301-S2,EE301-S2,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,2,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+8103c15f-9827-4b80-90bc-642b0c4a540a,EE302-S2,EE302-S2,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5cabfb24-98ff-4f0d-b574-b0b57d210581,EE303-S2,EE303-S2,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+dc1760ba-c057-4bf5-9b46-17d2c3c6af7c,EE304-S2,EE304-S2,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+48ef29f0-d6a1-4176-9d84-d343b07ba96f,EE305-S2,EE305-S2,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,2,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+ea33bad3-ec62-4848-8dd9-df7b4a983fb7,EE301-S3,EE301-S3,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,3,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+1c2d14f3-9b4b-4321-917e-540c83aa9632,EE302-S3,EE302-S3,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+b4f0af85-39cb-45c3-baa1-383d79dd6cbe,EE303-S3,EE303-S3,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+f06750e6-dd7c-4292-bd11-32f2f1b8a7a6,EE304-S3,EE304-S3,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d9ed66af-ad39-44dd-99ba-524fd439cd36,EE305-S3,EE305-S3,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,3,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+83cd1f3a-eb08-4d77-a431-98828787c62a,EE301-S4,EE301-S4,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,4,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+982846f2-8152-4a95-8f9e-4c2adcb3a6a7,EE302-S4,EE302-S4,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+445664ac-0eb7-4204-bcca-f30645773b9b,EE303-S4,EE303-S4,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+744eb370-ab45-4a2b-8bcd-dc304aead0b4,EE304-S4,EE304-S4,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+a8c216fe-0112-41a3-b142-33f85347e499,EE305-S4,EE305-S4,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,4,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+52c2fd0b-5c57-4234-a1b9-b84cc0c26564,EE301-S5,EE301-S5,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,5,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+91ab5225-3f52-4606-8e7c-7d1447f13679,EE302-S5,EE302-S5,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+c72d5283-b788-43a2-832f-5b5ed7211146,EE303-S5,EE303-S5,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ef13cee2-1e68-4a3e-a5db-3974f3291b76,EE304-S5,EE304-S5,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7f54c13d-3653-4782-b8ad-0ed3f84e5896,EE305-S5,EE305-S5,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,5,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+5b32aecb-c146-4c79-b0bc-5215476124d6,EE301-S6,EE301-S6,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,6,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+15e465f3-96e2-4b0b-b24d-945f06b4576d,EE302-S6,EE302-S6,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+3815fb83-2e3d-4c74-bf00-3940468bbcb7,EE303-S6,EE303-S6,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+8e9e82ae-a1ad-4ce5-b14a-f983078e05b5,EE304-S6,EE304-S6,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+cbce29e8-b986-4f19-ad6b-a2e46adc4e04,EE305-S6,EE305-S6,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,6,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+a498e764-a395-4ac8-95af-79eeeee74c46,EE301-S7,EE301-S7,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,7,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+f0ac1570-9cac-4128-bb56-29a9e38362cd,EE302-S7,EE302-S7,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+0be6c1c8-ba7e-4897-a647-f3549c511f4e,EE303-S7,EE303-S7,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+8da8ae27-2579-4180-b3ee-1f7425967fb7,EE304-S7,EE304-S7,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+25056e8f-cf92-4002-ac4a-18b8833df50e,EE305-S7,EE305-S7,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,7,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+26e9f097-fbb5-4c86-8d42-0ad6065a7cdb,EE301-S8,EE301-S8,Electrical Machines II,Electrical Machines II,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,8,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+704c51c6-1c9f-48ae-9156-5e423a5449d9,EE302-S8,EE302-S8,Power System Analysis,Power System Analysis,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+3b4d128d-c49a-4d0f-b1e5-70d66f63e578,EE303-S8,EE303-S8,Control Systems,Control Systems,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+686e936c-c6e4-4cc4-9921-0ce0dd6fd830,EE304-S8,EE304-S8,Power Electronics,Power Electronics,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+57e85e76-328c-4183-b128-a25d9be5a749,EE305-S8,EE305-S8,Electrical Drives Lab,Electrical Drives Lab,EEE,5edb4c2d-a119-4bb2-b64a-8cac988bcee9,8,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+9fd4bd40-c48a-4579-912d-c9f97ae9229f,IT301-S1,IT301-S1,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,1,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+4efa9a89-fb1c-4317-97b4-2c8b378fe796,IT302-S1,IT302-S1,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d7cc4bf9-0e47-4cd6-b6be-142611f16a74,IT303-S1,IT303-S1,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+cd5d88a0-4141-49eb-87ec-8b61c491cbf0,IT304-S1,IT304-S1,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,1,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+17faf301-5267-4d5c-b84a-e0115a197ff2,IT305-S1,IT305-S1,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,1,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+6842e482-729b-4919-ac1c-d7c163124e56,IT301-S2,IT301-S2,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,2,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+7b4f5b5d-e1dd-4cd2-933c-c32029b29bb6,IT302-S2,IT302-S2,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+0df3b39c-f1a5-4bc7-b365-df5bd0630ebb,IT303-S2,IT303-S2,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+09018c53-5d6e-43e9-8b38-beec922defdf,IT304-S2,IT304-S2,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,2,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+42c50666-467c-447c-8293-3f2e371407a5,IT305-S2,IT305-S2,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,2,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+d175ff4a-1428-4261-8b84-c60aae3b4bcf,IT301-S3,IT301-S3,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,3,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+6cb48cd5-801a-4880-a144-a82ff5a32830,IT302-S3,IT302-S3,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+17b20eee-4c31-4297-9bf6-108f28d2e971,IT303-S3,IT303-S3,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+cc9c3f12-90db-478c-a7e7-62923f1918f3,IT304-S3,IT304-S3,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,3,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+1835b8e6-031f-41b6-96ab-45d95ee20e18,IT305-S3,IT305-S3,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,3,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+ef27c667-f3ce-4bee-b873-27d19227e35b,IT301-S4,IT301-S4,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,4,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+1b4a5dc7-7a05-47f5-92c9-a779a8242056,IT302-S4,IT302-S4,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+7ac805be-0749-4506-ab0a-ca2edba904d6,IT303-S4,IT303-S4,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+a3a05640-b8d7-4d2d-aec4-3d5da2679f48,IT304-S4,IT304-S4,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,4,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+5d72ecbb-d9c7-40a1-9dca-34b8b96ea144,IT305-S4,IT305-S4,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,4,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+21915b6e-b273-413f-a323-3926b32d305e,IT301-S5,IT301-S5,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,5,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+ab0cc6ac-7a11-4574-9f74-d6adfaf8ff9e,IT302-S5,IT302-S5,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+d2e7c08d-0110-4208-98d3-11fb16916923,IT303-S5,IT303-S5,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ca09a73c-9d21-4a7f-8a6f-fc1d3a6f2555,IT304-S5,IT304-S5,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,5,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+11f238ff-5220-4d8f-bdac-f8b465ba9e1f,IT305-S5,IT305-S5,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,5,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+726299ed-4f8f-4806-a867-23fe9b3589e2,IT301-S6,IT301-S6,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,6,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+4bc33ce6-02e1-42f4-bb56-05c64672ede6,IT302-S6,IT302-S6,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+3f45a0e5-f019-4bb5-90f7-65fce7265b31,IT303-S6,IT303-S6,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+fe71d4d4-e9fe-487e-972a-20747a4f92fc,IT304-S6,IT304-S6,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,6,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+971c6335-37ec-4167-9ad5-c2287a717e2a,IT305-S6,IT305-S6,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,6,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+a8906710-74da-4814-85ca-0f3ef9f039c3,IT301-S7,IT301-S7,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,7,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+16ab88e4-a984-4c90-8d9d-21e1b31283ed,IT302-S7,IT302-S7,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+3f88be81-74a9-40ef-ac47-289b0672306d,IT303-S7,IT303-S7,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+67602d95-abd1-4cd6-9873-6977150a178a,IT304-S7,IT304-S7,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,7,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+ed70b9ba-a334-4382-ae0b-40ed6ab4e905,IT305-S7,IT305-S7,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,7,#3b82f6,2,45,,2026-07-21T17:36:54.868Z
+daa0ea85-5349-4586-ac50-c84e6a3075d3,IT301-S8,IT301-S8,Object Oriented Software Design,Object Oriented Software Design,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,8,#3b82f6,4,45,,2026-07-21T17:36:54.868Z
+7c65d04f-ded2-4e3d-a403-249f51f3078a,IT302-S8,IT302-S8,Cloud Computing Architecture,Cloud Computing Architecture,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+f9c325f3-5aec-4328-8cac-119870cfaf79,IT303-S8,IT303-S8,Information Security & Cryptography,Information Security & Cryptography,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+50253bed-5fdf-4156-b8bd-f6a10516d22e,IT304-S8,IT304-S8,Artificial Intelligence Basics,Artificial Intelligence Basics,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,8,#3b82f6,3,45,,2026-07-21T17:36:54.868Z
+c5dba188-437b-4ce1-9cde-94268dfa1e6f,IT305-S8,IT305-S8,Full Stack Development Lab,Full Stack Development Lab,IT,655acbbb-248b-4921-8f9e-f5dcd2f69130,8,#3b82f6,2,45,,2026-07-21T17:36:54.868Z

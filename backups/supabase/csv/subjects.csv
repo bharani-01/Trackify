@@ -1,0 +1,211 @@
+id,user_id,subject_code,subject_name,credits,color,department,semester,created_at,total_periods
+bcfa643a-f890-4eea-90ca-9ea91f079bc3,,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+5f1c51b5-0c4e-46da-b214-a3d3528b6602,,CSE23CL301,Computer Networks Laboratory,2,#10b981,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+dc9eb394-88af-497d-9abe-6082ad94c781,,CSE23AE301,Professional Competency Development - V,2,#f59e0b,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+b7f32899-c477-408e-aab5-bbf99ff7c5c3,,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+4ea199b4-9c97-4d4b-b7ac-e190c497c051,,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+11e0cb10-4a83-40fd-913c-964821094b4c,,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+1a7dc879-c159-447b-b31a-9500ce8984fa,,CYB23DEU02,Information Security,3,#14b8a6,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+5f224566-4b10-4b07-9346-42d3b60a7e79,,CYB23CT301,Cryptography and Network Security,4,#ef4444,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+79a9ba9c-f18d-4e6b-a73f-cb36751b9f57,,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+e5a10bad-1ef1-423e-af2b-ac5ed91d55e2,,CSE23CT301,Computer Networks,3,#f97316,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+59fb7f9f-3517-463f-bf90-2fa9a20a477c,,CLUB_ACT,Club Activity,1,#84cc16,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+74d1f9d2-b5f4-425f-8219-bd8a2acc4404,,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+a355428e-9cc9-4ee9-a8ff-903dc7810fc7,,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+c6a9bbd5-d5f4-4619-a995-70c71c5b1bdb,,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,E02,5,Thu Jul 16 2026 04:41:14 GMT+0530 (India Standard Time),45
+6b790bdc-2d2f-429d-a297-211aaa3030a6,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+30d3d8dc-27ec-4b58-89e6-3fc99e619af6,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+994bee8c-b2fe-4ba8-8f47-97cad914a8ea,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+7c5f606a-0552-4dc3-9c70-d9200935359b,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+dc218014-4942-4bbc-8326-db68dc458c0c,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+50f94abe-b865-4c83-8daa-fdb0252baa94,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+27cf3c3c-85f2-43a2-bcc9-7f6fdb10c7fe,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23DEU02,Information Security,3,#14b8a6,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+279d6256-1501-4c06-a558-b747144cf008,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+a88aecf3-eaf0-419b-91c3-cdf5455d5c17,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+414407ce-d2c2-4de5-be18-21c2f47cd814,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CSE23CT301,Computer Networks,3,#f97316,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+6c00d92e-ab39-4977-bb52-a976e21ff6b9,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+6b29430e-db63-486a-a662-342e68f1d15e,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+926fe88f-22c3-4ff0-8691-3b862e44ed50,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+12667c3e-ec9b-4d6e-81ff-4202d716d05a,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+6354d14c-9e87-4671-bf17-43e6f2a24c15,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+f8ce88a1-ae33-4103-9021-d8e13881017a,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+f5d2b172-ee7d-4e3b-86b6-2d83e8ab38c4,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+fe90a0d1-d32b-4f06-a4d8-8f80b4b43857,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+74bc5998-c4e5-4467-a891-f220c6dcab16,beecbdcf-fce7-44f6-89dd-5639fb1ee63e,CLUB_ACT,Club Activity,1,#84cc16,,,Thu Jul 16 2026 07:46:06 GMT+0530 (India Standard Time),45
+4a7f4069-8025-4e9c-9432-30e0c20e536a,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+f0af6a32-0afb-452c-a432-923bbfea1490,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23DEU02,Information Security,3,#14b8a6,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+ffedf79b-595d-4b06-9ed0-b8243d029dd1,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+42ec6cb2-af34-49cc-8480-f7b9ae014150,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+2fd64f51-4c28-455a-a24f-ee801660d98f,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CT301,Computer Networks,3,#f97316,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+01905e7c-b9c8-46fc-9e4a-12c4377073d8,18d61081-d3de-4ace-9910-bd077d9211c9,CLUB_ACT,Club Activity,1,#84cc16,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+3562fdc9-fcce-487f-85e0-f768151f8241,18d61081-d3de-4ace-9910-bd077d9211c9,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+f6ebba85-ddbc-4318-978a-2045270243d6,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+aebf1251-1db1-4ccd-b2ca-e21531ffe33c,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Thu Jul 16 2026 07:49:40 GMT+0530 (India Standard Time),45
+fb41f563-c8c6-40be-a7bf-e48b7c279680,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+6653afa1-5571-421b-9e59-55321f1d0c34,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+fb717a30-9d5e-40ee-a8dd-3dff496f6621,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+e06e4539-6655-4df8-82b6-829b5dd25632,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+d96acc35-4491-4ff5-b9a9-ef40e02169f1,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+06032d49-1eeb-489f-aa3f-cd32c203ede6,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+c1460ece-1d81-4393-a677-7cc5718f288d,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23DEU02,Information Security,3,#14b8a6,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+43a6a7a6-fd50-4a02-a20b-d4e2371ea42d,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+5e5c6000-9706-4ae1-97e5-87920c29d2af,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+bb681948-82b2-4711-afea-60f234ad91d0,18d61081-d3de-4ace-9910-bd077d9211c9,CSE23CT301,Computer Networks,3,#f97316,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+4c0d1530-0dd1-42ad-a24f-1cf3d42e9887,18d61081-d3de-4ace-9910-bd077d9211c9,CLUB_ACT,Club Activity,1,#84cc16,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+4cf2fe60-52bc-4fbd-a082-831ae266ebd0,18d61081-d3de-4ace-9910-bd077d9211c9,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+f548b49a-0f18-4483-8789-54ac9292b71f,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+ef13dd91-6098-4266-a2ab-75373228f67e,18d61081-d3de-4ace-9910-bd077d9211c9,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Thu Jul 16 2026 07:49:53 GMT+0530 (India Standard Time),45
+636fd237-5059-4f11-b06c-b2649796631d,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+4ae56f95-59fa-407a-b151-f09e060a20c2,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+50c8b02e-5492-41db-962e-5c93fcd71d33,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+e93343d7-22e5-4215-b259-14ec633cae32,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+1d903b90-eb7c-4cf1-a2b4-a8d60ad30402,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+e7fd4027-2f95-4dd8-af39-23ccccc227e6,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+98e0fa00-4378-494f-81cd-5f1aaf5421d6,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23DEU02,Information Security,3,#14b8a6,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+f63ea89c-6055-4190-8593-69284f2119fe,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+54c41faf-342d-41a3-a4fd-e31075b16f23,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+0f96b46f-e2d9-4436-a114-8c1e7379db99,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CSE23CT301,Computer Networks,3,#f97316,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+9336b1a3-258f-4fc1-943c-021e219b2b18,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CLUB_ACT,Club Activity,1,#84cc16,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+d6b83065-6733-4eb6-9a4a-0cec2d5c4173,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+edab0e5d-7649-465c-bc17-ef1db7858319,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+ab6b61d7-ff8a-43f5-bc4c-b86d9cc59600,f34b7f7b-30d8-49c6-9768-3a0ff80067ff,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Thu Jul 16 2026 14:07:23 GMT+0530 (India Standard Time),45
+9f03fd3d-d2a2-4361-b63f-1ba34d29bbe5,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+fefd21c9-81c2-4538-8249-c7695b552ce3,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+9b321998-20e3-4d86-bc7d-de395a711a90,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+6310ac59-00a6-44db-9498-4eabf33209d6,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+f7cfb66e-d824-4778-bc15-a0a07fd943c6,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+a2f6016d-ce68-41a4-a1ea-bd688622b2a9,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+e70d2bdc-a87f-45fd-8087-a29eaf17bb2e,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23DEU02,Information Security,3,#14b8a6,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+1afd624f-393c-4ec9-8e05-c4a7351f81fd,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+900153b8-a8c8-4f82-a440-122afac550e7,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+0c3844bd-b331-45f4-9536-b5d2fcdd37b5,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CSE23CT301,Computer Networks,3,#f97316,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+ef40ea71-db16-4940-afbc-73605537fab9,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CLUB_ACT,Club Activity,1,#84cc16,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+0b1446c5-78ba-447e-b58f-39e179697d3f,c5e46aab-8c7f-450c-b381-90a98f7b00ef,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+4504201a-022c-47bf-b141-3f1b73b5a977,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+d6fce91a-c06c-40be-adc0-fbcc9b6f8c65,c5e46aab-8c7f-450c-b381-90a98f7b00ef,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Thu Jul 16 2026 14:43:47 GMT+0530 (India Standard Time),45
+6d5ac654-8e34-4ff7-809a-32729e867493,65063158-a019-4bc7-adfe-7662cab0a6db,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+8c970883-19de-465a-b1d0-a50311dc659b,65063158-a019-4bc7-adfe-7662cab0a6db,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+3b1c7e35-491b-4ff2-b106-72df37560ed4,65063158-a019-4bc7-adfe-7662cab0a6db,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+76ba92a9-47c4-474d-a982-cd906b9fd598,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+d6286414-d35d-47cb-b48c-01abdefd9558,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+a454db8d-477d-443f-b2c4-c009a85387d6,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+48bbc30f-07fd-4bee-b538-d1954de59ed2,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23DEU02,Information Security,3,#14b8a6,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+cf94beca-e45b-4a80-ad39-0287cca3fdac,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+bcde4cbb-9ef8-42fc-b2c3-d61618f12deb,65063158-a019-4bc7-adfe-7662cab0a6db,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+78c4f139-2728-434f-8329-74dd242111e3,65063158-a019-4bc7-adfe-7662cab0a6db,CSE23CT301,Computer Networks,3,#f97316,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+abd3218d-9107-42b9-aafd-9a8a52815bdf,65063158-a019-4bc7-adfe-7662cab0a6db,CLUB_ACT,Club Activity,1,#84cc16,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+6bdd6a36-b280-4036-95e4-110199761dbc,65063158-a019-4bc7-adfe-7662cab0a6db,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+7ffa17de-3601-4a5d-b8eb-443f7f39db89,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+7ee8966b-6430-4010-b7ab-ccc7666311a6,65063158-a019-4bc7-adfe-7662cab0a6db,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Fri Jul 17 2026 15:42:32 GMT+0530 (India Standard Time),45
+fe5f9e58-1088-45a9-bfdf-fc8039119934,a46113b2-b8bb-4498-9d23-89c29d559d00,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+9ea89559-deec-42ca-97d8-3ad11e3a3922,a46113b2-b8bb-4498-9d23-89c29d559d00,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+de84e7fc-0656-4ba0-83a0-7a2c52fa3007,a46113b2-b8bb-4498-9d23-89c29d559d00,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+5b471020-4d34-4294-8441-c5d82df4daa2,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+0aa37113-c1d1-439b-aa29-2ee8e16c4de4,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+c606ee72-6070-4686-96e4-3683a68a5df8,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+7f4a7e05-db7d-4929-9568-dd56e4bf7375,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23DEU02,Information Security,3,#14b8a6,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+b0b6e8eb-ea89-4a83-9aca-ec9469cc64a9,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+58b37013-6bac-438b-a0be-376071de191b,a46113b2-b8bb-4498-9d23-89c29d559d00,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+65d90220-c7d9-4c0f-a544-5ab7daea523a,a46113b2-b8bb-4498-9d23-89c29d559d00,CSE23CT301,Computer Networks,3,#f97316,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+baa04277-08c0-473b-ba71-9c19c46ce8c8,a46113b2-b8bb-4498-9d23-89c29d559d00,CLUB_ACT,Club Activity,1,#84cc16,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+4f2f9702-6265-4603-966f-b9b53fd94621,a46113b2-b8bb-4498-9d23-89c29d559d00,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+4e1e87b4-7101-4a5d-8c15-61caddc35ffb,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+57d33bf5-4eb1-4b37-8dd9-78f740522f62,a46113b2-b8bb-4498-9d23-89c29d559d00,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Sat Jul 18 2026 03:26:34 GMT+0530 (India Standard Time),45
+f4561446-4fb8-4603-84ea-7860dd473249,a7fcea66-7f01-442d-8e78-7aa530d326fd,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+e8bd11a8-feaf-4ede-b97a-69c6d161137d,a7fcea66-7f01-442d-8e78-7aa530d326fd,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+e7122985-dbbd-4ce6-8abc-53425e3ddaf5,a7fcea66-7f01-442d-8e78-7aa530d326fd,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+346673ef-2d24-4c5f-9e29-c7aabf6ceb90,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+89042fe6-5c02-4288-89bd-61581cab2aa7,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+415e20db-7d9c-4552-8092-ded4a89fb93d,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+cf2c97a9-25b2-4420-acea-75908d678fd9,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23DEU02,Information Security,3,#14b8a6,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+a0296fe8-df2f-4906-8ebe-583e3ba1a947,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+680fd001-ef83-4ac6-a5d0-04278c39b19b,a7fcea66-7f01-442d-8e78-7aa530d326fd,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+3ffd7498-631e-4d9b-867e-c2d0fc8af776,a7fcea66-7f01-442d-8e78-7aa530d326fd,CSE23CT301,Computer Networks,3,#f97316,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+4d938a81-4646-4752-b06d-4ae538a8b7fc,a7fcea66-7f01-442d-8e78-7aa530d326fd,CLUB_ACT,Club Activity,1,#84cc16,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+bb995f08-12dd-4696-bf05-d4817a10bda6,a7fcea66-7f01-442d-8e78-7aa530d326fd,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+9683f4dd-2040-45e8-8e71-598871f11eba,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+a6014f15-f6fd-4b37-bee7-fd3982240b99,a7fcea66-7f01-442d-8e78-7aa530d326fd,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Sun Jul 19 2026 10:48:19 GMT+0530 (India Standard Time),45
+8ab36620-02f8-4c13-b5cc-c5ce22e29667,11d8b1b0-f602-49f8-8373-1cc102adba4c,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+356fff8d-b75b-4be4-86cf-cd257575ab81,11d8b1b0-f602-49f8-8373-1cc102adba4c,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+30bc8cae-f22c-4dfa-a78b-4b99e81ba4d2,11d8b1b0-f602-49f8-8373-1cc102adba4c,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+0183cd20-faf4-4d55-b5d3-ae07e43ab410,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+abc3b0ef-d6d0-4611-acce-97e9210dcdc5,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+c106199e-8d30-404e-8ed8-2b74fe81e8f7,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+714eb1e6-c294-4ada-accf-63c9e14eac8b,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23DEU02,Information Security,3,#14b8a6,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+a4c42f75-b61c-4fa1-b4a5-645d4be594f0,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+70de2b12-6df3-47bb-9823-a1f7c04d9f88,11d8b1b0-f602-49f8-8373-1cc102adba4c,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+739a6bb8-d428-4e80-a59e-213ded8500c3,11d8b1b0-f602-49f8-8373-1cc102adba4c,CSE23CT301,Computer Networks,3,#f97316,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+1147ab21-96ca-407d-961a-921dd70d6c4c,11d8b1b0-f602-49f8-8373-1cc102adba4c,CLUB_ACT,Club Activity,1,#84cc16,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+cbbd9bac-9137-4006-a066-07b99e6df128,11d8b1b0-f602-49f8-8373-1cc102adba4c,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+8ac3cc8e-5d96-4783-86b6-16baa431637b,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+7c727631-8a75-4835-838a-09fe07951fbd,11d8b1b0-f602-49f8-8373-1cc102adba4c,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Sun Jul 19 2026 10:48:24 GMT+0530 (India Standard Time),45
+01df7fdd-d283-40ac-b3c5-4bb66db35532,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+6414ea65-2fcd-42eb-8790-2783b0623cf1,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+3ba0e68e-8be5-49fe-834a-4fb116d9dba1,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+a40677a5-7965-4f2e-a00f-e02431fdfa88,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+384bbb84-5af9-4102-97c1-111d79ac6172,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+439d566f-c659-4954-a18e-194c6d9493fc,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+7486da0b-7478-49a4-a8e0-9e8c68e535c0,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23DEU02,Information Security,3,#14b8a6,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+a0496257-b315-446d-9293-7e05eb995ba0,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+7d2f48fb-145e-4e62-9d3b-123035b3c791,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+0b061df8-697f-4dd2-9a24-43b65afe9866,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CSE23CT301,Computer Networks,3,#f97316,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+52a0664a-81d3-4c95-9d26-0ea093bfdbf7,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CLUB_ACT,Club Activity,1,#84cc16,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+109a7596-5a80-430a-8d02-d2633ae92602,37759354-d6f9-4226-8e95-8c0d3fa88bb2,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+16d295bd-e762-400d-b95e-ee5683a68b05,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+767b36b1-b876-4f55-b3e4-7d0e6c2d0dde,37759354-d6f9-4226-8e95-8c0d3fa88bb2,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Mon Jul 20 2026 03:12:13 GMT+0530 (India Standard Time),45
+e8f08e8b-beb8-4d26-a520-5af066e64857,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+f7ba02a4-146e-4d75-a643-6c4423b17769,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+e55d4f63-30aa-46ba-9309-93a01eee0699,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+5b4e2359-bcb4-4346-8d42-178230828661,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+5b95c206-3c3a-42d2-94b3-08b91ceb4f96,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+47d534a6-b174-4415-aa70-3a0827d9f83d,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+d0b4e469-668e-4152-b684-bdaf522dadaa,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23DEU02,Information Security,3,#14b8a6,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+f7deb1bf-8cfc-496a-840f-eecff0d986b7,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+c302c9f6-d7ea-4124-b847-f8da3c9b58bf,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+a5b2e960-9d25-4b07-9e04-7f355d95bbad,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CSE23CT301,Computer Networks,3,#f97316,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+474b4fae-e640-46c1-bc35-0cab2c95469b,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CLUB_ACT,Club Activity,1,#84cc16,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+19bd81a0-0ed5-4302-8fa6-6347069872e0,a734d53f-2da4-4304-a488-3a53d7fcb3ff,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+fa71b8e3-5274-4fb4-9733-7fcb7299d61c,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+22ef2f63-6a15-4bfd-980e-7bb3d1b87b2e,a734d53f-2da4-4304-a488-3a53d7fcb3ff,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Mon Jul 20 2026 05:28:37 GMT+0530 (India Standard Time),45
+ed6c174c-d619-4ea9-ac41-904732ae4a6e,0db74300-755a-4700-ad0c-7736f8f434a4,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+077f1304-7285-400e-b0a3-c1a1b7ae936a,0db74300-755a-4700-ad0c-7736f8f434a4,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+64969516-3d37-4f8f-bfc6-37431bbccadf,0db74300-755a-4700-ad0c-7736f8f434a4,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+5cb315d1-bb78-4dc6-baa3-d22f514459c8,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+fb9522e0-1cbf-4291-a2ba-c196ad3b92b4,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+e1a71888-0b25-4ff4-93a2-c3d8ec017423,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+495889f3-4b5d-4a6a-8e24-759cb8827a09,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23DEU02,Information Security,3,#14b8a6,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+ee8dd7ad-1020-4f8a-8c21-dc01ef971e8b,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+0678537e-e99d-4104-8dbd-fc2a11f389d8,0db74300-755a-4700-ad0c-7736f8f434a4,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+2736e89a-dff9-4e07-a3bf-3477178d6844,0db74300-755a-4700-ad0c-7736f8f434a4,CSE23CT301,Computer Networks,3,#f97316,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+cc5b8b7b-0155-4c72-a9bd-425ec7495e83,0db74300-755a-4700-ad0c-7736f8f434a4,CLUB_ACT,Club Activity,1,#84cc16,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+5ceb232a-9b33-4358-8bc4-757a9fcfd856,0db74300-755a-4700-ad0c-7736f8f434a4,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+9f869bbb-0512-4594-a2e5-71d808139c2d,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+4a6ca4c3-7274-42df-bae7-93746f16c2cf,0db74300-755a-4700-ad0c-7736f8f434a4,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Mon Jul 20 2026 08:40:02 GMT+0530 (India Standard Time),45
+ca08ab7a-d637-4320-8998-b1e9750b9fcf,7fbc691b-e49b-4dfd-a242-8189df61ba40,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+1d5be251-a00b-455a-ba2f-715f7e2148ed,7fbc691b-e49b-4dfd-a242-8189df61ba40,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+aeb4b924-9203-40e2-bcb1-c7ef0781db08,7fbc691b-e49b-4dfd-a242-8189df61ba40,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+20ac5b29-1818-40dd-956a-3883e7458a64,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+816af5f0-14de-4913-b473-ee9731575315,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+cc40c20e-91f2-43c8-841d-b48c4529634f,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+4bb2ac79-5b72-4602-9c2a-36428563dd39,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23DEU02,Information Security,3,#14b8a6,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+dc9b7da7-fd9f-402c-bcd8-acc8d9d23bf1,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+424bceaf-6916-4577-8bb0-bb476233f54c,7fbc691b-e49b-4dfd-a242-8189df61ba40,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+9fec7480-7ecc-42a3-b865-958a3e073bab,7fbc691b-e49b-4dfd-a242-8189df61ba40,CSE23CT301,Computer Networks,3,#f97316,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+269878a8-ed30-455c-b19d-6100858b1d47,7fbc691b-e49b-4dfd-a242-8189df61ba40,CLUB_ACT,Club Activity,1,#84cc16,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+a497d3a8-0401-4043-8767-ef51e926b3ed,7fbc691b-e49b-4dfd-a242-8189df61ba40,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+60252667-2f04-4b7f-a437-8b8a6f528999,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+97fcc96d-9a99-423c-a8a9-13c0263dc27d,7fbc691b-e49b-4dfd-a242-8189df61ba40,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Mon Jul 20 2026 16:08:11 GMT+0530 (India Standard Time),45
+d861e543-b3a0-4391-9182-559b58d46a13,d2b75637-ca0f-4886-b38e-622eee3277af,CSE23AE302,Professional Coding Practice IV,2,#3b82f6,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+a4f6a304-faf5-41ac-9353-f4139e963509,d2b75637-ca0f-4886-b38e-622eee3277af,CSE23CL301,Computer Networks Laboratory,2,#10b981,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+2bb9719f-cce2-49d1-b740-937f13b5a759,d2b75637-ca0f-4886-b38e-622eee3277af,CSE23AE301,Professional Competency Development - V,2,#f59e0b,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+1fa0b4de-2eff-4eaf-babe-f07f1a754523,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23CT302,Machine Learning Cloud Services,3,#ec4899,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+2bbe145b-2d04-40b5-86ac-5d6036365c25,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23DLU02,Information Security Laboratory,2,#8b5cf6,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+39bf49ec-a8ba-403a-a5b3-b53783ae3fdf,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23CL302,Machine Learning Cloud Services Laboratory,2,#06b6d4,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+a7c07e9c-8457-4eb5-bf4a-0ebef303c151,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23DEU02,Information Security,3,#14b8a6,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+8073baed-1c3e-4821-8817-b3a6c24dd27a,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23CT301,Cryptography and Network Security,4,#ef4444,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+1cd3baf4-15ab-41bc-86de-51cc6ef4c50b,d2b75637-ca0f-4886-b38e-622eee3277af,CSE23CT302,Theory of Computation and Compiler Design,4,#6366f1,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+1cd13ef9-b5ff-481e-870d-40b6ba720f25,d2b75637-ca0f-4886-b38e-622eee3277af,CSE23CT301,Computer Networks,3,#f97316,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+6c4d096d-83cd-48af-b81d-275d8fcd0317,d2b75637-ca0f-4886-b38e-622eee3277af,CLUB_ACT,Club Activity,1,#84cc16,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+900e218d-baea-4684-9d08-29c8a183b763,d2b75637-ca0f-4886-b38e-622eee3277af,MENTOR_MEET,Mentor-Mentee Meeting,1,#6b7280,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+1537387e-4a54-4bfa-8f58-d04d1c773082,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23SLU07,LINUX Commands and UBUNTU OS,2,#a855f7,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45
+6bbd2953-084e-483b-9fbb-81e4ebb4e6c1,d2b75637-ca0f-4886-b38e-622eee3277af,CYB23CL301,Cryptography and Network Security Laboratory,2,#059669,,,Tue Jul 21 2026 10:16:27 GMT+0530 (India Standard Time),45

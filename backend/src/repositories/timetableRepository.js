@@ -1,7 +1,8 @@
 const db = require('../config/db');
 
 /**
- * Retrieve timetable slots for a specific student with subject details
+ * Retrieve pure department timetable slots for a specific student
+ * Maps student's department_id and semester to the department timetable
  * @param {string} userId 
  * @returns {Promise<Array>}
  */
@@ -9,30 +10,21 @@ const getByUserId = async (userId) => {
   const query = `
     SELECT 
       t.id,
-      COALESCE(s_personal.id, s_direct.id) AS subject_id,
+      t.subject_id,
       t.day,
       t.period,
       t.start_time,
       t.end_time,
       t.room,
-      COALESCE(s_personal.subject_name, s_direct.subject_name) AS subject_name,
-      COALESCE(s_personal.subject_code, s_direct.subject_code) AS subject_code,
-      COALESCE(s_personal.color, s_direct.color) AS color,
-      COALESCE(s_personal.credits, s_direct.credits) AS credits
-    FROM timetable t
-    LEFT JOIN subjects s_master ON t.subject_id = s_master.id AND t.user_id IS NULL
-    LEFT JOIN users u ON u.id = $1
-    LEFT JOIN subjects s_personal ON s_personal.user_id = u.id AND s_personal.subject_code = s_master.subject_code AND t.user_id IS NULL
-    LEFT JOIN subjects s_direct ON t.subject_id = s_direct.id AND t.user_id = u.id
-    WHERE (t.user_id = $1)
-       OR (t.user_id IS NULL 
-           AND t.department = u.department 
-           AND t.semester = u.semester
-           AND NOT EXISTS (
-             SELECT 1 FROM timetable t2 
-             WHERE t2.user_id = $1 AND t2.day = t.day AND t2.period = t.period
-           )
-       )
+      COALESCE(s.subject_name, s.name) AS subject_name,
+      COALESCE(s.subject_code, s.code) AS subject_code,
+      s.color,
+      s.credits
+    FROM users u
+    JOIN timetable t ON (t.department_id = u.department_id OR (u.department_id IS NULL AND t.department = u.department))
+                    AND t.semester = u.semester
+    LEFT JOIN subjects s ON t.subject_id = s.id
+    WHERE u.id = $1
     ORDER BY 
       CASE t.day
         WHEN 'Monday' THEN 1
@@ -50,19 +42,19 @@ const getByUserId = async (userId) => {
 };
 
 /**
- * Add a slot in student's timetable
- * @param {object} slot - { user_id, subject_id, day, period, start_time, end_time, room }
- * @returns {Promise<object>}
+ * Create a new department timetable slot (Admin operation)
  */
 const create = async (slot) => {
-  const { user_id, subject_id, day, period, start_time, end_time, room } = slot;
+  const { department_id, department, semester, subject_id, day, period, start_time, end_time, room } = slot;
   const query = `
-    INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO timetable (department_id, department, semester, subject_id, day, period, start_time, end_time, room)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING *
   `;
   const result = await db.query(query, [
-    user_id,
+    department_id || null,
+    department || null,
+    parseInt(semester, 10),
     subject_id,
     day,
     parseInt(period, 10),
@@ -74,18 +66,14 @@ const create = async (slot) => {
 };
 
 /**
- * Update timetable slot details
- * @param {string} id 
- * @param {string} userId 
- * @param {object} slot - { subject_id, day, period, start_time, end_time, room }
- * @returns {Promise<object|null>}
+ * Update department timetable slot details
  */
-const update = async (id, userId, slot) => {
+const update = async (id, slot) => {
   const { subject_id, day, period, start_time, end_time, room } = slot;
   const query = `
     UPDATE timetable
     SET subject_id = $1, day = $2, period = $3, start_time = $4, end_time = $5, room = $6
-    WHERE id = $7 AND user_id = $8
+    WHERE id = $7
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -95,76 +83,25 @@ const update = async (id, userId, slot) => {
     start_time,
     end_time,
     room ? room.trim() : null,
-    id,
-    userId
+    id
   ]);
   return result.rows[0] || null;
 };
 
 /**
- * Delete a timetable slot
- * @param {string} id 
- * @param {string} userId 
- * @returns {Promise<boolean>}
+ * Delete a department timetable slot
  */
-const deleteSlot = async (id, userId) => {
-  const query = 'DELETE FROM timetable WHERE id = $1 AND user_id = $2 RETURNING id';
-  const result = await db.query(query, [id, userId]);
+const deleteSlot = async (id) => {
+  const query = 'DELETE FROM timetable WHERE id = $1 RETURNING id';
+  const result = await db.query(query, [id]);
   return result.rowCount > 0;
 };
 
 /**
- * Transaction helper: Copies master timetable schedule for CSE/Department/Sem to student,
- * mapping old master subject IDs to newly cloned student subject IDs.
- * @param {object} client - pg client transaction instance
- * @param {string} userId 
- * @param {string} department 
- * @param {number} semester 
- * @param {object} subjectMap - old subject ID -> new subject ID
+ * Legacy compatibility stub: Department timetables require no per-student copying.
  */
-const copyMasterTimetable = async (client, userId, department, semester, subjectMap) => {
-  const getMasterQuery = `
-    SELECT id, subject_id, day, period, start_time, end_time, room 
-    FROM timetable 
-    WHERE user_id IS NULL AND department = $1 AND semester = $2
-  `;
-  const masterResult = await client.query(getMasterQuery, [department, semester]);
-  if (masterResult.rows.length === 0) return;
-
-  const validSlots = [];
-  for (const masterSlot of masterResult.rows) {
-    const studentSubjectId = subjectMap[masterSlot.subject_id];
-    if (studentSubjectId) {
-      validSlots.push({
-        user_id: userId,
-        subject_id: studentSubjectId,
-        day: masterSlot.day,
-        period: masterSlot.period,
-        start_time: masterSlot.start_time,
-        end_time: masterSlot.end_time,
-        room: masterSlot.room
-      });
-    }
-  }
-
-  if (validSlots.length === 0) return;
-
-  const valueRows = [];
-  const queryParams = [];
-  let paramIndex = 1;
-
-  validSlots.forEach(slot => {
-    valueRows.push(`($${paramIndex}, $${paramIndex+1}, $${paramIndex+2}, $${paramIndex+3}, $${paramIndex+4}, $${paramIndex+5}, $${paramIndex+6})`);
-    queryParams.push(slot.user_id, slot.subject_id, slot.day, slot.period, slot.start_time, slot.end_time, slot.room);
-    paramIndex += 7;
-  });
-
-  const bulkInsertQuery = `
-    INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room)
-    VALUES ${valueRows.join(', ')}
-  `;
-
-  await client.query(bulkInsertQuery, queryParams);
+const copyMasterTimetable = async () => {
+  return true;
 };
 
 module.exports = {

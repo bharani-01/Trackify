@@ -1,0 +1,2 @@
+id,department,semester,date,period,original_subject_id,adjusted_subject_id,adjustment_type,remarks,created_at
+9954b76e-a405-47bb-b6fb-31b8f3bb9548,E02,5,Wed Jul 22 2026 00:00:00 GMT+0530 (India Standard Time),4,59fb7f9f-3517-463f-bf90-2fa9a20a477c,e5a10bad-1ef1-423e-af2b-ac5ed91d55e2,substitution,Substituted,Tue Jul 21 2026 17:47:07 GMT+0530 (India Standard Time)

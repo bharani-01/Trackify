@@ -6,9 +6,10 @@ const db = require('../config/db');
  */
 const getStudents = async () => {
   const query = `
-    SELECT u.id, u.name, u.register_number, u.email, u.department, u.semester, u.is_suspended, u.is_approved, u.created_at,
+    SELECT u.id, u.name, u.register_number, u.email, COALESCE(d.code, u.department) AS department, u.department_id, d.name AS department_name, u.semester, u.is_suspended, u.is_approved, u.created_at,
            s.minimum_attendance, s.notifications
     FROM users u
+    LEFT JOIN departments d ON u.department_id = d.id
     LEFT JOIN settings s ON u.id = s.user_id
     WHERE u.role = 'student' AND (u.is_approved IS TRUE OR u.is_approved IS NULL)
     ORDER BY u.name ASC
@@ -154,9 +155,12 @@ const getStats = async () => {
  */
 const getMasterSubjects = async (department, semester) => {
   const query = `
-    SELECT * FROM subjects 
-    WHERE user_id IS NULL AND department = $1 AND semester = $2
-    ORDER BY subject_name ASC
+    SELECT s.*, COALESCE(s.subject_code, s.code) AS subject_code, COALESCE(s.subject_name, s.name) AS subject_name
+    FROM subjects s
+    LEFT JOIN departments d ON s.department_id = d.id
+    WHERE (s.department_id::text = $1 OR UPPER(s.department) = UPPER($1) OR UPPER(d.code) = UPPER($1))
+      AND s.semester = $2::int
+    ORDER BY COALESCE(s.subject_name, s.name) ASC
   `;
   const result = await db.query(query, [department, parseInt(semester, 10)]);
   return result.rows;
@@ -168,8 +172,12 @@ const getMasterSubjects = async (department, semester) => {
 const createMasterSubject = async (subject) => {
   const { subject_code, subject_name, credits, color, department, semester, total_periods } = subject;
   const query = `
-    INSERT INTO subjects (user_id, subject_code, subject_name, credits, color, department, semester, total_periods)
-    VALUES (NULL, $1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO subjects (subject_code, code, subject_name, name, credits, color, department, department_id, semester, total_periods)
+    VALUES (
+      $1, $1, $2, $2, $3, $4, $5, 
+      (SELECT id FROM departments WHERE UPPER(code) = UPPER($5) OR id::text = $5 LIMIT 1), 
+      $6, $7
+    )
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -188,43 +196,21 @@ const createMasterSubject = async (subject) => {
  * Update total hours for a master subject and propagate it to all students in that cohort
  */
 const updateCohortSubjectHours = async (department, semester, subjectCode, totalPeriods) => {
-  const client = await db.pool.connect();
-  try {
-    await client.query('BEGIN');
-
-    // 1. Update the master subject template
-    await client.query(`
-      UPDATE subjects 
-      SET total_periods = $1 
-      WHERE user_id IS NULL AND department = $2 AND semester = $3 AND subject_code = $4
-    `, [totalPeriods, department, semester, subjectCode]);
-
-    // 2. Propagate to all active student subjects in this department/semester cohort
-    await client.query(`
-      UPDATE subjects 
-      SET total_periods = $1 
-      WHERE user_id IS NOT NULL 
-        AND subject_code = $4 
-        AND user_id IN (
-          SELECT id FROM users WHERE department = $2 AND semester = $3 AND role = 'student'
-        )
-    `, [totalPeriods, department, semester, subjectCode]);
-
-    await client.query('COMMIT');
-    return true;
-  } catch (error) {
-    await client.query('ROLLBACK');
-    throw error;
-  } finally {
-    client.release();
-  }
+  const query = `
+    UPDATE subjects 
+    SET total_periods = $1 
+    WHERE (department_id = (SELECT id FROM departments WHERE UPPER(code) = UPPER($2) LIMIT 1) OR UPPER(department) = UPPER($2))
+      AND semester = $3 AND (UPPER(subject_code) = UPPER($4) OR UPPER(code) = UPPER($4))
+  `;
+  await db.query(query, [totalPeriods, department, semester, subjectCode]);
+  return true;
 };
 
 /**
  * Delete master subject template
  */
 const deleteMasterSubject = async (id) => {
-  const query = 'DELETE FROM subjects WHERE id = $1 AND user_id IS NULL RETURNING id';
+  const query = 'DELETE FROM subjects WHERE id = $1 RETURNING id';
   const result = await db.query(query, [id]);
   return result.rowCount > 0;
 };
@@ -234,10 +220,12 @@ const deleteMasterSubject = async (id) => {
  */
 const getMasterTimetable = async (department, semester) => {
   const query = `
-    SELECT t.*, s.subject_name, s.subject_code, s.color
+    SELECT t.*, COALESCE(s.subject_name, s.name) AS subject_name, COALESCE(s.subject_code, s.code) AS subject_code, s.color
     FROM timetable t
-    JOIN subjects s ON t.subject_id = s.id
-    WHERE t.user_id IS NULL AND t.department = $1 AND t.semester = $2
+    LEFT JOIN subjects s ON t.subject_id = s.id
+    LEFT JOIN departments d ON t.department_id = d.id
+    WHERE (t.department_id::text = $1 OR UPPER(t.department) = UPPER($1) OR UPPER(d.code) = UPPER($1))
+      AND t.semester = $2::int
     ORDER BY 
       CASE t.day
         WHEN 'Monday' THEN 1
@@ -260,8 +248,11 @@ const getMasterTimetable = async (department, semester) => {
 const createMasterTimetableSlot = async (slot) => {
   const { subject_id, day, period, start_time, end_time, room, department, semester } = slot;
   const query = `
-    INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room, department, semester)
-    VALUES (NULL, $1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO timetable (department_id, department, subject_id, day, period, start_time, end_time, room, semester)
+    VALUES (
+      (SELECT id FROM departments WHERE UPPER(code) = UPPER($7) OR id::text = $7 LIMIT 1),
+      $7, $1, $2, $3, $4, $5, $6, $8
+    )
     RETURNING *
   `;
   const result = await db.query(query, [
@@ -281,7 +272,7 @@ const createMasterTimetableSlot = async (slot) => {
  * Delete master timetable slot template
  */
 const deleteMasterTimetableSlot = async (id) => {
-  const query = 'DELETE FROM timetable WHERE id = $1 AND user_id IS NULL RETURNING id';
+  const query = 'DELETE FROM timetable WHERE id = $1 RETURNING id';
   const result = await db.query(query, [id]);
   return result.rowCount > 0;
 };

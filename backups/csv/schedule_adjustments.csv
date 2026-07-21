@@ -1,0 +1,3 @@
+id,department_id,department,semester,date,period,original_subject_id,adjusted_subject_id,adjustment_type,remarks,created_at
+b2e4cfe8-2509-4c74-b1fe-ae98587af180,,CSE,1,2026-07-20T18:30:00.000Z,1,b47bbb5a-2456-4809-aea8-9988529da10a,9709fd7e-4752-435d-89d1-4cdd6f398190,swap,Swapped with Period 2,2026-07-21T17:46:05.630Z
+09713f4f-c037-4b9f-8236-7cb01562b40b,,CSE,1,2026-07-20T18:30:00.000Z,2,9709fd7e-4752-435d-89d1-4cdd6f398190,b47bbb5a-2456-4809-aea8-9988529da10a,swap,Swapped with Period 1,2026-07-21T17:46:05.630Z

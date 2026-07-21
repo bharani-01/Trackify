@@ -1,0 +1,10 @@
+id,user_id,action,details,ip_address,resolved,created_at
+8f16f922-b534-4ce2-b5b4-238f3e9c4408,a6154f6a-910d-4c2c-bf34-9544da884ebe,LOGIN,User logged in: System Admin (admin@trackify.com),::1,False,2026-07-21T17:37:48.735Z
+0a9da64f-41b7-4205-93ca-e4ee8d5ee571,a6154f6a-910d-4c2c-bf34-9544da884ebe,LOGOUT,User logged out: System Admin,::1,False,2026-07-21T17:45:10.935Z
+350928f2-0858-4e6f-aa54-e9c3632de09e,67288463-f0e5-4244-b16c-6fd7c4d5c750,LOGIN,User logged in: Aditi Verma (student1@trackify.com),::1,False,2026-07-21T17:45:14.838Z
+9b4960bb-c2cc-43bd-a2ed-ad72298ec75c,67288463-f0e5-4244-b16c-6fd7c4d5c750,LOGOUT,User logged out: Aditi Verma,::1,False,2026-07-21T17:45:22.909Z
+42d3e2e5-5a56-4c8f-bc61-6b3dc3084708,a6154f6a-910d-4c2c-bf34-9544da884ebe,LOGIN,User logged in: System Admin (admin@trackify.com),::1,False,2026-07-21T17:45:28.922Z
+79408d3a-9115-4a2a-9adf-5cd15736ce0f,a6154f6a-910d-4c2c-bf34-9544da884ebe,SAVE_SCHEDULE_ADJUSTMENTS,Saved 2 schedule adjustments for CSE Semester 1 on 2026-07-21,::1,False,2026-07-21T17:45:59.172Z
+fc3cbe56-40ed-43da-bf7f-66ba09ca37f7,a6154f6a-910d-4c2c-bf34-9544da884ebe,SAVE_SCHEDULE_ADJUSTMENTS,Saved 2 schedule adjustments for CSE Semester 1 on 2026-07-21,::1,False,2026-07-21T17:46:05.637Z
+d7376679-0eb7-4f04-8da9-f84d1f8c13ca,a6154f6a-910d-4c2c-bf34-9544da884ebe,LOGOUT,User logged out: System Admin,::1,False,2026-07-21T17:46:14.101Z
+3e8e56e9-c388-4e2e-bfc2-65f17b34351d,67288463-f0e5-4244-b16c-6fd7c4d5c750,LOGIN,User logged in: Aditi Verma (student1@trackify.com),::1,False,2026-07-21T17:46:16.399Z

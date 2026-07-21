@@ -11,6 +11,7 @@ const attendanceRoutes = require('./src/routes/attendanceRoutes');
 const settingsRoutes = require('./src/routes/settingsRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const departmentRoutes = require('./src/routes/departmentRoutes');
+const announcementRoutes = require('./src/routes/announcementRoutes');
 const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
 const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
@@ -488,15 +489,18 @@ const redirectIfLoggedIn = async (req, res, next) => {
   }
 };
 
-// Mount route guards for student and admin static folders
-app.get('/student', protectHtml('student'), (req, res) => {
-  res.redirect('/student/dashboard');
-});
-app.use('/student', protectHtml('student'), express.static(path.join(__dirname, '../frontend/student'), { extensions: ['html'] }));
+// API ROUTES (Must be registered before static HTML middlewares)
+app.use('/api/auth', authRoutes);
+app.use('/api/subjects', subjectRoutes);
+app.use('/api/timetable', timetableRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/departments', departmentRoutes);
+app.use('/api/announcements', announcementRoutes);
 
-app.get('/admin', protectHtml('admin'), (req, res) => {
-  res.redirect('/admin/dashboard');
-});
+// Protected HTML pages for student and admin
+app.use('/student', protectHtml('student'), express.static(path.join(__dirname, '../frontend/student'), { extensions: ['html'] }));
 app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../frontend/admin'), { extensions: ['html'] }));
 
 // Serve assets globally
@@ -567,15 +571,6 @@ app.get(['/pending-approval', '/pending-approval.html'], async (req, res) => {
 
 // Serve public static folder (Landing, Login, Register)
 app.use(express.static(path.join(__dirname, '../frontend'), { extensions: ['html'] }));
-
-// API ROUTES
-app.use('/api/auth', authRoutes);
-app.use('/api/subjects', subjectRoutes);
-app.use('/api/timetable', timetableRoutes);
-app.use('/api/attendance', attendanceRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/departments', departmentRoutes);
 
 // Global Error Handler
 app.use((err, req, res, next) => {

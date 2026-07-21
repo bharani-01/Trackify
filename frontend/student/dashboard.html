@@ -36,6 +36,37 @@
       border-color: #cbd5e1;
     }
 
+    /* Announcement Card styling for Light & Dark mode compatibility */
+    .announcement-card-wrapper {
+      background: var(--bg-secondary, #ffffff) !important;
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .announcement-card-header {
+      background: var(--bg-secondary, #ffffff) !important;
+      border-bottom: 1px solid var(--border-color, #e2e8f0) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .announcement-item {
+      background: var(--bg-primary, #f8fafc) !important;
+      border: 1px solid var(--border-color, #e2e8f0) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .announcement-title {
+      color: var(--text-primary, #0f172a) !important;
+    }
+
+    .announcement-content {
+      color: var(--text-secondary, #475569) !important;
+    }
+
+    .announcement-date {
+      color: var(--text-muted, #64748b) !important;
+    }
+
     /* Sidebar link enhancements */
     .sidebar-link {
       gap: 0.875rem !important;
@@ -384,10 +415,24 @@
           <div
             class="alert alert-info border border-info-subtle bg-info-subtle text-info d-flex align-items-center gap-3 p-3 rounded-3"
             style="border-radius: 0px !important;">
-            <span class="fs-4">🎉</span>
             <div>
-              <div class="fw-bold fs-6">Today is a Holiday!</div>
+              <div class="fw-bold fs-6">Today is a Holiday</div>
               <div id="holiday-banner-text" class="small text-secondary-emphasis">Gandhi Jayanti</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Announcements Banner / Widget (Hidden by default, shown only when notices exist) -->
+        <div id="announcements-widget-container" class="mb-4" style="display: none;">
+          <div class="card border-0 shadow-sm rounded-4 overflow-hidden announcement-card-wrapper">
+            <div class="card-header announcement-card-header p-3 d-flex justify-content-between align-items-center">
+              <div class="d-flex align-items-center gap-2 fw-bold announcement-title fs-6">
+                Announcements & Notice Board
+              </div>
+              <span class="badge bg-light text-secondary border px-2.5 py-1" id="ann-widget-count">0 Notices</span>
+            </div>
+            <div class="card-body p-3" id="ann-widget-list">
+              <div class="text-muted small py-3 text-center">Loading announcements...</div>
             </div>
           </div>
         </div>
@@ -444,7 +489,10 @@
         return;
       }
 
-      // 2. Fetch stats
+      // 2. Fetch announcements
+      await fetchStudentAnnouncements();
+
+      // 3. Fetch stats
       const statsResult = await apiCall('/api/attendance/stats');
       if (statsResult.success) {
         const stats = statsResult.stats;
@@ -770,6 +818,59 @@
         });
 
         detailRow.style.display = isCurrentlyVisible ? 'none' : 'table-row';
+      }
+    }
+
+    async function fetchStudentAnnouncements() {
+      const widgetContainer = document.getElementById('announcements-widget-container');
+      const container = document.getElementById('ann-widget-list');
+      const countBadge = document.getElementById('ann-widget-count');
+
+      try {
+        const res = await apiCall('/api/announcements');
+        if (res.success && Array.isArray(res.announcements) && res.announcements.length > 0) {
+          const annList = res.announcements;
+          countBadge.innerText = `${annList.length} ${annList.length === 1 ? 'Notice' : 'Notices'}`;
+          container.innerHTML = '';
+
+          annList.forEach(ann => {
+            const dateStr = new Date(ann.created_at).toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric'
+            });
+
+            let catBadge = '<span class="badge bg-secondary text-white small">General</span>';
+            if (ann.category === 'Academic') catBadge = '<span class="badge bg-info text-dark small">Academic</span>';
+            else if (ann.category === 'Exam') catBadge = '<span class="badge bg-warning text-dark small">Exam</span>';
+            else if (ann.category === 'Emergency') catBadge = '<span class="badge bg-danger text-white small">Emergency</span>';
+            else if (ann.category === 'Event') catBadge = '<span class="badge bg-success text-white small">Event</span>';
+
+            const pinnedBadge = ann.is_pinned ? '<span class="badge bg-primary text-white me-1">Pinned</span>' : '';
+            const priorityBadge = ann.priority === 'urgent' ? '<span class="badge bg-danger-subtle text-danger border border-danger small ms-1">Urgent</span>' : '';
+
+            container.innerHTML += `
+              <div class="p-3 rounded-3 mb-2 announcement-item ${ann.is_pinned ? 'border-primary border-2' : ''}">
+                <div class="d-flex align-items-center gap-1.5 mb-1.5 flex-wrap">
+                  ${pinnedBadge}
+                  ${catBadge}
+                  ${priorityBadge}
+                  <span class="announcement-date small ms-auto" style="font-size: 0.72rem;">${dateStr}</span>
+                </div>
+                <div class="fw-bold announcement-title fs-6 mb-1">${ann.title}</div>
+                <div class="announcement-content small" style="white-space: pre-wrap; line-height: 1.4;">${ann.content}</div>
+              </div>
+            `;
+          });
+
+          // Show widget container since notices exist
+          widgetContainer.style.display = 'block';
+        } else {
+          // Hide widget container completely if 0 notices exist
+          widgetContainer.style.display = 'none';
+        }
+      } catch (err) {
+        console.error('Error fetching announcements:', err);
+        // Hide widget container on error
+        widgetContainer.style.display = 'none';
       }
     }
 
