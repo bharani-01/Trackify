@@ -12,6 +12,7 @@ const settingsRoutes = require('./src/routes/settingsRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const departmentRoutes = require('./src/routes/departmentRoutes');
 const announcementRoutes = require('./src/routes/announcementRoutes');
+const apiAuditLogger = require('./src/middleware/apiAuditLogger');
 const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
 const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
@@ -531,6 +532,7 @@ const redirectIfLoggedIn = async (req, res, next) => {
 };
 
 // API ROUTES (Must be registered before static HTML middlewares)
+app.use('/api', apiAuditLogger);
 app.use('/api/auth', authRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/timetable', timetableRoutes);
