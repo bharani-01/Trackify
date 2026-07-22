@@ -274,9 +274,20 @@ const initMigrations = async () => {
           action VARCHAR(100) NOT NULL,
           details TEXT,
           ip_address VARCHAR(45),
+          device_type VARCHAR(50) DEFAULT 'desktop',
+          is_bot BOOLEAN DEFAULT FALSE,
+          bot_name VARCHAR(100),
+          geo_location VARCHAR(255),
+          user_agent TEXT,
           resolved BOOLEAN DEFAULT FALSE,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS device_type VARCHAR(50) DEFAULT 'desktop';
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS is_bot BOOLEAN DEFAULT FALSE;
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS bot_name VARCHAR(100);
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS geo_location VARCHAR(255);
+      ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS user_agent TEXT;
 
       CREATE TABLE IF NOT EXISTS backups (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

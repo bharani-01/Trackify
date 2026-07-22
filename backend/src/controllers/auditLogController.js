@@ -5,15 +5,19 @@ const auditLogRepository = require('../repositories/auditLogRepository');
  */
 const getAuditLogs = async (req, res) => {
   try {
-    const limit = parseInt(req.query.limit, 10) || 50;
+    const limit = parseInt(req.query.limit, 10) || 30;
     const offset = parseInt(req.query.offset, 10) || 0;
     const search = req.query.search || '';
+    const actionFilter = req.query.action || 'all';
+    const deviceFilter = req.query.device || 'all';
+    const sortOrder = req.query.order || 'DESC';
 
-    const { logs, total } = await auditLogRepository.getAuditLogs(limit, offset, search);
+    const { logs, total, stats } = await auditLogRepository.getAuditLogs(limit, offset, search, actionFilter, deviceFilter, sortOrder);
 
     return res.status(200).json({
       success: true,
       logs,
+      stats,
       pagination: {
         total,
         limit,

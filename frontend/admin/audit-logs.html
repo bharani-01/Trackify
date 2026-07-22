@@ -15,9 +15,14 @@
     .badge-danger-action { background-color: rgba(220, 38, 38, 0.08); color: var(--danger); border: 1px solid rgba(220, 38, 38, 0.2); }
     .badge-settings { background-color: rgba(8, 145, 178, 0.08); color: var(--info); border: 1px solid rgba(8, 145, 178, 0.2); }
     .badge-email { background-color: rgba(79, 70, 229, 0.08); color: #4f46e5; border: 1px solid rgba(79, 70, 229, 0.2); }
+    
+    .loading-sentinel {
+      padding: 20px 0;
+      text-align: center;
+    }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-    <script>
+  <script>
     (function() {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
@@ -28,6 +33,7 @@
   </script>
   
   <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
@@ -79,47 +85,115 @@
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
           <div>
             <h2 class="h5 fw-bold mb-1">System Security & Activity Trail</h2>
-            <p class="text-secondary small mb-0">Monitor and audit all user authentication, scheduling changes, and updates.</p>
+            <p class="text-secondary small mb-0">Monitor and audit all user authentication, scheduling changes, devices, and security alerts.</p>
           </div>
         </div>
 
-        
-        <ul class="nav nav-tabs border-bottom mb-3" id="auditTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active fw-bold text-dark border-0 border-bottom-2" id="all-logs-tab" type="button" role="tab" onclick="switchFilter('all')" style="border-radius: 0px;">
-              All System Logs
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link fw-bold text-secondary border-0 border-bottom-2" id="email-logs-tab" type="button" role="tab" onclick="switchFilter('email')" style="border-radius: 0px;">
-              Email Activity Logs Only
-            </button>
-          </li>
-        </ul>
+        <!-- ① KPI Metric Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="glass-card p-3 d-flex align-items-center gap-3">
+              <div class="badge bg-primary-subtle text-primary p-2.5 rounded-3 fs-5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              </div>
+              <div>
+                <div class="text-secondary small fw-semibold">Total Logs</div>
+                <div class="fs-4 fw-bold text-dark" id="kpi-total-logs">0</div>
+              </div>
+            </div>
+          </div>
 
-        
-        <div class="glass-card border-glass mb-4 p-3" style="border-radius: 0px;">
-          <div class="row g-2">
-            <div class="col-12">
-              <div class="form-floating">
-                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name, action, or details..." onkeyup="handleSearch(event)" style="border-radius: 0px;">
-                <label for="searchBox">Search by Performed By, Action, details, or IP address (Press Enter to search)...</label>
+          <div class="col-6 col-md-3">
+            <div class="glass-card p-3 d-flex align-items-center gap-3">
+              <div class="badge bg-success-subtle text-success p-2.5 rounded-3 fs-5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+              </div>
+              <div>
+                <div class="text-secondary small fw-semibold">Mobile & Tablet</div>
+                <div class="fs-4 fw-bold text-dark" id="kpi-mobile-logs">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="glass-card p-3 d-flex align-items-center gap-3">
+              <div class="badge bg-danger-subtle text-danger p-2.5 rounded-3 fs-5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16.01"></line><line x1="16" y1="16" x2="16" y2="16.01"></line></svg>
+              </div>
+              <div>
+                <div class="text-secondary small fw-semibold">Bots Detected</div>
+                <div class="fs-4 fw-bold text-dark" id="kpi-bot-logs">0</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="glass-card p-3 d-flex align-items-center gap-3">
+              <div class="badge bg-warning-subtle text-warning p-2.5 rounded-3 fs-5">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              </div>
+              <div>
+                <div class="text-secondary small fw-semibold">Security Alerts</div>
+                <div class="fs-4 fw-bold text-dark" id="kpi-alert-logs">0</div>
               </div>
             </div>
           </div>
         </div>
 
-        
+        <!-- ② Multi-Column Sorting & Filter Controls -->
+        <div class="glass-card mb-4 p-3 border-glass">
+          <div class="row g-2 align-items-center">
+            <div class="col-12 col-md-5">
+              <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0 text-secondary">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                </span>
+                <input type="text" class="form-control border-start-0 ps-0" id="searchBox" placeholder="Search by name, action, IP, location..." onkeyup="onSearchInput(event)">
+              </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <select class="form-select" id="actionFilterSelect" onchange="onFilterChanged()">
+                <option value="all">All Action Types</option>
+                <option value="login">Logins & Auth</option>
+                <option value="fail">Failed Attempts & Alerts</option>
+                <option value="email">Email Dispatches</option>
+                <option value="create">User & Data Creations</option>
+                <option value="update">Updates & Adjustments</option>
+                <option value="delete">Deletions & Suspension</option>
+              </select>
+            </div>
+
+            <div class="col-6 col-md-2">
+              <select class="form-select" id="deviceFilterSelect" onchange="onFilterChanged()">
+                <option value="all">All Devices</option>
+                <option value="desktop">Desktop</option>
+                <option value="mobile">Mobile Phone</option>
+                <option value="tablet">Tablet</option>
+                <option value="bot">Bots & Crawlers</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-2">
+              <select class="form-select" id="sortOrderSelect" onchange="onFilterChanged()">
+                <option value="DESC">Newest First</option>
+                <option value="ASC">Oldest First</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- ③ Audit Logs Table -->
         <div class="glass-card border-glass p-0 overflow-hidden shadow-sm mb-4">
           <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
               <thead class="table-light border-bottom">
                 <tr>
-                  <th class="ps-4" style="width: 180px;">Timestamp</th>
-                  <th style="width: 220px;">Performed By</th>
-                  <th style="width: 200px;">Action</th>
+                  <th class="ps-4" style="width: 220px;">Timestamp & Device</th>
+                  <th style="width: 210px;">Performed By</th>
+                  <th style="width: 170px;">Action</th>
                   <th>Activity Description</th>
-                  <th class="pe-4 text-end" style="width: 140px;">IP Address</th>
+                  <th class="pe-4 text-end" style="width: 240px;">Location & IP</th>
                 </tr>
               </thead>
               <tbody id="audit-logs-container">
@@ -133,27 +207,34 @@
               </tbody>
             </table>
           </div>
+
+          <!-- Visible Sentinel Container for Rock-Solid Infinite Scroll -->
+          <div id="infinite-scroll-sentinel" class="py-3 text-center border-top bg-light-subtle" style="min-height: 50px;">
+            <div id="sentinel-loading-spinner">
+              <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+              <span class="text-secondary small fw-semibold">Scroll down to load more logs...</span>
+            </div>
+            <div id="sentinel-end-message" class="text-muted small fw-semibold" style="display: none;">
+              ✓ All activity logs loaded
+            </div>
+          </div>
         </div>
 
-        
-        <div class="d-flex justify-content-between align-items-center px-2 flex-wrap gap-2">
+        <div class="d-flex justify-content-between align-items-center px-2 mb-4">
           <div class="text-secondary small" id="pagination-status">Showing 0 of 0 logs</div>
-          <div class="d-flex gap-2">
-            <button class="btn btn-glass btn-sm border-secondary text-secondary py-1.5 px-3 fs-8 fw-semibold" id="btn-prev" onclick="changePage(-1)" disabled>Previous</button>
-            <button class="btn btn-glass btn-sm border-secondary text-secondary py-1.5 px-3 fs-8 fw-semibold" id="btn-next" onclick="changePage(1)" disabled>Next</button>
-          </div>
         </div>
       </main>
     </div>
   </div>
 
-  
   <script src="/assets/js/main.js"></script>
   <script>
-    let limit = 20;
+    let limit = 25;
     let offset = 0;
     let totalLogs = 0;
-    let currentSearch = '';
+    let isLoading = false;
+    let hasMore = true;
+    let searchDebounceTimer = null;
 
     async function loadData() {
       // Fetch user profile session
@@ -165,12 +246,15 @@
         return;
       }
 
-      await fetchLogs();
+      await resetAndFetchLogs();
+      setupInfiniteScroll();
     }
 
-    async function fetchLogs() {
-      const container = document.getElementById('audit-logs-container');
-      container.innerHTML = `
+    async function resetAndFetchLogs() {
+      offset = 0;
+      hasMore = true;
+      isLoading = false;
+      document.getElementById('audit-logs-container').innerHTML = `
         <tr>
           <td colspan="5" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
@@ -179,23 +263,56 @@
           </td>
         </tr>
       `;
+      await fetchNextBatch();
+    }
 
-      const response = await apiCall(`/api/admin/audit-logs?limit=${limit}&offset=${offset}&search=${encodeURIComponent(currentSearch)}`);
-      
+    async function fetchNextBatch() {
+      if (isLoading || !hasMore) return;
+      isLoading = true;
+
+      const spinner = document.getElementById('sentinel-loading-spinner');
+      const endMsg = document.getElementById('sentinel-end-message');
+      if (spinner) spinner.style.display = 'block';
+      if (endMsg) endMsg.style.display = 'none';
+
+      const search = document.getElementById('searchBox').value.trim();
+      const action = document.getElementById('actionFilterSelect').value;
+      const device = document.getElementById('deviceFilterSelect').value;
+      const order = document.getElementById('sortOrderSelect').value;
+
+      const response = await apiCall(`/api/admin/audit-logs?limit=${limit}&offset=${offset}&search=${encodeURIComponent(search)}&action=${encodeURIComponent(action)}&device=${encodeURIComponent(device)}&order=${encodeURIComponent(order)}`);
+
+      isLoading = false;
+
       if (response.success) {
         const logs = response.logs;
         totalLogs = response.pagination.total;
-        container.innerHTML = '';
 
-        if (logs.length === 0) {
+        // Update KPI metric cards
+        if (response.stats) {
+          document.getElementById('kpi-total-logs').innerText = response.stats.total || 0;
+          document.getElementById('kpi-mobile-logs').innerText = response.stats.mobile_count || 0;
+          document.getElementById('kpi-bot-logs').innerText = response.stats.bot_count || 0;
+          document.getElementById('kpi-alert-logs').innerText = response.stats.alert_count || 0;
+        }
+
+        const container = document.getElementById('audit-logs-container');
+        if (offset === 0) {
+          container.innerHTML = '';
+        }
+
+        if (logs.length === 0 && offset === 0) {
           container.innerHTML = `
             <tr>
               <td colspan="5" class="text-center py-5 text-secondary">
-                No activity logs found.
+                No activity logs found matching your filters.
               </td>
             </tr>
           `;
-          updatePaginationUI();
+          hasMore = false;
+          if (spinner) spinner.style.display = 'none';
+          if (endMsg) endMsg.style.display = 'block';
+          updateStatusUI(0);
           return;
         }
 
@@ -236,82 +353,121 @@
             `;
           }
 
+          // Device / Agent SVG Representation Badge (Displayed near timestamp!)
+          let deviceSvg = '';
+          let deviceLabel = 'Desktop';
+          let deviceBadgeClass = 'border bg-light text-dark';
+
+          if (log.is_bot || log.device_type === 'bot') {
+            deviceLabel = log.bot_name || 'Bot Agent';
+            deviceBadgeClass = 'border border-danger-subtle bg-danger-subtle text-danger';
+            deviceSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger me-1"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="12" cy="5" r="2"></circle><path d="M12 7v4"></path><line x1="8" y1="16" x2="8" y2="16.01"></line><line x1="16" y1="16" x2="16" y2="16.01"></line></svg>`;
+          } else if (log.device_type === 'mobile') {
+            deviceLabel = 'Mobile Phone';
+            deviceBadgeClass = 'border border-success-subtle bg-success-subtle text-success';
+            deviceSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-success me-1"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`;
+          } else if (log.device_type === 'tablet') {
+            deviceLabel = 'Tablet';
+            deviceBadgeClass = 'border border-info-subtle bg-info-subtle text-info';
+            deviceSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-info me-1"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>`;
+          } else {
+            deviceLabel = 'Desktop';
+            deviceBadgeClass = 'border bg-light text-dark';
+            deviceSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary me-1"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+          }
+
+          const deviceBadgeHtml = `<span class="badge ${deviceBadgeClass} d-inline-flex align-items-center px-1.5 py-0.5 mt-1 fs-9 fw-semibold" style="font-size: 0.68rem;">${deviceSvg}${deviceLabel}</span>`;
+
+          // Geo-location & IP HTML
+          const geoStr = log.geo_location || 'Localhost / Network';
+          const ipStr = log.ip_address || '127.0.0.1';
+          const locationPinSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-danger me-1"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>`;
+
+          const geoHtml = `
+            <div class="text-end">
+              <div class="small fw-semibold text-dark d-flex align-items-center justify-content-end gap-1">
+                ${locationPinSvg}<span>${geoStr}</span>
+              </div>
+              <div class="text-secondary font-monospace" style="font-size: 0.72rem;">${ipStr}</div>
+            </div>
+          `;
+
           container.innerHTML += `
             <tr class="border-bottom">
-              <td class="ps-4 small text-secondary">${timestamp}</td>
+              <td class="ps-4">
+                <div class="small text-secondary font-monospace">${timestamp}</div>
+                <div>${deviceBadgeHtml}</div>
+              </td>
               <td>${userDetailsHtml}</td>
               <td><span class="badge ${badgeClass} px-2 py-1 fs-9 fw-semibold text-uppercase tracking-wide">${log.action}</span></td>
-              <td class="small text-dark">${log.details || '-'}</td>
-              <td class="pe-4 text-end small text-secondary font-monospace">${log.ip_address || 'N/A'}</td>
+              <td class="small text-dark" style="white-space: pre-wrap; line-height: 1.4;">${log.details || '-'}</td>
+              <td class="pe-4 text-end">${geoHtml}</td>
             </tr>
           `;
         });
 
-        updatePaginationUI();
+        offset += logs.length;
+        if (logs.length < limit || offset >= totalLogs) {
+          hasMore = false;
+          if (spinner) spinner.style.display = 'none';
+          if (endMsg) endMsg.style.display = 'block';
+        }
+
+        updateStatusUI(container.children.length);
       } else {
-        container.innerHTML = `
-          <tr>
-            <td colspan="5" class="text-danger text-center p-3">
-              ${response.message || 'Failed to retrieve audit logs.'}
-            </td>
-          </tr>
-        `;
+        if (spinner) spinner.style.display = 'none';
       }
     }
 
-    function updatePaginationUI() {
-      const prevBtn = document.getElementById('btn-prev');
-      const nextBtn = document.getElementById('btn-next');
-      const statusText = document.getElementById('pagination-status');
+    function setupInfiniteScroll() {
+      const sentinel = document.getElementById('infinite-scroll-sentinel');
+      if (!sentinel) return;
 
-      prevBtn.disabled = offset === 0;
-      nextBtn.disabled = offset + limit >= totalLogs;
-
-      const currentStart = totalLogs === 0 ? 0 : offset + 1;
-      const currentEnd = Math.min(offset + limit, totalLogs);
-      statusText.innerText = `Showing ${currentStart} to ${currentEnd} of ${totalLogs} logs`;
-    }
-
-    async function changePage(direction) {
-      offset += direction * limit;
-      if (offset < 0) offset = 0;
-      await fetchLogs();
-    }
-
-    async function handleSearch(event) {
-      if (event.key === 'Enter' || event.keyCode === 13 || document.getElementById('searchBox').value === '') {
-        currentSearch = document.getElementById('searchBox').value.trim();
-        offset = 0; // Reset pagination
-        await fetchLogs();
+      // 1. IntersectionObserver (modern viewport intersection)
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting && !isLoading && hasMore) {
+            fetchNextBatch();
+          }
+        }, {
+          root: null,
+          rootMargin: '300px',
+          threshold: 0.01
+        });
+        observer.observe(sentinel);
       }
-    }
 
-    async function switchFilter(type) {
-      offset = 0;
-      const allTab = document.getElementById('all-logs-tab');
-      const emailTab = document.getElementById('email-logs-tab');
+      // 2. Scroll event listeners on window & document as rock-solid fallbacks
+      const checkAndLoad = () => {
+        if (isLoading || !hasMore) return;
+        const rect = sentinel.getBoundingClientRect();
+        if (rect.top <= window.innerHeight + 350) {
+          fetchNextBatch();
+        }
+      };
+
+      window.addEventListener('scroll', checkAndLoad, { passive: true });
+      document.addEventListener('scroll', checkAndLoad, { capture: true, passive: true });
       
-      if (type === 'email') {
-        allTab.classList.remove('active', 'text-dark');
-        allTab.classList.add('text-secondary');
-        emailTab.classList.add('active', 'text-dark');
-        emailTab.classList.remove('text-secondary');
-        
-        currentSearch = 'EMAIL_DISPATCHED';
-        document.getElementById('searchBox').value = 'EMAIL_DISPATCHED';
-        document.getElementById('searchBox').disabled = true;
-      } else {
-        emailTab.classList.remove('active', 'text-dark');
-        emailTab.classList.add('text-secondary');
-        allTab.classList.add('active', 'text-dark');
-        allTab.classList.remove('text-secondary');
-        
-        currentSearch = '';
-        document.getElementById('searchBox').value = '';
-        document.getElementById('searchBox').disabled = false;
+      const appWrapper = document.querySelector('.app-main-wrapper');
+      if (appWrapper) {
+        appWrapper.addEventListener('scroll', checkAndLoad, { passive: true });
       }
-      
-      await fetchLogs();
+    }
+
+    function onSearchInput(e) {
+      clearTimeout(searchDebounceTimer);
+      searchDebounceTimer = setTimeout(() => {
+        resetAndFetchLogs();
+      }, 300);
+    }
+
+    function onFilterChanged() {
+      resetAndFetchLogs();
+    }
+
+    function updateStatusUI(currentCount) {
+      document.getElementById('pagination-status').innerText = `Showing ${currentCount} of ${totalLogs} total activity logs (Scroll down to load more)`;
     }
 
     window.onload = loadData;

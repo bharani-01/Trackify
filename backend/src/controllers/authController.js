@@ -3,7 +3,7 @@ const userRepository = require('../repositories/userRepository');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const { hashPassword, comparePassword, generateToken } = require('../utils/authHelper');
-const { sendResetEmail, sendOtpEmail } = require('../utils/emailHelper');
+const { sendResetEmail, sendOtpEmail, sendWelcomeRegistrationEmail } = require('../utils/emailHelper');
 
 /**
  * Constant-time comparison for OTP strings to prevent timing attack vulnerabilities
@@ -122,6 +122,13 @@ const register = async (req, res) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     await auditLogRepository.logAction(newUser.id, 'REGISTER', `User registered pending approval: ${name} (${register_number})`, ip);
 
+    // Trigger welcome/pending email notification to user
+    try {
+      await sendWelcomeRegistrationEmail(newUser.email, newUser.name, false);
+    } catch (emailErr) {
+      console.error('[REGISTRATION EMAIL WARNING]: Failed to queue welcome email:', emailErr.message);
+    }
+
     return sendTokenCookie(newUser, 201, res);
   } catch (error) {
     console.error('Registration controller error:', error);
@@ -149,6 +156,9 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const userAgent = req.headers['user-agent'] || '';
+
     // 1. Validation
     if (!email || !password) {
       return res.status(400).json({
@@ -157,9 +167,22 @@ const login = async (req, res) => {
       });
     }
 
+    // Safe password preview for audit logging (e.g. "pa***" [Length: 8])
+    const safePassPreview = password.length > 2
+      ? `${password.substring(0, 2)}*** [Length: ${password.length}]`
+      : `[Length: ${password.length}]`;
+
     // 2. Fetch user
     const user = await userRepository.findByEmail(email);
     if (!user) {
+      await auditLogRepository.logAction(
+        null,
+        'FAILED_LOGIN_ATTEMPT',
+        `Failed login attempt - User not found. Attempted Email: ${email} | Attempted Password: ${safePassPreview}`,
+        ip,
+        userAgent
+      );
+
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -167,6 +190,14 @@ const login = async (req, res) => {
     }
 
     if (user.is_suspended) {
+      await auditLogRepository.logAction(
+        user.id,
+        'SUSPENDED_LOGIN_ATTEMPT',
+        `Suspended user attempted to log in (${user.email})`,
+        ip,
+        userAgent
+      );
+
       return res.status(403).json({
         success: false,
         message: 'Your account has been suspended by an administrator.'
@@ -176,6 +207,14 @@ const login = async (req, res) => {
     // 3. Compare passwords
     const isMatch = await comparePassword(password, user.password_hash);
     if (!isMatch) {
+      await auditLogRepository.logAction(
+        user.id,
+        'FAILED_LOGIN_ATTEMPT',
+        `Failed login attempt - Incorrect password for user: ${user.name} (${email}) | Attempted Password: ${safePassPreview}`,
+        ip,
+        userAgent
+      );
+
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -183,8 +222,7 @@ const login = async (req, res) => {
     }
 
     // 4. Send cookie & response
-    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    await auditLogRepository.logAction(user.id, 'LOGIN', `User logged in: ${user.name} (${user.email})`, ip);
+    await auditLogRepository.logAction(user.id, 'LOGIN', `User logged in: ${user.name} (${user.email})`, ip, userAgent);
     sendTokenCookie(user, 200, res);
   } catch (error) {
     console.error('Login controller error:', error);

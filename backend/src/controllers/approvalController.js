@@ -1,5 +1,6 @@
 const userRepository = require('../repositories/userRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
+const { sendAccountApprovedEmail } = require('../utils/emailHelper');
 
 /**
  * Get all pending registration requests
@@ -39,6 +40,15 @@ const approveRegistration = async (req, res) => {
       `Approved student registration for ${approvedUser.name} (${approvedUser.register_number})`,
       ip
     );
+
+    // Trigger account approved email notification
+    try {
+      if (approvedUser && approvedUser.email) {
+        await sendAccountApprovedEmail(approvedUser.email, approvedUser.name);
+      }
+    } catch (emailErr) {
+      console.error('[APPROVAL EMAIL WARNING]: Failed to queue approval email:', emailErr.message);
+    }
 
     return res.status(200).json({
       success: true,

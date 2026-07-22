@@ -3,6 +3,7 @@ const userRepository = require('../repositories/userRepository');
 const { hashPassword } = require('../utils/authHelper');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const settingsRepository = require('../repositories/settingsRepository');
+const { sendWelcomeRegistrationEmail } = require('../utils/emailHelper');
 
 /**
  * Get all registered student users
@@ -446,6 +447,13 @@ const createUser = async (req, res) => {
       `Created new user: ${newUser.name} (${newUser.email}) as role ${newUser.role}`,
       ip
     );
+
+    // Trigger welcome email to newly created user
+    try {
+      await sendWelcomeRegistrationEmail(newUser.email, newUser.name, true);
+    } catch (emailErr) {
+      console.error('[ADMIN CREATE USER EMAIL WARNING]: Failed to queue welcome email:', emailErr.message);
+    }
 
     return res.status(201).json({
       success: true,

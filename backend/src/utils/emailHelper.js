@@ -93,9 +93,57 @@ const sendOtpEmail = async (email, name, otpCode, purpose) => {
   return { success: true, queued: true };
 };
 
+const sendWelcomeRegistrationEmail = async (email, name, isApproved) => {
+  const safeName = escapeHtml(name);
+  const titleText = isApproved !== false ? 'Welcome to Trackify' : 'Registration Received - Pending Approval';
+  const statusText = isApproved !== false
+    ? 'Your Trackify account has been created successfully. You can now sign in to start tracking your attendance and schedules.'
+    : 'Your Trackify account registration has been received successfully. Your account is currently pending administrative review and approval. We will notify you via email as soon as your administrator approves your access.';
+  
+  const buttonHtml = isApproved !== false
+    ? `<div style="margin: 24px 0;"><a href="http://localhost:3000/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In Now</a></div>`
+    : '';
+
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+      <h2 style="color: #2563eb; margin-bottom: 16px;">${titleText}</h2>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Hello ${safeName},</p>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">${statusText}</p>
+      ${buttonHtml}
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+      <p style="color: #94a3b8; font-size: 12px;">Trackify Academic Management System</p>
+    </div>
+  `;
+
+  await queueEmail(email, name, titleText, htmlContent);
+  return { success: true, queued: true };
+};
+
+const sendAccountApprovedEmail = async (email, name) => {
+  const safeName = escapeHtml(name);
+  const htmlContent = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #10b981; border-radius: 8px; background-color: #ffffff;">
+      <h2 style="color: #10b981; margin-bottom: 16px;">Account Registration Approved!</h2>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Hello ${safeName},</p>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Great news! Your Trackify student account registration has been reviewed and approved by the administrator.</p>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">You now have full access to log attendance, view schedules, and analyze performance.</p>
+      <div style="margin: 24px 0;">
+        <a href="http://localhost:3000/login" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In To Trackify</a>
+      </div>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+      <p style="color: #94a3b8; font-size: 12px;">Trackify Academic Management System</p>
+    </div>
+  `;
+
+  await queueEmail(email, name, 'Account Approved - Welcome to Trackify', htmlContent);
+  return { success: true, queued: true };
+};
+
 module.exports = {
   sendResetEmail,
   sendSettingsUpdatedEmail,
   sendOtpEmail,
+  sendWelcomeRegistrationEmail,
+  sendAccountApprovedEmail,
   queueEmail
 };
