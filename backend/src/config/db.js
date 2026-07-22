@@ -30,6 +30,9 @@ const initMigrations = async (retries = 3) => {
     client = await pool.connect();
     await client.query('BEGIN');
 
+    // Acquire PostgreSQL transactional advisory lock to prevent migration deadlocks during concurrent deploys
+    await client.query('SELECT pg_advisory_xact_lock(987654321);');
+
     // 0. Enable pgcrypto extension for UUID generation
     await client.query(`CREATE EXTENSION IF NOT EXISTS "pgcrypto";`);
 
@@ -43,20 +46,7 @@ const initMigrations = async (retries = 3) => {
       );
     `);
 
-    // Auto-link existing department codes present in actual user/subject data
-    await client.query(`
-      INSERT INTO departments (code, name)
-      SELECT DISTINCT TRIM(UPPER(department)), TRIM(UPPER(department))
-      FROM users
-      WHERE department IS NOT NULL AND TRIM(department) != ''
-      ON CONFLICT (code) DO NOTHING;
 
-      INSERT INTO departments (code, name)
-      SELECT DISTINCT TRIM(UPPER(department)), TRIM(UPPER(department))
-      FROM subjects
-      WHERE department IS NOT NULL AND TRIM(department) != ''
-      ON CONFLICT (code) DO NOTHING;
-    `);
 
     // 2. Ensure users table exists & backfill department_id with whitespace trimming
     await client.query(`
@@ -332,8 +322,8 @@ const initMigrations = async (retries = 3) => {
       try { await client.query('ROLLBACK'); } catch (rbErr) {}
     }
     console.error('Error during database relational migration:', error.message);
-    if (retries > 0 && (error.message.includes('EMAXCONNSESSION') || error.message.includes('max clients'))) {
-      console.log(`[DB RETRY]: Supabase session pooler busy. Retrying migration in 2 seconds... (${retries} attempts left)`);
+    if (retries > 0 && (error.message.includes('EMAXCONNSESSION') || error.message.includes('max clients') || error.message.includes('deadlock'))) {
+      console.log(`[DB RETRY]: Migration lock or session pooler busy (${error.message}). Retrying in 2 seconds... (${retries} attempts left)`);
       setTimeout(() => initMigrations(retries - 1), 2000);
     }
   } finally {
