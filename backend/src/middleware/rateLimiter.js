@@ -50,6 +50,17 @@ const createRateLimiter = (options = {}) => {
 
     if (record.count > max) {
       res.setHeader('Retry-After', resetSeconds);
+
+      // Audit log when a specific IP hits the rate limit threshold
+      if (record.count === max + 1) {
+        try {
+          const auditLogRepository = require('../repositories/auditLogRepository');
+          const userAgent = req.headers['user-agent'] || '';
+          const details = `IP Blocked (Rate Limit Exceeded) on ${req.originalUrl || req.path}. Exceeded ${max} requests limit. Retry after ${resetSeconds}s.`;
+          auditLogRepository.logAction(null, 'RATE_LIMIT_EXCEEDED', details, ip, userAgent);
+        } catch (e) {}
+      }
+
       return res.status(429).json({
         success: false,
         message,

@@ -255,6 +255,7 @@
       await resetAndFetchLogs();
       setupInfiniteScroll();
       setupWebSocket();
+      start1SecondAutoSync();
     }
 
     async function resetAndFetchLogs() {
@@ -629,6 +630,34 @@
 
     function onFilterChanged() {
       resetAndFetchLogs();
+    }
+
+    let latestLogTimestamp = null;
+
+    function start1SecondAutoSync() {
+      setInterval(async () => {
+        const sortOrder = document.getElementById('sortOrderSelect')?.value;
+        if (sortOrder !== 'DESC' || isLoading) return;
+
+        try {
+          const search = document.getElementById('searchBox').value.trim();
+          const action = document.getElementById('actionFilterSelect').value;
+          const device = document.getElementById('deviceFilterSelect').value;
+
+          const res = await apiCall(`/api/admin/audit-logs?limit=5&offset=0&search=${encodeURIComponent(search)}&action=${encodeURIComponent(action)}&device=${encodeURIComponent(device)}&order=DESC`);
+
+          if (res.success && res.logs && res.logs.length > 0) {
+            const freshLogs = [...res.logs].reverse();
+            freshLogs.forEach(log => {
+              const logTime = new Date(log.created_at).getTime();
+              if (!latestLogTimestamp || logTime > latestLogTimestamp) {
+                latestLogTimestamp = logTime;
+                prependRealtimeAuditLog(log);
+              }
+            });
+          }
+        } catch (e) {}
+      }, 1000);
     }
 
     function updateStatusUI(currentCount) {
