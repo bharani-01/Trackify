@@ -37,13 +37,15 @@ const generateToken = (payload) => {
 };
 
 /**
- * Verify JWT token and decode its payload
+ * Verify JWT token and decode its payload with strict algorithm checking
  * @param {string} token 
  * @returns {object|null}
  */
 const verifyToken = (token) => {
   try {
-    return jwt.verify(token, JWT_SECRET);
+    if (!token || typeof token !== 'string') return null;
+    // Explicitly enforce HS256 algorithm to prevent 'none' algorithm bypass and algorithm confusion
+    return jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
   } catch (error) {
     return null;
   }

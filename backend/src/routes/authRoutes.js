@@ -2,20 +2,21 @@ const express = require('express');
 const router = express.Router();
 const { login, googleAuth, getMe, logout, forgotPassword, resetPassword, register, getRegistrationStatus, updateProfile, sendOtp, verifyOtpLogin, verifyOtpResetPassword, logError } = require('../controllers/authController');
 const { protect } = require('../middleware/authMiddleware');
+const { authRateLimiter, otpRateLimiter } = require('../middleware/rateLimiter');
 
-// Public routes
-router.post('/register', register);
+// Public routes with rate limiting protection
+router.post('/register', authRateLimiter, register);
 router.get('/registration-status', getRegistrationStatus);
-router.post('/login', login);
-router.post('/google', googleAuth);
-router.post('/forgot-password', forgotPassword);
-router.post('/reset-password', resetPassword);
+router.post('/login', authRateLimiter, login);
+router.post('/google', authRateLimiter, googleAuth);
+router.post('/forgot-password', authRateLimiter, forgotPassword);
+router.post('/reset-password', authRateLimiter, resetPassword);
 router.post('/log-error', logError);
 
-// OTP authentication & password recovery routes
-router.post('/otp/send', sendOtp);
-router.post('/otp/login', verifyOtpLogin);
-router.post('/otp/reset', verifyOtpResetPassword);
+// OTP authentication & password recovery routes with strict rate limiting
+router.post('/otp/send', otpRateLimiter, sendOtp);
+router.post('/otp/login', otpRateLimiter, verifyOtpLogin);
+router.post('/otp/reset', otpRateLimiter, verifyOtpResetPassword);
 
 // Protected routes
 router.route('/me')

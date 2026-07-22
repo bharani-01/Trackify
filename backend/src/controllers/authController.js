@@ -6,6 +6,30 @@ const { hashPassword, comparePassword, generateToken } = require('../utils/authH
 const { sendResetEmail, sendOtpEmail } = require('../utils/emailHelper');
 
 /**
+ * Constant-time comparison for OTP strings to prevent timing attack vulnerabilities
+ * @param {string} a 
+ * @param {string} b 
+ * @returns {boolean}
+ */
+const timingSafeEqualString = (a, b) => {
+  if (!a || !b || typeof a !== 'string' || typeof b !== 'string') return false;
+  const bufA = Buffer.from(a, 'utf8');
+  const bufB = Buffer.from(b, 'utf8');
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+};
+
+/**
+ * Validate password complexity server-side (minimum 8 characters)
+ * @param {string} password 
+ * @returns {boolean}
+ */
+const isPasswordStrong = (password) => {
+  if (!password || typeof password !== 'string') return false;
+  return password.length >= 8;
+};
+
+/**
  * Helper to set JWT token cookie in response
  */
 const sendTokenCookie = (user, statusCode, res) => {
@@ -497,7 +521,7 @@ const verifyOtpLogin = async (req, res) => {
       return res.status(404).json({ success: false, message: 'No user account found with that email address' });
     }
 
-    if (!user.otp_code || user.otp_code !== otp || new Date(user.otp_expires) < new Date()) {
+    if (!user.otp_code || !timingSafeEqualString(user.otp_code, String(otp)) || new Date(user.otp_expires) < new Date()) {
       return res.status(400).json({ success: false, message: 'Verification code is invalid or has expired' });
     }
 
@@ -530,12 +554,16 @@ const verifyOtpResetPassword = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Passwords do not match' });
     }
 
+    if (!isPasswordStrong(password)) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 8 characters long.' });
+    }
+
     const user = await userRepository.findByEmail(email);
     if (!user) {
       return res.status(404).json({ success: false, message: 'No user account found with that email address' });
     }
 
-    if (!user.otp_code || user.otp_code !== otp || new Date(user.otp_expires) < new Date()) {
+    if (!user.otp_code || !timingSafeEqualString(user.otp_code, String(otp)) || new Date(user.otp_expires) < new Date()) {
       return res.status(400).json({ success: false, message: 'Verification code is invalid or has expired' });
     }
 

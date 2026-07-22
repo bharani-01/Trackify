@@ -21,16 +21,42 @@ app.disable('x-powered-by');
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 3000;
 
-// MIDDLEWARES
+// 1. Block dangerous/unsupported HTTP methods (TRACE, TRACK, CONNECT, DEBUG)
+app.use((req, res, next) => {
+  const forbiddenMethods = ['TRACE', 'TRACK', 'CONNECT', 'DEBUG'];
+  if (forbiddenMethods.includes(req.method.toUpperCase())) {
+    res.setHeader('Allow', 'GET, POST, PUT, DELETE, OPTIONS');
+    return res.status(405).json({
+      success: false,
+      message: `HTTP Method ${req.method} is disabled for security reasons.`
+    });
+  }
+  next();
+});
+
+// 2. Strict Whitelisted CORS Configuration
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:3000', 'https://trackify-z5y3.onrender.com'];
+
 app.use(cors({
-  origin: true, // Allow requests from any origin in dev, or set to specific UI port
-  credentials: true // Allow cookies to be shared
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, same-origin calls, server-to-server)
+    if (!origin || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS Policy: Origin not allowed'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Security Headers and File Protections Middleware
+// 3. Security Headers, Cache-Control and File Protections Middleware
 app.use((req, res, next) => {
   // Disable server disclosure & set production security headers
   res.removeHeader('X-Powered-By');
@@ -45,6 +71,13 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
   res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://v2.jokeapi.dev https://accounts.google.com; frame-src 'self' https://accounts.google.com;");
+
+  // Prevent caching of sensitive routes and API responses
+  if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/student')) {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
 
   const url = req.path.toLowerCase();
 
