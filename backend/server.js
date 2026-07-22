@@ -625,10 +625,19 @@ app.use((err, req, res, next) => {
 });
 
 // START SERVER
-app.listen(PORT, () => {
-  console.log(`Trackify Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+const { initWebSocketServer } = require('./src/services/websocketService');
+
+const server = app.listen(PORT, () => {
+  console.log(`Trackify Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   console.log(`Landing Page: http://localhost:${PORT}`);
   
+  // Attach Real-time WebSocket Server
+  try {
+    initWebSocketServer(server);
+  } catch (wsErr) {
+    console.error('[WEBSOCKET WARNING]: Failed to attach WebSocket server:', wsErr.message);
+  }
+
   // Start background reminders and low attendance alarm scheduler
   try {
     const { startScheduler } = require('./src/services/reminderScheduler');

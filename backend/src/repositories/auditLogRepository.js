@@ -1,5 +1,6 @@
 const db = require('../config/db');
 const { parseUserAgent, getGeoLocation } = require('../utils/deviceGeoHelper');
+const { broadcastAuditLog } = require('../services/websocketService');
 
 /**
  * Write a new audit log to the database with device & geolocation tracking
@@ -32,7 +33,25 @@ const logAction = async (userId, action, details, ipAddress = null, userAgent = 
       geoLocation,
       userAgent
     ]);
-    return result.rows[0];
+    
+    const newLog = result.rows[0];
+    if (newLog) {
+      if (userId) {
+        try {
+          const userRes = await db.query('SELECT name, register_number, role FROM users WHERE id = $1', [userId]);
+          if (userRes.rows[0]) {
+            newLog.user_name = userRes.rows[0].name;
+            newLog.register_number = userRes.rows[0].register_number;
+            newLog.user_role = userRes.rows[0].role;
+          }
+        } catch (e) {}
+      }
+      
+      // Broadcast real-time websocket event
+      broadcastAuditLog(newLog);
+    }
+
+    return newLog;
   } catch (error) {
     console.error('Failed to save audit log:', error.message);
     return null;
@@ -82,17 +101,18 @@ const getAuditLogs = async (limit, offset, search = '', actionFilter = 'all', de
   const countResult = await db.query(countQuery, params);
   const total = parseInt(countResult.rows[0].count, 10);
 
-  // Fetch KPI Stats
+  // Fetch KPI Stats (Mobile & Tablet, Desktop, Bots, Alerts)
   const statsQuery = `
     SELECT 
       COUNT(*)::int AS total,
-      COUNT(CASE WHEN device_type IN ('mobile', 'tablet') THEN 1 END)::int AS mobile_count,
-      COUNT(CASE WHEN is_bot = TRUE OR device_type = 'bot' THEN 1 END)::int AS bot_count,
-      COUNT(CASE WHEN action ILIKE '%FAIL%' OR action ILIKE '%REJECT%' OR action ILIKE '%SUSPEND%' THEN 1 END)::int AS alert_count
+      COUNT(CASE WHEN device_type IN ('mobile', 'tablet') OR user_agent ILIKE '%Mobile%' OR user_agent ILIKE '%Android%' OR user_agent ILIKE '%iPhone%' OR user_agent ILIKE '%iPad%' THEN 1 END)::int AS mobile_count,
+      COUNT(CASE WHEN device_type = 'desktop' OR user_agent ILIKE '%Windows%' OR user_agent ILIKE '%Macintosh%' OR user_agent ILIKE '%Linux%' THEN 1 END)::int AS desktop_count,
+      COUNT(CASE WHEN is_bot = TRUE OR device_type = 'bot' OR user_agent ILIKE '%bot%' OR user_agent ILIKE '%crawler%' OR user_agent ILIKE '%spider%' OR user_agent ILIKE '%curl%' OR user_agent ILIKE '%postman%' THEN 1 END)::int AS bot_count,
+      COUNT(CASE WHEN action ILIKE '%FAIL%' OR action ILIKE '%REJECT%' OR action ILIKE '%SUSPEND%' OR action ILIKE '%ALERT%' THEN 1 END)::int AS alert_count
     FROM audit_logs
   `;
   const statsRes = await db.query(statsQuery);
-  const stats = statsRes.rows[0] || { total: 0, mobile_count: 0, bot_count: 0, alert_count: 0 };
+  const stats = statsRes.rows[0] || { total: 0, mobile_count: 0, desktop_count: 0, bot_count: 0, alert_count: 0 };
 
   // Fetch logs ordered by created_at
   const order = sortOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
