@@ -133,6 +133,84 @@ const processEmailQueue = async () => {
 };
 
 /**
+ * Check if a student has any unmarked scheduled class periods for today
+ */
+const checkUnmarkedClassesForToday = async (userId, departmentId, semester, dateStr, dayName) => {
+  try {
+    // 1. Check if today is an official holiday
+    const holidayCheck = await db.query(
+      'SELECT id FROM holidays WHERE holiday_date = $1',
+      [dateStr]
+    );
+    if (holidayCheck.rows.length > 0) {
+      return false; // Holiday - no classes to mark
+    }
+
+    // 2. Fetch base scheduled timetable slots for today
+    const timetableRes = await db.query(
+      'SELECT period FROM timetable WHERE department_id = $1 AND semester = $2 AND day = $3',
+      [departmentId, semester, dayName]
+    );
+
+    // 3. Fetch cohort timetable adjustments for today
+    const adjRes = await db.query(
+      'SELECT period, adjustment_type FROM timetable_adjustments WHERE department_id = $1 AND semester = $2 AND date = $3',
+      [departmentId, semester, dateStr]
+    );
+
+    const adjustments = adjRes.rows;
+    let activePeriods = new Set();
+
+    // Add base periods that are not canceled
+    timetableRes.rows.forEach(slot => {
+      const canceled = adjustments.some(a => a.period === slot.period && a.adjustment_type === 'cancel');
+      if (!canceled) {
+        activePeriods.add(slot.period);
+      }
+    });
+
+    // Add extra class periods
+    adjustments.forEach(adj => {
+      if (adj.adjustment_type === 'extra') {
+        activePeriods.add(adj.period);
+      }
+    });
+
+    if (activePeriods.size === 0) {
+      return false; // No scheduled active classes today
+    }
+
+    // 4. Fetch attendance logs already marked by student for today
+    const logsRes = await db.query(
+      'SELECT remarks FROM attendance WHERE user_id = $1 AND date = $2',
+      [userId, dateStr]
+    );
+
+    const markedPeriods = new Set();
+    logsRes.rows.forEach(log => {
+      if (log.remarks && log.remarks.startsWith('Period ')) {
+        const pNum = parseInt(log.remarks.split(' ')[1], 10);
+        if (!isNaN(pNum)) {
+          markedPeriods.add(pNum);
+        }
+      }
+    });
+
+    // 5. Return true if ANY active period remains unmarked
+    for (const p of activePeriods) {
+      if (!markedPeriods.has(p)) {
+        return true; // Unmarked subject found!
+      }
+    }
+
+    return false; // All subjects marked
+  } catch (err) {
+    console.error('Error checking unmarked classes for student:', err.message);
+    return true; // Safety fallback
+  }
+};
+
+/**
  * Start the background cron reminder process
  */
 const startScheduler = () => {
@@ -160,9 +238,16 @@ const startScheduler = () => {
       const currentMinutes = minutePart;
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
 
+      // Today IST Date (YYYY-MM-DD) and Day Name
+      const istDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' });
+      const todayDateStr = istDateFormatter.format(now);
+
+      const dayNameFormatter = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', weekday: 'long' });
+      const todayDayName = dayNameFormatter.format(now);
+
       // Process Daily Marking Reminders
       const dailyReminderQuery = `
-        SELECT u.id, u.name, u.email, s.email_timer
+        SELECT u.id, u.name, u.email, u.department, u.semester, s.email_timer
         FROM users u
         JOIN settings s ON u.id = s.user_id
         WHERE u.role = 'student' 
@@ -172,8 +257,12 @@ const startScheduler = () => {
       `;
       const dailyRes = await db.query(dailyReminderQuery, [currentTimeStr]);
       for (const row of dailyRes.rows) {
-        await sendDailyMarkingReminder(row.email, row.name);
-        await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder queued automatically at ${currentTimeStr} IST`, '127.0.0.1');
+        // Send email ONLY if any active class period for today is unmarked
+        const hasUnmarked = await checkUnmarkedClassesForToday(row.id, row.department, row.semester, todayDateStr, todayDayName);
+        if (hasUnmarked) {
+          await sendDailyMarkingReminder(row.email, row.name);
+          await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder sent (unmarked classes found) at ${currentTimeStr} IST`, '127.0.0.1');
+        }
       }
 
       // Process Low Attendance warnings (Only once per day at 18:00 Dinner hour to prevent spamming)

@@ -253,6 +253,13 @@
             <div class="glass-card border-glass">
 
               
+              <div class="d-flex align-items-center justify-content-between mb-3 px-1">
+                <div>
+                  <h2 class="h6 fw-bold mb-0 text-primary" id="progress-date-title">Attendance Date</h2>
+                  <span class="text-secondary small" style="font-size: 0.75rem;">Select a date to view and mark attendance</span>
+                </div>
+              </div>
+
               <div class="d-flex align-items-center justify-content-between mb-4 gap-3 flex-nowrap w-100">
                 <div class="day-strip-container flex-grow-1" id="rolling-days-strip">
                   
@@ -326,7 +333,9 @@
         const dayNum = current.getDate();
         
         const daysAbbrev = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthsAbbrev = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const dayName = daysAbbrev[current.getDay()];
+        const monthName = monthsAbbrev[current.getMonth()];
         
         const isActive = offset === 0;
         const activeClass = isActive ? 'active-day-card' : '';
@@ -334,8 +343,9 @@
         
         container.innerHTML += `
           <button type="button" ${idAttr} class="day-strip-card ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
-            <span class="day-name-lbl">${dayName}</span>
+            <span class="day-month-lbl">${monthName}</span>
             <span class="day-num-lbl">${dayNum}</span>
+            <span class="day-name-lbl">${dayName}</span>
           </button>
         `;
       }
