@@ -3,12 +3,16 @@ require('dotenv').config();
 
 const connectionString = process.env.DATABASE_URL || `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`;
 
+const maxPoolSize = parseInt(process.env.DB_POOL_MAX || '5', 10);
+
 const pool = new Pool({
   connectionString,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-  ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+  max: maxPoolSize,
+  idleTimeoutMillis: 10000,
+  connectionTimeoutMillis: 10000,
+  ssl: process.env.DB_SSL === 'true' || connectionString.includes('supabase') || connectionString.includes('pooler')
+    ? { rejectUnauthorized: false }
+    : false
 });
 
 pool.on('connect', () => {
@@ -20,9 +24,10 @@ pool.on('error', (err) => {
 });
 
 // Self-healing, zero-downtime database migrations: Bulletproof Relational Department Schema
-const initMigrations = async () => {
-  const client = await pool.connect();
+const initMigrations = async (retries = 3) => {
+  let client;
   try {
+    client = await pool.connect();
     await client.query('BEGIN');
 
     // 0. Enable pgcrypto extension for UUID generation
@@ -323,10 +328,18 @@ const initMigrations = async () => {
     await client.query('COMMIT');
     console.log('Database relational schema migrations initialized successfully.');
   } catch (error) {
-    await client.query('ROLLBACK');
+    if (client) {
+      try { await client.query('ROLLBACK'); } catch (rbErr) {}
+    }
     console.error('Error during database relational migration:', error.message);
+    if (retries > 0 && (error.message.includes('EMAXCONNSESSION') || error.message.includes('max clients'))) {
+      console.log(`[DB RETRY]: Supabase session pooler busy. Retrying migration in 2 seconds... (${retries} attempts left)`);
+      setTimeout(() => initMigrations(retries - 1), 2000);
+    }
   } finally {
-    client.release();
+    if (client) {
+      try { client.release(); } catch (relErr) {}
+    }
   }
 };
 
