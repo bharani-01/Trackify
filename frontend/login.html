@@ -91,22 +91,7 @@
 
             
             <div class="mb-3 d-flex justify-content-center" id="google-btn-container">
-              <div id="g_id_onload"
-                   data-client_id="388282063241-r6vm9q8utpahsohnt2pcsi56skrckij8.apps.googleusercontent.com"
-                   data-context="signin"
-                   data-ux_mode="popup"
-                   data-callback="handleGoogleSignIn"
-                   data-auto_prompt="false">
-              </div>
-              <div class="g_id_signin"
-                   data-type="standard"
-                   data-shape="pill"
-                   data-theme="outline"
-                   data-text="signin_with"
-                   data-size="large"
-                   data-logo_alignment="left"
-                   data-width="320">
-              </div>
+              <div id="g_id_signin_button"></div>
             </div>
           </form>
 
@@ -193,13 +178,51 @@
       showAlert('Your registration request is pending administrator review.', 'info');
     }
 
-    // Check registration status dynamically
+    function initGoogleSignIn(clientId) {
+      if (!clientId) return;
+      
+      function renderGoogleBtn() {
+        if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+          google.accounts.id.initialize({
+            client_id: clientId,
+            callback: handleGoogleSignIn,
+            context: 'signin',
+            ux_mode: 'popup',
+            auto_prompt: false
+          });
+
+          const btnContainer = document.getElementById('g_id_signin_button');
+          if (btnContainer) {
+            google.accounts.id.renderButton(btnContainer, {
+              type: 'standard',
+              shape: 'pill',
+              theme: 'outline',
+              text: 'signin_with',
+              size: 'large',
+              logo_alignment: 'left',
+              width: 320
+            });
+          }
+        } else {
+          setTimeout(renderGoogleBtn, 100);
+        }
+      }
+
+      renderGoogleBtn();
+    }
+
+    // Check registration status dynamically & initialize Google OAuth
     async function checkRegistration() {
       const response = await apiCall('/api/auth/registration-status');
-      if (response.success && response.allowSelfRegistration) {
-        document.getElementById('signup-option-container').innerHTML = `
-          <span class="text-secondary">Need an account? <a href="/register" class="text-primary text-decoration-none fw-semibold">Sign Up</a></span>
-        `;
+      if (response.success) {
+        if (response.allowSelfRegistration) {
+          document.getElementById('signup-option-container').innerHTML = `
+            <span class="text-secondary">Need an account? <a href="/register" class="text-primary text-decoration-none fw-semibold">Sign Up</a></span>
+          `;
+        }
+        if (response.googleClientId) {
+          initGoogleSignIn(response.googleClientId);
+        }
       }
     }
     checkRegistration();
