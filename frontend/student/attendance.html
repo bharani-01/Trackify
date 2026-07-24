@@ -276,6 +276,9 @@
                 </div>
               </div>
 
+              <!-- Holiday Banner Container -->
+              <div id="holiday-banner-container" class="mb-4" style="display: none;"></div>
+
               
               <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-nowrap" id="bulk-actions-container" style="display: none !important;">
                 <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
@@ -305,6 +308,7 @@
   <script>
     let currentSelectedDate = '';
     let daySlots = [];
+    let currentDateHoliday = null;
 
     // Initialize dates
     const todayObj = new Date();
@@ -410,6 +414,34 @@
         const dayLogs = logsRes.logs;
         const dayAdjustments = adjustmentsRes.adjustments;
         const holiday = logsRes.holiday; // Capture holiday from logs request
+        currentDateHoliday = holiday;
+
+        const holidayBannerContainer = document.getElementById('holiday-banner-container');
+        if (holidayBannerContainer) {
+          if (holiday) {
+            holidayBannerContainer.innerHTML = `
+              <div class="p-3.5 rounded-4 border border-info-subtle d-flex align-items-center gap-3 animate-fade-in-up" style="background: linear-gradient(135deg, var(--info-subtle), rgba(6, 182, 212, 0.05));">
+                <div class="rounded-circle p-2 bg-info text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px; flex-shrink: 0;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                    <path d="M8 14h8"></path>
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="h6 fw-bold mb-1 text-info-emphasis">Holiday: ${holiday.name}</h4>
+                  <p class="text-secondary small mb-0">Today is declared as a holiday by the administrator. Attendance logging is disabled.</p>
+                </div>
+              </div>
+            `;
+            holidayBannerContainer.style.display = 'block';
+          } else {
+            holidayBannerContainer.style.display = 'none';
+            holidayBannerContainer.innerHTML = '';
+          }
+        }
 
         // Apply cohort adjustments to the template slots
         daySlots = [];
@@ -471,20 +503,22 @@
 
         container.innerHTML = '';
 
-        if (daySlots.length === 0) {
+        if (daySlots.length === 0 || holiday) {
           document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
-          container.innerHTML = `
-            <div class="text-center py-5">
-              <h3 class="h6 fw-semibold text-secondary">No classes scheduled for this date</h3>
-              <p class="text-muted small mb-0">Enjoy your day off or select another date.</p>
-            </div>
-          `;
-          updateProgressBar(0, 0);
-          return;
+          if (daySlots.length === 0) {
+            container.innerHTML = `
+              <div class="text-center py-5">
+                <h3 class="h6 fw-semibold text-secondary">No classes scheduled for this date</h3>
+                <p class="text-muted small mb-0">Enjoy your day off or select another date.</p>
+              </div>
+            `;
+            updateProgressBar(0, 0);
+            return;
+          }
+        } else {
+          // Show bulk actions container since there are slots and no holiday
+          document.getElementById('bulk-actions-container').style.setProperty('display', 'flex', 'important');
         }
-
-        // Show bulk actions container since there are slots
-        document.getElementById('bulk-actions-container').style.setProperty('display', 'flex', 'important');
 
         let markedCount = 0;
         let activeTotal = 0;
@@ -610,6 +644,12 @@
 
         updateProgressBar(markedCount, activeTotal);
       } else {
+        const holidayBannerContainer = document.getElementById('holiday-banner-container');
+        if (holidayBannerContainer) {
+          holidayBannerContainer.style.display = 'none';
+          holidayBannerContainer.innerHTML = '';
+        }
+        currentDateHoliday = null;
         container.innerHTML = '<div class="text-danger p-3 text-center">Failed to load schedule checklist.</div>';
       }
     }
@@ -635,6 +675,10 @@
     }
 
     async function markAll(status) {
+      if (currentDateHoliday) {
+        showAlert('Attendance logging is disabled on holidays.', 'warning');
+        return;
+      }
       if (!confirm(`Are you sure you want to mark all scheduled classes on this day as ${status}?`)) {
         return;
       }

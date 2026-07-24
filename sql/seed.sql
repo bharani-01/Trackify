@@ -127,6 +127,129 @@ SELECT NULL, id, 'Saturday', 6, '13:50:00', '14:40:00', 'CR 5', 'E02', 5 FROM su
 INSERT INTO timetable (user_id, subject_id, day, period, start_time, end_time, room, department, semester)
 SELECT NULL, id, 'Saturday', 7, '14:55:00', '15:45:00', 'CR 5', 'E02', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND user_id IS NULL;
 
+
+-- Seed Departments (E01 - B.Tech -CSE(AIML))
+INSERT INTO departments (code, name) VALUES
+('E01', 'B.Tech -CSE(AIML)')
+ON CONFLICT (code) DO NOTHING;
+
+-- Seed Master Subjects (Admin created, user_id is NULL)
+-- Department E01, Semester 5 (Y3 Sem V B.Tech CSE (AIML))
+INSERT INTO subjects (user_id, subject_code, subject_name, code, name, credits, color, department, semester)
+VALUES
+(NULL, 'CSE23AE301', 'Professional Competency Development - V', 'CSE23AE301', 'Professional Competency Development - V', 2, '#f59e0b', 'E01', 5),
+(NULL, 'CSE23CT302', 'Theory of Computation and Compiler Design', 'CSE23CT302', 'Theory of Computation and Compiler Design', 4, '#6366f1', 'E01', 5),
+(NULL, 'AIM23CL302', 'ML Models on Cloud (ML Ops) Laboratory', 'AIM23CL302', 'ML Models on Cloud (ML Ops) Laboratory', 2, '#06b6d4', 'E01', 5),
+(NULL, 'CSE23CT301', 'Computer Networks', 'CSE23CT301', 'Computer Networks', 3, '#f97316', 'E01', 5),
+(NULL, 'AIM23CL301', 'Reinforcement Learning Laboratory', 'AIM23CL301', 'Reinforcement Learning Laboratory', 2, '#10b981', 'E01', 5),
+(NULL, 'AIM23CT302', 'ML Models on Cloud (ML Ops)', 'AIM23CT302', 'ML Models on Cloud (ML Ops)', 3, '#ec4899', 'E01', 5),
+(NULL, 'AIM23CT301', 'Reinforcement Learning', 'AIM23CT301', 'Reinforcement Learning', 4, '#ef4444', 'E01', 5),
+(NULL, 'AIM23DEU01', 'Introduction to Data analytics', 'AIM23DEU01', 'Introduction to Data analytics', 3, '#14b8a6', 'E01', 5),
+(NULL, 'CSE23AE302', 'Professional Coding Practice IV', 'CSE23AE302', 'Professional Coding Practice IV', 2, '#3b82f6', 'E01', 5),
+(NULL, 'CLUB_ACT', 'Club Activity', 'CLUB_ACT', 'Club Activity', 1, '#84cc16', 'E01', 5),
+(NULL, 'MENTOR_MEET', 'Mentor-Mentee Meeting', 'MENTOR_MEET', 'Mentor-Mentee Meeting', 1, '#6b7280', 'E01', 5),
+(NULL, 'AIM23SLU04', 'Data Analysis with Pandas and Numpy', 'AIM23SLU04', 'Data Analysis with Pandas and Numpy', 2, '#a855f7', 'E01', 5),
+(NULL, 'CSE23CL301', 'Computer Networks Laboratory', 'CSE23CL301', 'Computer Networks Laboratory', 2, '#059669', 'E01', 5),
+(NULL, 'AIM23DLU01', 'Introduction to Data analytics Laboratory', 'AIM23DLU01', 'Introduction to Data analytics Laboratory', 2, '#d946ef', 'E01', 5)
+ON CONFLICT DO NOTHING;
+
+-- Seed Master Timetable slots for E01 Semester 5
+-- Monday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 1, '08:00:00', '08:55:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 2, '08:55:00', '09:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 3, '10:10:00', '11:05:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 4, '11:05:00', '12:00:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 5, '13:00:00', '13:50:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CL302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 6, '13:50:00', '14:40:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CL302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Monday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND department = 'E01' AND user_id IS NULL;
+
+-- Tuesday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 1, '08:00:00', '08:55:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CL301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 2, '08:55:00', '09:50:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CL301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 3, '10:10:00', '11:05:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 4, '11:05:00', '12:00:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 5, '13:00:00', '13:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 6, '13:50:00', '14:40:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Tuesday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DEU01' AND department = 'E01' AND user_id IS NULL;
+
+-- Wednesday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 1, '08:00:00', '08:55:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 2, '08:55:00', '09:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 3, '10:10:00', '11:05:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DEU01' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 4, '11:05:00', '12:00:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CLUB_ACT' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 5, '13:00:00', '13:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 6, '13:50:00', '14:40:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Wednesday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT302' AND department = 'E01' AND user_id IS NULL;
+
+-- Thursday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 1, '08:00:00', '08:55:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 2, '08:55:00', '09:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'MENTOR_MEET' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 3, '10:10:00', '11:05:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23SLU04' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 4, '11:05:00', '12:00:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23SLU04' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 5, '13:00:00', '13:50:00', 'Network Lab', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CL301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 6, '13:50:00', '14:40:00', 'Network Lab', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CL301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Thursday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT301' AND department = 'E01' AND user_id IS NULL;
+
+-- Friday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 1, '08:00:00', '08:55:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 2, '08:55:00', '09:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 3, '10:10:00', '11:05:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DLU01' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 4, '11:05:00', '12:00:00', 'AIML LAB', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DLU01' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 5, '13:00:00', '13:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 6, '13:50:00', '14:40:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23AE302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Friday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DEU01' AND department = 'E01' AND user_id IS NULL;
+
+-- Saturday
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 1, '08:00:00', '08:55:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 2, '08:55:00', '09:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'MENTOR_MEET' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 3, '10:10:00', '11:05:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23DEU01' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 4, '11:05:00', '12:00:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23SLU04' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 5, '13:00:00', '13:50:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT301' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 6, '13:50:00', '14:40:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'AIM23CT302' AND department = 'E01' AND user_id IS NULL;
+INSERT INTO timetable (subject_id, day, period, start_time, end_time, room, department, semester)
+SELECT id, 'Saturday', 7, '14:55:00', '15:45:00', 'CR 17', 'E01', 5 FROM subjects WHERE subject_code = 'CSE23CT301' AND department = 'E01' AND user_id IS NULL;
+
 -- Seed default system settings
 INSERT INTO system_settings (key, value) VALUES
 ('allow_self_registration', 'true'),

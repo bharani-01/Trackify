@@ -52,6 +52,15 @@ const markAttendance = async (req, res) => {
   }
 
   try {
+    // Check if the date is a holiday for this student
+    const holidays = await holidayRepository.getByDateAndTarget(date, req.user.department, req.user.semester);
+    if (holidays.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: `Attendance logging is disabled on holidays (${holidays[0].name})`
+      });
+    }
+
     const newRecord = await attendanceRepository.create({
       user_id: req.user.id,
       subject_id,
