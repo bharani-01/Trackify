@@ -139,7 +139,7 @@ const checkUnmarkedClassesForToday = async (userId, departmentId, semester, date
   try {
     // 1. Check if today is an official holiday
     const holidayCheck = await db.query(
-      'SELECT id FROM holidays WHERE holiday_date = $1',
+      'SELECT id FROM holidays WHERE date = $1',
       [dateStr]
     );
     if (holidayCheck.rows.length > 0) {
