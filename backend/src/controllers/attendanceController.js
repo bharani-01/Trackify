@@ -7,13 +7,15 @@ const holidayRepository = require('../repositories/holidayRepository');
  * Get attendance logs for the logged-in student (supports date range and subject filtering)
  */
 const getAttendanceLogs = async (req, res) => {
-  const { startDate, endDate, subjectId } = req.query;
+  const { startDate, endDate, subjectId, sortBy, sortOrder } = req.query;
 
   try {
     const logs = await attendanceRepository.getByUserId(req.user.id, {
       startDate,
       endDate,
-      subjectId
+      subjectId,
+      sortBy,
+      sortOrder
     });
 
     let holiday = null;

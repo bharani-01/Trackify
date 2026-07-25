@@ -301,6 +301,18 @@
               <label for="slotRoom">Room Code (e.g. B15)</label>
             </div>
 
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary mb-1">Expiry Date & Time (Optional)</label>
+              <input type="datetime-local" class="form-control" id="slotExpiresAt">
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="slotSendEmail">
+              <label class="form-check-input-label small fw-bold text-dark" for="slotSendEmail">
+                Send Email Notification to Target Students
+              </label>
+            </div>
+
           </div>
           <div class="modal-footer border-top border-light p-4">
             <button type="button" id="deleteBtn" class="btn btn-glass border-danger text-danger d-none me-auto" onclick="deleteSlotFromModal()">Delete Slot</button>
@@ -371,13 +383,22 @@
       slotModal.show();
     }
 
-    function openEditModal(id, subjectId, day, period, room) {
+    function formatDatetimeLocal(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr);
+      const pad = num => String(num).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function openEditModal(id, subjectId, day, period, room, expiresAt = '') {
       document.getElementById('slotForm').reset();
       document.getElementById('slotId').value = id;
       document.getElementById('slotSubject').value = subjectId;
       document.getElementById('slotDay').value = day;
       document.getElementById('slotPeriod').value = period;
       document.getElementById('slotRoom').value = room;
+      document.getElementById('slotExpiresAt').value = expiresAt;
+      document.getElementById('slotSendEmail').checked = false;
       document.getElementById('deleteBtn').classList.remove('d-none');
       document.getElementById('slotModalLabel').innerText = 'Edit Timetable Slot Template';
       onPeriodChange(period);
@@ -517,6 +538,8 @@
       const slot = daySlots.find(s => s.period === periodA);
       const slotB = daySlots.find(s => s.period === periodB);
       if (slot) {
+        const exp = slot.expires_at ? formatDatetimeLocal(slot.expires_at) : '';
+        const expB = slotB.expires_at ? formatDatetimeLocal(slotB.expires_at) : '';
         return `
           <div class="timetable-cell-card" style="border-left: 3px solid ${slot.color} !important;">
             <div class="text-truncate">
@@ -525,9 +548,9 @@
               <div class="text-muted fs-9 mt-1">${slot.room ? `Room: ${slot.room}` : '&nbsp;'}</div>
             </div>
             <div class="d-flex justify-content-end align-items-center mt-1 gap-2">
-              <button onclick="openEditModal('${slot.id}', '${slot.subject_id}', '${day}', ${periodA}, '${slot.room || ''}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Hr ${periodA}</button>
+              <button onclick="openEditModal('${slot.id}', '${slot.subject_id}', '${day}', ${periodA}, '${slot.room || ''}', '${exp}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Hr ${periodA}</button>
               <span class="text-muted" style="font-size: 0.7rem;">|</span>
-              <button onclick="openEditModal('${slotB.id}', '${slotB.subject_id}', '${day}', ${periodB}, '${slotB.room || ''}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Hr ${periodB}</button>
+              <button onclick="openEditModal('${slotB.id}', '${slotB.subject_id}', '${day}', ${periodB}, '${slotB.room || ''}', '${expB}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Hr ${periodB}</button>
             </div>
           </div>
         `;
@@ -537,6 +560,7 @@
     function getCellCard(daySlots, day, periodNum) {
       const slot = daySlots.find(s => s.period === periodNum);
       if (slot) {
+        const exp = slot.expires_at ? formatDatetimeLocal(slot.expires_at) : '';
         return `
           <div class="timetable-cell-card" style="border-left: 3px solid ${slot.color} !important;">
             <div class="text-truncate">
@@ -545,7 +569,7 @@
               <div class="text-muted fs-9 mt-1">${slot.room ? `Room: ${slot.room}` : '&nbsp;'}</div>
             </div>
             <div class="d-flex justify-content-end align-items-center mt-1">
-              <button onclick="openEditModal('${slot.id}', '${slot.subject_id}', '${day}', ${periodNum}, '${slot.room || ''}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Edit</button>
+              <button onclick="openEditModal('${slot.id}', '${slot.subject_id}', '${day}', ${periodNum}, '${slot.room || ''}', '${exp}')" class="btn btn-link text-primary p-0 text-decoration-none fw-semibold fs-9" style="font-size: 0.7rem;">Edit</button>
             </div>
           </div>
         `;
@@ -602,6 +626,8 @@
       const start_time = document.getElementById('slotStart').value;
       const end_time = document.getElementById('slotEnd').value;
       const room = document.getElementById('slotRoom').value;
+      const expires_at = document.getElementById('slotExpiresAt').value;
+      const send_email = document.getElementById('slotSendEmail').checked;
 
       if (!subject_id) {
         showAlert('Please select a subject template', 'warning');
@@ -614,7 +640,7 @@
 
       const response = await apiCall('/api/admin/timetable', {
         method: 'POST',
-        body: { subject_id, day, period, start_time, end_time, room, department: activeDept, semester: activeSem }
+        body: { subject_id, day, period, start_time, end_time, room, department: activeDept, semester: activeSem, expires_at: expires_at || null, send_email }
       });
 
       if (response.success) {

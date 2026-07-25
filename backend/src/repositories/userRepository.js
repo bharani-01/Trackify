@@ -249,6 +249,35 @@ const clearOtp = async (userId) => {
   return result.rows[0];
 };
 
+/**
+ * Retrieve students by department_id/department and semester
+ */
+const findStudentsByContext = async ({ department_id, department, semester }) => {
+  let query = `
+    SELECT u.id, u.name, u.email 
+    FROM users u
+    WHERE u.role = 'student' AND u.is_approved = TRUE AND u.is_suspended = FALSE
+  `;
+  const params = [];
+  let paramIdx = 1;
+
+  if (department_id) {
+    query += ` AND u.department_id = $${paramIdx++}`;
+    params.push(department_id);
+  } else if (department) {
+    query += ` AND (u.department = $${paramIdx++} OR u.department_id::text = $${paramIdx - 1})`;
+    params.push(department);
+  }
+
+  if (semester) {
+    query += ` AND u.semester = $${paramIdx++}`;
+    params.push(parseInt(semester, 10));
+  }
+
+  const result = await db.query(query, params);
+  return result.rows;
+};
+
 module.exports = {
   findByEmail,
   findById,
@@ -261,5 +290,6 @@ module.exports = {
   rejectUser,
   updateProfile,
   updateOtp,
-  clearOtp
+  clearOtp,
+  findStudentsByContext
 };

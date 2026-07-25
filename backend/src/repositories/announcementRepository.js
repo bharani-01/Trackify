@@ -45,6 +45,7 @@ class AnnouncementRepository {
       FROM announcements a
       LEFT JOIN departments d ON a.department_id = d.id
       LEFT JOIN users u ON a.posted_by = u.id
+      WHERE (a.expires_at IS NULL OR a.expires_at > CURRENT_TIMESTAMP)
       ORDER BY a.is_pinned DESC, a.created_at DESC;
     `;
     const res = await db.query(query);
@@ -57,7 +58,7 @@ class AnnouncementRepository {
     return res.rows[0];
   }
 
-  async update(id, { title, content, category, priority, department_id, semester, is_pinned }) {
+  async update(id, { title, content, category, priority, department_id, semester, is_pinned, expires_at }) {
     const query = `
       UPDATE announcements
       SET title = COALESCE($2, title),
@@ -67,6 +68,7 @@ class AnnouncementRepository {
           department_id = $6,
           semester = $7,
           is_pinned = COALESCE($8, is_pinned),
+          expires_at = $9,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $1
       RETURNING *;
@@ -79,7 +81,8 @@ class AnnouncementRepository {
       priority,
       department_id || null,
       semester ? parseInt(semester, 10) : null,
-      is_pinned === undefined ? null : (is_pinned === true || is_pinned === 'true')
+      is_pinned === undefined ? null : (is_pinned === true || is_pinned === 'true'),
+      expires_at || null
     ];
     const res = await db.query(query, values);
     return res.rows[0];

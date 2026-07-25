@@ -136,6 +136,7 @@ const initMigrations = async (retries = 3) => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       ALTER TABLE timetable ADD COLUMN IF NOT EXISTS department_id UUID REFERENCES departments(id) ON DELETE CASCADE;
+      ALTER TABLE timetable ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP;
     `);
 
     await client.query(`

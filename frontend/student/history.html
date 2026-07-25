@@ -160,18 +160,29 @@
         <div class="glass-card border-glass mb-4 p-3">
           <form id="filterForm" class="row g-2 align-items-center">
             
-            <div class="col-md-3">
-              <select class="form-select border-light" id="filterSubject">
+            <div class="col-md-2">
+              <select class="form-select border-light" id="filterSubject" title="Filter by Subject">
                 <option value="">All Subjects</option>
               </select>
             </div>
             
-            <div class="col-md-3">
-              <input type="date" class="form-control border-light" id="filterStart">
+            <div class="col-md-2">
+              <input type="date" class="form-control border-light" id="filterStart" title="Start Date">
             </div>
             
+            <div class="col-md-2">
+              <input type="date" class="form-control border-light" id="filterEnd" title="End Date">
+            </div>
+
             <div class="col-md-3">
-              <input type="date" class="form-control border-light" id="filterEnd">
+              <select class="form-select border-light" id="filterSort" title="Sort Options">
+                <option value="date_desc">Date: Newest First</option>
+                <option value="date_asc">Date: Oldest First</option>
+                <option value="subject_asc">Subject: A to Z</option>
+                <option value="subject_desc">Subject: Z to A</option>
+                <option value="status_asc">Status: Present First</option>
+                <option value="status_desc">Status: Absent First</option>
+              </select>
             </div>
             
             <div class="col-md-3">
@@ -293,11 +304,17 @@
       const subId = document.getElementById('filterSubject').value;
       const start = document.getElementById('filterStart').value;
       const end = document.getElementById('filterEnd').value;
+      const sortVal = document.getElementById('filterSort').value;
 
       let url = '/api/attendance?';
       if (subId) url += `subjectId=${subId}&`;
       if (start) url += `startDate=${start}&`;
       if (end) url += `endDate=${end}&`;
+
+      if (sortVal) {
+        const [sortBy, sortOrder] = sortVal.split('_');
+        url += `sortBy=${sortBy}&sortOrder=${sortOrder}&`;
+      }
 
       const response = await apiCall(url);
       const container = document.getElementById('logs-container');

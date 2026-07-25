@@ -3,7 +3,8 @@ const userRepository = require('../repositories/userRepository');
 const { hashPassword } = require('../utils/authHelper');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const settingsRepository = require('../repositories/settingsRepository');
-const { sendWelcomeRegistrationEmail } = require('../utils/emailHelper');
+const { sendWelcomeRegistrationEmail, queueEmail } = require('../utils/emailHelper');
+const subjectRepository = require('../repositories/subjectRepository');
 
 /**
  * Get all registered student users
@@ -271,7 +272,7 @@ const getMasterTimetable = async (req, res) => {
  * Create a master timetable slot template
  */
 const createMasterTimetableSlot = async (req, res) => {
-  const { subject_id, day, period, start_time, end_time, room, department, semester } = req.body;
+  const { subject_id, day, period, start_time, end_time, room, department, semester, expires_at, send_email } = req.body;
 
   if (!subject_id || !day || !period || !start_time || !end_time || !department || !semester) {
     return res.status(400).json({
@@ -289,8 +290,47 @@ const createMasterTimetableSlot = async (req, res) => {
       end_time,
       room,
       department,
-      semester
+      semester,
+      expires_at: expires_at || null
     });
+
+    // Send email notifications to target students if requested
+    if (send_email === true || send_email === 'true') {
+      try {
+        const subject = await subjectRepository.getByIdAndUser(subject_id);
+        const subjectName = subject ? subject.subject_name : 'New Class';
+        const subjectCode = subject ? subject.subject_code : '';
+
+        const students = await userRepository.findStudentsByContext({
+          department,
+          semester
+        });
+
+        for (const student of students) {
+          const htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+              <h2 style="color: #2563eb; margin-bottom: 16px;">Trackify Timetable Update: New Class Scheduled</h2>
+              <p style="color: #475569; font-size: 16px; line-height: 24px;">Hello ${student.name},</p>
+              <p style="color: #475569; font-size: 16px; line-height: 24px;">A new class has been scheduled for your department/semester on Trackify:</p>
+              <div style="margin: 20px 0; padding: 15px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
+                <h3 style="margin-top: 0; color: #0f172a;">${subjectName} ${subjectCode ? `(${subjectCode})` : ''}</h3>
+                <p style="color: #334155; font-size: 14px; margin-bottom: 8px;"><strong>Day:</strong> ${day}</p>
+                <p style="color: #334155; font-size: 14px; margin-bottom: 8px;"><strong>Period:</strong> ${period}</p>
+                <p style="color: #334155; font-size: 14px; margin-bottom: 8px;"><strong>Time:</strong> ${start_time} - ${end_time}</p>
+                <p style="color: #334155; font-size: 14px; margin-bottom: 8px;"><strong>Room:</strong> ${room || 'TBA'}</p>
+                ${expires_at ? `<p style="color: #ef4444; font-size: 14px; margin-bottom: 0;"><strong>Valid Until:</strong> ${new Date(expires_at).toLocaleDateString()}</p>` : ''}
+              </div>
+              <p style="color: #64748b; font-size: 14px;">Log in to your Trackify portal to see your updated timetable.</p>
+              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+              <p style="color: #94a3b8; font-size: 12px;">Trackify Academic Management System</p>
+            </div>
+          `;
+          await queueEmail(student.email, student.name, `New Class Scheduled: ${subjectName}`, htmlContent);
+        }
+      } catch (emailErr) {
+        console.error('[TIMETABLE EMAIL WARNING]: Failed to send timetable update emails:', emailErr.message);
+      }
+    }
 
     return res.status(201).json({
       success: true,

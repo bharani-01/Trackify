@@ -7,7 +7,7 @@ const db = require('../config/db');
  * @returns {Promise<Array>}
  */
 const getByUserId = async (userId, filters = {}) => {
-  const { startDate, endDate, subjectId } = filters;
+  const { startDate, endDate, subjectId, sortBy, sortOrder } = filters;
   let query = `
     SELECT a.*, COALESCE(s.subject_name, s.name) AS subject_name, COALESCE(s.subject_code, s.code) AS subject_code, s.color
     FROM attendance a
@@ -32,7 +32,40 @@ const getByUserId = async (userId, filters = {}) => {
     params.push(subjectId);
   }
 
-  query += ' ORDER BY a.date DESC, a.created_at DESC';
+  // Dynamic sorting logic
+  let orderByClause = 'ORDER BY a.date DESC, a.created_at DESC';
+  if (sortBy) {
+    const order = sortOrder && sortOrder.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
+    if (sortBy === 'date') {
+      orderByClause = `ORDER BY a.date ${order}, a.created_at ${order}`;
+    } else if (sortBy === 'subject') {
+      orderByClause = `ORDER BY COALESCE(s.subject_name, s.name) ${order}, a.date DESC`;
+    } else if (sortBy === 'status') {
+      if (order === 'ASC') {
+        // Present first: Present -> On Duty -> Medical Leave -> Holiday -> Absent
+        orderByClause = `ORDER BY CASE a.status 
+          WHEN 'Present' THEN 1 
+          WHEN 'On Duty' THEN 2 
+          WHEN 'Medical Leave' THEN 3 
+          WHEN 'Holiday' THEN 4 
+          WHEN 'Absent' THEN 5 
+          ELSE 6 
+        END ASC, a.date DESC`;
+      } else {
+        // Absent first: Absent -> Medical Leave -> Holiday -> On Duty -> Present
+        orderByClause = `ORDER BY CASE a.status 
+          WHEN 'Absent' THEN 1 
+          WHEN 'Medical Leave' THEN 2 
+          WHEN 'Holiday' THEN 3 
+          WHEN 'On Duty' THEN 4 
+          WHEN 'Present' THEN 5 
+          ELSE 6 
+        END ASC, a.date DESC`;
+      }
+    }
+  }
+
+  query += ` ${orderByClause}`;
   const result = await db.query(query, params);
   return result.rows;
 };

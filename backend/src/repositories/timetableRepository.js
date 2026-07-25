@@ -24,7 +24,7 @@ const getByUserId = async (userId) => {
     JOIN timetable t ON (t.department_id = u.department_id OR (u.department_id IS NULL AND t.department = u.department))
                     AND t.semester = u.semester
     LEFT JOIN subjects s ON t.subject_id = s.id
-    WHERE u.id = $1
+    WHERE u.id = $1 AND (t.expires_at IS NULL OR t.expires_at > CURRENT_TIMESTAMP)
     ORDER BY 
       CASE t.day
         WHEN 'Monday' THEN 1

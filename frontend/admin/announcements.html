@@ -133,10 +133,22 @@
                   </div>
                 </div>
 
-                <div class="form-check form-switch mb-4">
+                <div class="mb-3">
+                  <label class="form-label small fw-bold text-secondary mb-1">Expiry Date & Time (Optional)</label>
+                  <input type="datetime-local" class="form-control" id="annExpiresAt">
+                </div>
+
+                <div class="form-check form-switch mb-2">
                   <input class="form-check-input" type="checkbox" id="annPinned">
                   <label class="form-check-input-label small fw-bold text-dark" for="annPinned">
                     Pin Announcement to Top of Student Feed
+                  </label>
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                  <input class="form-check-input" type="checkbox" id="annSendEmail">
+                  <label class="form-check-input-label small fw-bold text-dark" for="annSendEmail">
+                    Send Email Notification to Target Students
                   </label>
                 </div>
 
@@ -297,6 +309,8 @@
       const department_id = document.getElementById('annDepartment').value;
       const semester = document.getElementById('annSemester').value;
       const is_pinned = document.getElementById('annPinned').checked;
+      const expires_at = document.getElementById('annExpiresAt').value;
+      const send_email = document.getElementById('annSendEmail').checked;
 
       try {
         const res = await apiCall('/api/announcements/admin', {
@@ -308,7 +322,9 @@
             priority,
             department_id: department_id || null,
             semester: semester ? parseInt(semester, 10) : null,
-            is_pinned
+            is_pinned,
+            expires_at: expires_at || null,
+            send_email
           }
         });
 

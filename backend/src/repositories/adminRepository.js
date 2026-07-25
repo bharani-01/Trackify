@@ -246,12 +246,12 @@ const getMasterTimetable = async (department, semester) => {
  * Create a master timetable slot template
  */
 const createMasterTimetableSlot = async (slot) => {
-  const { subject_id, day, period, start_time, end_time, room, department, semester } = slot;
+  const { subject_id, day, period, start_time, end_time, room, department, semester, expires_at } = slot;
   const query = `
-    INSERT INTO timetable (department_id, department, subject_id, day, period, start_time, end_time, room, semester)
+    INSERT INTO timetable (department_id, department, subject_id, day, period, start_time, end_time, room, semester, expires_at)
     VALUES (
       (SELECT id FROM departments WHERE UPPER(code) = UPPER($7) OR id::text = $7 LIMIT 1),
-      $7, $1, $2, $3, $4, $5, $6, $8
+      $7, $1, $2, $3, $4, $5, $6, $8, $9
     )
     RETURNING *
   `;
@@ -263,7 +263,8 @@ const createMasterTimetableSlot = async (slot) => {
     end_time,
     room ? room.trim() : null,
     department,
-    parseInt(semester, 10)
+    parseInt(semester, 10),
+    expires_at || null
   ]);
   return result.rows[0];
 };
