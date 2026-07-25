@@ -33,6 +33,9 @@ const isPasswordStrong = (password) => {
  * Helper to set JWT token cookie in response
  */
 const sendTokenCookie = (user, statusCode, res) => {
+  // Update last login in background
+  userRepository.updateLastLogin(user.id).catch(err => console.error('Error updating last login:', err));
+
   const token = generateToken({ id: user.id, role: user.role, email: user.email });
 
   const cookieExpireDays = parseInt(process.env.COOKIE_EXPIRE || '180', 10);
@@ -443,7 +446,7 @@ const getRegistrationStatus = async (req, res) => {
  * @route PUT /api/auth/me
  */
 const updateProfile = async (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, avatar } = req.body;
 
   try {
     if (!name || !email) {
@@ -453,7 +456,7 @@ const updateProfile = async (req, res) => {
       });
     }
 
-    const updatedUser = await userRepository.updateProfile(req.user.id, name, email);
+    const updatedUser = await userRepository.updateProfile(req.user.id, name, email, avatar || null);
     
     // Log action
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;

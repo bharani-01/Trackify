@@ -6,8 +6,17 @@ const db = require('../config/db');
  */
 const getStudents = async () => {
   const query = `
-    SELECT u.id, u.name, u.register_number, u.email, COALESCE(d.code, u.department) AS department, u.department_id, d.name AS department_name, u.semester, u.is_suspended, u.is_approved, u.created_at,
-           s.minimum_attendance, s.notifications
+    SELECT u.id, u.name, u.register_number, u.email, COALESCE(d.code, u.department) AS department, u.department_id, d.name AS department_name, u.semester, u.is_suspended, u.is_approved, u.created_at, u.last_login,
+           s.minimum_attendance, s.notifications,
+           (
+             SELECT COALESCE(
+               (SUM(CASE WHEN status = 'Present' OR status = 'On Duty' THEN 1 ELSE 0 END)::float / 
+                NULLIF(SUM(CASE WHEN status IN ('Present', 'Absent') THEN 1 ELSE 0 END), 0)) * 100,
+               100
+             )::float
+             FROM attendance
+             WHERE user_id = u.id
+           ) AS attendance_percentage
     FROM users u
     LEFT JOIN departments d ON u.department_id = d.id
     LEFT JOIN settings s ON u.id = s.user_id
@@ -24,7 +33,7 @@ const getStudents = async () => {
  */
 const getAdmins = async () => {
   const query = `
-    SELECT u.id, u.name, u.email, u.role, u.is_suspended, u.is_approved, u.created_at
+    SELECT u.id, u.name, u.email, u.role, u.is_suspended, u.is_approved, u.created_at, u.last_login
     FROM users u
     WHERE u.role = 'admin'
     ORDER BY u.name ASC

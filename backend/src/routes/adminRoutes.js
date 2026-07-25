@@ -15,7 +15,12 @@ const {
   deleteMasterTimetableSlot,
   createUser,
   adminResetUserPassword,
-  bulkUpdateSubjectHours
+  bulkUpdateSubjectHours,
+  getStudentAttendanceStats,
+  triggerDailyReminders,
+  triggerLowAttendanceWarnings,
+  previewDailyReminders,
+  previewLowAttendanceWarnings
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -41,6 +46,7 @@ router.route('/users/:id')
   .delete(deleteUser);
 router.put('/users/:id/suspend', toggleUserSuspension);
 router.put('/users/:id/reset-password', adminResetUserPassword);
+router.get('/users/:id/attendance-stats', getStudentAttendanceStats);
 
 // Approvals management
 const { getPendingApprovals, approveRegistration, rejectRegistration } = require('../controllers/approvalController');
@@ -53,6 +59,12 @@ const { getSettings, updateSettings } = require('../controllers/systemSettingsCo
 router.route('/settings')
   .get(getSettings)
   .put(updateSettings);
+
+// Manual Reminders sweep triggers
+router.post('/reminders/preview-daily', previewDailyReminders);
+router.post('/reminders/preview-low-attendance', previewLowAttendanceWarnings);
+router.post('/reminders/trigger-daily', triggerDailyReminders);
+router.post('/reminders/trigger-low-attendance', triggerLowAttendanceWarnings);
 
 // Master subjects templates
 router.route('/subjects')

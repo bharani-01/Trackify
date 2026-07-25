@@ -5,6 +5,7 @@ const auditLogRepository = require('../repositories/auditLogRepository');
 const settingsRepository = require('../repositories/settingsRepository');
 const { sendWelcomeRegistrationEmail, queueEmail } = require('../utils/emailHelper');
 const subjectRepository = require('../repositories/subjectRepository');
+const attendanceRepository = require('../repositories/attendanceRepository');
 
 /**
  * Get all registered student users
@@ -617,6 +618,211 @@ const bulkUpdateSubjectHours = async (req, res) => {
   }
 };
 
+/**
+ * Retrieve comprehensive subject-wise statistics for a specific student (Admin feature)
+ */
+const getStudentAttendanceStats = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const settings = await settingsRepository.getByUserId(id);
+    const targetPercentage = settings ? settings.minimum_attendance : 80;
+
+    const rawSubjectStats = await attendanceRepository.getSubjectStats(id);
+
+    let totalPresent = 0;
+    let totalOD = 0;
+    let totalAbsent = 0;
+    let totalMedical = 0;
+    let totalHoliday = 0;
+    let totalConducted = 0;
+
+    const subjectStats = rawSubjectStats.map((subj) => {
+      totalPresent += subj.present_count;
+      totalOD += subj.od_count || 0;
+      totalAbsent += subj.absent_count;
+      totalMedical += subj.medical_count;
+      totalHoliday += subj.holiday_count;
+      totalConducted += subj.conducted_count;
+
+      const percentage = subj.conducted_count > 0 
+        ? Math.round(((subj.present_count + (subj.od_count || 0)) / subj.conducted_count) * 100 * 100) / 100 
+        : 100.0;
+
+      let prediction = {
+        status: 'Safe',
+        classesNeeded: 0,
+        safeAbsences: 0
+      };
+
+      if (percentage < targetPercentage) {
+        const numerator = (targetPercentage * subj.conducted_count) - (100 * (subj.present_count + (subj.od_count || 0)));
+        const denominator = 100 - targetPercentage;
+        prediction.status = 'Low';
+        prediction.classesNeeded = denominator > 0 ? Math.ceil(numerator / denominator) : 0;
+      } else {
+        const numerator = (100 * (subj.present_count + (subj.od_count || 0))) - (targetPercentage * subj.conducted_count);
+        prediction.status = 'Safe';
+        prediction.safeAbsences = targetPercentage > 0 ? Math.floor(numerator / targetPercentage) : 0;
+      }
+
+      return {
+        ...subj,
+        percentage,
+        prediction
+      };
+    });
+
+    const overallPercentage = totalConducted > 0 
+      ? Math.round(((totalPresent + totalOD) / totalConducted) * 100 * 100) / 100 
+      : 100.0;
+
+    let overallPrediction = {
+      status: 'Safe',
+      classesNeeded: 0,
+      safeAbsences: 0
+    };
+
+    if (overallPercentage < targetPercentage) {
+      const numerator = (targetPercentage * totalConducted) - (100 * (totalPresent + totalOD));
+      const denominator = 100 - targetPercentage;
+      overallPrediction.status = 'Low';
+      overallPrediction.classesNeeded = denominator > 0 ? Math.ceil(numerator / denominator) : 0;
+    } else {
+      const numerator = (100 * (totalPresent + totalOD)) - (targetPercentage * totalConducted);
+      overallPrediction.status = 'Safe';
+      overallPrediction.safeAbsences = targetPercentage > 0 ? Math.floor(numerator / targetPercentage) : 0;
+    }
+
+    return res.status(200).json({
+      success: true,
+      stats: {
+        totalPresent,
+        totalOD,
+        totalAbsent,
+        totalMedical,
+        totalHoliday,
+        totalConducted,
+        targetPercentage,
+        overallPercentage,
+        overallPrediction,
+        subjectStats
+      }
+    });
+  } catch (error) {
+    console.error('getStudentAttendanceStats controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve student attendance stats'
+    });
+  }
+};
+
+/**
+ * Preview daily marking reminder emails
+ * @route POST /api/admin/reminders/preview-daily
+ */
+const previewDailyReminders = async (req, res) => {
+  try {
+    const { runDailyRemindersSweep } = require('../services/reminderScheduler');
+    const previews = await runDailyRemindersSweep(null, true);
+    return res.status(200).json({
+      success: true,
+      previews
+    });
+  } catch (error) {
+    console.error('previewDailyReminders controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate daily marking reminders previews'
+    });
+  }
+};
+
+/**
+ * Preview low attendance warnings emails
+ * @route POST /api/admin/reminders/preview-low-attendance
+ */
+const previewLowAttendanceWarnings = async (req, res) => {
+  try {
+    const { runLowAttendanceSweep } = require('../services/reminderScheduler');
+    const previews = await runLowAttendanceSweep(true);
+    return res.status(200).json({
+      success: true,
+      previews
+    });
+  } catch (error) {
+    console.error('previewLowAttendanceWarnings controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate low attendance warning previews'
+    });
+  }
+};
+
+/**
+ * Trigger manual daily marking reminder email sweep for students with unmarked classes today
+ * @route POST /api/admin/reminders/trigger-daily
+ */
+const triggerDailyReminders = async (req, res) => {
+  try {
+    const { runDailyRemindersSweep } = require('../services/reminderScheduler');
+    const queuedCount = await runDailyRemindersSweep(null); // null means manual trigger
+
+    // Log action to audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_TRIGGER_DAILY_REMINDERS',
+      `Manually triggered daily attendance marking reminders sweep. Emails queued: ${queuedCount}`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Daily marking reminders sweep executed successfully. Emails queued for delivery: ${queuedCount}`,
+      count: queuedCount
+    });
+  } catch (error) {
+    console.error('triggerDailyReminders controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to trigger daily marking reminders'
+    });
+  }
+};
+
+/**
+ * Trigger manual low attendance alerts sweep
+ * @route POST /api/admin/reminders/trigger-low-attendance
+ */
+const triggerLowAttendanceWarnings = async (req, res) => {
+  try {
+    const { runLowAttendanceSweep } = require('../services/reminderScheduler');
+    const queuedCount = await runLowAttendanceSweep();
+
+    // Log action to audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_TRIGGER_LOW_ATTENDANCE_ALERTS',
+      `Manually triggered low attendance warnings sweep. Emails queued: ${queuedCount}`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Low attendance warnings sweep executed successfully. Emails queued for delivery: ${queuedCount}`,
+      count: queuedCount
+    });
+  } catch (error) {
+    console.error('triggerLowAttendanceWarnings controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to trigger low attendance alerts'
+    });
+  }
+};
+
 module.exports = {
   getUsers,
   getAdmins,
@@ -632,5 +838,10 @@ module.exports = {
   deleteMasterTimetableSlot,
   createUser,
   adminResetUserPassword,
-  bulkUpdateSubjectHours
+  bulkUpdateSubjectHours,
+  getStudentAttendanceStats,
+  triggerDailyReminders,
+  triggerLowAttendanceWarnings,
+  previewDailyReminders,
+  previewLowAttendanceWarnings
 };

@@ -18,7 +18,7 @@ const escapeHtml = (str) => {
 /**
  * Queue an automated daily attendance marking reminder
  */
-const sendDailyMarkingReminder = async (email, name) => {
+const sendDailyMarkingReminder = async (email, name, previewOnly = false) => {
   const { queueEmail } = require('../utils/emailHelper');
   const safeName = escapeHtml(name);
   const htmlContent = `
@@ -34,33 +34,82 @@ const sendDailyMarkingReminder = async (email, name) => {
     </div>
   `;
   
-  await queueEmail(email, name, 'Daily Attendance Marking Reminder', htmlContent);
+  if (previewOnly) {
+    return htmlContent;
+  }
+  await queueEmail(email, name, 'Daily Attendance Marking Reminder', htmlContent, 'reminders');
 };
 
 /**
  * Queue an automated low attendance warning alert
  */
-const sendLowAttendanceWarning = async (email, name, percentage, target) => {
+const sendLowAttendanceWarning = async (email, name, percentage, target, userId, previewOnly = false) => {
   const { queueEmail } = require('../utils/emailHelper');
+  const attendanceRepository = require('../repositories/attendanceRepository');
   const safeName = escapeHtml(name);
-  const safePercent = escapeHtml(percentage?.toString());
   const safeTarget = escapeHtml(target?.toString());
+
+  let subjectTableHtml = '';
+  try {
+    const subjectStats = await attendanceRepository.getSubjectStats(userId);
+    if (subjectStats && subjectStats.length > 0) {
+      const rows = subjectStats.map(subj => {
+        const percentageVal = subj.conducted_count > 0 
+          ? Math.round(((subj.present_count + (subj.od_count || 0)) / subj.conducted_count) * 100) 
+          : 100;
+        const isLow = percentageVal < target;
+        return `
+          <tr style="border-bottom: 1px solid #edf2f7; ${isLow ? 'background-color: #fef2f2;' : ''}">
+            <td style="padding: 10px; color: #1a202c; font-weight: ${isLow ? 'bold' : 'normal'};">
+              ${escapeHtml(subj.subject_name || subj.name)} (${escapeHtml(subj.subject_code || subj.code)})
+              ${isLow ? '<span style="color: #ef4444; font-size: 11px; margin-left: 6px; font-weight: bold;">[LOW]</span>' : ''}
+            </td>
+            <td style="padding: 10px; text-align: right; color: #475569;">${subj.conducted_count}</td>
+            <td style="padding: 10px; text-align: right; font-weight: bold; color: ${isLow ? '#ef4444' : '#22c55e'};">
+              ${percentageVal}%
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      subjectTableHtml = `
+        <h3 style="color: #475569; font-size: 15px; margin-top: 24px; margin-bottom: 12px;">Subject-wise Attendance Details</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+          <thead>
+            <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left;">
+              <th style="padding: 10px; color: #475569; font-weight: 600;">Subject</th>
+              <th style="padding: 10px; color: #475569; font-weight: 600; text-align: right;">Conducted</th>
+              <th style="padding: 10px; color: #475569; font-weight: 600; text-align: right;">Percentage</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+  } catch (err) {
+    console.error('Error fetching subject stats for low attendance warning email:', err.message);
+  }
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ef4444; background-color: #ffffff;">
       <h2 style="color: #ef4444; margin-bottom: 16px;">Attendance Threshold Warning</h2>
       <p style="color: #475569; font-size: 16px;">Hello ${safeName},</p>
-      <p style="color: #475569; font-size: 16px; line-height: 24px;">Your attendance average has fallen below your configured minimum academic target percentage threshold:</p>
-      <div style="margin: 20px 0; padding: 15px; background-color: #fef2f2; border: 1px solid #fca5a5; font-family: monospace; font-size: 16px; color: #b91c1c; font-weight: bold;">
-        Current Attendance: ${safePercent}%<br>
-        Configured target: ${safeTarget}%
-      </div>
+      <p style="color: #475569; font-size: 16px; line-height: 24px;">Your attendance average has fallen below your configured minimum academic target percentage threshold of <strong>${safeTarget}%</strong>. Please see the subject-wise details below:</p>
+      
+      ${subjectTableHtml}
+      
       <p style="color: #475569; font-size: 16px; line-height: 24px;">Please review your class schedules and log outstanding OD/ML records immediately to ensure compliance.</p>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
       <p style="color: #94a3b8; font-size: 12px;">This is an automated performance warning broadcast system. You can toggle threshold alarms in your Profile page.</p>
     </div>
   `;
 
-  await queueEmail(email, name, 'Urgent: Low Attendance Warning Alert', htmlContent);
+  if (previewOnly) {
+    return htmlContent;
+  }
+  await queueEmail(email, name, 'Urgent: Low Attendance Warning Alert', htmlContent, 'reminders');
 };
 
 /**
@@ -102,8 +151,28 @@ const processEmailQueue = async () => {
 
       const resend = new Resend(resendApiKey);
       try {
+        const category = item.category || 'auth';
+        let senderEmail = await systemSettingsRepository.getSetting('mail_from_' + category);
+        
+        if (!senderEmail) {
+          const envKey = 'MAIL_FROM_' + category.toUpperCase();
+          senderEmail = process.env[envKey];
+        }
+        
+        if (!senderEmail) {
+          if (category === 'reminders') {
+            senderEmail = 'Trackify Reminders <reminders@mail.trackifyapp.co.in>';
+          } else if (category === 'notices') {
+            senderEmail = 'Trackify Notices <notices@mail.trackifyapp.co.in>';
+          } else if (category === 'backups') {
+            senderEmail = 'Trackify Backups <backups@mail.trackifyapp.co.in>';
+          } else {
+            senderEmail = process.env.MAIL_FROM || 'Trackify Auth <auth@mail.trackifyapp.co.in>';
+          }
+        }
+
         await resend.emails.send({
-          from: process.env.MAIL_FROM || 'Trackify <trackify@mail.trackifyapp.co.in>',
+          from: senderEmail,
           to: [item.recipient_email],
           subject: item.subject,
           html: item.html_content
@@ -211,20 +280,132 @@ const checkUnmarkedClassesForToday = async (userId, departmentId, semester, date
 };
 
 /**
+ * Run Daily Marking Reminders Sweep
+ * @param {string|null} currentTimeStr - Time string formatted as 'HH:MM' (in IST) if running auto sweep. If null, triggers manually for all matches today.
+ * @param {boolean} previewOnly - If true, returns draft preview objects instead of dispatching emails
+ * @returns {Promise<number|Array>} - Count of reminders queued or list of preview objects
+ */
+const runDailyRemindersSweep = async (currentTimeStr = null, previewOnly = false) => {
+  let queuedCount = 0;
+  const previews = [];
+  const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+  if (globalEmail !== 'true') {
+    return previewOnly ? [] : 0;
+  }
+
+  const now = new Date();
+  const istDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' });
+  const todayDateStr = istDateFormatter.format(now);
+
+  const dayNameFormatter = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', weekday: 'long' });
+  const todayDayName = dayNameFormatter.format(now);
+
+  let query = `
+    SELECT u.id, u.name, u.email, u.department_id, u.semester, s.email_timer
+    FROM users u
+    JOIN settings s ON u.id = s.user_id
+    WHERE u.role = 'student' 
+    AND s.daily_reminders = TRUE 
+    AND u.is_suspended = FALSE
+  `;
+  const params = [];
+  if (currentTimeStr) {
+    query += ` AND s.email_timer = $1`;
+    params.push(currentTimeStr);
+  }
+
+  const res = await db.query(query, params);
+  for (const row of res.rows) {
+    const hasUnmarked = await checkUnmarkedClassesForToday(row.id, row.department_id, row.semester, todayDateStr, todayDayName);
+    if (hasUnmarked) {
+      if (previewOnly) {
+        const html = await sendDailyMarkingReminder(row.email, row.name, true);
+        previews.push({
+          email: row.email,
+          name: row.name,
+          subject: 'Daily Attendance Marking Reminder',
+          html
+        });
+      } else {
+        await sendDailyMarkingReminder(row.email, row.name);
+        await auditLogRepository.logAction(
+          row.id, 
+          'EMAIL_DISPATCHED', 
+          `Daily attendance marking reminder queued (unmarked classes found) via ${currentTimeStr ? 'auto-timer ' + currentTimeStr : 'manual admin trigger'} IST`, 
+          '127.0.0.1'
+        );
+        queuedCount++;
+      }
+    }
+  }
+  return previewOnly ? previews : queuedCount;
+};
+
+/**
+ * Run Low Attendance Warnings Sweep
+ * @param {boolean} previewOnly - If true, returns draft preview objects instead of dispatching emails
+ * @returns {Promise<number|Array>} - Count of warnings queued or list of preview objects
+ */
+const runLowAttendanceSweep = async (previewOnly = false) => {
+  let queuedCount = 0;
+  const previews = [];
+  const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+  if (globalEmail !== 'true') {
+    return previewOnly ? [] : 0;
+  }
+
+  const lowAttendanceQuery = `
+    SELECT 
+      u.id, u.name, u.email,
+      s.minimum_attendance,
+      ROUND((SUM(CASE WHEN a.status IN ('Present', 'On Duty') THEN 1 ELSE 0 END)::float / 
+        NULLIF(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)) * 100) AS percentage
+    FROM users u
+    JOIN settings s ON u.id = s.user_id
+    LEFT JOIN attendance a ON u.id = a.user_id
+    WHERE u.role = 'student' 
+      AND s.low_attendance_warnings = TRUE
+      AND u.is_suspended = FALSE
+    GROUP BY u.id, u.name, u.email, s.minimum_attendance
+  `;
+  const res = await db.query(lowAttendanceQuery);
+  for (const student of res.rows) {
+    const currentPercentage = student.percentage;
+    const target = student.minimum_attendance || 80;
+    if (currentPercentage !== null && currentPercentage < target) {
+      if (previewOnly) {
+        const html = await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target, student.id, true);
+        previews.push({
+          email: student.email,
+          name: student.name,
+          subject: 'Urgent: Low Attendance Warning Alert',
+          html
+        });
+      } else {
+        await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target, student.id);
+        await auditLogRepository.logAction(
+          student.id, 
+          'EMAIL_DISPATCHED', 
+          `Automated low attendance warning email queued (${currentPercentage}% vs target ${target}%)`, 
+          '127.0.0.1'
+        );
+        queuedCount++;
+      }
+    }
+  }
+  return previewOnly ? previews : queuedCount;
+};
+
+/**
  * Start the background cron reminder process
  */
 const startScheduler = () => {
   console.log('[REMINDER SCHEDULER SERVICE]: Initializing background cron task daemon...');
 
+  // 1. Run the automatic timers sweep every 60 seconds
   setInterval(async () => {
     try {
-      const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
-      if (globalEmail !== 'true') {
-        return; // Email service is globally disabled by admin
-      }
-
       const now = new Date();
-      // Convert current time to IST (Asia/Kolkata) to align schedule triggers with student timezone
       const formatter = new Intl.DateTimeFormat('en-US', {
         timeZone: 'Asia/Kolkata',
         hour: '2-digit',
@@ -238,58 +419,12 @@ const startScheduler = () => {
       const currentMinutes = minutePart;
       const currentTimeStr = `${currentHours}:${currentMinutes}`;
 
-      // Today IST Date (YYYY-MM-DD) and Day Name
-      const istDateFormatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' });
-      const todayDateStr = istDateFormatter.format(now);
+      // Run daily reminders for matching timers
+      await runDailyRemindersSweep(currentTimeStr);
 
-      const dayNameFormatter = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Kolkata', weekday: 'long' });
-      const todayDayName = dayNameFormatter.format(now);
-
-      // Process Daily Marking Reminders
-      const dailyReminderQuery = `
-        SELECT u.id, u.name, u.email, u.department, u.semester, s.email_timer
-        FROM users u
-        JOIN settings s ON u.id = s.user_id
-        WHERE u.role = 'student' 
-        AND s.daily_reminders = TRUE 
-        AND s.email_timer = $1
-        AND u.is_suspended = FALSE
-      `;
-      const dailyRes = await db.query(dailyReminderQuery, [currentTimeStr]);
-      for (const row of dailyRes.rows) {
-        // Send email ONLY if any active class period for today is unmarked
-        const hasUnmarked = await checkUnmarkedClassesForToday(row.id, row.department, row.semester, todayDateStr, todayDayName);
-        if (hasUnmarked) {
-          await sendDailyMarkingReminder(row.email, row.name);
-          await auditLogRepository.logAction(row.id, 'EMAIL_DISPATCHED', `Daily attendance marking reminder sent (unmarked classes found) at ${currentTimeStr} IST`, '127.0.0.1');
-        }
-      }
-
-      // Process Low Attendance warnings (Only once per day at 18:00 Dinner hour to prevent spamming)
+      // Run low attendance warnings at 18:00 dinner hour
       if (currentTimeStr === '18:00') {
-        const lowAttendanceQuery = `
-          SELECT 
-            u.id, u.name, u.email,
-            s.minimum_attendance,
-            ROUND((SUM(CASE WHEN a.status IN ('Present', 'On Duty') THEN 1 ELSE 0 END)::float / 
-              NULLIF(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)) * 100) AS percentage
-          FROM users u
-          JOIN settings s ON u.id = s.user_id
-          LEFT JOIN attendance a ON u.id = a.user_id
-          WHERE u.role = 'student' 
-            AND s.low_attendance_warnings = TRUE
-            AND u.is_suspended = FALSE
-          GROUP BY u.id, u.name, u.email, s.minimum_attendance
-        `;
-        const lowRes = await db.query(lowAttendanceQuery);
-        for (const student of lowRes.rows) {
-          const currentPercentage = student.percentage;
-          const target = student.minimum_attendance || 80;
-          if (currentPercentage !== null && currentPercentage < target) {
-            await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target);
-            await auditLogRepository.logAction(student.id, 'EMAIL_DISPATCHED', `Automated low attendance warning email queued (${currentPercentage}% vs target ${target}% at 18:00 IST)`, '127.0.0.1');
-          }
-        }
+        await runLowAttendanceSweep();
       }
     } catch (err) {
       console.error('[REMINDER SCHEDULER FATAL ERROR]: Background worker loop exception:', err.message);
@@ -303,5 +438,7 @@ const startScheduler = () => {
 };
 
 module.exports = {
-  startScheduler
+  startScheduler,
+  runDailyRemindersSweep,
+  runLowAttendanceSweep
 };

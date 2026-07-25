@@ -9,13 +9,21 @@ const getSettings = async (req, res) => {
     const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
     const maintMode = await systemSettingsRepository.getSetting('maintenance_mode', 'false');
     const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+    const mailFromAuth = await systemSettingsRepository.getSetting('mail_from_auth', '');
+    const mailFromReminders = await systemSettingsRepository.getSetting('mail_from_reminders', '');
+    const mailFromNotices = await systemSettingsRepository.getSetting('mail_from_notices', '');
+    const mailFromBackups = await systemSettingsRepository.getSetting('mail_from_backups', '');
 
     return res.status(200).json({
       success: true,
       settings: {
         allow_self_registration: allowSelfReg === 'true',
         maintenance_mode: maintMode === 'true',
-        global_email_notifications: globalEmail === 'true'
+        global_email_notifications: globalEmail === 'true',
+        mail_from_auth: mailFromAuth,
+        mail_from_reminders: mailFromReminders,
+        mail_from_notices: mailFromNotices,
+        mail_from_backups: mailFromBackups
       }
     });
   } catch (error) {
@@ -32,7 +40,15 @@ const getSettings = async (req, res) => {
  * @route PUT /api/admin/settings
  */
 const updateSettings = async (req, res) => {
-  const { allow_self_registration, maintenance_mode, global_email_notifications } = req.body;
+  const { 
+    allow_self_registration, 
+    maintenance_mode, 
+    global_email_notifications,
+    mail_from_auth,
+    mail_from_reminders,
+    mail_from_notices,
+    mail_from_backups
+  } = req.body;
 
   try {
     if (allow_self_registration !== undefined) {
@@ -45,6 +61,22 @@ const updateSettings = async (req, res) => {
 
     if (global_email_notifications !== undefined) {
       await systemSettingsRepository.setSetting('global_email_notifications', global_email_notifications ? 'true' : 'false');
+    }
+
+    if (mail_from_auth !== undefined) {
+      await systemSettingsRepository.setSetting('mail_from_auth', mail_from_auth);
+    }
+
+    if (mail_from_reminders !== undefined) {
+      await systemSettingsRepository.setSetting('mail_from_reminders', mail_from_reminders);
+    }
+
+    if (mail_from_notices !== undefined) {
+      await systemSettingsRepository.setSetting('mail_from_notices', mail_from_notices);
+    }
+
+    if (mail_from_backups !== undefined) {
+      await systemSettingsRepository.setSetting('mail_from_backups', mail_from_backups);
     }
 
     return res.status(200).json({

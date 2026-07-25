@@ -153,13 +153,14 @@
                       <th>Reg Number</th>
                       <th>Department / Sem</th>
                       <th>Preferences</th>
+                      <th>Attendance</th>
                       <th>Status</th>
                       <th class="pe-4 text-end">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="users-container">
                     <tr>
-                      <td colspan="6" class="text-center py-5">
+                      <td colspan="7" class="text-center py-5">
                         <div class="spinner-border text-primary" role="status">
                           <span class="visually-hidden">Loading...</span>
                         </div>
@@ -207,13 +208,14 @@
                       <th class="ps-4">Student Details</th>
                       <th>Reg Number</th>
                       <th>Department / Sem</th>
+                      <th>Attendance</th>
                       <th>Status</th>
                       <th class="pe-4 text-end">Account Action</th>
                     </tr>
                   </thead>
                   <tbody id="suspended-container">
                     <tr>
-                      <td colspan="5" class="text-center py-5 text-secondary">
+                      <td colspan="6" class="text-center py-5 text-secondary">
                         No student accounts currently suspended.
                       </td>
                     </tr>
@@ -457,7 +459,70 @@
     </div>
   </div>
 
-  
+  <!-- Student Subject Attendance Modal -->
+  <div class="modal fade" id="subjectAttendanceModal" tabindex="-1" aria-labelledby="subjectAttendanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold" id="subjectAttendanceModalLabel">Attendance Stats: <span id="statsStudentName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <!-- Overall Summary Cards -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
+                <div class="text-secondary small fw-bold mb-1">Overall Attendance</div>
+                <h3 class="fw-bold text-dark mb-0 fs-4" id="statsOverallPercent">0%</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
+                <div class="text-secondary small fw-bold mb-1">Attended Classes</div>
+                <h3 class="fw-bold text-primary mb-0 fs-4" id="statsTotalPresent">0 / 0</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
+                <div class="text-secondary small fw-bold mb-1">Target Threshold</div>
+                <h3 class="fw-bold text-secondary mb-0 fs-4" id="statsTargetPercent">80%</h3>
+              </div>
+            </div>
+            <div class="col-md-3 col-6">
+              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
+                <div class="text-secondary small fw-bold mb-1">Status Estimate</div>
+                <div class="mt-1"><span class="badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8" id="statsOverallStatus">Safe</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject wise Table -->
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 border shadow-sm rounded-3 overflow-hidden">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Subject</th>
+                  <th>Conducted</th>
+                  <th>Present</th>
+                  <th>Absent</th>
+                  <th>OD / ML</th>
+                  <th>Rate</th>
+                  <th class="pe-3">Status / Forecast</th>
+                </tr>
+              </thead>
+              <tbody id="subject-stats-tbody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-light p-4">
+          <button type="button" class="btn btn-glow" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -535,7 +600,7 @@
       if (list.length === 0) {
         container.innerHTML = `
           <tr>
-            <td colspan="6" class="text-center py-5 text-secondary">
+            <td colspan="7" class="text-center py-5 text-secondary">
               No active students registered yet.
             </td>
           </tr>
@@ -551,6 +616,9 @@
             <td class="ps-4">
               <div class="fw-semibold text-dark">${user.name}</div>
               <div class="text-secondary small" style="font-size: 0.8rem;">${user.email}</div>
+              <div class="text-muted small mt-1" style="font-size: 0.7rem;">
+                Last Login: <strong class="text-dark">${user.last_login ? formatTimestamp(user.last_login) : 'Never'}</strong>
+              </div>
             </td>
             <td class="fw-semibold text-secondary small">${user.register_number}</td>
             <td class="text-secondary small">
@@ -560,21 +628,42 @@
               Target: <span class="fw-bold text-dark">${user.minimum_attendance || 80}%</span><br>
               Alerts: <span class="badge ${user.notifications ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-secondary-subtle text-secondary border border-secondary-subtle'} py-0.5 px-1 fw-bold fs-9" style="font-size: 0.6rem;">${user.notifications ? 'ON' : 'OFF'}</span>
             </td>
+            <td>
+              <button onclick="viewStudentSubjectAttendance('${user.id}', '${user.name}')" class="btn btn-link text-decoration-none p-0 fw-bold fs-6 ${user.attendance_percentage < (user.minimum_attendance || 80) ? 'text-danger' : 'text-success'}" title="Click to view subject breakdown">
+                ${user.attendance_percentage !== null ? Math.round(user.attendance_percentage * 10) / 10 + '%' : '100%'}
+              </button>
+            </td>
             <td>${statusBadge}</td>
             <td class="pe-4 text-end">
-              <div class="d-flex gap-1 justify-content-end">
-                <button onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}', ${user.minimum_attendance || 80})" class="btn btn-glass btn-sm border-primary text-primary py-1 px-2.5" style="font-size: 0.8rem;">
-                  Edit
+              <div class="dropdown">
+                <button class="btn btn-link text-secondary p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem; line-height: 1;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                  </svg>
                 </button>
-                <button onclick="openAdminResetPasswordModal('${user.id}', '${user.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
-                  Password
-                </button>
-                <button onclick="toggleSuspension('${user.id}', ${user.is_suspended})" class="btn btn-glass btn-sm border-warning text-warning py-1 px-2.5" style="font-size: 0.8rem;">
-                  Suspend
-                </button>
-                <button onclick="deleteUserAccount('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
-                  Delete
-                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 140px;">
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-primary" onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}', ${user.minimum_attendance || 80})">
+                      Edit Profile
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-secondary" onclick="openAdminResetPasswordModal('${user.id}', '${user.name}')">
+                      Reset Password
+                    </button>
+                  </li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-warning" onclick="toggleSuspension('${user.id}', ${user.is_suspended})">
+                      Suspend Account
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-danger" onclick="deleteUserAccount('${user.id}')">
+                      Delete Account
+                    </button>
+                  </li>
+                </ul>
               </div>
             </td>
           </tr>
@@ -590,7 +679,7 @@
       if (list.length === 0) {
         container.innerHTML = `
           <tr>
-            <td colspan="5" class="text-center py-5 text-success font-semibold">
+            <td colspan="6" class="text-center py-5 text-success font-semibold">
               ✓ No student accounts are currently suspended.
             </td>
           </tr>
@@ -604,22 +693,42 @@
             <td class="ps-4">
               <div class="fw-semibold text-dark">${user.name}</div>
               <div class="text-secondary small" style="font-size: 0.8rem;">${user.email}</div>
+              <div class="text-muted small mt-1" style="font-size: 0.7rem;">
+                Last Login: <strong class="text-dark">${user.last_login ? formatTimestamp(user.last_login) : 'Never'}</strong>
+              </div>
             </td>
             <td class="fw-semibold text-secondary small">${user.register_number || '-'}</td>
             <td class="text-secondary small">
               ${user.department || 'N/A'} ${user.semester ? `| Semester ${user.semester}` : ''}
             </td>
             <td>
+              <button onclick="viewStudentSubjectAttendance('${user.id}', '${user.name}')" class="btn btn-link text-decoration-none p-0 fw-bold fs-6 ${user.attendance_percentage < (user.minimum_attendance || 80) ? 'text-danger' : 'text-success'}" title="Click to view subject breakdown">
+                ${user.attendance_percentage !== null ? Math.round(user.attendance_percentage * 10) / 10 + '%' : '100%'}
+              </button>
+            </td>
+            <td>
               <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fs-8">Suspended</span>
             </td>
             <td class="pe-4 text-end">
-              <div class="d-flex gap-1 justify-content-end">
-                <button onclick="toggleSuspension('${user.id}', true)" class="btn btn-sm btn-success rounded-pill px-3 py-1 fw-bold fs-9">
-                  Unsuspend Account
+              <div class="dropdown">
+                <button class="btn btn-link text-secondary p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem; line-height: 1;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                  </svg>
                 </button>
-                <button onclick="deleteUserAccount('${user.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
-                  Delete
-                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 140px;">
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-success" onclick="toggleSuspension('${user.id}', true)">
+                      Unsuspend Account
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-danger" onclick="deleteUserAccount('${user.id}')">
+                      Delete Account
+                    </button>
+                  </li>
+                </ul>
               </div>
             </td>
           </tr>
@@ -960,19 +1069,36 @@
             <td class="ps-4">
               <div class="fw-bold text-dark">${admin.name}</div>
             </td>
-            <td class="fw-semibold text-secondary small">${admin.email}</td>
+            <td class="fw-semibold text-secondary small">
+              ${admin.email}
+              <div class="text-muted small mt-1 font-sans" style="font-size: 0.7rem; font-weight: normal;">
+                Last Login: <strong class="text-dark">${admin.last_login ? formatTimestamp(admin.last_login) : 'Never'}</strong>
+              </div>
+            </td>
             <td>
               <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fs-8">System Admin</span>
             </td>
             <td class="text-secondary small">${dateStr}</td>
             <td class="pe-4 text-end">
-              <div class="d-flex gap-1 justify-content-end">
-                <button onclick="openAdminResetPasswordModal('${admin.id}', '${admin.name}')" class="btn btn-glass btn-sm border-secondary text-secondary py-1 px-2.5" style="font-size: 0.8rem;">
-                  Password
+              <div class="dropdown">
+                <button class="btn btn-link text-secondary p-0 border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem; line-height: 1;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                  </svg>
                 </button>
-                <button onclick="deleteAdminAccount('${admin.id}', '${admin.name}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
-                  Delete
-                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 140px;">
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-secondary" onclick="openAdminResetPasswordModal('${admin.id}', '${admin.name}')">
+                      Reset Password
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-danger" onclick="deleteAdminAccount('${admin.id}', '${admin.name}')">
+                      Delete Account
+                    </button>
+                  </li>
+                </ul>
               </div>
             </td>
           </tr>
@@ -1065,6 +1191,115 @@
       document.getElementById('searchBox').value = '';
       const allRows = document.querySelectorAll('.user-row, .pending-row, .suspended-row, .admin-row');
       allRows.forEach(r => r.style.display = '');
+    }
+
+    const subjectAttendanceModal = new bootstrap.Modal(document.getElementById('subjectAttendanceModal'));
+
+    async function viewStudentSubjectAttendance(userId, studentName) {
+      document.getElementById('statsStudentName').innerText = studentName;
+      const tbody = document.getElementById('subject-stats-tbody');
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" class="text-center py-4">
+            <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            <span class="ms-2 small text-secondary">Fetching student attendance breakdown...</span>
+          </td>
+        </tr>
+      `;
+      
+      document.getElementById('statsOverallPercent').innerText = '...';
+      document.getElementById('statsTotalPresent').innerText = '...';
+      document.getElementById('statsTargetPercent').innerText = '...';
+      const statusBadge = document.getElementById('statsOverallStatus');
+      statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-secondary text-white';
+      statusBadge.innerText = 'Calculating';
+
+      subjectAttendanceModal.show();
+
+      try {
+        const res = await apiCall(`/api/admin/users/${userId}/attendance-stats`);
+        if (res.success && res.stats) {
+          const stats = res.stats;
+          document.getElementById('statsOverallPercent').innerText = `${stats.overallPercentage}%`;
+          document.getElementById('statsTotalPresent').innerText = `${stats.totalPresent + stats.totalOD} / ${stats.totalConducted}`;
+          document.getElementById('statsTargetPercent').innerText = `${stats.targetPercentage}%`;
+          
+          if (stats.overallPrediction.status === 'Safe') {
+            statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-success-subtle text-success border border-success-subtle';
+            statusBadge.innerText = `Safe (+${stats.overallPrediction.safeAbsences})`;
+          } else {
+            statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-danger-subtle text-danger border border-danger-subtle';
+            statusBadge.innerText = `Alert (-${stats.overallPrediction.classesNeeded})`;
+          }
+
+          tbody.innerHTML = '';
+          if (!stats.subjectStats || stats.subjectStats.length === 0) {
+            tbody.innerHTML = `
+              <tr>
+                <td colspan="7" class="text-center py-4 text-secondary small">
+                  No subject records found for this student.
+                </td>
+              </tr>
+            `;
+            return;
+          }
+
+          stats.subjectStats.forEach(subj => {
+            const isLow = subj.percentage < stats.targetPercentage;
+            const forecastText = subj.prediction.status === 'Safe' 
+              ? `<span class="text-success small fw-bold">Can skip ${subj.prediction.safeAbsences} classes</span>`
+              : `<span class="text-danger small fw-bold">Attend next ${subj.prediction.classesNeeded} classes</span>`;
+
+            tbody.innerHTML += `
+              <tr>
+                <td class="ps-3">
+                  <div class="fw-bold text-dark small">${subj.subject_name}</div>
+                  <div class="text-secondary small font-monospace" style="font-size: 0.72rem;">${subj.subject_code}</div>
+                </td>
+                <td class="small fw-semibold text-secondary">${subj.conducted_count}</td>
+                <td class="small fw-semibold text-success">${subj.present_count}</td>
+                <td class="small fw-semibold text-danger">${subj.absent_count}</td>
+                <td class="small text-secondary">${subj.od_count || 0} / ${subj.medical_count}</td>
+                <td>
+                  <span class="fw-bold ${isLow ? 'text-danger' : 'text-success'} small">
+                    ${subj.percentage}%
+                  </span>
+                </td>
+                <td class="pe-3">${forecastText}</td>
+              </tr>
+            `;
+          });
+        } else {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-danger text-center py-4 small">
+                ${res.message || 'Failed to fetch attendance statistics.'}
+              </td>
+            </tr>
+          `;
+        }
+      } catch (err) {
+        console.error('Error fetching student stats:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-danger text-center py-4 small">
+              Network error fetching attendance breakdown.
+            </td>
+          </tr>
+        </h5>
+      </div>
+    </div>
+  </div>
+        `;
+      }
+    }
+
+    function formatTimestamp(dateStr) {
+      if (!dateStr) return 'Never';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('en-US', {
+        month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+      });
     }
 
     window.onload = loadData;

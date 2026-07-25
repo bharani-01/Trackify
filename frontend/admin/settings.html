@@ -71,7 +71,7 @@
         <div class="row g-4">
           
           <div class="col-md-6">
-            <div class="glass-card border-glass h-100">
+            <div class="glass-card border-glass">
               <h2 class="h5 fw-bold mb-4">Registration & System Controls</h2>
               
               
@@ -107,7 +107,7 @@
 
           
           <div class="col-md-6">
-            <div class="glass-card border-glass h-100">
+            <div class="glass-card border-glass">
               <h2 class="h5 fw-bold mb-4">PostgreSQL Database Diagnostics</h2>
               
               <div class="mb-3 p-3 bg-light rounded-4 border d-flex justify-content-between align-items-center">
@@ -131,7 +131,83 @@
           </div>
         </div>
 
+        <!-- Email Senders Configuration Card (Full Width) -->
+        <div class="glass-card border-glass mt-4">
+          <h2 class="h5 fw-bold mb-3">Email Senders Configuration</h2>
+          <p class="text-secondary small mb-4">
+            Configure custom sender email addresses for different message categories. Leaving fields blank reverts back to ENV configurations or defaults.
+          </p>
+          
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control bg-white" id="senderAuth" placeholder="Auth Sender">
+                <label class="text-secondary" for="senderAuth">Authentication Sender (OTP, Passwords)</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control bg-white" id="senderReminders" placeholder="Reminders Sender">
+                <label class="text-secondary" for="senderReminders">Reminders Sender (Check-Ins, Warnings)</label>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control bg-white" id="senderNotices" placeholder="Notices Sender">
+                <label class="text-secondary" for="senderNotices">Notices Sender (Announcements, Alerts)</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control bg-white" id="senderBackups" placeholder="Backups Sender">
+                <label class="text-secondary" for="senderBackups">Diagnostic Backups Sender (SQL/CSV Dumps)</label>
+              </div>
+            </div>
+          </div>
+          
+          <button onclick="saveSenderConfigs()" id="saveSendersBtn" class="btn btn-glow mt-2 py-3 px-5 text-white" style="border-radius: 0px;">Save Sender Settings</button>
+        </div>
+
         
+        <!-- Manual Reminders Control Panel -->
+        <div class="glass-card border-glass mt-4">
+          <h2 class="h5 fw-bold mb-3">Manual Email Reminders Control Panel</h2>
+          <p class="text-secondary small mb-4">
+            Manually trigger system-wide email sweeps. These run live checks against student timetables and thresholds, queueing outbound reminder notifications immediately.
+          </p>
+          
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="fw-bold mb-1 text-dark">Daily Check-In Reminders Sweep</div>
+                  <div class="text-secondary small mb-3">
+                    Checks today's timetable schedule for all departments. Queues warning emails to students who have missed or skipped marking any active periods today.
+                  </div>
+                </div>
+                <div>
+                  <button id="triggerDailyBtn" onclick="loadEmailPreview('daily')" class="btn btn-glow btn-sm py-2 px-3 text-white">
+                    <i class="bi bi-bell-fill me-1"></i> Trigger Daily Reminders
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="fw-bold mb-1 text-dark">Low Attendance Warnings Sweep</div>
+                  <div class="text-secondary small mb-3">
+                    Calculates live overall attendance ratios. Queues alerts to students whose total average has fallen below their configured target thresholds (e.g. 80%).
+                  </div>
+                </div>
+                <div>
+                  <button id="triggerLowBtn" onclick="loadEmailPreview('low-attendance')" class="btn btn-glass btn-sm border-danger text-danger py-2 px-3">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Trigger Low Attendance Alerts
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="glass-card border-glass mt-4">
           <h2 class="h5 fw-bold mb-4">System Backups & Data Exports</h2>
           
@@ -195,6 +271,56 @@
   </div>
 
   
+  <!-- Email Preview Modal -->
+  <div class="modal fade" id="emailPreviewModal" tabindex="-1" aria-labelledby="emailPreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content border-0 shadow rounded-4 overflow-hidden" style="border: 1px solid var(--border-color) !important;">
+        <div class="modal-header border-0 bg-dark text-white px-4 py-3">
+          <h5 class="modal-title fw-bold" id="emailPreviewModalLabel">Confirm Email Broadcast</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 bg-light">
+          <div id="previewSummary" class="alert alert-warning border-0 rounded-3 mb-3 small d-flex align-items-center gap-2" style="background-color: var(--badge-absent-bg); color: var(--badge-absent-color);">
+            <i class="bi bi-info-circle-fill fs-5"></i>
+            <div>
+              <strong>Review Required:</strong> <span id="previewCount" class="fw-bold">0</span> emails match this sweep condition. Review the recipient list and preview the generated HTML below.
+            </div>
+          </div>
+          
+          <div class="row g-3">
+            <!-- Left side: List of recipients -->
+            <div class="col-md-4">
+              <label class="form-label small fw-bold text-secondary text-uppercase d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">Recipients List</label>
+              <div class="list-group rounded-3 overflow-hidden shadow-sm" id="previewRecipientsList" style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border-color);">
+                <!-- Dynamic items -->
+              </div>
+            </div>
+            
+            <!-- Right side: Live email HTML render preview -->
+            <div class="col-md-8">
+              <label class="form-label small fw-bold text-secondary text-uppercase d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">Live Email Preview</label>
+              <div class="border rounded-3 bg-white p-2 shadow-sm d-flex flex-column" style="height: 420px; border-color: var(--border-color) !important;">
+                <div class="p-2 border-bottom small text-muted bg-light rounded-top d-flex flex-column gap-1" style="border-bottom: 1px solid var(--border-color) !important;">
+                  <div><strong>To:</strong> <span id="previewToField" class="text-dark">select a recipient...</span></div>
+                  <div><strong>Subject:</strong> <span id="previewSubjectField" class="text-dark">...</span></div>
+                </div>
+                <div class="flex-grow-1 overflow-auto mt-2 p-1 bg-light rounded-2">
+                  <iframe id="previewEmailIframe" style="width: 100%; height: 100%; border: none; background: white; border-radius: 4px;"></iframe>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 bg-white px-4 py-3 d-flex justify-content-between" style="border-top: 1px solid var(--border-color) !important;">
+          <button type="button" class="btn btn-glass btn-sm border-secondary text-secondary px-4 py-2" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" id="confirmBroadcastBtn" onclick="executeBroadcastSend()" class="btn btn-glow btn-sm px-4 py-2 text-white">
+            <i class="bi bi-send-fill me-1"></i> Send Broadcast
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -214,6 +340,12 @@
         document.getElementById('regSwitch').checked = response.settings.allow_self_registration;
         document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
         document.getElementById('emailSwitch').checked = response.settings.global_email_notifications;
+        
+        // Load custom senders
+        document.getElementById('senderAuth').value = response.settings.mail_from_auth || '';
+        document.getElementById('senderReminders').value = response.settings.mail_from_reminders || '';
+        document.getElementById('senderNotices').value = response.settings.mail_from_notices || '';
+        document.getElementById('senderBackups').value = response.settings.mail_from_backups || '';
       }
 
       // Fetch backups history list
@@ -300,6 +432,36 @@
       }
     }
 
+    async function saveSenderConfigs() {
+      const mail_from_auth = document.getElementById('senderAuth').value.trim();
+      const mail_from_reminders = document.getElementById('senderReminders').value.trim();
+      const mail_from_notices = document.getElementById('senderNotices').value.trim();
+      const mail_from_backups = document.getElementById('senderBackups').value.trim();
+
+      const saveBtn = document.getElementById('saveSendersBtn');
+      saveBtn.disabled = true;
+      saveBtn.innerText = 'Saving...';
+
+      const response = await apiCall('/api/admin/settings', {
+        method: 'PUT',
+        body: { 
+          mail_from_auth, 
+          mail_from_reminders, 
+          mail_from_notices, 
+          mail_from_backups 
+        }
+      });
+
+      saveBtn.disabled = false;
+      saveBtn.innerText = 'Save Sender Settings';
+
+      if (response.success) {
+        showAlert('Email sender configurations saved successfully!', 'success');
+      } else {
+        showAlert(response.message || 'Failed to save email sender configurations.', 'danger');
+      }
+    }
+
     async function runBackupTrigger() {
       const btn = document.getElementById('backupBtn');
       btn.disabled = true;
@@ -346,6 +508,128 @@
         if (format === 'sql') {
           loadBackupHistory();
         }
+      }
+    }
+
+    let activePreviews = [];
+    let activeSweepType = '';
+    const emailPreviewModal = new bootstrap.Modal(document.getElementById('emailPreviewModal'));
+
+    async function loadEmailPreview(type) {
+      activeSweepType = type;
+      const btnId = type === 'daily' ? 'triggerDailyBtn' : 'triggerLowBtn';
+      const btn = document.getElementById(btnId);
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Previews...`;
+      
+      showAlert(`Generating live email previews for "${type}"...`, 'info');
+      
+      const url = type === 'daily' ? '/api/admin/reminders/preview-daily' : '/api/admin/reminders/preview-low-attendance';
+      
+      const response = await apiCall(url, {
+        method: 'POST'
+      });
+      
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+      
+      if (!response.success) {
+        showAlert(response.message || 'Failed to load email previews.', 'danger');
+        return;
+      }
+      
+      activePreviews = response.previews || [];
+      document.getElementById('previewCount').innerText = activePreviews.length;
+      
+      const listGroup = document.getElementById('previewRecipientsList');
+      listGroup.innerHTML = '';
+      
+      const iframe = document.getElementById('previewEmailIframe');
+      const toField = document.getElementById('previewToField');
+      const subjectField = document.getElementById('previewSubjectField');
+      
+      if (activePreviews.length === 0) {
+        listGroup.innerHTML = `<div class="p-3 text-center text-secondary small bg-white border rounded-3">No matching students found for this sweep today.</div>`;
+        toField.innerText = 'none';
+        subjectField.innerText = 'N/A';
+        iframe.srcdoc = `
+          <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; color: #64748b;">
+            No email content is generated because no students match the sweep criteria right now.
+          </div>`;
+        document.getElementById('confirmBroadcastBtn').disabled = true;
+      } else {
+        document.getElementById('confirmBroadcastBtn').disabled = false;
+        activePreviews.forEach((prev, idx) => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'list-group-item list-group-item-action border-0 mb-1 rounded-2 py-2 px-3 small';
+          item.style.fontSize = '0.8rem';
+          item.innerHTML = `
+            <div class="fw-bold text-dark">${escapeHtml(prev.name)}</div>
+            <div class="text-secondary" style="font-size: 0.72rem;">${escapeHtml(prev.email)}</div>
+          `;
+          item.onclick = () => selectPreviewItem(idx, item);
+          listGroup.appendChild(item);
+        });
+        
+        // Select first item by default
+        const firstBtn = listGroup.querySelector('button');
+        if (firstBtn) {
+          selectPreviewItem(0, firstBtn);
+        }
+      }
+      
+      emailPreviewModal.show();
+    }
+
+    function selectPreviewItem(idx, buttonElement) {
+      // Clear active class from siblings
+      const parent = buttonElement.parentNode;
+      parent.querySelectorAll('button').forEach(btn => {
+        btn.classList.remove('active', 'bg-dark', 'text-white');
+      });
+      
+      buttonElement.classList.add('active', 'bg-dark', 'text-white');
+      
+      const prev = activePreviews[idx];
+      document.getElementById('previewToField').innerText = `"${prev.name}" <${prev.email}>`;
+      document.getElementById('previewSubjectField').innerText = prev.subject;
+      document.getElementById('previewEmailIframe').srcdoc = prev.html;
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return str;
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function executeBroadcastSend() {
+      const confirmBtn = document.getElementById('confirmBroadcastBtn');
+      const originalText = confirmBtn.innerHTML;
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Dispatching...`;
+      
+      showAlert('Queueing email broadcast sweep for delivery...', 'info');
+      
+      const url = activeSweepType === 'daily' ? '/api/admin/reminders/trigger-daily' : '/api/admin/reminders/trigger-low-attendance';
+      
+      const response = await apiCall(url, {
+        method: 'POST'
+      });
+      
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = originalText;
+      emailPreviewModal.hide();
+      
+      if (response.success) {
+        showAlert(response.message, 'success');
+      } else {
+        showAlert(response.message || 'Failed to dispatch broadcast sweep.', 'danger');
       }
     }
 

@@ -360,9 +360,21 @@
       document.getElementById('annCountBadge').innerText = `${announcementsList.length} Notices`;
 
       announcementsList.forEach(ann => {
-        const createdDate = new Date(ann.created_at).toLocaleDateString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
-        });
+        const createdDate = new Date(ann.created_at).toLocaleString('en-US', {
+          timeZone: 'Asia/Kolkata',
+          month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+        }) + ' IST';
+
+        let expiryHtml = '';
+        if (ann.expires_at) {
+          const expiryDate = new Date(ann.expires_at).toLocaleString('en-US', {
+            timeZone: 'Asia/Kolkata',
+            month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true
+          }) + ' IST';
+          expiryHtml = `<div class="text-danger small mb-1" style="font-size: 0.72rem;">
+            <i class="bi bi-clock-history"></i> Expiry: <strong>${expiryDate}</strong>
+          </div>`;
+        }
 
         const targetScope = ann.department_code
           ? `${ann.department_code}` + (ann.semester ? ` (Sem ${ann.semester})` : ' (All Semesters)')
@@ -388,9 +400,10 @@
               <span class="badge bg-light text-secondary border small">${targetScope}</span>
             </div>
             <h3 class="fs-6 fw-bold mb-1" style="padding-right: 30px;">${ann.title}</h3>
-            <div class="text-muted small mb-2" style="font-size: 0.72rem;">
+            <div class="text-muted small mb-1" style="font-size: 0.72rem;">
               Posted by <strong>${ann.author_name || 'Admin'}</strong> on ${createdDate}
             </div>
+            ${expiryHtml}
             <p class="small text-dark mb-0 style-content" style="white-space: pre-wrap;">${ann.content}</p>
           </div>
         `;

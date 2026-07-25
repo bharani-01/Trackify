@@ -142,10 +142,19 @@ const sendBackupEmail = async (email, subject, filename, content) => {
   }
 
   const resend = new Resend(resendApiKey);
+  const systemSettingsRepository = require('../repositories/systemSettingsRepository');
 
   try {
+    let senderEmail = await systemSettingsRepository.getSetting('mail_from_backups');
+    if (!senderEmail) {
+      senderEmail = process.env.MAIL_FROM_BACKUPS;
+    }
+    if (!senderEmail) {
+      senderEmail = process.env.MAIL_FROM || 'Trackify Backups <backups@mail.trackifyapp.co.in>';
+    }
+
     const data = await resend.emails.send({
-      from: process.env.MAIL_FROM || 'Trackify <trackify@mail.trackifyapp.co.in>',
+      from: senderEmail,
       to: [email],
       subject: subject,
       html: `

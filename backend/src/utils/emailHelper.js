@@ -4,14 +4,14 @@ const db = require('../config/db');
 /**
  * Queue an email to the persistent database email_queue table
  */
-const queueEmail = async (email, name, subject, htmlContent) => {
+const queueEmail = async (email, name, subject, htmlContent, category = 'auth') => {
   const query = `
-    INSERT INTO email_queue (recipient_email, recipient_name, subject, html_content, status)
-    VALUES ($1, $2, $3, $4, 'pending')
+    INSERT INTO email_queue (recipient_email, recipient_name, subject, html_content, status, category)
+    VALUES ($1, $2, $3, $4, 'pending', $5)
     RETURNING id
   `;
   try {
-    const result = await db.query(query, [email.toLowerCase().trim(), name.trim(), subject.trim(), htmlContent]);
+    const result = await db.query(query, [email.toLowerCase().trim(), name.trim(), subject.trim(), htmlContent, category]);
     console.log(`[EMAIL QUEUE]: Email queued for ${email} with Queue ID: ${result.rows[0].id}`);
     return result.rows[0].id;
   } catch (error) {

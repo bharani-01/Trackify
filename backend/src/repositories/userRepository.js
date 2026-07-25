@@ -7,9 +7,13 @@ const db = require('../config/db');
  */
 const findByEmail = async (email) => {
   const query = `
-    SELECT u.*, d.code AS department_code, d.name AS department_name 
+    SELECT u.*, d.code AS department_code, d.name AS department_name,
+           uo.code AS otp_code, uo.expires_at AS otp_expires,
+           pr.token AS reset_password_token, pr.expires_at AS reset_password_expires
     FROM users u
     LEFT JOIN departments d ON u.department_id = d.id
+    LEFT JOIN user_otps uo ON u.id = uo.user_id
+    LEFT JOIN password_resets pr ON u.id = pr.user_id
     WHERE u.email = $1
   `;
   const result = await db.query(query, [email.toLowerCase().trim()]);
@@ -25,9 +29,13 @@ const findById = async (id) => {
   const query = `
     SELECT u.id, u.name, u.register_number, u.email, u.role, u.avatar, 
            u.department, u.department_id, d.name AS department_name, u.semester, 
-           u.is_suspended, u.is_approved, u.created_at, u.updated_at 
+           u.is_suspended, u.is_approved, u.created_at, u.updated_at,
+           uo.code AS otp_code, uo.expires_at AS otp_expires,
+           pr.token AS reset_password_token, pr.expires_at AS reset_password_expires
     FROM users u
     LEFT JOIN departments d ON u.department_id = d.id
+    LEFT JOIN user_otps uo ON u.id = uo.user_id
+    LEFT JOIN password_resets pr ON u.id = pr.user_id
     WHERE u.id = $1
   `;
   const result = await db.query(query, [id]);
@@ -106,12 +114,13 @@ const createUser = async (user) => {
  */
 const updateResetToken = async (userId, token, expires) => {
   const query = `
-    UPDATE users 
-    SET reset_password_token = $1, reset_password_expires = $2, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $3
-    RETURNING id, email
+    INSERT INTO password_resets (user_id, token, expires_at)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (user_id) 
+    DO UPDATE SET token = EXCLUDED.token, expires_at = EXCLUDED.expires_at, created_at = CURRENT_TIMESTAMP
+    RETURNING user_id AS id
   `;
-  const result = await db.query(query, [token, expires, userId]);
+  const result = await db.query(query, [userId, token, expires]);
   return result.rows[0];
 };
 
@@ -120,9 +129,10 @@ const updateResetToken = async (userId, token, expires) => {
  */
 const findByResetToken = async (token) => {
   const query = `
-    SELECT id, email, reset_password_expires 
-    FROM users 
-    WHERE reset_password_token = $1 AND reset_password_expires > NOW()
+    SELECT u.id, u.email, pr.expires_at AS reset_password_expires 
+    FROM users u
+    JOIN password_resets pr ON u.id = pr.user_id
+    WHERE pr.token = $1 AND pr.expires_at > NOW()
   `;
   const result = await db.query(query, [token]);
   return result.rows[0];
@@ -134,11 +144,14 @@ const findByResetToken = async (token) => {
 const updatePasswordAndClearToken = async (userId, passwordHash) => {
   const query = `
     UPDATE users 
-    SET password_hash = $1, reset_password_token = NULL, reset_password_expires = NULL, updated_at = CURRENT_TIMESTAMP
+    SET password_hash = $1, updated_at = CURRENT_TIMESTAMP
     WHERE id = $2
     RETURNING id, email, role
   `;
   const result = await db.query(query, [passwordHash, userId]);
+  
+  await db.query('DELETE FROM password_resets WHERE user_id = $1', [userId]);
+
   return result.rows[0];
 };
 
@@ -210,28 +223,26 @@ const rejectUser = async (userId) => {
 /**
  * Update user's name and email profile info
  */
-const updateProfile = async (userId, name, email) => {
+const updateProfile = async (userId, name, email, avatar = null) => {
   const query = `
     UPDATE users 
-    SET name = $1, email = $2, updated_at = CURRENT_TIMESTAMP
+    SET name = $1, email = $2, avatar = COALESCE($4, avatar), updated_at = CURRENT_TIMESTAMP
     WHERE id = $3
-    RETURNING id, name, email, register_number, role, department, department_id, semester
+    RETURNING id, name, email, avatar
   `;
-  const result = await db.query(query, [name.trim(), email.toLowerCase().trim(), userId]);
+  const result = await db.query(query, [name.trim(), email.toLowerCase().trim(), userId, avatar]);
   return result.rows[0];
 };
 
-/**
- * Update user record with generated OTP and expiry
- */
 const updateOtp = async (userId, otp, expires) => {
   const query = `
-    UPDATE users 
-    SET otp_code = $1, otp_expires = $2, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $3
-    RETURNING id, email
+    INSERT INTO user_otps (user_id, code, expires_at)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (user_id)
+    DO UPDATE SET code = EXCLUDED.code, expires_at = EXCLUDED.expires_at, created_at = CURRENT_TIMESTAMP
+    RETURNING user_id AS id
   `;
-  const result = await db.query(query, [otp, expires, userId]);
+  const result = await db.query(query, [userId, otp, expires]);
   return result.rows[0];
 };
 
@@ -240,10 +251,9 @@ const updateOtp = async (userId, otp, expires) => {
  */
 const clearOtp = async (userId) => {
   const query = `
-    UPDATE users 
-    SET otp_code = NULL, otp_expires = NULL, updated_at = CURRENT_TIMESTAMP
-    WHERE id = $1
-    RETURNING id, email
+    DELETE FROM user_otps 
+    WHERE user_id = $1
+    RETURNING user_id AS id
   `;
   const result = await db.query(query, [userId]);
   return result.rows[0];
@@ -278,6 +288,20 @@ const findStudentsByContext = async ({ department_id, department, semester }) =>
   return result.rows;
 };
 
+/**
+ * Update user last_login timestamp
+ */
+const updateLastLogin = async (userId) => {
+  const query = `
+    UPDATE users 
+    SET last_login = CURRENT_TIMESTAMP
+    WHERE id = $1
+    RETURNING id
+  `;
+  const result = await db.query(query, [userId]);
+  return result.rows[0];
+};
+
 module.exports = {
   findByEmail,
   findById,
@@ -291,5 +315,6 @@ module.exports = {
   updateProfile,
   updateOtp,
   clearOtp,
-  findStudentsByContext
+  findStudentsByContext,
+  updateLastLogin
 };

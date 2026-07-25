@@ -42,11 +42,15 @@ async function apiCall(url, options = {}, optionalBody = null) {
       };
     }
 
-    // Dynamic dynamic avatar letter initialization
+    // Dynamic dynamic avatar letter or image initialization
     if (url.endsWith('/api/auth/me') && data.success && data.user) {
-      const avatarSpan = document.querySelector('.profile-avatar-container span');
-      if (avatarSpan && data.user.name) {
-        avatarSpan.innerText = data.user.name.trim().charAt(0).toUpperCase();
+      const avatarContainer = document.querySelector('.profile-avatar-container');
+      if (avatarContainer && data.user) {
+        if (data.user.avatar) {
+          avatarContainer.innerHTML = `<img src="${data.user.avatar}" alt="Avatar" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover;">`;
+        } else if (data.user.name) {
+          avatarContainer.innerHTML = `<span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;">${data.user.name.trim().charAt(0).toUpperCase()}</span>`;
+        }
       }
     }
 

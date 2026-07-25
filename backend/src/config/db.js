@@ -74,6 +74,28 @@ const initMigrations = async (retries = 3) => {
       ALTER TABLE users ADD COLUMN IF NOT EXISTS department_id UUID REFERENCES departments(id) ON DELETE SET NULL;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT TRUE;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS is_suspended BOOLEAN DEFAULT FALSE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS last_login TIMESTAMP;
+      CREATE TABLE IF NOT EXISTS user_otps (
+          user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          code VARCHAR(6) NOT NULL,
+          expires_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE TABLE IF NOT EXISTS password_resets (
+          user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+          token VARCHAR(255) NOT NULL,
+          expires_at TIMESTAMP NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      CREATE TABLE IF NOT EXISTS timetable_adjustments (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          department_id UUID REFERENCES departments(id) ON DELETE CASCADE,
+          semester INT NOT NULL,
+          date DATE NOT NULL,
+          period INT NOT NULL,
+          adjustment_type VARCHAR(50) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     await client.query(`
@@ -214,6 +236,16 @@ const initMigrations = async (retries = 3) => {
       );
     `);
 
+    // Seed default custom mail senders
+    await client.query(`
+      INSERT INTO system_settings (key, value) VALUES
+      ('mail_from_auth', 'Trackify Auth <auth@mail.trackifyapp.co.in>'),
+      ('mail_from_reminders', 'Trackify Reminders <reminders@mail.trackifyapp.co.in>'),
+      ('mail_from_notices', 'Trackify Notices <notices@mail.trackifyapp.co.in>'),
+      ('mail_from_backups', 'Trackify Backups <backups@mail.trackifyapp.co.in>')
+      ON CONFLICT (key) DO NOTHING;
+    `);
+
     // 7. Ensure schedule_adjustments table exists
     await client.query(`
       CREATE TABLE IF NOT EXISTS schedule_adjustments (
@@ -305,6 +337,7 @@ const initMigrations = async (retries = 3) => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS category VARCHAR(50) DEFAULT 'auth';
     `);
 
     // 10. Performance Indexes

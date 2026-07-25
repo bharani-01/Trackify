@@ -8,8 +8,10 @@
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  
   <script>
     (function () {
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -21,16 +23,128 @@
   </script>
   
   <link rel="manifest" href="/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+
+  <style>
+    /* Settings Hub Layout Styles */
+    .settings-hub-card {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    .profile-summary-header {
+      padding: 32px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+    }
+
+    .settings-avatar-display {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .settings-list-group {
+      background: var(--bg-secondary);
+    }
+
+    .settings-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .settings-list-item:hover {
+      background: var(--bg-primary);
+    }
+
+    .settings-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .settings-list-icon {
+      font-size: 1.3rem;
+      margin-right: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+    }
+
+    .settings-list-label {
+      font-weight: 600;
+      font-size: 0.98rem;
+      flex-grow: 1;
+    }
+
+    .settings-list-chevron {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+    }
+
+    /* Preset Avatars Selector */
+    .avatar-preset-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+    
+    .avatar-preset-option {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 3px solid transparent;
+      transition: all 0.2s ease;
+      object-fit: cover;
+      background: var(--bg-primary);
+    }
+    
+    .avatar-preset-option:hover {
+      transform: scale(1.1);
+    }
+    
+    .avatar-preset-option.active {
+      border-color: var(--primary-color);
+      transform: scale(1.1);
+      box-shadow: 0 4px 10px rgba(59, 130, 246, 0.25);
+    }
+
+    .modal-floating-input {
+      background: var(--bg-primary) !important;
+      border-color: var(--border-color) !important;
+      color: var(--text-primary) !important;
+    }
+  </style>
 </head>
 
 <body>
 
   <div class="app-layout">
     
+    <!-- Sidebar -->
     <aside class="app-sidebar">
       <div class="sidebar-logo">
         <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
@@ -75,62 +189,34 @@
       </div>
     </aside>
 
-    
+    <!-- Main Content Wrapper -->
     <div class="app-main-wrapper">
-      
       <header class="app-header">
         <h1 class="app-header-title">Profile Settings</h1>
         <div class="app-header-profile dropdown">
-          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
-            style="cursor: pointer;">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
             <div class="profile-avatar-container">
-              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6"
-                style="width: 36px; height: 36px; border-radius: 50%;">S</span>
+              <!-- Rendered dynamically -->
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
               <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
-              <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
+              <div class="text-secondary small">Student Profile</div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2"
-            style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid var(--border-color);">
             <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2"
-                href="/student/settings">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"
-                  style="width: 16px; height: 16px;">
-                  <line x1="4" y1="21" x2="4" y2="14"></line>
-                  <line x1="4" y1="10" x2="4" y2="3"></line>
-                  <line x1="12" y1="21" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12" y2="3"></line>
-                  <line x1="20" y1="21" x2="20" y2="16"></line>
-                  <line x1="20" y1="12" x2="20" y2="3"></line>
-                  <line x1="1" y1="14" x2="7" y2="14"></line>
-                  <line x1="9" y1="8" x2="15" y2="8"></line>
-                  <line x1="17" y1="16" x2="23" y2="16"></line>
-                </svg>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
+                <i class="bi bi-sliders text-secondary" style="font-size: 0.9rem;"></i>
                 <span>Settings</span>
               </a>
             </li>
+            <li><hr class="dropdown-divider" style="border-color: var(--border-color);"></li>
             <li>
-              <hr class="dropdown-divider" style="border-color: #f1f5f9;">
-            </li>
-            <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#"
-                onclick="handleLogout()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger"
-                  style="width: 16px; height: 16px;">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
+                <i class="bi bi-box-arrow-right text-danger" style="font-size: 0.9rem;"></i>
                 <span>Log Out</span>
               </a>
             </li>
@@ -138,138 +224,321 @@
         </div>
       </header>
 
-      
-      <main class="app-content animate-fade-in-up">
+      <main class="app-content animate-fade-in-up py-4">
         
-        <p class="text-secondary small mb-4">Configure your minimum attendance threshold and account settings.</p>
-
-        <div class="row g-4">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden settings-hub-card" style="border: 1px solid var(--border-color) !important;">
           
-          <div class="col-md-6">
-            <div class="glass-card border-glass p-4 bg-white" style="border-radius: 0px;">
-              <h2 class="h5 fw-bold mb-4">Attendance Configurations</h2>
-              <form id="settingsForm">
-                
-                <div class="form-floating mb-3">
-                  <input type="number" class="form-control" id="minAttendance" placeholder="80" readonly
-                    style="background-color: var(--bg-primary) !important; border-radius: 0px;">
-                  <label for="minAttendance">Minimum Target Attendance (%) [Locked - Admin Only]</label>
-                  <div class="form-text text-secondary mt-1 small">This target is locked at 80% by college standards. Only system administrators can change this value for your account.</div>
-                </div>
-
-                
-                <div
-                  class="form-switch form-check mb-3 p-3 border bg-white d-flex justify-content-between align-items-center"
-                  style="padding-left: 3rem; border-radius: 0px;">
-                  <div>
-                    <label class="form-check-label fw-bold text-dark" for="notifsToggle">Enable Reminders</label>
-                    <div class="text-secondary small">Notify me if subject averages fall below target.</div>
-                  </div>
-                  <input class="form-check-input ms-0" type="checkbox" role="switch" id="notifsToggle" checked>
-                </div>
-
-                
-                <div
-                  class="form-switch form-check mb-3 p-3 border bg-white d-flex justify-content-between align-items-center"
-                  style="padding-left: 3rem; border-radius: 0px;">
-                  <div>
-                    <label class="form-check-label fw-bold text-dark" for="dailyReminderToggle">Daily Marking
-                      Reminders</label>
-                    <div class="text-secondary small">Remind me to log attendance every weekday.</div>
-                  </div>
-                  <input class="form-check-input ms-0" type="checkbox" role="switch" id="dailyReminderToggle" checked>
-                </div>
-
-                
-                <div
-                  class="form-switch form-check mb-3 p-3 border bg-white d-flex justify-content-between align-items-center"
-                  style="padding-left: 3rem; border-radius: 0px;">
-                  <div>
-                    <label class="form-check-label fw-bold text-dark" for="lowAttendanceAlert">Low Attendance
-                      Warnings</label>
-                    <div class="text-secondary small">Send email alert if average falls below 80%.</div>
-                  </div>
-                  <input class="form-check-input ms-0" type="checkbox" role="switch" id="lowAttendanceAlert" checked>
-                </div>
-
-                
-                <div class="form-group mb-4">
-                  <label for="reminderTimer" class="fw-bold text-dark small mb-1.5"
-                    style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Schedule
-                    Reminder Email Timer</label>
-                  <select class="form-select" id="reminderTimer" style="border-radius: 0px;">
-                    <option value="disabled">Disabled</option>
-                    <option value="08:00">08:00 AM (Before Class)</option>
-                    <option value="09:00">09:00 AM (Class Start)</option>
-                    <option value="17:00">05:00 PM (End of Day)</option>
-                    <option value="18:00">06:00 PM (Dinner Hour)</option>
-                  </select>
-                  <div class="form-text text-secondary mt-1 small">Select preferred schedule to run automatic tracking
-                    sweeps.</div>
-                </div>
-
-                <button type="submit" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save
-                  Configurations</button>
-              </form>
-            </div>
+          <!-- Banner Header -->
+          <div class="profile-summary-header">
+            <img id="mainAvatarImg" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Angel" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Trackify'" class="settings-avatar-display" alt="Student Avatar">
+            <h2 class="h4 fw-bold mb-1 text-dark" id="mainProfileName">Loading...</h2>
+            <p class="text-secondary small mb-0" id="mainProfileEmail">...</p>
           </div>
 
-          
-          <div class="col-md-6">
-            <div class="glass-card border-glass p-4 bg-white" style="border-radius: 0px;">
-              <h2 class="h5 fw-bold mb-4">Profile Information</h2>
-              <form id="profileForm" class="mb-4">
-                
-                <div class="form-floating mb-3">
-                  <input type="text" class="form-control" id="profileName" placeholder="Name" required
-                    style="border-radius: 0px;">
-                  <label for="profileName">Student Name</label>
-                </div>
+          <!-- Settings Option Hub Group -->
+          <div class="settings-list-group">
+            <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+              <span class="settings-list-icon text-primary"><i class="bi bi-person-fill-gear"></i></span>
+              <span class="settings-list-label">Edit Profile Details</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
 
-                
-                <div class="form-floating mb-3">
-                  <input type="email" class="form-control" id="profileEmail" placeholder="Email" required
-                    style="border-radius: 0px;">
-                  <label for="profileEmail">Email Address</label>
-                </div>
+            <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#notificationPrefsModal">
+              <span class="settings-list-icon text-success"><i class="bi bi-envelope-at-fill"></i></span>
+              <span class="settings-list-label">Notification Preferences</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
 
-                
-                <div class="form-floating mb-4">
-                  <input type="text" class="form-control" id="profileReg" placeholder="Reg Number" readonly
-                    style="background-color: var(--bg-primary); !important; border-radius: 0px;">
-                  <label for="profileReg">Registration ID (Read-only)</label>
-                </div>
+            <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#scheduleRemindersModal">
+              <span class="settings-list-icon text-warning"><i class="bi bi-alarm-fill"></i></span>
+              <span class="settings-list-label">Schedule Reminders</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
 
-                <button type="submit" class="btn btn-glass w-100 py-3 text-primary border-primary"
-                  style="border-radius: 0px; font-weight: 700;">Update Profile Details</button>
-              </form>
+            <button class="settings-list-item" onclick="toggleDisplayTheme()">
+              <span class="settings-list-icon text-info"><i class="bi bi-display"></i></span>
+              <span class="settings-list-label">Toggle Dark / Light Theme</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
 
-            </div>
+            <button class="settings-list-item" onclick="clearCachedData()">
+              <span class="settings-list-icon text-secondary"><i class="bi bi-trash"></i></span>
+              <span class="settings-list-label">Clear Local Cache</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
+
+            <button class="settings-list-item" onclick="handleLogout()">
+              <span class="settings-list-icon text-danger"><i class="bi bi-box-arrow-right"></i></span>
+              <span class="settings-list-label">Log Out Session</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
           </div>
+          
         </div>
+
       </main>
     </div>
   </div>
 
-  
+  <!-- MODAL 1: EDIT PROFILE DETAILS -->
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold text-dark" id="editProfileModalLabel">Edit Profile Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="profileForm">
+          <div class="modal-body p-4">
+            
+            <!-- Avatar presets selector -->
+            <div class="mb-4 text-center">
+              <label class="form-label small fw-bold text-secondary text-uppercase d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">Choose Avatar Preset</label>
+              <div class="avatar-preset-container">
+                <!-- Female Illustrations -->
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sophia" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 1" title="Sophia">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sara" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 2" title="Sara">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Vivian" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 3" title="Vivian">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Zoe" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 4" title="Zoe">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Emma" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 5" title="Emma">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aria" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 6" title="Aria">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lily" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 7" title="Lily">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Chloe" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Female Preset 8" title="Chloe">
+                <!-- Male / Diverse Illustrations -->
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Angel" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 9" title="Angel">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sam" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 10" title="Sam">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Simba" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 11" title="Simba">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Buster" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 12" title="Buster">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Harley" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 13" title="Harley">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Milo" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 14" title="Milo">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 15" title="Oliver">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jack" onclick="selectAvatarPreset(this.src)" class="avatar-preset-option" alt="Preset 16" title="Jack">
+              </div>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control modal-floating-input" id="profileName" placeholder="Name" required>
+              <label class="text-secondary" for="profileName">Student Name *</label>
+            </div>
+
+            <div class="form-floating mb-3">
+              <input type="email" class="form-control modal-floating-input" id="profileEmail" placeholder="Email" required>
+              <label class="text-secondary" for="profileEmail">Email Address *</label>
+            </div>
+
+            <div class="form-floating mb-2">
+              <input type="text" class="form-control modal-floating-input" id="profileReg" placeholder="Registration ID" readonly>
+              <label class="text-secondary" for="profileReg">Registration ID (Read-only)</label>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Change password">
+              <i class="bi bi-lock-fill"></i> Change Password
+            </button>
+            <button type="submit" class="btn btn-glow">Save Profile</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: NOTIFICATION PREFERENCES -->
+  <div class="modal fade" id="notificationPrefsModal" tabindex="-1" aria-labelledby="notificationPrefsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold text-dark" id="notificationPrefsModalLabel">Notification Preferences</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="notificationsForm">
+          <div class="modal-body p-4">
+            
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary mb-1">Minimum Target Attendance (%) [Locked]</label>
+              <input type="number" class="form-control modal-floating-input" id="minAttendance" readonly>
+              <div class="form-text text-secondary mt-1 small">This target is locked at 80% by college standards. Only system administrators can change this value for your account.</div>
+            </div>
+
+            <div class="form-check form-switch mb-3 p-3 border rounded-3 d-flex justify-content-between align-items-center" style="padding-left: 3rem; background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="notifsToggle">Enable Reminders</label>
+                <div class="text-secondary small">Notify me if subject averages fall below target.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="notifsToggle" checked>
+            </div>
+
+            <div class="form-check form-switch p-3 border rounded-3 d-flex justify-content-between align-items-center" style="padding-left: 3rem; background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="lowAttendanceAlert">Low Attendance Warnings</label>
+                <div class="text-secondary small">Send email alert if average falls below 80%.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="lowAttendanceAlert" checked>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Save Preferences</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: SCHEDULE REMINDERS -->
+  <div class="modal fade" id="scheduleRemindersModal" tabindex="-1" aria-labelledby="scheduleRemindersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold text-dark" id="scheduleRemindersModalLabel">Schedule Reminders</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="scheduleForm">
+          <div class="modal-body p-4">
+            
+            <div class="form-check form-switch mb-4 p-3 border rounded-3 d-flex justify-content-between align-items-center" style="padding-left: 3rem; background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="dailyReminderToggle">Daily Marking Reminders</label>
+                <div class="text-secondary small">Remind me to log attendance every weekday.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="dailyReminderToggle" checked>
+            </div>
+
+            <div class="form-group mb-2">
+              <label for="reminderTimer" class="fw-bold text-dark small mb-1.5" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Schedule Reminder Email Timer</label>
+              <select class="form-select text-dark" id="reminderTimer" style="background: var(--bg-primary); border-color: var(--border-color);">
+                <option value="disabled">Disabled</option>
+                <option value="08:00">08:00 AM (Before Class)</option>
+                <option value="09:00">09:00 AM (Class Start)</option>
+                <option value="17:00">05:00 PM (End of Day)</option>
+                <option value="18:00">06:00 PM (Dinner Hour)</option>
+              </select>
+              <div class="form-text text-secondary mt-1 small">Select preferred schedule to run automatic tracking sweeps.</div>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Save Schedule</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- PASSWORD CHANGE MODAL -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold text-dark" id="changePasswordModalLabel">Change Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="passwordForm">
+          <div class="modal-body p-4">
+            
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control text-dark" id="oldPassword" placeholder="Old Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
+              <label class="text-secondary" for="oldPassword">Current Password *</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <input type="password" class="form-control text-dark" id="newPassword" placeholder="New Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
+              <label class="text-secondary" for="newPassword">New Password *</label>
+            </div>
+
+            <div class="form-floating mb-2">
+              <input type="password" class="form-control text-dark" id="confirmNewPassword" placeholder="Confirm Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
+              <label class="text-secondary" for="confirmNewPassword">Confirm New Password *</label>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Change Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
   <script>
+    let activePresetAvatar = '';
+    const editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+    const notificationPrefsModal = new bootstrap.Modal(document.getElementById('notificationPrefsModal'));
+    const scheduleRemindersModal = new bootstrap.Modal(document.getElementById('scheduleRemindersModal'));
+    const passwordModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+
+    function selectAvatarPreset(src) {
+      activePresetAvatar = src;
+      
+      // Update selected border state
+      const presets = document.querySelectorAll('.avatar-preset-option');
+      presets.forEach(p => {
+        if (p.src === src) {
+          p.classList.add('active');
+        } else {
+          p.classList.remove('active');
+        }
+      });
+    }
+
+    function toggleDisplayTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const target = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', target);
+      localStorage.setItem('theme', target);
+      showAlert(`Theme changed to ${target} mode`, 'success');
+    }
+
+    function clearCachedData() {
+      if (confirm('Clear local app cache? This will reset local configurations and require you to re-authenticate.')) {
+        localStorage.clear();
+        window.location.href = '/login';
+      }
+    }
+
     async function loadData() {
-      // Load user profile header and info
+      // 1. Load user profile
       const meResult = await apiCall('/api/auth/me');
       if (meResult.success && meResult.user) {
         const user = meResult.user;
         document.getElementById('user-header-name').innerText = user.name;
+        
+        // Populate main display
+        document.getElementById('mainProfileName').innerText = user.name;
+        document.getElementById('mainProfileEmail').innerText = user.email;
+        
+        // Populate edit modal fields
         document.getElementById('profileName').value = user.name;
         document.getElementById('profileEmail').value = user.email;
         document.getElementById('profileReg').value = user.register_number;
+
+        // Load avatar if present
+        if (user.avatar) {
+          document.getElementById('mainAvatarImg').src = user.avatar;
+          activePresetAvatar = user.avatar;
+
+          // highlight preset if matches
+          const presets = document.querySelectorAll('.avatar-preset-option');
+          presets.forEach(p => {
+            if (p.src === user.avatar) {
+              p.classList.add('active');
+            } else {
+              p.classList.remove('active');
+            }
+          });
+        }
       } else {
         window.location.href = '/login';
         return;
       }
 
-      // Fetch user settings
+      // 2. Fetch user settings
       const response = await apiCall('/api/settings');
       if (response.success && response.settings) {
         document.getElementById('minAttendance').value = response.settings.minimum_attendance;
@@ -282,13 +551,38 @@
       }
     }
 
-    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+    // Profile form submit (Details & Avatar)
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('profileName').value;
+      const email = document.getElementById('profileEmail').value;
+      const avatar = activePresetAvatar || null;
+
+      const response = await apiCall('/api/auth/me', {
+        method: 'PUT',
+        body: { name, email, avatar }
+      });
+
+      if (response.success) {
+        editProfileModal.hide();
+        showAlert('Profile details updated successfully', 'success');
+        loadData();
+      } else {
+        showAlert(response.message || 'Failed to update profile info.', 'danger');
+      }
+    });
+
+    // Save Notifications Preferences Form submit
+    document.getElementById('notificationsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const minimum_attendance = document.getElementById('minAttendance').value;
       const notifications = document.getElementById('notifsToggle').checked;
-      const daily_reminders = document.getElementById('dailyReminderToggle').checked;
       const low_attendance_warnings = document.getElementById('lowAttendanceAlert').checked;
+
+      // Keep others unchanged
+      const daily_reminders = document.getElementById('dailyReminderToggle').checked;
       const email_timer = document.getElementById('reminderTimer').value;
 
       const response = await apiCall('/api/settings', {
@@ -303,29 +597,70 @@
       });
 
       if (response.success) {
-        showAlert('Configurations and preferences saved successfully', 'success');
+        notificationPrefsModal.hide();
+        showAlert('Notification preferences saved successfully', 'success');
         loadData();
       } else {
         showAlert(response.message, 'danger');
       }
     });
 
-    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    // Save Schedule Reminders Form submit
+    document.getElementById('scheduleForm').addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('profileName').value;
-      const email = document.getElementById('profileEmail').value;
+      const daily_reminders = document.getElementById('dailyReminderToggle').checked;
+      const email_timer = document.getElementById('reminderTimer').value;
 
-      const response = await apiCall('/api/auth/me', {
+      // Keep others unchanged
+      const minimum_attendance = document.getElementById('minAttendance').value;
+      const notifications = document.getElementById('notifsToggle').checked;
+      const low_attendance_warnings = document.getElementById('lowAttendanceAlert').checked;
+
+      const response = await apiCall('/api/settings', {
         method: 'PUT',
-        body: { name, email }
+        body: {
+          minimum_attendance,
+          notifications,
+          daily_reminders,
+          email_timer,
+          low_attendance_warnings
+        }
       });
 
       if (response.success) {
-        showAlert('Profile details updated successfully', 'success');
+        scheduleRemindersModal.hide();
+        showAlert('Schedule configurations saved successfully', 'success');
         loadData();
       } else {
-        showAlert(response.message || 'Failed to update profile info.', 'danger');
+        showAlert(response.message, 'danger');
+      }
+    });
+
+    // Password change submit
+    document.getElementById('passwordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const oldPassword = document.getElementById('oldPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+      if (newPassword !== confirmNewPassword) {
+        showAlert('New passwords do not match!', 'warning');
+        return;
+      }
+
+      const response = await apiCall('/api/auth/update-password', {
+        method: 'PUT',
+        body: { oldPassword, newPassword }
+      });
+
+      if (response.success) {
+        passwordModal.hide();
+        document.getElementById('passwordForm').reset();
+        showAlert('Password changed successfully!', 'success');
+      } else {
+        showAlert(response.message || 'Failed to update password.', 'danger');
       }
     });
 
