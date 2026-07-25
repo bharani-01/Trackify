@@ -811,7 +811,7 @@ const triggerLowAttendanceWarnings = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Low attendance warnings sweep executed successfully. Emails queued for delivery: ${queuedCount}`,
+      message: `Low attendance alerts sweep executed successfully. Emails queued for delivery: ${queuedCount}`,
       count: queuedCount
     });
   } catch (error) {
@@ -819,6 +819,73 @@ const triggerLowAttendanceWarnings = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to trigger low attendance alerts'
+    });
+  }
+};
+
+/**
+ * Preview winking summary email template
+ * @route POST /api/admin/reminders/preview-summary
+ */
+const previewSummaryEmails = async (req, res) => {
+  try {
+    const { startDate, endDate, userId } = req.body;
+    if (!startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'Both startDate and endDate are required parameters'
+      });
+    }
+    const { runSummaryEmailsSweep } = require('../services/reminderScheduler');
+    const previews = await runSummaryEmailsSweep(startDate, endDate, true, userId || null);
+    return res.status(200).json({
+      success: true,
+      previews
+    });
+  } catch (error) {
+    console.error('previewSummaryEmails controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to generate attendance summary email previews'
+    });
+  }
+};
+
+/**
+ * Trigger manual winking summary emails dispatch
+ * @route POST /api/admin/reminders/trigger-summary
+ */
+const triggerSummaryEmails = async (req, res) => {
+  try {
+    const { startDate, endDate, userId } = req.body;
+    if (!startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        message: 'Both startDate and endDate are required parameters'
+      });
+    }
+    const { runSummaryEmailsSweep } = require('../services/reminderScheduler');
+    const queuedCount = await runSummaryEmailsSweep(startDate, endDate, false, userId || null);
+
+    // Log action to audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_TRIGGER_SUMMARY_EMAILS',
+      `Manually triggered winking attendance summary sweep for period ${startDate} to ${endDate}. Emails queued: ${queuedCount}${userId ? ' (Single User ID: ' + userId + ')' : ''}`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Manual summary sweep executed. Emails queued for delivery: ${queuedCount}`,
+      count: queuedCount
+    });
+  } catch (error) {
+    console.error('triggerSummaryEmails controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to trigger manual summary email sweep'
     });
   }
 };
@@ -843,5 +910,7 @@ module.exports = {
   triggerDailyReminders,
   triggerLowAttendanceWarnings,
   previewDailyReminders,
-  previewLowAttendanceWarnings
+  previewLowAttendanceWarnings,
+  previewSummaryEmails,
+  triggerSummaryEmails
 };

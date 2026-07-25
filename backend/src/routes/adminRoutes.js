@@ -20,7 +20,9 @@ const {
   triggerDailyReminders,
   triggerLowAttendanceWarnings,
   previewDailyReminders,
-  previewLowAttendanceWarnings
+  previewLowAttendanceWarnings,
+  previewSummaryEmails,
+  triggerSummaryEmails
 } = require('../controllers/adminController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 
@@ -65,6 +67,8 @@ router.post('/reminders/preview-daily', previewDailyReminders);
 router.post('/reminders/preview-low-attendance', previewLowAttendanceWarnings);
 router.post('/reminders/trigger-daily', triggerDailyReminders);
 router.post('/reminders/trigger-low-attendance', triggerLowAttendanceWarnings);
+router.post('/reminders/preview-summary', previewSummaryEmails);
+router.post('/reminders/trigger-summary', triggerSummaryEmails);
 
 // Master subjects templates
 router.route('/subjects')

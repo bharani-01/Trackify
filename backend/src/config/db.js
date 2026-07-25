@@ -236,14 +236,29 @@ const initMigrations = async (retries = 3) => {
       );
     `);
 
-    // Seed default custom mail senders
+    // Seed default custom mail senders and summary settings
     await client.query(`
       INSERT INTO system_settings (key, value) VALUES
       ('mail_from_auth', 'Trackify Auth <auth@mail.trackifyapp.co.in>'),
       ('mail_from_reminders', 'Trackify Reminders <reminders@mail.trackifyapp.co.in>'),
       ('mail_from_notices', 'Trackify Notices <notices@mail.trackifyapp.co.in>'),
-      ('mail_from_backups', 'Trackify Backups <backups@mail.trackifyapp.co.in>')
+      ('mail_from_backups', 'Trackify Backups <backups@mail.trackifyapp.co.in>'),
+      ('summary_email_enabled', 'true'),
+      ('summary_email_interval', '15'),
+      ('last_summary_date', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'))
       ON CONFLICT (key) DO NOTHING;
+    `);
+
+    // Ensure attendance_summary_logs table exists
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS attendance_summary_logs (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          start_date DATE NOT NULL,
+          end_date DATE NOT NULL,
+          status VARCHAR(20) DEFAULT 'sent',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     // 7. Ensure schedule_adjustments table exists

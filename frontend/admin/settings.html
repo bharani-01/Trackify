@@ -93,12 +93,27 @@
               </div>
 
               
-              <div class="form-check form-switch mb-4 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
                 <div>
                   <label class="form-check-label fw-bold text-dark" for="maintSwitch">Maintenance Mode</label>
                   <div class="text-secondary small" style="font-size: 0.8rem;">Block student portal access globally.</div>
                 </div>
                 <input class="form-check-input ms-0" type="checkbox" role="switch" id="maintSwitch">
+              </div>
+
+              <!-- Automated 15-Day Attendance Summaries Switch -->
+              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+                <div>
+                  <label class="form-check-label fw-bold text-dark" for="summarySwitch">Automated Summary Emails</label>
+                  <div class="text-secondary small" style="font-size: 0.8rem;">Auto-send periodic summary reports to students.</div>
+                </div>
+                <input class="form-check-input ms-0" type="checkbox" role="switch" id="summarySwitch" checked>
+              </div>
+
+              <!-- Automated Summary Interval in Days -->
+              <div class="form-floating mb-4">
+                <input type="number" class="form-control" id="summaryInterval" min="1" max="90" placeholder="Summary Interval (Days)" value="15" required>
+                <label for="summaryInterval" class="text-secondary">Summary Email Interval (Days)</label>
               </div>
 
               <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
@@ -201,6 +216,42 @@
                 <div>
                   <button id="triggerLowBtn" onclick="loadEmailPreview('low-attendance')" class="btn btn-glass btn-sm border-danger text-danger py-2 px-3">
                     <i class="bi bi-exclamation-triangle-fill me-1"></i> Trigger Low Attendance Alerts
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Manual 15-Day Attendance Summary Broadcast -->
+            <div class="col-md-12 mt-3">
+              <div class="p-3 bg-light rounded-4 border">
+                <div class="fw-bold mb-1 text-dark">Attendance Summary Broadcast Sweep</div>
+                <div class="text-secondary small mb-3">
+                  Calculate and queue the periodic attendance summary emails for a specific date range. Emails are compiled using the winking-envelope HTML template.
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <input type="date" class="form-control" id="summaryStartDate" required>
+                      <label for="summaryStartDate" class="text-secondary">Summary Start Date</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-floating">
+                      <input type="date" class="form-control" id="summaryEndDate" required>
+                      <label for="summaryEndDate" class="text-secondary">Summary End Date</label>
+                    </div>
+                  </div>
+                </div>
+                <!-- Custom Student Recipient Selection Dropdown -->
+                <div class="form-floating mb-3">
+                  <select class="form-select bg-white text-dark" id="summaryUserSelect" required>
+                    <option value="all" selected>All Active Students</option>
+                  </select>
+                  <label for="summaryUserSelect" class="text-secondary">Recipient Student</label>
+                </div>
+                <div>
+                  <button id="triggerSummaryBtn" onclick="loadEmailPreview('summary')" class="btn btn-glow btn-sm py-2 px-3 text-white">
+                    <i class="bi bi-eye-fill me-1"></i> Preview &amp; Dispatch Summary Broadcast
                   </button>
                 </div>
               </div>
@@ -346,10 +397,42 @@
         document.getElementById('senderReminders').value = response.settings.mail_from_reminders || '';
         document.getElementById('senderNotices').value = response.settings.mail_from_notices || '';
         document.getElementById('senderBackups').value = response.settings.mail_from_backups || '';
+
+        // Load automated summaries settings
+        document.getElementById('summarySwitch').checked = response.settings.summary_email_enabled;
+        document.getElementById('summaryInterval').value = response.settings.summary_email_interval || 15;
       }
+
+      // Pre-fill manual summary dates (past 15 days, ending yesterday)
+      const end = new Date();
+      end.setDate(end.getDate() - 1);
+      const start = new Date();
+      start.setDate(end.getDate() - 14);
+
+      const formatSqlDate = (d) => d.toISOString().split('T')[0];
+      document.getElementById('summaryStartDate').value = formatSqlDate(start);
+      document.getElementById('summaryEndDate').value = formatSqlDate(end);
 
       // Fetch backups history list
       loadBackupHistory();
+
+      // Load active students list into summary select dropdown
+      loadSummaryStudents();
+    }
+
+    async function loadSummaryStudents() {
+      const response = await apiCall('/api/admin/users');
+      const select = document.getElementById('summaryUserSelect');
+      if (response.success && response.users) {
+        select.innerHTML = '<option value="all" selected>All Active Students</option>';
+        const activeStudents = response.users.filter(u => !u.is_suspended && u.is_approved !== false);
+        activeStudents.forEach(student => {
+          const opt = document.createElement('option');
+          opt.value = student.id;
+          opt.textContent = `${student.name} (${student.email})`;
+          select.appendChild(opt);
+        });
+      }
     }
 
     async function loadBackupHistory() {
@@ -412,6 +495,8 @@
       const allow_self_registration = document.getElementById('regSwitch').checked;
       const maintenance_mode = document.getElementById('maintSwitch').checked;
       const global_email_notifications = document.getElementById('emailSwitch').checked;
+      const summary_email_enabled = document.getElementById('summarySwitch').checked;
+      const summary_email_interval = parseInt(document.getElementById('summaryInterval').value, 10) || 15;
       
       const saveBtn = document.querySelector('button[onclick="saveConfigs()"]');
       saveBtn.disabled = true;
@@ -419,7 +504,13 @@
 
       const response = await apiCall('/api/admin/settings', {
         method: 'PUT',
-        body: { allow_self_registration, maintenance_mode, global_email_notifications }
+        body: { 
+          allow_self_registration, 
+          maintenance_mode, 
+          global_email_notifications,
+          summary_email_enabled,
+          summary_email_interval
+        }
       });
 
       saveBtn.disabled = false;
@@ -517,7 +608,11 @@
 
     async function loadEmailPreview(type) {
       activeSweepType = type;
-      const btnId = type === 'daily' ? 'triggerDailyBtn' : 'triggerLowBtn';
+      let btnId = '';
+      if (type === 'daily') btnId = 'triggerDailyBtn';
+      else if (type === 'low-attendance') btnId = 'triggerLowBtn';
+      else if (type === 'summary') btnId = 'triggerSummaryBtn';
+      
       const btn = document.getElementById(btnId);
       const originalText = btn.innerHTML;
       btn.disabled = true;
@@ -525,10 +620,33 @@
       
       showAlert(`Generating live email previews for "${type}"...`, 'info');
       
-      const url = type === 'daily' ? '/api/admin/reminders/preview-daily' : '/api/admin/reminders/preview-low-attendance';
+      let url = '';
+      let body = undefined;
+      
+      if (type === 'daily') {
+        url = '/api/admin/reminders/preview-daily';
+      } else if (type === 'low-attendance') {
+        url = '/api/admin/reminders/preview-low-attendance';
+      } else if (type === 'summary') {
+        url = '/api/admin/reminders/preview-summary';
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const selectedUser = document.getElementById('summaryUserSelect').value;
+        if (!startDate || !endDate) {
+          showAlert('Please select both Start Date and End Date to generate summary previews.', 'warning');
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          return;
+        }
+        body = { startDate, endDate };
+        if (selectedUser !== 'all') {
+          body.userId = selectedUser;
+        }
+      }
       
       const response = await apiCall(url, {
-        method: 'POST'
+        method: 'POST',
+        body
       });
       
       btn.disabled = false;
@@ -550,7 +668,7 @@
       const subjectField = document.getElementById('previewSubjectField');
       
       if (activePreviews.length === 0) {
-        listGroup.innerHTML = `<div class="p-3 text-center text-secondary small bg-white border rounded-3">No matching students found for this sweep today.</div>`;
+        listGroup.innerHTML = `<div class="p-3 text-center text-secondary small bg-white border rounded-3">No matching students found for this sweep.</div>`;
         toField.innerText = 'none';
         subjectField.innerText = 'N/A';
         iframe.srcdoc = `
@@ -616,10 +734,27 @@
       
       showAlert('Queueing email broadcast sweep for delivery...', 'info');
       
-      const url = activeSweepType === 'daily' ? '/api/admin/reminders/trigger-daily' : '/api/admin/reminders/trigger-low-attendance';
+      let url = '';
+      let body = undefined;
+      
+      if (activeSweepType === 'daily') {
+        url = '/api/admin/reminders/trigger-daily';
+      } else if (activeSweepType === 'low-attendance') {
+        url = '/api/admin/reminders/trigger-low-attendance';
+      } else if (activeSweepType === 'summary') {
+        url = '/api/admin/reminders/trigger-summary';
+        const startDate = document.getElementById('summaryStartDate').value;
+        const endDate = document.getElementById('summaryEndDate').value;
+        const selectedUser = document.getElementById('summaryUserSelect').value;
+        body = { startDate, endDate };
+        if (selectedUser !== 'all') {
+          body.userId = selectedUser;
+        }
+      }
       
       const response = await apiCall(url, {
-        method: 'POST'
+        method: 'POST',
+        body
       });
       
       confirmBtn.disabled = false;

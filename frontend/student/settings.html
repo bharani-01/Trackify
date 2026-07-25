@@ -438,19 +438,37 @@
         <form id="passwordForm">
           <div class="modal-body p-4">
             
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control text-dark" id="oldPassword" placeholder="Old Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
-              <label class="text-secondary" for="oldPassword">Current Password *</label>
+            <div style="position:relative; margin-bottom:1rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control text-dark" id="oldPassword" placeholder="Old Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
+                <label class="text-secondary" for="oldPassword">Current Password *</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('oldPassword','st_eyeOff1','st_eyeOn1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+                <svg id="st_eyeOff1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="st_eyeOn1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
             
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control text-dark" id="newPassword" placeholder="New Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
-              <label class="text-secondary" for="newPassword">New Password *</label>
+            <div style="position:relative; margin-bottom:1rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control text-dark" id="newPassword" placeholder="New Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
+                <label class="text-secondary" for="newPassword">New Password *</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('newPassword','st_eyeOff2','st_eyeOn2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+                <svg id="st_eyeOff2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="st_eyeOn2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
 
-            <div class="form-floating mb-2">
-              <input type="password" class="form-control text-dark" id="confirmNewPassword" placeholder="Confirm Password" required style="background: var(--bg-primary); border-color: var(--border-color);">
-              <label class="text-secondary" for="confirmNewPassword">Confirm New Password *</label>
+            <div style="position:relative; margin-bottom:0.5rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control text-dark" id="confirmNewPassword" placeholder="Confirm Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
+                <label class="text-secondary" for="confirmNewPassword">Confirm New Password *</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('confirmNewPassword','st_eyeOff3','st_eyeOn3')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+                <svg id="st_eyeOff3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="st_eyeOn3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
 
           </div>
@@ -665,6 +683,17 @@
     });
 
     window.onload = loadData;
+  </script>
+  <script>
+    function toggleFieldPwd(inputId, offIconId, onIconId) {
+      const input = document.getElementById(inputId);
+      const offIcon = document.getElementById(offIconId);
+      const onIcon = document.getElementById(onIconId);
+      const isHidden = input.getAttribute('type') === 'password';
+      input.setAttribute('type', isHidden ? 'text' : 'password');
+      offIcon.style.display = isHidden ? 'none' : '';
+      onIcon.style.display = isHidden ? '' : 'none';
+    }
   </script>
 </body>
 

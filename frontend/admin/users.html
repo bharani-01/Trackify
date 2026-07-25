@@ -288,9 +288,15 @@
             </div>
 
             
-            <div class="form-floating mb-4">
-              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-admin-password" placeholder="Password" required minlength="6">
-              <label for="add-admin-password" class="text-secondary small">Set Account Password (min 6 chars)</label>
+            <div style="position:relative; margin-bottom:1.5rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-admin-password" placeholder="Password" style="padding-right:52px;" required minlength="6">
+                <label for="add-admin-password" class="text-secondary small">Set Account Password (min 6 chars)</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('add-admin-password','adm_eyeOff1','adm_eyeOn1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b7280;outline:none;box-shadow:none;">
+                <svg id="adm_eyeOff1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="adm_eyeOn1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
 
             <button type="submit" class="btn btn-glow w-100 py-2.5 fw-bold">
@@ -325,9 +331,15 @@
             </div>
 
             
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-password" placeholder="Password" required minlength="6">
-              <label for="add-password" class="text-secondary small">Temporary Password (min 6 chars)</label>
+            <div style="position:relative; margin-bottom:1rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="add-password" placeholder="Password" style="padding-right:52px;" required minlength="6">
+                <label for="add-password" class="text-secondary small">Temporary Password (min 6 chars)</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('add-password','adm_eyeOff2','adm_eyeOn2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b7280;outline:none;box-shadow:none;">
+                <svg id="adm_eyeOff2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="adm_eyeOn2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
 
             
@@ -447,9 +459,15 @@
               <input type="text" class="form-control bg-light text-dark border-secondary-subtle" id="reset-target-user-name" readonly>
             </div>
             
-            <div class="form-floating mb-4">
-              <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="reset-new-password" placeholder="New Password" required minlength="6">
-              <label for="reset-new-password" class="text-secondary small">Set New Password (min 6 chars)</label>
+            <div style="position:relative; margin-bottom:1.5rem;">
+              <div class="form-floating">
+                <input type="password" class="form-control bg-white text-dark border-secondary-subtle" id="reset-new-password" placeholder="New Password" style="padding-right:52px;" required minlength="6">
+                <label for="reset-new-password" class="text-secondary small">Set New Password (min 6 chars)</label>
+              </div>
+              <button type="button" onclick="toggleFieldPwd('reset-new-password','adm_eyeOff3','adm_eyeOn3')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#6b7280;outline:none;box-shadow:none;">
+                <svg id="adm_eyeOff3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                <svg id="adm_eyeOn3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+              </button>
             </div>
             
             <button type="submit" class="btn btn-glow w-100 py-2.5">Override Credentials</button>
@@ -1303,6 +1321,17 @@
     }
 
     window.onload = loadData;
+  </script>
+  <script>
+    function toggleFieldPwd(inputId, offIconId, onIconId) {
+      const input = document.getElementById(inputId);
+      const offIcon = document.getElementById(offIconId);
+      const onIcon = document.getElementById(onIconId);
+      const isHidden = input.getAttribute('type') === 'password';
+      input.setAttribute('type', isHidden ? 'text' : 'password');
+      offIcon.style.display = isHidden ? 'none' : '';
+      onIcon.style.display = isHidden ? '' : 'none';
+    }
   </script>
 </body>
 </html>

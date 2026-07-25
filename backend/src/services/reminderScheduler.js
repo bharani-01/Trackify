@@ -397,6 +397,491 @@ const runLowAttendanceSweep = async (previewOnly = false) => {
 };
 
 /**
+ * Get subject-wise attendance aggregation statistics for a student in a date range
+ */
+const getSubjectStatsBetweenDates = async (userId, startDate, endDate) => {
+  const query = `
+    SELECT 
+      s.id AS subject_id,
+      COALESCE(s.subject_code, s.code) AS subject_code,
+      COALESCE(s.subject_name, s.name) AS subject_name,
+      COALESCE(SUM(CASE WHEN a.status = 'Present' THEN 1 ELSE 0 END), 0)::int AS present_count,
+      COALESCE(SUM(CASE WHEN a.status = 'Absent' THEN 1 ELSE 0 END), 0)::int AS absent_count,
+      COALESCE(SUM(CASE WHEN a.status = 'Medical Leave' THEN 1 ELSE 0 END), 0)::int AS medical_count,
+      COALESCE(SUM(CASE WHEN a.status = 'Holiday' THEN 1 ELSE 0 END), 0)::int AS holiday_count,
+      COALESCE(SUM(CASE WHEN a.status = 'On Duty' THEN 1 ELSE 0 END), 0)::int AS od_count,
+      COALESCE(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)::int AS conducted_count
+    FROM users u
+    JOIN subjects s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department))
+                    AND s.semester = u.semester
+    LEFT JOIN attendance a ON s.id = a.subject_id AND a.user_id = u.id AND a.date >= $2 AND a.date <= $3
+    WHERE u.id = $1
+    GROUP BY s.id, s.subject_code, s.code, s.subject_name, s.name
+    ORDER BY COALESCE(s.subject_name, s.name) ASC
+  `;
+  const result = await db.query(query, [userId, startDate, endDate]);
+  return result.rows;
+};
+
+/**
+ * Compile and queue/preview a 15-day attendance summary email using the winking-envelope HTML template
+ */
+const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnly = false) => {
+  const userRepository = require('../repositories/userRepository');
+  const student = await userRepository.findById(userId);
+  if (!student) throw new Error('Student not found');
+
+  const stats = await getSubjectStatsBetweenDates(userId, startDate, endDate);
+
+  const sentAt = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short' });
+
+  let rowsHtml = '';
+  stats.forEach(subj => {
+    const totalPeriods = subj.conducted_count;
+    const present = subj.present_count;
+    const absent = subj.absent_count;
+    const od = subj.od_count;
+    const percentageVal = totalPeriods > 0 
+      ? Math.round(((present + od) / totalPeriods) * 100) 
+      : 100;
+    const isLow = percentageVal < 80;
+    const rowBg = isLow ? 'background-color:#FEF2F2;' : 'background-color:#ffffff;';
+    const borderColor = isLow ? '#FECACA' : '#F3F4F6';
+    const tdBase = `padding:12px 8px; border-bottom:1px solid ${borderColor}; font-size:12px; font-family:'Inter',sans-serif; color:#111827;`;
+
+    rowsHtml += `
+      <tr style="${rowBg}">
+        <td class="att-table-td" style="${tdBase} font-weight:600;">
+          ${isLow ? '<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#DC2626;margin-right:6px;vertical-align:middle;"></span>' : ''}
+          ${escapeHtml(subj.subject_name || subj.name)}
+        </td>
+        <td class="att-table-td" style="${tdBase} text-align:center;">${totalPeriods}</td>
+        <td class="att-table-td" style="${tdBase} text-align:center;">${present}</td>
+        <td class="att-table-td" style="${tdBase} text-align:center;">${absent}</td>
+        <td class="att-table-td" style="${tdBase} text-align:center;">${od}</td>
+        <td class="att-table-td" style="${tdBase} text-align:center;">
+          <span style="display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;${isLow ? 'background:#FEE2E2;color:#B91C1C;' : 'background:#ECFDF5;color:#059669;'}">${percentageVal}%</span>
+        </td>
+      </tr>
+    `;
+  });
+
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>Trackify Attendance Report</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light dark;
+            supported-color-schemes: light dark;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            background: linear-gradient(180deg, #F8FAFC 0%, #FFFFFF 50%, #F8FAFC 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        * { box-sizing: border-box; }
+
+        .email-wrapper {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 32px 20px 28px;
+        }
+
+        /* Default Header styling: Dark Theme (Half-dark split) */
+        .header-card {
+            background: #111827;
+            border-radius: 20px 20px 0 0;
+            padding: 32px 28px 24px;
+            text-align: center;
+        }
+        .eyebrow {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-radius: 999px;
+            padding: 5px 14px;
+            margin-bottom: 14px;
+        }
+        .title {
+            font-size: 30px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -1px;
+            margin: 0 0 8px;
+            line-height: 1.1;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: rgba(255,255,255,0.6);
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        /* Default (Light) Main report card */
+        .report-card-cell {
+            background: #FFFFFF;
+            border: 1px solid #E5E7EB;
+            border-top: none;
+            border-radius: 0 0 20px 20px;
+            padding: 28px 28px 24px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+
+        .period-badge {
+            display: inline-block;
+            background: #F3F4F6;
+            color: #374151;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 999px;
+            letter-spacing: 0.3px;
+            margin-bottom: 18px;
+        }
+
+        .student-name-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #111827;
+            letter-spacing: -0.5px;
+            margin: 0 0 4px;
+        }
+        .report-label-text {
+            font-size: 13px;
+            color: #6B7280;
+            margin: 0 0 20px;
+        }
+
+        .alert-badge {
+            display: inline-block;
+            background: #EEF2FF;
+            color: #4338CA;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+        }
+
+        /* All rendering handled via inline styles for Gmail compatibility */
+
+        @media only screen and (max-width: 480px) {
+            .email-wrapper { padding: 18px 12px 22px; }
+            .header-card { padding: 24px 18px 20px; border-radius: 16px 16px 0 0; }
+            .title { font-size: 24px; }
+            .report-card-cell { padding: 20px 16px 18px; border-radius: 0 0 16px 16px; }
+        }
+
+        /* Dark Mode Overrides */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: #0f172a !important;
+            }
+            .email-wrapper {
+                background: #0f172a !important;
+            }
+            .header-card {
+                background: #111827 !important;
+                border-color: #1f2937 !important;
+            }
+            .eyebrow {
+                background: rgba(255,255,255,0.15) !important;
+                color: #ffffff !important;
+            }
+            .title {
+                color: #ffffff !important;
+            }
+            .subtitle {
+                color: rgba(255,255,255,0.6) !important;
+            }
+            .logo-light {
+                display: inline-block !important;
+            }
+            .logo-dark {
+                display: none !important;
+            }
+            .report-card-cell {
+                background: #1e293b !important;
+                border-color: #334155 !important;
+            }
+            .student-name-text {
+                color: #ffffff !important;
+            }
+            .report-label-text {
+                color: #94a3b8 !important;
+            }
+            .att-table-th {
+                color: #64748b !important;
+                border-bottom-color: #334155 !important;
+            }
+            .att-table-td {
+                color: #e2e8f0 !important;
+                border-bottom-color: #334155 !important;
+            }
+            .footer-note-text {
+                color: #94a3b8 !important;
+            }
+            .email-footer-cell {
+                color: #64748b !important;
+            }
+            .email-footer-link {
+                color: #e2e8f0 !important;
+            }
+            .email-footer-sig {
+                color: #94a3b8 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+
+    <!-- Header -->
+    <div class="header-card">
+        <div style="margin-bottom: 12px; text-align: center;">
+            <!-- Light Theme Logo (shown in light mode on dark bg by default) -->
+            <img class="logo-light" src="https://trackifyapp.co.in/assets/images/logo_light.webp" alt="Trackify" width="130" height="auto" style="display:inline-block; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
+            <!-- Dark Theme Logo (hidden in light mode, shown as fallback if inverted) -->
+            <!--[if !mso]><!-->
+            <img class="logo-dark" src="https://trackifyapp.co.in/assets/images/logo_dark.webp" alt="Trackify" width="130" height="auto" style="display:none; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #111827; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
+            <!--<![endif]-->
+        </div>
+        <div class="eyebrow">Trackify Update</div>
+        <h1 class="title">Attendance Report</h1>
+        <p class="subtitle">Here is a quick snapshot of your attendance for the reported period.</p>
+    </div>
+
+    <!-- Envelope card -->
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+      <tr>
+        <td style="padding: 0; background: #1a2235;">
+
+          <!-- Top flap: diagonal lines mimicking envelope V -->  
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+            <tr>
+              <td width="50%" style="height: 38px; border-right: 1px solid rgba(255,255,255,0.08); background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);"></td>
+              <td width="50%" style="height: 38px; background: linear-gradient(225deg, #0f172a 0%, #1e293b 100%);"></td>
+            </tr>
+          </table>
+
+          <!-- Envelope body: FROM label + address + center logo seal + TO address -->
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse; border-top: 1px solid rgba(255,255,255,0.08);">
+            <tr>
+              <!-- Left: FROM address -->
+              <td style="padding: 18px 16px 20px 20px; vertical-align: top; width: 34%;">
+                <div style="font-family: 'Caveat', cursive; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;">FROM</div>
+                <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55); line-height: 1.5;">Trackify System<br>attendance@trackify.app</div>
+              </td>
+
+              <!-- Center: Trackify Favicon Seal -->
+              <td style="width: 26%; text-align: center; vertical-align: middle; padding: 14px 0;">
+                <div style="display: inline-block; width: 54px; height: 54px; border-radius: 50%; background: #0f172a; border: 2px solid #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.25), 0 8px 20px rgba(0,0,0,0.5); text-align: center; vertical-align: middle; overflow: hidden;">
+                  <img src="https://trackifyapp.co.in/assets/images/favicon.webp" alt="T" width="34" height="34" style="display:inline-block; width:34px; height:34px; border:0; outline:none; border-radius:50%; margin-top: 9px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 800; line-height: 34px;">
+                </div>
+              </td>
+
+              <!-- Right: TO address + Postage Stamp -->
+              <td style="padding: 18px 20px 20px 16px; vertical-align: top; text-align: right; width: 40%;">
+                <!-- Sleek Postage stamp -->
+                <table cellpadding="0" cellspacing="0" role="presentation" align="right" style="border-collapse:collapse; margin-bottom: 8px;">
+                  <tr>
+                    <td style="padding: 4px 8px; background: rgba(99, 102, 241, 0.15); border-radius: 4px; border: 1.5px dashed rgba(165, 180, 252, 0.5);">
+                      <div style="font-family: 'Inter', sans-serif; font-size: 8px; font-weight: 800; color: #a5b4fc; letter-spacing: 1px; text-transform: uppercase;">POSTAGE PAID &bull; 2026</div>
+                    </td>
+                  </tr>
+                </table>
+                <div style="clear: both;"></div>
+                <!-- TO address -->
+                <div style="font-family: 'Caveat', cursive; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px;">TO</div>
+                <div style="font-family: 'Caveat', cursive; font-size: 22px; font-weight: 600; color: #fff; line-height: 1.2;">${escapeHtml(student.name)}</div>
+                <div style="font-family: 'Inter', sans-serif; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px;">SRET, Chennai — 600 054</div>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Bottom border decoration: red + blue postal stripes -->
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+            <tr>
+              <td style="height: 5px; background: #DC2626;"></td>
+              <td style="height: 5px; background: #1D4ED8;"></td>
+              <td style="height: 5px; background: #DC2626;"></td>
+              <td style="height: 5px; background: #1D4ED8;"></td>
+              <td style="height: 5px; background: #DC2626;"></td>
+              <td style="height: 5px; background: #1D4ED8;"></td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+    </table>
+
+    <!-- Report card: 100% inline-styled table layout for Gmail -->
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+      <tr>
+        <td class="report-card-cell" style="background:#ffffff; border:1px solid #E5E7EB; border-top:none; border-radius:0 0 20px 20px; padding:28px 28px 24px; font-family:'Inter',sans-serif;">
+
+          <!-- Period badge -->
+          <table cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse; margin-bottom:18px;">
+            <tr>
+              <td style="background:#F3F4F6; color:#374151; font-size:11px; font-weight:700; padding:5px 12px; border-radius:999px; font-family:'Inter',sans-serif; letter-spacing:0.3px;">📅 ${startDate} &nbsp;&rarr;&nbsp; ${endDate}</td>
+            </tr>
+          </table>
+
+          <!-- Student name -->
+          <div class="student-name-text" style="font-size:22px; font-weight:800; color:#111827; letter-spacing:-0.5px; margin:0 0 4px; font-family:'Inter',sans-serif;">${escapeHtml(student.name)}</div>
+          <div class="report-label-text" style="font-size:13px; color:#6B7280; margin:0 0 20px; font-family:'Inter',sans-serif;">Subject-wise attendance summary &bull; Generated: ${sentAt}</div>
+
+          <!-- Warning badge -->
+          <table cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse; margin-bottom:20px;">
+            <tr>
+              <td style="background:#EEF2FF; color:#4338CA; font-size:11px; font-weight:700; padding:6px 14px; border-radius:999px; font-family:'Inter',sans-serif;">⚠️ Rows below 80% are highlighted in red</td>
+            </tr>
+          </table>
+
+          <!-- Attendance data table -->
+          <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse; width:100%;">
+            <thead>
+              <tr style="background:#F9FAFB;">
+                <th class="att-table-th" style="text-align:left; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:36%;">Subject</th>
+                <th class="att-table-th" style="text-align:center; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:13%;">Classes</th>
+                <th class="att-table-th" style="text-align:center; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:13%;">Present</th>
+                <th class="att-table-th" style="text-align:center; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:13%;">Absent</th>
+                <th class="att-table-th" style="text-align:center; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:9%;">OD</th>
+                <th class="att-table-th" style="text-align:center; font-size:10px; font-weight:700; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.8px; padding:10px 8px; border-bottom:2px solid #E5E7EB; font-family:'Inter',sans-serif; width:16%;">Attendance</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+
+          <!-- Footer note -->
+          <div class="footer-note-text" style="font-size:11px; color:#9CA3AF; margin-top:16px; line-height:1.6; font-family:'Inter',sans-serif;">Focus on the highlighted subjects to improve your attendance. 🎯</div>
+
+        </td>
+      </tr>
+    </table>
+
+    <!-- Email footer -->
+    <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+      <tr>
+        <td class="email-footer-cell" style="text-align:center; padding:24px 20px 36px; font-family:'Inter',sans-serif; font-size:12px; color:#9CA3AF; line-height:1.7;">
+          This email is sent from <strong style="color:#374151;">Trackify</strong>.<br>
+          Need help? Contact <a class="email-footer-link" href="mailto:contact@bharani-01.xyz" style="color:#111827; font-weight:700; text-decoration:none;">contact@bharani-01.xyz</a>
+          <div class="email-footer-sig" style="color:#374151; font-weight:700; margin-top:6px;">Happy Learning 📚<br>Team Trackify</div>
+        </td>
+      </tr>
+    </table>
+
+</div>
+</body>
+</html>`;
+
+
+
+  if (previewOnly) {
+    return htmlContent;
+  }
+
+  const { queueEmail } = require('../utils/emailHelper');
+  await queueEmail(student.email, student.name, `Trackify Attendance Summary Report (${startDate} - ${endDate})`, htmlContent, 'notices');
+
+  // Insert summary execution record into new DB logs table
+  await db.query(
+    "INSERT INTO attendance_summary_logs (user_id, start_date, end_date, status) VALUES ($1, $2, $3, 'sent')",
+    [userId, startDate, endDate]
+  );
+};
+
+/**
+ * Sweep students and queue/preview attendance summary emails
+ * @param {string} startDate
+ * @param {string} endDate
+ * @param {boolean} previewOnly
+ * @param {string|null} singleUserId
+ */
+const runSummaryEmailsSweep = async (startDate, endDate, previewOnly = false, singleUserId = null) => {
+  let queuedCount = 0;
+  const previews = [];
+
+  const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
+  if (globalEmail !== 'true') {
+    return previewOnly ? [] : 0;
+  }
+
+  // 1. Fetch target students
+  let query = `
+    SELECT u.id, u.name, u.email
+    FROM users u
+    WHERE u.role = 'student' AND u.is_suspended = FALSE
+  `;
+  const params = [];
+  if (singleUserId) {
+    query += ` AND u.id = $1`;
+    params.push(singleUserId);
+  }
+  const studentsRes = await db.query(query, params);
+
+  // 2. Fetch log keys to skip duplicates if background sweep (not single test trigger)
+  let sentUserIds = new Set();
+  if (!previewOnly && !singleUserId) {
+    const logsRes = await db.query(
+      "SELECT user_id FROM attendance_summary_logs WHERE start_date = $1 AND end_date = $2 AND status = 'sent'",
+      [startDate, endDate]
+    );
+    logsRes.rows.forEach(log => sentUserIds.add(log.user_id));
+  }
+
+  // 3. Sweep and process summary template compilation
+  for (const student of studentsRes.rows) {
+    if (sentUserIds.has(student.id)) {
+      continue; // Skip duplicate dispatch for background sweep
+    }
+    console.log(`[DEBUG SWEEP]: Processing student: ${student.name} (${student.id})`);
+
+    try {
+      if (previewOnly) {
+        const html = await send15DayAttendanceSummary(student.id, startDate, endDate, true);
+        previews.push({
+          email: student.email,
+          name: student.name,
+          subject: `Trackify Attendance Summary Report (${startDate} - ${endDate})`,
+          html
+        });
+      } else {
+        await send15DayAttendanceSummary(student.id, startDate, endDate);
+        await auditLogRepository.logAction(
+          student.id,
+          'EMAIL_DISPATCHED',
+          `15-day attendance summary email queued for period (${startDate} to ${endDate})`,
+          '127.0.0.1'
+        );
+        queuedCount++;
+      }
+    } catch (err) {
+      console.error(`Error processing summary email for student ${student.id}:`, err.message);
+    }
+  }
+
+  return previewOnly ? previews : queuedCount;
+};
+
+/**
  * Start the background cron reminder process
  */
 const startScheduler = () => {
@@ -426,6 +911,49 @@ const startScheduler = () => {
       if (currentTimeStr === '18:00') {
         await runLowAttendanceSweep();
       }
+
+      // Run automated attendance summary emails check at 09:00 morning
+      if (currentTimeStr === '09:00') {
+        const summaryEnabled = await systemSettingsRepository.getSetting('summary_email_enabled', 'true');
+        if (summaryEnabled === 'true') {
+          const lastSummaryStr = await systemSettingsRepository.getSetting('last_summary_date');
+          const intervalDays = parseInt(await systemSettingsRepository.getSetting('summary_email_interval', '15'), 10);
+          
+          let lastSummaryDate = lastSummaryStr ? new Date(lastSummaryStr) : null;
+          let shouldTrigger = false;
+          const today = new Date();
+          
+          if (!lastSummaryDate) {
+            shouldTrigger = true;
+          } else {
+            const diffTime = Math.abs(today - lastSummaryDate);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays >= intervalDays) {
+              shouldTrigger = true;
+            }
+          }
+
+          if (shouldTrigger) {
+            console.log(`[SUMMARY SCHEDULE TRIGGER]: Automated interval matched (${intervalDays} days since ${lastSummaryStr || 'never'}). Initiating sweeps...`);
+            
+            // Calculate date ranges: past intervalDays
+            const end = new Date();
+            end.setDate(end.getDate() - 1); // Yesterday
+            const start = new Date();
+            start.setDate(end.getDate() - (intervalDays - 1)); // start of date range
+
+            const formatSqlDate = (d) => d.toISOString().split('T')[0];
+            const startDateStr = formatSqlDate(start);
+            const endDateStr = formatSqlDate(end);
+
+            await runSummaryEmailsSweep(startDateStr, endDateStr);
+
+            // Update execution mark setting
+            const todayStr = formatSqlDate(today);
+            await systemSettingsRepository.setSetting('last_summary_date', todayStr);
+          }
+        }
+      }
     } catch (err) {
       console.error('[REMINDER SCHEDULER FATAL ERROR]: Background worker loop exception:', err.message);
     }
@@ -440,5 +968,7 @@ const startScheduler = () => {
 module.exports = {
   startScheduler,
   runDailyRemindersSweep,
-  runLowAttendanceSweep
+  runLowAttendanceSweep,
+  runSummaryEmailsSweep,
+  send15DayAttendanceSummary
 };

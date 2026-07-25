@@ -23,6 +23,122 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    /* Dynamic blur gradient backdrop blobs (static) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 45vw;
+      height: 45vw;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.02) 50%, transparent 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: -10%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, rgba(16, 185, 129, 0.01) 50%, transparent 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Theme-specific logo toggles */
+    [data-theme="dark"] .logo-light-theme {
+      display: none !important;
+    }
+    [data-theme="dark"] .logo-dark-theme {
+      display: inline-block !important;
+    }
+    [data-theme="light"] .logo-light-theme {
+      display: inline-block !important;
+    }
+    [data-theme="light"] .logo-dark-theme {
+      display: none !important;
+    }
+
+    /* Clean focus feedback without hover transitions */
+    .form-control {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-control:focus {
+      border-color: var(--primary) !important;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+    }
+    [data-theme="dark"] .form-control:focus {
+      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2) !important;
+    }
+
+    /* Stepper Styling */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      margin-bottom: 2rem;
+      padding: 0 1rem;
+    }
+    .stepper::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--border-color, #e2e8f0);
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    .stepper-progress {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--primary, #2563eb);
+      z-index: 1;
+      transform: translateY(-50%);
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .step-dot {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--bg-secondary, #ffffff);
+      border: 2px solid var(--border-color, #e2e8f0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary, #64748b);
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .step-dot.active {
+      border-color: var(--primary, #2563eb);
+      background: var(--primary, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.15);
+    }
+    .step-dot.completed {
+      border-color: var(--success, #10b981);
+      background: var(--success, #10b981);
+      color: #ffffff;
+    }
+  </style>
 </head>
 <body>
 
@@ -38,86 +154,121 @@
   
   <main class="container my-5">
     <div class="row justify-content-center">
-      <div class="col-md-6 col-lg-5 animate-fade-in-up">
-        <div class="glass-card border-glass shadow-lg p-4">
+      <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5">
+        <div class="glass-card border-glass shadow-lg p-4 p-md-5">
           <div class="text-center mb-4">
-            <h1 class="h3 fw-bold mb-2">Create Student Account</h1>
-            <p class="text-secondary">Self-registered profiles require administrator approval.</p>
+            <div class="brand-logo-container mb-3 d-flex justify-content-center align-items-center">
+              <img src="/assets/images/logo_dark.webp" class="logo-light-theme mb-2" alt="Trackify Logo" style="height: 48px; width: auto; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06));">
+              <img src="/assets/images/logo_light.webp" class="logo-dark-theme mb-2 d-none" alt="Trackify Logo" style="height: 48px; width: auto; filter: drop-shadow(0 4px 12px rgba(255,255,255,0.08));">
+            </div>
+            <h1 class="h4 fw-bold mb-1 text-dark" style="letter-spacing: -0.02em;">Create Student Account</h1>
+            <p class="text-secondary small">Self-registered profiles require administrator approval.</p>
           </div>
 
           <div id="alertContainer"></div>
 
           <form id="registerForm">
-            
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control" id="name" placeholder="Full Name" required>
-              <label for="name">Full Name</label>
+            <!-- Stepper Progress Bar -->
+            <div class="stepper">
+              <div class="stepper-progress" id="stepperProgress"></div>
+              <div class="step-dot active" id="dot1">1</div>
+              <div class="step-dot" id="dot2">2</div>
+              <div class="step-dot" id="dot3">3</div>
             </div>
 
-            
-            <div class="form-floating mb-3">
-              <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
-              <label for="email">Email Address</label>
-            </div>
-
-            
-            <div class="form-floating mb-3">
-              <input type="text" class="form-control text-uppercase" id="regNumber" placeholder="Register Number" required>
-              <label for="regNumber">Register Number (e.g. VERIFY001)</label>
-            </div>
-
-            
-            <div class="form-floating mb-3">
-              <select class="form-select bg-white text-dark" id="department" required>
-                <option value="" disabled selected>Loading departments...</option>
-              </select>
-              <label for="department">Department</label>
-            </div>
-
-            
-            <div class="form-floating mb-3">
-              <select class="form-select bg-white text-dark" id="semester" required>
-                <option value="" disabled selected>Select Semester</option>
-                <option value="1">Semester 1</option>
-                <option value="2">Semester 2</option>
-                <option value="3">Semester 3</option>
-                <option value="4">Semester 4</option>
-                <option value="5">Semester 5</option>
-                <option value="6">Semester 6</option>
-                <option value="7">Semester 7</option>
-                <option value="8">Semester 8</option>
-              </select>
-              <label for="semester">Semester</label>
-            </div>
-
-            
-            <div class="form-floating mb-3">
-              <input type="password" class="form-control" id="password" placeholder="Password" required minlength="6">
-              <label for="password">Password (min 6 characters)</label>
-            </div>
-
-            
-            <div class="form-floating mb-4">
-              <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" required minlength="6">
-              <label for="confirmPassword">Confirm Password</label>
-            </div>
-
-            
-            <div class="mb-4 p-3" style="background: var(--bg-primary); border: 1px solid #e2e8f0; border-radius: 8px;">
-              <div class="form-check d-flex align-items-start gap-2" style="margin: 0;">
-                <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="acceptTerms">
-                <label class="form-check-label" for="acceptTerms" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
-                  I have read and agree to the
-                  <a href="/terms" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Terms &amp; Conditions</a>
-                  and
-                  <a href="/privacy-policy" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Privacy Policy</a>
-                  of Trackify.
-                </label>
+            <!-- Step 1: Personal Details -->
+            <div id="stepSection1" class="step-section">
+              <h2 class="h6 fw-bold mb-3 text-dark">Step 1: Personal Information</h2>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+                <label for="name">Full Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                <label for="email">Email Address</label>
+              </div>
+              <div class="d-flex justify-content-end mt-4">
+                <button type="button" class="btn btn-glow px-4 py-2.5" onclick="nextStep(1)">Next</button>
               </div>
             </div>
 
-            
-            <button type="submit" class="btn btn-glow w-100 py-3 mb-3" id="submitBtn">Submit Request</button>
+            <!-- Step 2: Academic Details -->
+            <div id="stepSection2" class="step-section d-none">
+              <h2 class="h6 fw-bold mb-3 text-dark">Step 2: Academic Details</h2>
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control text-uppercase" id="regNumber" placeholder="Register Number" required>
+                <label for="regNumber">Register Number (e.g. VERIFY001)</label>
+              </div>
+              <div class="form-floating mb-3">
+                <select class="form-select bg-white text-dark" id="department" required>
+                  <option value="" disabled selected>Loading departments...</option>
+                </select>
+                <label for="department">Department</label>
+              </div>
+              <div class="form-floating mb-3">
+                <select class="form-select bg-white text-dark" id="semester" required>
+                  <option value="" disabled selected>Select Semester</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="7">Semester 7</option>
+                  <option value="8">Semester 8</option>
+                </select>
+                <label for="semester">Semester</label>
+              </div>
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary px-4 py-2.5" onclick="prevStep(2)">Back</button>
+                <button type="button" class="btn btn-glow px-4 py-2.5" onclick="nextStep(2)">Next</button>
+              </div>
+            </div>
+
+            <!-- Step 3: Security Credentials -->
+            <div id="stepSection3" class="step-section d-none">
+              <h2 class="h6 fw-bold mb-3 text-dark">Step 3: Security Settings</h2>
+              
+              <div style="position:relative; margin-bottom:1rem;">
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="password" placeholder="Password" style="padding-right:52px;" required minlength="6">
+                  <label for="password">Password (min 6 characters)</label>
+                </div>
+                <button type="button" onclick="toggleFieldPwd('password','eyeOff1','eyeOn1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+                  <svg id="eyeOff1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                  <svg id="eyeOn1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+                </button>
+              </div>
+
+              <div style="position:relative; margin-bottom:1.5rem;">
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" style="padding-right:52px;" required minlength="6">
+                  <label for="confirmPassword">Confirm Password</label>
+                </div>
+                <button type="button" onclick="toggleFieldPwd('confirmPassword','eyeOff2','eyeOn2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+                  <svg id="eyeOff2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
+                  <svg id="eyeOn2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+                </button>
+              </div>
+
+              <div class="mb-4 p-3" style="background: var(--bg-primary); border: 1px solid #e2e8f0; border-radius: 8px;">
+                <div class="form-check d-flex align-items-start gap-2" style="margin: 0;">
+                  <input class="form-check-input mt-1 flex-shrink-0" type="checkbox" id="acceptTerms">
+                  <label class="form-check-label" for="acceptTerms" style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+                    I have read and agree to the
+                    <a href="/terms" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Terms &amp; Conditions</a>
+                    and
+                    <a href="/privacy-policy" target="_blank" class="fw-semibold text-decoration-none" style="color: #2563eb;">Privacy Policy</a>
+                    of Trackify.
+                  </label>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-4">
+                <button type="button" class="btn btn-secondary px-4 py-2.5" onclick="prevStep(3)">Back</button>
+                <button type="submit" class="btn btn-glow px-4 py-2.5" id="submitBtn">Submit Request</button>
+              </div>
+            </div>
           </form>
 
           <div id="successArea" class="d-none text-center py-4">
@@ -139,6 +290,71 @@
 
   <script src="/assets/js/main.js"></script>
   <script>
+    let currentStep = 1;
+
+    function updateStepper() {
+      // Update progress bar width
+      const progress = document.getElementById('stepperProgress');
+      if (progress) {
+        progress.style.width = ((currentStep - 1) / 2 * 100) + '%';
+      }
+
+      // Update step dot highlights
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById('dot' + i);
+        if (dot) {
+          if (i < currentStep) {
+            dot.classList.add('completed');
+            dot.classList.remove('active');
+            dot.innerHTML = '✓';
+          } else if (i === currentStep) {
+            dot.classList.add('active');
+            dot.classList.remove('completed');
+            dot.innerHTML = i;
+          } else {
+            dot.classList.remove('active', 'completed');
+            dot.innerHTML = i;
+          }
+        }
+      }
+
+      // Toggle step visibility
+      for (let i = 1; i <= 3; i++) {
+        const section = document.getElementById('stepSection' + i);
+        if (section) {
+          if (i === currentStep) {
+            section.classList.remove('d-none');
+          } else {
+            section.classList.add('d-none');
+          }
+        }
+      }
+    }
+
+    function nextStep(step) {
+      if (step === 1) {
+        const nameVal = document.getElementById('name');
+        const emailVal = document.getElementById('email');
+        if (!nameVal.reportValidity() || !emailVal.reportValidity()) {
+          return;
+        }
+      } else if (step === 2) {
+        const regVal = document.getElementById('regNumber');
+        const deptVal = document.getElementById('department');
+        const semVal = document.getElementById('semester');
+        if (!regVal.reportValidity() || !deptVal.reportValidity() || !semVal.reportValidity()) {
+          return;
+        }
+      }
+      currentStep++;
+      updateStepper();
+    }
+
+    function prevStep(step) {
+      currentStep--;
+      updateStepper();
+    }
+
     // Load departments dynamically
     async function loadDepartments() {
       const select = document.getElementById('department');
@@ -215,6 +431,18 @@
         `;
       }
     });
+  </script>
+
+  <script>
+    function toggleFieldPwd(inputId, offIconId, onIconId) {
+      const input = document.getElementById(inputId);
+      const offIcon = document.getElementById(offIconId);
+      const onIcon = document.getElementById(onIconId);
+      const isHidden = input.getAttribute('type') === 'password';
+      input.setAttribute('type', isHidden ? 'text' : 'password');
+      offIcon.style.display = isHidden ? 'none' : '';
+      onIcon.style.display = isHidden ? '' : 'none';
+    }
   </script>
 </body>
 </html>
