@@ -180,7 +180,94 @@
     </div>
   </div>
 
-  
+  <!-- Edit Announcement Modal -->
+  <div class="modal fade" id="editAnnouncementModal" tabindex="-1" aria-labelledby="editAnnouncementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold" id="editAnnouncementModalLabel">Edit Announcement</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editAnnForm" onsubmit="updateAnnouncement(event)">
+          <input type="hidden" id="editAnnId">
+          <div class="modal-body p-4">
+            
+            <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="editAnnTitle" placeholder="Notice Title" required>
+              <label for="editAnnTitle">Notice Title *</label>
+            </div>
+            
+            <div class="form-floating mb-3">
+              <textarea class="form-control" id="editAnnContent" placeholder="Write notice here..." style="height: 120px;" required></textarea>
+              <label for="editAnnContent">Notice Content / Description *</label>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-secondary mb-1">Category</label>
+                <select class="form-select" id="editAnnCategory">
+                  <option value="General">General</option>
+                  <option value="Academic">Academic</option>
+                  <option value="Exam">Examination</option>
+                  <option value="Emergency">Emergency Alert</option>
+                  <option value="Event">Event Notice</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-secondary mb-1">Priority Level</label>
+                <select class="form-select" id="editAnnPriority">
+                  <option value="normal">Normal</option>
+                  <option value="high">High Priority</option>
+                  <option value="urgent">Urgent / Critical</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold text-secondary mb-1">Target Department</label>
+                <select class="form-select" id="editAnnDepartment">
+                  <option value="">All Departments (Global Broadcast)</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold text-secondary mb-1">Target Semester</label>
+                <select class="form-select" id="editAnnSemester">
+                  <option value="">All Semesters</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="7">Semester 7</option>
+                  <option value="8">Semester 8</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-secondary mb-1">Expiry Date & Time (Optional)</label>
+              <input type="datetime-local" class="form-control" id="editAnnExpiresAt">
+            </div>
+
+            <div class="form-check form-switch mb-3">
+              <input class="form-check-input" type="checkbox" id="editAnnPinned">
+              <label class="form-check-input-label small fw-bold text-dark" for="editAnnPinned">
+                Pin Announcement to Top of Student Feed
+              </label>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-4">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -191,9 +278,13 @@
         const res = await apiCall('/api/departments');
         if (res.success && Array.isArray(res.departments)) {
           const select = document.getElementById('annDepartment');
+          const editSelect = document.getElementById('editAnnDepartment');
           select.innerHTML = '<option value="">All Departments (Global Broadcast)</option>';
+          editSelect.innerHTML = '<option value="">All Departments (Global Broadcast)</option>';
           res.departments.forEach(dept => {
-            select.innerHTML += `<option value="${dept.id}">${dept.code} - ${dept.name}</option>`;
+            const opt = `<option value="${dept.id}">${dept.code} - ${dept.name}</option>`;
+            select.innerHTML += opt;
+            editSelect.innerHTML += opt;
           });
         }
       } catch (err) {
@@ -282,7 +373,13 @@
           : '';
 
         container.innerHTML += `
-          <div class="p-3 rounded-4 border bg-white shadow-sm position-relative ${ann.is_pinned ? 'border-primary border-2' : ''}">
+          <div id="ann-card-${ann.id}" class="p-3 rounded-4 border bg-white shadow-sm position-relative announcement-item ${ann.is_pinned ? 'border-primary border-2' : ''}">
+            <button onclick="openEditAnnouncementModal('${ann.id}')" class="btn btn-sm btn-link text-secondary position-absolute" style="top: 10px; right: 40px; padding: 0.25rem;" title="Edit Announcement">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+              </svg>
+            </button>
             <button onclick="deleteAnnouncement('${ann.id}')" class="btn-close position-absolute" style="top: 15px; right: 15px; font-size: 0.8rem;" title="Delete Announcement"></button>
             <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
               ${isPinnedHtml}
@@ -297,6 +394,29 @@
             <p class="small text-dark mb-0 style-content" style="white-space: pre-wrap;">${ann.content}</p>
           </div>
         `;
+
+        // Auto-hide if deadline reached
+        if (ann.expires_at) {
+          const msLeft = new Date(ann.expires_at).getTime() - Date.now();
+          if (msLeft > 0) {
+            setTimeout(() => {
+              const card = document.getElementById(`ann-card-${ann.id}`);
+              if (card) {
+                card.style.transition = 'all 0.5s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                  card.remove();
+                  const items = container.getElementsByClassName('announcement-item');
+                  document.getElementById('annCountBadge').innerText = `${items.length} ${items.length === 1 ? 'Notice' : 'Notices'}`;
+                  if (items.length === 0) {
+                    showEmptyState();
+                  }
+                }, 500);
+              }
+            }, msLeft);
+          }
+        }
       });
     }
 
@@ -355,6 +475,73 @@
       } catch (err) {
         console.error('Error deleting announcement:', err);
         showAlert('Network error deleting announcement', 'danger');
+      }
+    }
+
+    const editAnnModal = new bootstrap.Modal(document.getElementById('editAnnouncementModal'));
+
+    function openEditAnnouncementModal(id) {
+      const ann = announcementsList.find(a => a.id === id);
+      if (!ann) return;
+
+      document.getElementById('editAnnId').value = ann.id;
+      document.getElementById('editAnnTitle').value = ann.title;
+      document.getElementById('editAnnContent').value = ann.content;
+      document.getElementById('editAnnCategory').value = ann.category;
+      document.getElementById('editAnnPriority').value = ann.priority;
+      document.getElementById('editAnnDepartment').value = ann.department_id || '';
+      document.getElementById('editAnnSemester').value = ann.semester || '';
+      document.getElementById('editAnnPinned').checked = ann.is_pinned;
+      
+      if (ann.expires_at) {
+        const d = new Date(ann.expires_at);
+        const pad = num => String(num).padStart(2, '0');
+        const formatted = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        document.getElementById('editAnnExpiresAt').value = formatted;
+      } else {
+        document.getElementById('editAnnExpiresAt').value = '';
+      }
+
+      editAnnModal.show();
+    }
+
+    async function updateAnnouncement(e) {
+      e.preventDefault();
+      const id = document.getElementById('editAnnId').value;
+      const title = document.getElementById('editAnnTitle').value;
+      const content = document.getElementById('editAnnContent').value;
+      const category = document.getElementById('editAnnCategory').value;
+      const priority = document.getElementById('editAnnPriority').value;
+      const department_id = document.getElementById('editAnnDepartment').value;
+      const semester = document.getElementById('editAnnSemester').value;
+      const is_pinned = document.getElementById('editAnnPinned').checked;
+      const expires_at = document.getElementById('editAnnExpiresAt').value;
+
+      try {
+        const res = await apiCall(`/api/announcements/admin/${id}`, {
+          method: 'PUT',
+          body: {
+            title,
+            content,
+            category,
+            priority,
+            department_id: department_id || null,
+            semester: semester ? parseInt(semester, 10) : null,
+            is_pinned,
+            expires_at: expires_at || null
+          }
+        });
+
+        if (res.success) {
+          showAlert('Announcement updated successfully!', 'success');
+          editAnnModal.hide();
+          await fetchAnnouncements();
+        } else {
+          showAlert(res.message || 'Failed to update announcement', 'danger');
+        }
+      } catch (err) {
+        console.error('Error updating announcement:', err);
+        showAlert('Network error updating announcement', 'danger');
       }
     }
 

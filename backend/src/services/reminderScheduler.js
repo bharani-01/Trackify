@@ -103,7 +103,7 @@ const processEmailQueue = async () => {
       const resend = new Resend(resendApiKey);
       try {
         await resend.emails.send({
-          from: 'Trackify <trackify@bharani-01.xyz>',
+          from: process.env.MAIL_FROM || 'Trackify <trackify@mail.trackifyapp.co.in>',
           to: [item.recipient_email],
           subject: item.subject,
           html: item.html_content

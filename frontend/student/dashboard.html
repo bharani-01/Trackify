@@ -848,7 +848,7 @@
             const priorityBadge = ann.priority === 'urgent' ? '<span class="badge bg-danger-subtle text-danger border border-danger small ms-1">Urgent</span>' : '';
 
             container.innerHTML += `
-              <div class="p-3 rounded-3 mb-2 announcement-item ${ann.is_pinned ? 'border-primary border-2' : ''}">
+              <div id="ann-card-${ann.id}" class="p-3 rounded-3 mb-2 announcement-item ${ann.is_pinned ? 'border-primary border-2' : ''}">
                 <div class="d-flex align-items-center gap-1.5 mb-1.5 flex-wrap">
                   ${pinnedBadge}
                   ${catBadge}
@@ -859,6 +859,30 @@
                 <div class="announcement-content small" style="white-space: pre-wrap; line-height: 1.4;">${ann.content}</div>
               </div>
             `;
+
+            // Auto-hide if deadline reached
+            if (ann.expires_at) {
+              const msLeft = new Date(ann.expires_at).getTime() - Date.now();
+              if (msLeft > 0) {
+                setTimeout(() => {
+                  const card = document.getElementById(`ann-card-${ann.id}`);
+                  if (card) {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                      card.remove();
+                      const items = container.getElementsByClassName('announcement-item');
+                      if (items.length > 0) {
+                        countBadge.innerText = `${items.length} ${items.length === 1 ? 'Notice' : 'Notices'}`;
+                      } else {
+                        widgetContainer.style.display = 'none';
+                      }
+                    }, 500);
+                  }
+                }, msLeft);
+              }
+            }
           });
 
           // Show widget container since notices exist

@@ -145,7 +145,7 @@ const sendBackupEmail = async (email, subject, filename, content) => {
 
   try {
     const data = await resend.emails.send({
-      from: 'Trackify <trackify@bharani-01.xyz>',
+      from: process.env.MAIL_FROM || 'Trackify <trackify@mail.trackifyapp.co.in>',
       to: [email],
       subject: subject,
       html: `
