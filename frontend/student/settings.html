@@ -255,6 +255,12 @@
               <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
             </button>
 
+            <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+              <span class="settings-list-icon text-danger"><i class="bi bi-shield-lock-fill"></i></span>
+              <span class="settings-list-label">Change Password</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
+
             <button class="settings-list-item" onclick="toggleDisplayTheme()">
               <span class="settings-list-icon text-info"><i class="bi bi-display"></i></span>
               <span class="settings-list-label">Toggle Dark / Light Theme</span>
@@ -513,10 +519,16 @@
       showAlert(`Theme changed to ${target} mode`, 'success');
     }
 
-    function clearCachedData() {
+    async function clearCachedData() {
       if (confirm('Clear local app cache? This will reset local configurations and require you to re-authenticate.')) {
         localStorage.clear();
-        window.location.href = '/login';
+        sessionStorage.clear();
+        try {
+          await apiCall('/api/auth/logout', { method: 'POST' });
+        } catch (e) {
+          // ignore
+        }
+        window.location.href = '/login.html';
       }
     }
 
