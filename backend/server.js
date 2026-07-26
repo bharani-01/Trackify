@@ -16,6 +16,7 @@ const apiAuditLogger = require('./src/middleware/apiAuditLogger');
 const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
 const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
+const { maintenanceMiddleware } = require('./src/middleware/maintenanceMiddleware');
 
 const app = express();
 app.disable('x-powered-by');
@@ -56,6 +57,7 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(maintenanceMiddleware);
 
 // 3. Security Headers, Cache-Control and File Protections Middleware
 app.use((req, res, next) => {
@@ -548,6 +550,10 @@ app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../
 
 // Serve assets globally
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
+
+app.get(['/maintenance', '/maintenance.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/maintenance.html'));
+});
 
 // Apply redirectIfLoggedIn to public entry routes
 app.get('/', redirectIfLoggedIn, (req, res) => {

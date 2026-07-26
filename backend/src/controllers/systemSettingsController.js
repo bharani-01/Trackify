@@ -6,8 +6,9 @@ const systemSettingsRepository = require('../repositories/systemSettingsReposito
  */
 const getSettings = async (req, res) => {
   try {
-    const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
+        const allowSelfReg = await systemSettingsRepository.getSetting('allow_self_registration', 'true');
     const maintMode = await systemSettingsRepository.getSetting('maintenance_mode', 'false');
+    const bypassEmails = await systemSettingsRepository.getSetting('maintenance_bypass_emails', '');
     const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
     const mailFromAuth = await systemSettingsRepository.getSetting('mail_from_auth', '');
     const mailFromReminders = await systemSettingsRepository.getSetting('mail_from_reminders', '');
@@ -22,6 +23,7 @@ const getSettings = async (req, res) => {
       settings: {
         allow_self_registration: allowSelfReg === 'true',
         maintenance_mode: maintMode === 'true',
+        maintenance_bypass_emails: bypassEmails,
         global_email_notifications: globalEmail === 'true',
         mail_from_auth: mailFromAuth,
         mail_from_reminders: mailFromReminders,
@@ -49,6 +51,7 @@ const updateSettings = async (req, res) => {
   const { 
     allow_self_registration, 
     maintenance_mode, 
+    maintenance_bypass_emails,
     global_email_notifications,
     mail_from_auth,
     mail_from_reminders,
@@ -65,6 +68,24 @@ const updateSettings = async (req, res) => {
     
     if (maintenance_mode !== undefined) {
       await systemSettingsRepository.setSetting('maintenance_mode', maintenance_mode ? 'true' : 'false');
+      // Invalidate/update maintenance mode cache immediately
+      try {
+        const { setCachedMaintenanceMode } = require('../middleware/maintenanceMiddleware');
+        setCachedMaintenanceMode(maintenance_mode);
+      } catch (err) {
+        console.error('Failed to update maintenance mode cache:', err.message);
+      }
+    }
+
+    if (maintenance_bypass_emails !== undefined) {
+      await systemSettingsRepository.setSetting('maintenance_bypass_emails', maintenance_bypass_emails);
+      // Invalidate/update maintenance bypass emails cache immediately
+      try {
+        const { setCachedBypassEmails } = require('../middleware/maintenanceMiddleware');
+        setCachedBypassEmails(maintenance_bypass_emails);
+      } catch (err) {
+        console.error('Failed to update maintenance bypass emails cache:', err.message);
+      }
     }
 
     if (global_email_notifications !== undefined) {

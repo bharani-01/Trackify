@@ -116,6 +116,12 @@
                 <label for="summaryInterval" class="text-secondary">Summary Email Interval (Days)</label>
               </div>
 
+              <!-- Maintenance Mode Bypass Emails -->
+              <div class="form-floating mb-4">
+                <input type="text" class="form-control bg-white" id="bypassEmails" placeholder="Bypass Emails (Comma Separated)">
+                <label for="bypassEmails" class="text-secondary">Testing Bypass Emails (Comma Separated)</label>
+              </div>
+
               <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
             </div>
           </div>
@@ -128,14 +134,14 @@
               <div class="mb-3 p-3 bg-light rounded-4 border d-flex justify-content-between align-items-center">
                 <div>
                   <div class="text-secondary small">Database Status</div>
-                  <div class="fw-semibold">Connected (Localhost)</div>
+                  <div class="fw-semibold" id="db-host-status">Connecting...</div>
                 </div>
-                <span class="badge badge-present px-2 py-1 fs-8">Healthy</span>
+                <span class="badge bg-warning-subtle text-warning px-2 py-1 fs-8" id="db-health-badge">Checking...</span>
               </div>
 
               <div class="mb-4 p-3 bg-light rounded-4 border">
                 <div class="text-secondary small">Active Connection Pool</div>
-                <div class="fw-semibold">10 client connections idle</div>
+                <div class="fw-semibold" id="db-pool-status">Loading connections...</div>
               </div>
 
               <div class="d-flex gap-2">
@@ -390,6 +396,7 @@
       if (response.success && response.settings) {
         document.getElementById('regSwitch').checked = response.settings.allow_self_registration;
         document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
+        document.getElementById('bypassEmails').value = response.settings.maintenance_bypass_emails || '';
         document.getElementById('emailSwitch').checked = response.settings.global_email_notifications;
         
         // Load custom senders
@@ -401,6 +408,9 @@
         // Load automated summaries settings
         document.getElementById('summarySwitch').checked = response.settings.summary_email_enabled;
         document.getElementById('summaryInterval').value = response.settings.summary_email_interval || 15;
+
+        // Fetch db diagnostics
+        loadDbDiagnostics();
       }
 
       // Pre-fill manual summary dates (past 15 days, ending yesterday)
@@ -494,6 +504,7 @@
     async function saveConfigs() {
       const allow_self_registration = document.getElementById('regSwitch').checked;
       const maintenance_mode = document.getElementById('maintSwitch').checked;
+      const maintenance_bypass_emails = document.getElementById('bypassEmails').value.trim();
       const global_email_notifications = document.getElementById('emailSwitch').checked;
       const summary_email_enabled = document.getElementById('summarySwitch').checked;
       const summary_email_interval = parseInt(document.getElementById('summaryInterval').value, 10) || 15;
@@ -507,6 +518,7 @@
         body: { 
           allow_self_registration, 
           maintenance_mode, 
+          maintenance_bypass_emails,
           global_email_notifications,
           summary_email_enabled,
           summary_email_interval
@@ -768,8 +780,50 @@
       }
     }
 
-    function testPing() {
-      showAlert('Database ping response: 4ms. Connection healthy.', 'success');
+    async function testPing() {
+      const pingBtn = document.querySelector('button[onclick="testPing()"]');
+      const originalText = pingBtn.innerText;
+      pingBtn.disabled = true;
+      pingBtn.innerText = 'Pinging...';
+
+      const response = await apiCall('/api/admin/diagnostics/ping', { method: 'POST' });
+      
+      pingBtn.disabled = false;
+      pingBtn.innerText = originalText;
+
+      if (response.success) {
+        showAlert(`Database ping response: ${response.latencyMs}ms. Connection healthy.`, 'success');
+        loadDbDiagnostics();
+      } else {
+        showAlert(response.message || 'Database ping failed.', 'danger');
+        loadDbDiagnostics();
+      }
+    }
+
+    async function loadDbDiagnostics() {
+      const response = await apiCall('/api/admin/diagnostics');
+      if (response.success && response.diagnostics) {
+        const diag = response.diagnostics;
+        document.getElementById('db-host-status').innerText = `${diag.status} (${diag.host})`;
+        
+        const healthBadge = document.getElementById('db-health-badge');
+        healthBadge.innerText = diag.health;
+        if (diag.health === 'Healthy') {
+          healthBadge.className = 'badge bg-success-subtle text-success px-2 py-1 fs-8';
+        } else {
+          healthBadge.className = 'badge bg-danger-subtle text-danger px-2 py-1 fs-8';
+        }
+
+        const poolInfo = diag.pool;
+        document.getElementById('db-pool-status').innerText = 
+          `${poolInfo.idleCount} client connections idle (total: ${poolInfo.totalCount}/${poolInfo.max}, waiting: ${poolInfo.waitingCount})`;
+      } else {
+        document.getElementById('db-host-status').innerText = 'Disconnected';
+        const healthBadge = document.getElementById('db-health-badge');
+        healthBadge.innerText = 'Unhealthy';
+        healthBadge.className = 'badge bg-danger-subtle text-danger px-2 py-1 fs-8';
+        document.getElementById('db-pool-status').innerText = 'N/A';
+      }
     }
 
     window.onload = loadData;

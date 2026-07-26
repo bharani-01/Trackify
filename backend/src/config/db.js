@@ -249,6 +249,15 @@ const initMigrations = async (retries = 3) => {
       ON CONFLICT (key) DO NOTHING;
     `);
 
+    // Seed dedicated Maintenance/Testing users
+    await client.query(`
+      INSERT INTO users (name, register_number, email, password_hash, role, department, semester, is_approved, is_suspended)
+      VALUES 
+      ('Maintenance Administrator', 'MAINTADMIN01', 'maint_admin@trackifyapp.co.in', '$2b$10$Dzag/cqKwTcGZJnqoR4Fc.MVGRWEX9fzG8qTBR4iknC1tY6LqDuWG', 'admin', 'Management', 1, true, false),
+      ('Maintenance Student', 'MAINTSTUDENT01', 'maint_student@trackifyapp.co.in', '$2b$10$dmDJnXVoT8Yrq65Zr.RBsO/DsKMwFbywoG.RNk0DYG8OsJNHTQb5y', 'student', 'E02', 5, true, false)
+      ON CONFLICT (email) DO NOTHING;
+    `);
+
     // Ensure attendance_summary_logs table exists
     await client.query(`
       CREATE TABLE IF NOT EXISTS attendance_summary_logs (

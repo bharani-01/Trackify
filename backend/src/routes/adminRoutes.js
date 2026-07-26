@@ -62,6 +62,11 @@ router.route('/settings')
   .get(getSettings)
   .put(updateSettings);
 
+// Database diagnostics
+const { getDatabaseDiagnostics, pingDatabase } = require('../controllers/diagnosticsController');
+router.get('/diagnostics', getDatabaseDiagnostics);
+router.post('/diagnostics/ping', pingDatabase);
+
 // Manual Reminders sweep triggers
 router.post('/reminders/preview-daily', previewDailyReminders);
 router.post('/reminders/preview-low-attendance', previewLowAttendanceWarnings);

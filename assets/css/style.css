@@ -537,28 +537,30 @@ h6 {
   overflow: hidden;
 }
 
-.sidebar-collapsed .app-sidebar {
-  width: 70px !important;
-}
+@media (min-width: 769px) {
+  .sidebar-collapsed .app-sidebar {
+    width: 70px !important;
+  }
 
-.sidebar-collapsed .sidebar-logo {
-  padding: 1.5rem 0 !important;
-  justify-content: center !important;
-}
+  .sidebar-collapsed .sidebar-logo {
+    padding: 1.5rem 0 !important;
+    justify-content: center !important;
+  }
 
-.sidebar-collapsed .sidebar-logo img {
-  content: url("/assets/images/favicon.webp") !important;
-  height: 28px !important;
-}
+  .sidebar-collapsed .sidebar-logo img {
+    content: url("/assets/images/favicon.webp") !important;
+    height: 28px !important;
+  }
 
-.sidebar-collapsed .sidebar-link {
-  justify-content: center !important;
-  padding: 0.75rem 0 !important;
-  gap: 0 !important;
-}
+  .sidebar-collapsed .sidebar-link {
+    justify-content: center !important;
+    padding: 0.75rem 0 !important;
+    gap: 0 !important;
+  }
 
-.sidebar-collapsed .sidebar-link span {
-  display: none !important;
+  .sidebar-collapsed .sidebar-link span {
+    display: none !important;
+  }
 }
 
 .sidebar-logo {
