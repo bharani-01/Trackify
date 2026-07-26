@@ -1,5 +1,22 @@
 const db = require('../config/db');
 
+const normalizeAvatar = (avatar) => {
+  if (!avatar) return null;
+  if (avatar.includes('api.dicebear.com')) {
+    try {
+      const url = new URL(avatar);
+      const seed = url.searchParams.get('seed');
+      if (seed) {
+        return `/assets/images/avatars/${seed}.svg`;
+      }
+    } catch (e) {
+      // Return standard fallback
+    }
+    return `/assets/images/avatars/Trackify.svg`;
+  }
+  return avatar;
+};
+
 /**
  * Retrieve user record by email
  * @param {string} email 
@@ -17,7 +34,11 @@ const findByEmail = async (email) => {
     WHERE u.email = $1
   `;
   const result = await db.query(query, [email.toLowerCase().trim()]);
-  return result.rows[0] || null;
+  const user = result.rows[0] || null;
+  if (user && user.avatar) {
+    user.avatar = normalizeAvatar(user.avatar);
+  }
+  return user;
 };
 
 /**
@@ -39,7 +60,11 @@ const findById = async (id) => {
     WHERE u.id = $1
   `;
   const result = await db.query(query, [id]);
-  return result.rows[0] || null;
+  const user = result.rows[0] || null;
+  if (user && user.avatar) {
+    user.avatar = normalizeAvatar(user.avatar);
+  }
+  return user;
 };
 
 /**
@@ -231,7 +256,11 @@ const updateProfile = async (userId, name, email, avatar = null) => {
     RETURNING id, name, email, avatar
   `;
   const result = await db.query(query, [name.trim(), email.toLowerCase().trim(), userId, avatar]);
-  return result.rows[0];
+  const user = result.rows[0];
+  if (user && user.avatar) {
+    user.avatar = normalizeAvatar(user.avatar);
+  }
+  return user;
 };
 
 const updateOtp = async (userId, otp, expires) => {
