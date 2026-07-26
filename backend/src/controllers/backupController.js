@@ -195,9 +195,118 @@ const emailData = async (req, res) => {
   }
 };
 
+const remoteBackupService = require('../services/remoteBackupService');
+
+const getRemoteBackups = async (req, res) => {
+  try {
+    const backups = await remoteBackupService.listRemoteBackups();
+    return res.status(200).json({
+      success: true,
+      backups
+    });
+  } catch (error) {
+    console.error('getRemoteBackups error:', error);
+    return res.status(500).json({
+      success: false,
+      message: `Failed to fetch remote backup versions: ${error.message}`
+    });
+  }
+};
+
+const createRemoteBackup = async (req, res) => {
+  const { description } = req.body;
+  const now = new Date();
+  const dateStr = now.toISOString().replace(/T/, '_').replace(/\..+/, '').replace(/:/g, '-');
+  const cleanDescription = (description || 'manual').replace(/[^a-zA-Z0-9_\-]/g, '_');
+  const versionName = `manual_backup_${dateStr}_${cleanDescription}`;
+
+  try {
+    const backupId = await remoteBackupService.createBackupVersion(versionName);
+    
+    // Log in audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'CREATE_REMOTE_BACKUP',
+      `Manual remote database backup version '${versionName}' created.`,
+      ip
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: `Database backup version '${versionName}' created successfully.`,
+      backupId
+    });
+  } catch (error) {
+    console.error('createRemoteBackup error:', error);
+    return res.status(500).json({
+      success: false,
+      message: `Failed to create remote backup version: ${error.message}`
+    });
+  }
+};
+
+const restoreRemoteBackup = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const versionName = await remoteBackupService.restoreBackupVersion(id);
+    
+    // Log in audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'RESTORE_REMOTE_BACKUP',
+      `Restored local database to remote backup version '${versionName}' (${id}).`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Local database successfully restored to remote backup version '${versionName}'.`
+    });
+  } catch (error) {
+    console.error('restoreRemoteBackup error:', error);
+    return res.status(500).json({
+      success: false,
+      message: `Failed to restore database from backup: ${error.message}`
+    });
+  }
+};
+
+const deleteRemoteBackup = async (req, res) => {
+  const { id } = req.params;
+  try {
+    await remoteBackupService.deleteBackupVersion(id);
+    
+    // Log in audit log
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'DELETE_REMOTE_BACKUP',
+      `Deleted remote backup version ID: ${id}.`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Remote backup version deleted successfully.'
+    });
+  } catch (error) {
+    console.error('deleteRemoteBackup error:', error);
+    return res.status(500).json({
+      success: false,
+      message: `Failed to delete remote backup: ${error.message}`
+    });
+  }
+};
+
 module.exports = {
   triggerBackup,
   getBackupsList,
   exportData,
-  emailData
+  emailData,
+  getRemoteBackups,
+  createRemoteBackup,
+  restoreRemoteBackup,
+  deleteRemoteBackup
 };

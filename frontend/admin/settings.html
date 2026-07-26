@@ -7,6 +7,7 @@
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
     <script>
     (function() {
@@ -23,6 +24,119 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+  <style>
+    .tab-panel:not(#tab-panel-general) {
+      display: none;
+    }
+
+    /* Secondary settings sidebar - only shown on desktop */
+    @media (min-width: 768px) {
+      .settings-sub-sidebar {
+        width: 250px;
+        border-right: 1px solid var(--border-color);
+        background-color: var(--bg-primary);
+        height: 100vh;
+        position: sticky;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        padding: 1.5rem 1rem;
+      }
+      
+      [data-theme="dark"] .settings-sub-sidebar {
+        background-color: #0b0c10; /* Slightly darker shade to give a premium multi-pane feel */
+      }
+
+      .settings-sidebar-header {
+        padding: 0.5rem 0.5rem 1rem 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .settings-sidebar-header h2 {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.02em;
+      }
+
+      .settings-sidebar-section {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin: 1.25rem 0.5rem 0.4rem 0.5rem;
+        text-transform: uppercase;
+      }
+
+      .settings-nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.55rem 0.75rem;
+        color: var(--text-muted);
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 6px;
+        margin-bottom: 0.15rem;
+        transition: all 0.1s ease;
+        font-size: 0.88rem;
+      }
+
+      .settings-nav-link:hover {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      .settings-nav-link.active {
+        background-color: var(--primary-subtle);
+        color: var(--primary);
+        font-weight: 600;
+      }
+    }
+
+    /* Mobile subtab navigation - horizontal scroll list */
+    @media (max-width: 767.98px) {
+      .scrollable-subtabs {
+        display: flex;
+        overflow-x: auto;
+        gap: 0.5rem;
+        padding: 0.5rem 0.25rem;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+      }
+      
+      .scrollable-subtabs::-webkit-scrollbar {
+        display: none; /* Hide scrollbars for a clean look */
+      }
+
+      .subtab-link {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 0.85rem;
+        color: var(--text-muted);
+        background-color: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 50px; /* pill look */
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.15s ease;
+      }
+
+      .subtab-link:hover {
+        color: var(--text-primary);
+        background-color: var(--bg-primary);
+      }
+
+      .subtab-link.active {
+        color: var(--primary);
+        background-color: var(--primary-subtle);
+        border-color: var(--primary);
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -48,7 +162,40 @@
       </div>
     </aside>
 
-    
+    <!-- Secondary settings sidebar attached to main navigation sidebar -->
+    <aside class="settings-sub-sidebar d-none d-md-flex">
+      <div class="settings-sidebar-header">
+        <h2 class="h6 fw-bold mb-0">Settings</h2>
+      </div>
+      <div class="settings-sidebar-nav">
+        <div class="settings-sidebar-section">SYSTEM CONFIG</div>
+        <a href="#" class="settings-nav-link active" data-tab="general">
+          <i class="bi bi-gear-fill me-2"></i> General Controls
+        </a>
+        <a href="#" class="settings-nav-link" data-tab="email">
+          <i class="bi bi-envelope-fill me-2"></i> Email Senders
+        </a>
+        
+        <div class="settings-sidebar-section">OUTBOUND CHECKS</div>
+        <a href="#" class="settings-nav-link" data-tab="reminders">
+          <i class="bi bi-bell-fill me-2"></i> Reminders Sweep
+        </a>
+        
+        <div class="settings-sidebar-section">BACKUP & DATA</div>
+        <a href="#" class="settings-nav-link" data-tab="backups">
+          <i class="bi bi-hdd-fill me-2"></i> Backups & Exports
+        </a>
+        <a href="#" class="settings-nav-link" data-tab="visualizer">
+          <i class="bi bi-table me-2"></i> Table Visualizer
+        </a>
+        
+        <div class="settings-sidebar-section">DIAGNOSTICS</div>
+        <a href="#" class="settings-nav-link" data-tab="diagnostics">
+          <i class="bi bi-cpu-fill me-2"></i> DB Diagnostics
+        </a>
+      </div>
+    </aside>
+
     <div class="app-main-wrapper">
       
       <header class="app-header">
@@ -68,261 +215,354 @@
       <main class="app-content animate-fade-in-up">
         <p class="text-secondary small mb-4">Manage global application variables and configurations.</p>
 
-        <div class="row g-4">
-          
-          <div class="col-md-6">
-            <div class="glass-card border-glass">
-              <h2 class="h5 fw-bold mb-4">Registration & System Controls</h2>
-              
-              
-              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
-                <div>
-                  <label class="form-check-label fw-bold text-dark" for="regSwitch">Open Registrations</label>
-                  <div class="text-secondary small" style="font-size: 0.8rem;">Allow new students to sign up.</div>
-                </div>
-                <input class="form-check-input ms-0" type="checkbox" role="switch" id="regSwitch" checked>
-              </div>
-
-              
-              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
-                <div>
-                  <label class="form-check-label fw-bold text-dark" for="emailSwitch">Global Email Broadcast</label>
-                  <div class="text-secondary small" style="font-size: 0.8rem;">Allow automated settings notifications & recovery emails.</div>
-                </div>
-                <input class="form-check-input ms-0" type="checkbox" role="switch" id="emailSwitch" checked>
-              </div>
-
-              
-              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
-                <div>
-                  <label class="form-check-label fw-bold text-dark" for="maintSwitch">Maintenance Mode</label>
-                  <div class="text-secondary small" style="font-size: 0.8rem;">Block student portal access globally.</div>
-                </div>
-                <input class="form-check-input ms-0" type="checkbox" role="switch" id="maintSwitch">
-              </div>
-
-              <!-- Automated 15-Day Attendance Summaries Switch -->
-              <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
-                <div>
-                  <label class="form-check-label fw-bold text-dark" for="summarySwitch">Automated Summary Emails</label>
-                  <div class="text-secondary small" style="font-size: 0.8rem;">Auto-send periodic summary reports to students.</div>
-                </div>
-                <input class="form-check-input ms-0" type="checkbox" role="switch" id="summarySwitch" checked>
-              </div>
-
-              <!-- Automated Summary Interval in Days -->
-              <div class="form-floating mb-4">
-                <input type="number" class="form-control" id="summaryInterval" min="1" max="90" placeholder="Summary Interval (Days)" value="15" required>
-                <label for="summaryInterval" class="text-secondary">Summary Email Interval (Days)</label>
-              </div>
-
-              <!-- Maintenance Mode Bypass Emails -->
-              <div class="form-floating mb-4">
-                <input type="text" class="form-control bg-white" id="bypassEmails" placeholder="Bypass Emails (Comma Separated)">
-                <label for="bypassEmails" class="text-secondary">Testing Bypass Emails (Comma Separated)</label>
-              </div>
-
-              <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
-            </div>
-          </div>
-
-          
-          <div class="col-md-6">
-            <div class="glass-card border-glass">
-              <h2 class="h5 fw-bold mb-4">PostgreSQL Database Diagnostics</h2>
-              
-              <div class="mb-3 p-3 bg-light rounded-4 border d-flex justify-content-between align-items-center">
-                <div>
-                  <div class="text-secondary small">Database Status</div>
-                  <div class="fw-semibold" id="db-host-status">Connecting...</div>
-                </div>
-                <span class="badge bg-warning-subtle text-warning px-2 py-1 fs-8" id="db-health-badge">Checking...</span>
-              </div>
-
-              <div class="mb-4 p-3 bg-light rounded-4 border">
-                <div class="text-secondary small">Active Connection Pool</div>
-                <div class="fw-semibold" id="db-pool-status">Loading connections...</div>
-              </div>
-
-              <div class="d-flex gap-2">
-                <button onclick="testPing()" class="btn btn-glass btn-sm w-100 py-2.5">Test Pool Ping</button>
-                <button onclick="runBackupTrigger()" class="btn btn-glass btn-sm w-100 border-primary text-primary py-2.5" id="backupBtn">Database Backup</button>
-              </div>
-            </div>
-          </div>
+        <!-- Mobile subtab navigation (only visible on mobile screens) -->
+        <div class="scrollable-subtabs d-md-none mb-4">
+          <a href="#" class="subtab-link active" data-tab="general">General</a>
+          <a href="#" class="subtab-link" data-tab="email">Senders</a>
+          <a href="#" class="subtab-link" data-tab="reminders">Sweeps</a>
+          <a href="#" class="subtab-link" data-tab="backups">Backups</a>
+          <a href="#" class="subtab-link" data-tab="diagnostics">Diagnostics</a>
+          <a href="#" class="subtab-link" data-tab="visualizer">Visualizer</a>
         </div>
 
-        <!-- Email Senders Configuration Card (Full Width) -->
-        <div class="glass-card border-glass mt-4">
-          <h2 class="h5 fw-bold mb-3">Email Senders Configuration</h2>
-          <p class="text-secondary small mb-4">
-            Configure custom sender email addresses for different message categories. Leaving fields blank reverts back to ENV configurations or defaults.
-          </p>
-          
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control bg-white" id="senderAuth" placeholder="Auth Sender">
-                <label class="text-secondary" for="senderAuth">Authentication Sender (OTP, Passwords)</label>
-              </div>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control bg-white" id="senderReminders" placeholder="Reminders Sender">
-                <label class="text-secondary" for="senderReminders">Reminders Sender (Check-Ins, Warnings)</label>
-              </div>
-            </div>
+        <!-- 1. General Controls Tab -->
+        <div id="tab-panel-general" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-4">Registration & System Controls</h2>
             
-            <div class="col-md-6">
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control bg-white" id="senderNotices" placeholder="Notices Sender">
-                <label class="text-secondary" for="senderNotices">Notices Sender (Announcements, Alerts)</label>
+            <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="regSwitch">Open Registrations</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Allow new students to sign up.</div>
               </div>
-              <div class="form-floating mb-3">
-                <input type="text" class="form-control bg-white" id="senderBackups" placeholder="Backups Sender">
-                <label class="text-secondary" for="senderBackups">Diagnostic Backups Sender (SQL/CSV Dumps)</label>
-              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="regSwitch" checked>
             </div>
+
+            <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="emailSwitch">Global Email Broadcast</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Allow automated settings notifications & recovery emails.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="emailSwitch" checked>
+            </div>
+
+            <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="maintSwitch">Maintenance Mode</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Block student portal access globally.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="maintSwitch">
+            </div>
+
+            <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="summarySwitch">Automated Summary Emails</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Auto-send periodic summary reports to students.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="summarySwitch" checked>
+            </div>
+
+            <div class="form-floating mb-4">
+              <input type="number" class="form-control" id="summaryInterval" min="1" max="90" placeholder="Summary Interval (Days)" value="15" required>
+              <label for="summaryInterval" class="text-secondary">Summary Email Interval (Days)</label>
+            </div>
+
+            <div class="form-floating mb-4">
+              <input type="text" class="form-control bg-white" id="bypassEmails" placeholder="Bypass Emails (Comma Separated)">
+              <label for="bypassEmails" class="text-secondary">Testing Bypass Emails (Comma Separated)</label>
+            </div>
+
+            <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
           </div>
-          
-          <button onclick="saveSenderConfigs()" id="saveSendersBtn" class="btn btn-glow mt-2 py-3 px-5 text-white" style="border-radius: 0px;">Save Sender Settings</button>
         </div>
 
-        
-        <!-- Manual Reminders Control Panel -->
-        <div class="glass-card border-glass mt-4">
-          <h2 class="h5 fw-bold mb-3">Manual Email Reminders Control Panel</h2>
-          <p class="text-secondary small mb-4">
-            Manually trigger system-wide email sweeps. These run live checks against student timetables and thresholds, queueing outbound reminder notifications immediately.
-          </p>
-          
-          <div class="row g-3">
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
-                <div>
-                  <div class="fw-bold mb-1 text-dark">Daily Check-In Reminders Sweep</div>
-                  <div class="text-secondary small mb-3">
-                    Checks today's timetable schedule for all departments. Queues warning emails to students who have missed or skipped marking any active periods today.
-                  </div>
-                </div>
-                <div>
-                  <button id="triggerDailyBtn" onclick="loadEmailPreview('daily')" class="btn btn-glow btn-sm py-2 px-3 text-white">
-                    <i class="bi bi-bell-fill me-1"></i> Trigger Daily Reminders
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
-                <div>
-                  <div class="fw-bold mb-1 text-dark">Low Attendance Warnings Sweep</div>
-                  <div class="text-secondary small mb-3">
-                    Calculates live overall attendance ratios. Queues alerts to students whose total average has fallen below their configured target thresholds (e.g. 80%).
-                  </div>
-                </div>
-                <div>
-                  <button id="triggerLowBtn" onclick="loadEmailPreview('low-attendance')" class="btn btn-glass btn-sm border-danger text-danger py-2 px-3">
-                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Trigger Low Attendance Alerts
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Manual 15-Day Attendance Summary Broadcast -->
-            <div class="col-md-12 mt-3">
-              <div class="p-3 bg-light rounded-4 border">
-                <div class="fw-bold mb-1 text-dark">Attendance Summary Broadcast Sweep</div>
-                <div class="text-secondary small mb-3">
-                  Calculate and queue the periodic attendance summary emails for a specific date range. Emails are compiled using the winking-envelope HTML template.
-                </div>
-                <div class="row g-2 mb-3">
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="date" class="form-control" id="summaryStartDate" required>
-                      <label for="summaryStartDate" class="text-secondary">Summary Start Date</label>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-floating">
-                      <input type="date" class="form-control" id="summaryEndDate" required>
-                      <label for="summaryEndDate" class="text-secondary">Summary End Date</label>
-                    </div>
-                  </div>
-                </div>
-                <!-- Custom Student Recipient Selection Dropdown -->
+        <!-- 2. Email Senders Tab -->
+        <div id="tab-panel-email" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-3">Email Senders Configuration</h2>
+            <p class="text-secondary small mb-4">
+              Configure custom sender email addresses for different message categories. Leaving fields blank reverts back to ENV configurations or defaults.
+            </p>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
                 <div class="form-floating mb-3">
-                  <select class="form-select bg-white text-dark" id="summaryUserSelect" required>
-                    <option value="all" selected>All Active Students</option>
+                  <input type="text" class="form-control bg-white" id="senderAuth" placeholder="Auth Sender">
+                  <label class="text-secondary" for="senderAuth">Authentication Sender (OTP, Passwords)</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control bg-white" id="senderReminders" placeholder="Reminders Sender">
+                  <label class="text-secondary" for="senderReminders">Reminders Sender (Check-Ins, Warnings)</label>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control bg-white" id="senderNotices" placeholder="Notices Sender">
+                  <label class="text-secondary" for="senderNotices">Notices Sender (Announcements, Alerts)</label>
+                </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control bg-white" id="senderBackups" placeholder="Backups Sender">
+                  <label class="text-secondary" for="senderBackups">Diagnostic Backups Sender (SQL/CSV Dumps)</label>
+                </div>
+              </div>
+            </div>
+            
+            <button onclick="saveSenderConfigs()" id="saveSendersBtn" class="btn btn-glow mt-2 py-3 px-5 text-white" style="border-radius: 0px;">Save Sender Settings</button>
+          </div>
+        </div>
+
+        <!-- 3. Reminders Sweep Tab -->
+        <div id="tab-panel-reminders" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-3">Manual Email Reminders Control Panel</h2>
+            <p class="text-secondary small mb-4">
+              Manually trigger system-wide email sweeps. These run live checks against student timetables and thresholds, queueing outbound reminder notifications immediately.
+            </p>
+            
+            <div class="row g-3">
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
+                  <div>
+                    <div class="fw-bold mb-1 text-dark">Daily Check-In Reminders Sweep</div>
+                    <div class="text-secondary small mb-3">
+                      Checks today's timetable schedule for all departments. Queues warning emails to students who have missed or skipped marking any active periods today.
+                    </div>
+                  </div>
+                  <div>
+                    <button id="triggerDailyBtn" onclick="loadEmailPreview('daily')" class="btn btn-glow btn-sm py-2 px-3 text-white">
+                      <i class="bi bi-bell-fill me-1"></i> Trigger Daily Reminders
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 border h-100 d-flex flex-column justify-content-between">
+                  <div>
+                    <div class="fw-bold mb-1 text-dark">Low Attendance Warnings Sweep</div>
+                    <div class="text-secondary small mb-3">
+                      Calculates live overall attendance ratios. Queues alerts to students whose total average has fallen below their configured target thresholds (e.g. 80%).
+                    </div>
+                  </div>
+                  <div>
+                    <button id="triggerLowBtn" onclick="loadEmailPreview('low-attendance')" class="btn btn-glass btn-sm border-danger text-danger py-2 px-3">
+                      <i class="bi bi-exclamation-triangle-fill me-1"></i> Trigger Low Attendance Alerts
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12 mt-3">
+                <div class="p-3 bg-light rounded-4 border">
+                  <div class="fw-bold mb-1 text-dark">Attendance Summary Broadcast Sweep</div>
+                  <div class="text-secondary small mb-3">
+                    Calculate and queue the periodic attendance summary emails for a specific date range. Emails are compiled using the winking-envelope HTML template.
+                  </div>
+                  <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input type="date" class="form-control" id="summaryStartDate" required>
+                        <label for="summaryStartDate" class="text-secondary">Summary Start Date</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-floating">
+                        <input type="date" class="form-control" id="summaryEndDate" required>
+                        <label for="summaryEndDate" class="text-secondary">Summary End Date</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-floating mb-3">
+                    <select class="form-select bg-white text-dark" id="summaryUserSelect" required>
+                      <option value="all" selected>All Active Students</option>
+                    </select>
+                    <label for="summaryUserSelect" class="text-secondary">Recipient Student</label>
+                  </div>
+                  <div>
+                    <button id="triggerSummaryBtn" onclick="loadEmailPreview('summary')" class="btn btn-glow btn-sm py-2 px-3 text-white">
+                      <i class="bi bi-eye-fill me-1"></i> Preview &amp; Dispatch Summary Broadcast
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Backups & Exports Tab -->
+        <div id="tab-panel-backups" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-4">System Backups & Data Exports</h2>
+            
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 border h-100">
+                  <div class="fw-bold mb-2 text-dark">Direct Browser Downloads</div>
+                  <div class="text-secondary small mb-3">Download complete SQL data dumps or Excel-ready CSV sheets directly to your local device.</div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <a href="/api/admin/backups/export?format=sql" class="btn btn-glow btn-sm py-2 px-3 text-white text-decoration-none">Download SQL Dump</a>
+                    <a href="/api/admin/backups/export?format=csv_attendance" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Attendance CSV</a>
+                    <a href="/api/admin/backups/export?format=csv_students" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Students CSV</a>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="p-3 bg-light rounded-4 border h-100">
+                  <div class="fw-bold mb-2 text-dark">Email Dispatchers</div>
+                  <div class="text-secondary small mb-2">Send data exports directly to any email address using Resend attachments.</div>
+                  <div class="mb-3">
+                    <input type="email" class="form-control form-control-sm bg-white" id="customEmailInput" placeholder="Recipient email (optional - defaults to your account)">
+                  </div>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button onclick="emailBackupFile('sql')" class="btn btn-glass btn-sm border-primary text-primary py-2 px-3">Email SQL Dump</button>
+                    <button onclick="emailBackupFile('csv_attendance')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Attendance CSV</button>
+                    <button onclick="emailBackupFile('csv_students')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Students CSV</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h3 class="h6 fw-bold mb-3">Recent SQL Backups Log</h3>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom">
+                  <tr>
+                    <th class="ps-4">Backup Filename</th>
+                    <th>Date & Time</th>
+                    <th>Status</th>
+                    <th class="pe-4 text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="backups-log-container">
+                  <tr>
+                    <td colspan="4" class="text-center py-4 text-secondary">
+                      Loading backups timeline logs...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Remote versioned backups panel -->
+          <div class="glass-card border-glass mt-4">
+            <h2 class="h5 fw-bold mb-3">Remote Versioned Backups (Supabase)</h2>
+            <p class="text-secondary small mb-4">
+              Manage structured backups stored on your remote Supabase database. Backups older than 7 days are automatically pruned to maintain a rolling history window.
+            </p>
+            
+            <div class="mb-4">
+              <div class="row g-3 align-items-end">
+                <div class="col-md-8">
+                  <div class="form-floating">
+                    <input type="text" class="form-control bg-white text-dark" id="backupDescriptionInput" placeholder="Backup Description (e.g. before_users_import)">
+                    <label class="text-secondary" for="backupDescriptionInput">Backup Description/Tag (optional)</label>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <button onclick="createRemoteBackupSnapshot()" id="createRemoteBackupBtn" class="btn btn-glow w-100 py-3 text-white" style="border-radius: 0px;">Create Remote Version Snapshot</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light border-bottom">
+                  <tr>
+                    <th class="ps-4">Version Name</th>
+                    <th>Created At (IST)</th>
+                    <th class="pe-4 text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="remote-backups-container">
+                  <tr>
+                    <td colspan="3" class="text-center py-4 text-secondary">
+                      Loading remote backups list...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. DB Diagnostics Tab -->
+        <div id="tab-panel-diagnostics" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-4">PostgreSQL Database Diagnostics</h2>
+            
+            <div class="mb-3 p-3 bg-light rounded-4 border d-flex justify-content-between align-items-center">
+              <div>
+                <div class="text-secondary small">Database Status</div>
+                <div class="fw-semibold" id="db-host-status">Connecting...</div>
+              </div>
+              <span class="badge bg-warning-subtle text-warning px-2 py-1 fs-8" id="db-health-badge">Checking...</span>
+            </div>
+
+            <div class="mb-4 p-3 bg-light rounded-4 border">
+              <div class="text-secondary small">Active Connection Pool</div>
+              <div class="fw-semibold" id="db-pool-status">Loading connections...</div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button onclick="testPing()" class="btn btn-glass btn-sm w-100 py-2.5">Test Pool Ping</button>
+              <button onclick="runBackupTrigger()" class="btn btn-glass btn-sm w-100 border-primary text-primary py-2.5" id="backupBtn">Database Backup</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Table Visualizer Tab -->
+        <div id="tab-panel-visualizer" class="tab-panel">
+          <div class="glass-card border-glass">
+            <h2 class="h5 fw-bold mb-3">Database Table Visualizer</h2>
+            <p class="text-secondary small mb-4">
+              Select a system table from the database to visualize, inspect, and search columns and rows.
+            </p>
+            
+            <div class="row g-3 align-items-end mb-4">
+              <div class="col-md-8">
+                <div class="form-floating">
+                  <select class="form-select bg-white text-dark" id="visualizerTableSelect" onchange="visualizeSelectedTable()">
+                    <option value="" disabled selected>-- Select a database table --</option>
+                    <option value="users">users (User Accounts & Roles)</option>
+                    <option value="departments">departments (College Departments)</option>
+                    <option value="subjects">subjects (Curriculum Courses)</option>
+                    <option value="timetable">timetable (Class Schedule Templates)</option>
+                    <option value="attendance">attendance (Student Check-in Records)</option>
+                    <option value="settings">settings (User Theme & Warn Limits)</option>
+                    <option value="system_settings">system_settings (Global Variables)</option>
+                    <option value="holidays">holidays (Academic Holidays Calendar)</option>
+                    <option value="schedule_adjustments">schedule_adjustments (Timetable Adjustments)</option>
                   </select>
-                  <label for="summaryUserSelect" class="text-secondary">Recipient Student</label>
+                  <label class="text-secondary" for="visualizerTableSelect">Target Database Table</label>
                 </div>
-                <div>
-                  <button id="triggerSummaryBtn" onclick="loadEmailPreview('summary')" class="btn btn-glow btn-sm py-2 px-3 text-white">
-                    <i class="bi bi-eye-fill me-1"></i> Preview &amp; Dispatch Summary Broadcast
-                  </button>
-                </div>
+              </div>
+              <div class="col-md-4">
+                <button onclick="visualizeSelectedTable()" class="btn btn-glow w-100 py-3 text-white" style="border-radius: 0px;">
+                  <i class="bi bi-arrow-clockwise me-1"></i> Refresh Table Data
+                </button>
+              </div>
+            </div>
+
+            <!-- Search input within table visualizer -->
+            <div id="visualizerSearchContainer" class="mb-3" style="display: none;">
+              <div class="input-group">
+                <span class="input-group-text bg-light text-secondary border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0" id="visualizerSearchInput" placeholder="Filter rows..." onkeyup="filterVisualizerRows()">
+              </div>
+              <div class="text-secondary small mt-2" id="visualizerRowCount"></div>
+            </div>
+
+            <!-- Grid output container -->
+            <div class="table-responsive" id="visualizerTableContainer" style="max-height: 500px; overflow-y: auto;">
+              <div class="text-center py-5 text-secondary">
+                <i class="bi bi-table fs-2 mb-2 d-block"></i>
+                Choose a database table from the dropdown list to visualize its content.
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="glass-card border-glass mt-4">
-          <h2 class="h5 fw-bold mb-4">System Backups & Data Exports</h2>
-          
-          <div class="row g-3 mb-4">
-            
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-4 border h-100">
-                <div class="fw-bold mb-2 text-dark">Direct Browser Downloads</div>
-                <div class="text-secondary small mb-3">Download complete SQL data dumps or Excel-ready CSV sheets directly to your local device.</div>
-                <div class="d-flex flex-wrap gap-2">
-                  <a href="/api/admin/backups/export?format=sql" class="btn btn-glow btn-sm py-2 px-3 text-white text-decoration-none">Download SQL Dump</a>
-                  <a href="/api/admin/backups/export?format=csv_attendance" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Attendance CSV</a>
-                  <a href="/api/admin/backups/export?format=csv_students" class="btn btn-glass btn-sm border-dark text-dark py-2 px-3 text-decoration-none">Download Students CSV</a>
-                </div>
-              </div>
-            </div>
-            
-            
-            <div class="col-md-6">
-              <div class="p-3 bg-light rounded-4 border h-100">
-                <div class="fw-bold mb-2 text-dark">Email Dispatchers</div>
-                <div class="text-secondary small mb-2">Send data exports directly to any email address using Resend attachments.</div>
-                
-                
-                <div class="mb-3">
-                  <input type="email" class="form-control form-control-sm bg-white" id="customEmailInput" placeholder="Recipient email (optional - defaults to your account)">
-                </div>
-
-                <div class="d-flex flex-wrap gap-2">
-                  <button onclick="emailBackupFile('sql')" class="btn btn-glass btn-sm border-primary text-primary py-2 px-3">Email SQL Dump</button>
-                  <button onclick="emailBackupFile('csv_attendance')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Attendance CSV</button>
-                  <button onclick="emailBackupFile('csv_students')" class="btn btn-glass btn-sm border-secondary text-secondary py-2 px-3">Email Students CSV</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <h3 class="h6 fw-bold mb-3">Recent SQL Backups Log</h3>
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-              <thead class="table-light border-bottom">
-                <tr>
-                  <th class="ps-4">Backup Filename</th>
-                  <th>Date & Time</th>
-                  <th>Status</th>
-                  <th class="pe-4 text-end">Action</th>
-                </tr>
-              </thead>
-              <tbody id="backups-log-container">
-                <tr>
-                  <td colspan="4" class="text-center py-4 text-secondary">
-                    Loading backups timeline logs...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </main>
     </div>
   </div>
@@ -425,6 +665,9 @@
 
       // Fetch backups history list
       loadBackupHistory();
+      
+      // Fetch remote versioned backups list
+      loadRemoteBackups();
 
       // Load active students list into summary select dropdown
       loadSummaryStudents();
@@ -825,6 +1068,263 @@
         document.getElementById('db-pool-status').innerText = 'N/A';
       }
     }
+
+    async function loadRemoteBackups() {
+      const container = document.getElementById('remote-backups-container');
+      const response = await apiCall('/api/admin/backups/remote');
+      
+      if (response.success && response.backups) {
+        renderRemoteBackups(response.backups);
+      } else {
+        container.innerHTML = `<tr><td colspan="3" class="text-danger text-center p-3">Failed to load remote backup versions: ${response.message || 'Error'}</td></tr>`;
+      }
+    }
+
+    function renderRemoteBackups(list) {
+      const container = document.getElementById('remote-backups-container');
+      container.innerHTML = '';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <tr>
+            <td colspan="3" class="text-center py-4 text-secondary">
+              No remote database backup versions found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      list.forEach(item => {
+        const dateStr = new Date(item.created_at).toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        });
+
+        container.innerHTML += `
+          <tr class="border-bottom">
+            <td class="ps-4 fw-semibold text-dark small" style="font-size: 0.85rem;">${escapeHtml(item.version_name)}</td>
+            <td class="text-secondary small" style="font-size: 0.8rem;">${dateStr} IST</td>
+            <td class="pe-4 text-end">
+              <button onclick="restoreRemoteBackup('${item.id}', '${escapeHtml(item.version_name)}')" class="btn btn-glass btn-sm border-success text-success py-1 px-2.5 me-1" style="font-size: 0.8rem;">
+                Restore
+              </button>
+              <button onclick="deleteRemoteBackup('${item.id}')" class="btn btn-glass btn-sm border-danger text-danger py-1 px-2.5" style="font-size: 0.8rem;">
+                Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function createRemoteBackupSnapshot() {
+      const descInput = document.getElementById('backupDescriptionInput');
+      const description = descInput.value.trim();
+      const btn = document.getElementById('createRemoteBackupBtn');
+      
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = 'Creating Remote Snapshot...';
+      
+      showAlert('Triggered remote structured database backup snapshot...', 'info');
+
+      const response = await apiCall('/api/admin/backups/remote', {
+        method: 'POST',
+        body: { description }
+      });
+
+      btn.disabled = false;
+      btn.innerText = originalText;
+
+      if (response.success) {
+        showAlert(response.message || 'Remote backup version snapshot created successfully!', 'success');
+        descInput.value = '';
+        loadRemoteBackups();
+      } else {
+        showAlert(response.message || 'Failed to create remote backup version.', 'danger');
+        loadRemoteBackups();
+      }
+    }
+
+    async function restoreRemoteBackup(id, name) {
+      const proceed = confirm(`⚠️ WARNING: Are you absolutely sure you want to restore the database to version '${name}'?\n\nThis will completely overwrite all local departments, users, subjects, timetable, attendance logs, and adjustments to this state. This action CANNOT be undone!`);
+      if (!proceed) return;
+
+      showAlert(`Restoring database to remote backup '${name}'...`, 'info');
+
+      const response = await apiCall(`/api/admin/backups/remote/${id}/restore`, {
+        method: 'POST'
+      });
+
+      if (response.success) {
+        showAlert(response.message || 'Primary database successfully restored!', 'success');
+        setTimeout(() => window.location.reload(), 2000);
+      } else {
+        showAlert(response.message || 'Failed to restore database from remote backup.', 'danger');
+      }
+    }
+
+    async function deleteRemoteBackup(id) {
+      const proceed = confirm('Are you sure you want to delete this remote backup version?');
+      if (!proceed) return;
+
+      const response = await apiCall(`/api/admin/backups/remote/${id}`, {
+        method: 'DELETE'
+      });
+
+      if (response.success) {
+        showAlert('Remote database backup version deleted successfully.', 'success');
+        loadRemoteBackups();
+      } else {
+        showAlert(response.message || 'Failed to delete remote backup.', 'danger');
+      }
+    }
+
+    // Table visualizer local cache
+    let currentTableColumns = [];
+    let currentTableRows = [];
+
+    async function visualizeSelectedTable() {
+      const table = document.getElementById('visualizerTableSelect').value;
+      if (!table) return;
+
+      const container = document.getElementById('visualizerTableContainer');
+      container.innerHTML = `
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+          <span class="ms-2 text-secondary">Retrieving records...</span>
+        </div>
+      `;
+
+      try {
+        const response = await apiCall(`/api/admin/visualize?table=${table}`);
+        if (!response.success) {
+          container.innerHTML = `<div class="alert alert-danger">${response.message || 'Failed to load table.'}</div>`;
+          return;
+        }
+
+        currentTableColumns = response.columns;
+        currentTableRows = response.rows;
+
+        document.getElementById('visualizerSearchContainer').style.display = 'block';
+        document.getElementById('visualizerSearchInput').value = '';
+
+        renderVisualizerTable(currentTableRows);
+      } catch (err) {
+        container.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+      }
+    }
+
+    function renderVisualizerTable(rows) {
+      const container = document.getElementById('visualizerTableContainer');
+      
+      if (rows.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-4 text-secondary">
+            No rows found in this table.
+          </div>
+        `;
+        document.getElementById('visualizerRowCount').innerText = 'Showing 0 records';
+        return;
+      }
+
+      document.getElementById('visualizerRowCount').innerText = `Showing ${rows.length} of ${currentTableRows.length} records (capped at 200)`;
+
+      let html = `
+        <table class="table table-sm table-hover align-middle mb-0" style="font-size: 0.82rem;">
+          <thead class="table-light sticky-top border-bottom">
+            <tr>
+      `;
+
+      // Render headers
+      currentTableColumns.forEach(col => {
+        html += `<th class="py-2 text-uppercase text-secondary fw-bold" style="font-size: 0.72rem; letter-spacing: 0.03em;" title="Type: ${col.type}">${col.name}</th>`;
+      });
+      html += `
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      // Render rows
+      rows.forEach(row => {
+        html += '<tr>';
+        currentTableColumns.forEach(col => {
+          let val = row[col.name];
+          if (val === null || val === undefined) {
+            val = '<span class="text-muted italic small">null</span>';
+          } else if (typeof val === 'object') {
+            val = `<code class="small text-secondary" style="font-family: var(--font-mono); font-size: 0.75rem;">${JSON.stringify(val)}</code>`;
+          } else if (typeof val === 'boolean') {
+            val = val ? '<span class="badge bg-success-subtle text-success">true</span>' : '<span class="badge bg-danger-subtle text-danger">false</span>';
+          } else if (col.type === 'timestamp without time zone' || col.type === 'timestamp with time zone' || col.name.includes('_at')) {
+            val = new Date(val).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+          }
+          html += `<td class="py-2 text-truncate" style="max-width: 250px;" title="${String(row[col.name]).replace(/"/g, '&quot;')}">${val}</td>`;
+        });
+        html += '</tr>';
+      });
+
+      html += `
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = html;
+    }
+
+    function filterVisualizerRows() {
+      const query = document.getElementById('visualizerSearchInput').value.toLowerCase().trim();
+      if (!query) {
+        renderVisualizerTable(currentTableRows);
+        return;
+      }
+
+      const filtered = currentTableRows.filter(row => {
+        return currentTableColumns.some(col => {
+          const val = row[col.name];
+          if (val === null || val === undefined) return false;
+          return String(val).toLowerCase().includes(query);
+        });
+      });
+
+      renderVisualizerTable(filtered);
+    }
+
+    // Sidebar & Mobile subtab navigation switching logic
+    document.querySelectorAll('.settings-nav-link, .subtab-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const targetTab = link.getAttribute('data-tab');
+
+        // Remove active class from all links and add to correct target tab
+        document.querySelectorAll('.settings-nav-link, .subtab-link').forEach(l => {
+          if (l.getAttribute('data-tab') === targetTab) {
+            l.classList.add('active');
+          } else {
+            l.classList.remove('active');
+          }
+        });
+        
+        // Hide all tab panels
+        document.querySelectorAll('.tab-panel').forEach(panel => {
+          panel.style.display = 'none';
+        });
+        
+        // Show target panel
+        const targetPanel = document.getElementById(`tab-panel-${targetTab}`);
+        if (targetPanel) {
+          targetPanel.style.display = 'block';
+        }
+      });
+    });
 
     window.onload = loadData;
   </script>

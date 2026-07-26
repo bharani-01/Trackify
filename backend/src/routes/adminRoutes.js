@@ -91,12 +91,19 @@ router.route('/timetable/:id')
   .delete(deleteMasterTimetableSlot);
 
 // Backups and Data Exports management
-const { getBackupsList, triggerBackup, exportData, emailData } = require('../controllers/backupController');
+const { getBackupsList, triggerBackup, exportData, emailData, getRemoteBackups, createRemoteBackup, restoreRemoteBackup, deleteRemoteBackup } = require('../controllers/backupController');
 router.route('/backups')
   .get(getBackupsList)
   .post(triggerBackup);
 router.get('/backups/export', exportData);
 router.post('/backups/email', emailData);
+
+// Remote database structured backup versions
+router.route('/backups/remote')
+  .get(getRemoteBackups)
+  .post(createRemoteBackup);
+router.post('/backups/remote/:id/restore', restoreRemoteBackup);
+router.delete('/backups/remote/:id', deleteRemoteBackup);
 
 // Schedule adjustments management
 const { getAdminAdjustments, saveAdminAdjustments } = require('../controllers/adjustmentController');
@@ -111,5 +118,9 @@ router.route('/holidays')
   .post(createAdminHoliday);
 router.route('/holidays/:id')
   .delete(deleteAdminHoliday);
+
+// Table visualizer management
+const { visualizeTable } = require('../controllers/visualizerController');
+router.get('/visualize', visualizeTable);
 
 module.exports = router;

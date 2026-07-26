@@ -907,6 +907,20 @@ const startScheduler = () => {
       // Run daily reminders for matching timers
       await runDailyRemindersSweep(currentTimeStr);
 
+      // Run database backup versioning and prune old backups daily at 02:00 AM IST
+      if (currentTimeStr === '02:00') {
+        try {
+          console.log('[REMINDER SCHEDULER]: Starting daily scheduled remote database backup...');
+          const remoteBackupService = require('./remoteBackupService');
+          const dateStr = new Date().toISOString().slice(0, 10);
+          const version = `auto_backup_${dateStr}_0200`;
+          await remoteBackupService.createBackupVersion(version);
+          console.log(`[REMINDER SCHEDULER]: Daily remote database backup '${version}' completed successfully.`);
+        } catch (backupErr) {
+          console.error('[REMINDER SCHEDULER BACKUP ERROR]: Daily scheduled remote backup failed:', backupErr.message);
+        }
+      }
+
       // Run low attendance warnings at 18:00 dinner hour
       if (currentTimeStr === '18:00') {
         await runLowAttendanceSweep();
