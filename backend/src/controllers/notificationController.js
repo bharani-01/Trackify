@@ -150,8 +150,35 @@ const getVapidKey = async (req, res) => {
   });
 };
 
+/**
+ * Send a test push notification to the logged-in user
+ */
+const sendTestNotification = async (req, res) => {
+  try {
+    const result = await pushNotificationService.sendPush(
+      [req.user.id],
+      'Test Push Notification',
+      'If you see this, your Trackify Firebase Web Push integration is working perfectly!',
+      { category: 'General', sentBy: 'System Self-Test' }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Test push notification dispatched. Sent: ${result.successCount}, Failed: ${result.failureCount}.`,
+      result
+    });
+  } catch (error) {
+    console.error('sendTestNotification controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to dispatch test notification: ' + error.message
+    });
+  }
+};
+
 module.exports = {
   registerToken,
   sendCustomNotification,
-  getVapidKey
+  getVapidKey,
+  sendTestNotification
 };

@@ -654,4 +654,4 @@ const server = app.listen(PORT, '127.0.0.1', () => {
     console.error('Failed to start background reminders scheduler service:', err.message);
   }
 });
-// Nodemon trigger reload to pick up env port, VAPID key, Firebase credentials and CORS production domain changes
+// Nodemon trigger reload to pick up env port, VAPID key, Firebase credentials, modular messaging and CORS production domain changes

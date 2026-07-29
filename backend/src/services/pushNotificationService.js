@@ -12,7 +12,7 @@ try {
     // 1. Initialize using local service account JSON file if present
     const serviceAccount = require(serviceAccountPath);
     admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount)
+      credential: admin.cert(serviceAccount)
     });
     firebaseInitialized = true;
     console.log('[FIREBASE] Admin SDK initialized successfully via local service account file.');
@@ -20,7 +20,7 @@ try {
     // 2. Fallback to initializing using individual environment variables (best for production hosting)
     const privateKey = process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n');
     admin.initializeApp({
-      credential: admin.credential.cert({
+      credential: admin.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
         privateKey: privateKey
@@ -112,7 +112,8 @@ const sendPush = async (userIds, title, body, data = {}) => {
     };
 
     // 3. Send multicast message
-    const response = await admin.messaging().sendEachForMulticast(message);
+    const { getMessaging } = require('firebase-admin/messaging');
+    const response = await getMessaging().sendEachForMulticast(message);
     result.successCount = response.successCount;
     result.failureCount = response.failureCount;
 

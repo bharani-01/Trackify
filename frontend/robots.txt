@@ -1,0 +1,23 @@
+# Trackify Robots.txt
+# https://trackifyapp.co.in
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /privacy-policy
+Allow: /terms
+Allow: /cookie-policy
+
+# Block authenticated dashboard pages from crawlers
+Disallow: /student/
+Disallow: /admin/
+Disallow: /api/
+Disallow: /pending-approval
+Disallow: /maintenance
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /settings
+
+# Sitemap
+Sitemap: https://trackifyapp.co.in/sitemap.xml

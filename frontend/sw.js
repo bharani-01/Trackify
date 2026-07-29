@@ -16,18 +16,21 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage((payload) => {
   console.log('[sw.js] Received background message ', payload);
-  const notificationTitle = payload.notification.title || 'Trackify Alert';
-  const notificationOptions = {
-    body: payload.notification.body || '',
-    icon: '/assets/images/favicon-192.png',
-    badge: '/assets/images/favicon-192.png',
-    data: payload.data
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // Firebase SDK automatically displays a banner if the payload has a 'notification' object.
+  // We only call showNotification manually if the push is a data-only message.
+  if (!payload.notification) {
+    const notificationTitle = payload.data?.title || 'Trackify Alert';
+    const notificationOptions = {
+      body: payload.data?.body || '',
+      icon: '/assets/images/favicon-192.png',
+      badge: '/assets/images/favicon-192.png',
+      data: payload.data
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  }
 });
 
-const CACHE_NAME = 'trackify-cache-v2';
+const CACHE_NAME = 'trackify-cache-v5';
 const OFFLINE_URL = '/login.html';
 
 const ASSETS_TO_CACHE = [

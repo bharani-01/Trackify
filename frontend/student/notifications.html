@@ -134,7 +134,8 @@
 
               <div class="p-3 rounded-3 border bg-light text-center" style="border-color: var(--border-color) !important;">
                 <div class="small fw-semibold text-secondary mb-1">Service Status</div>
-                <div id="serviceStatusBadge" class="badge bg-secondary-subtle text-secondary py-1 px-3 fs-8">Checking...</div>
+                <div id="serviceStatusBadge" class="badge bg-secondary-subtle text-secondary py-1 px-3 fs-8 mb-2">Checking...</div>
+                <button onclick="triggerTestPush()" class="btn btn-outline-secondary btn-sm w-100 py-1.5 fs-8 fw-semibold" style="border-radius: 8px;"><i class="bi bi-send-fill me-1"></i> Send Test Push</button>
               </div>
             </div>
           </div>
@@ -304,6 +305,17 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+    }
+
+    async function triggerTestPush() {
+      const res = await apiCall('/api/notifications/test-push', {
+        method: 'POST'
+      });
+      if (res.success) {
+        showAlert('Test push notification dispatched successfully!', 'success');
+      } else {
+        showAlert(res.message || 'Failed to dispatch test notification', 'danger');
+      }
     }
 
     window.onload = loadNotificationsPage;

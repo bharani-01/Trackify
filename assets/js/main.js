@@ -272,30 +272,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Inject Notifications link into student sidebar dynamically if we are in student area
+  // Inject Notifications Bell into the student portal header dynamically if in student area
   if (window.location.pathname.startsWith('/student/')) {
-    const sidebarMenu = document.querySelector('.app-sidebar .sidebar-menu');
-    if (sidebarMenu) {
-      const settingsLink = Array.from(sidebarMenu.querySelectorAll('.sidebar-link')).find(link => link.getAttribute('href').includes('/student/settings'));
-      if (!document.getElementById('sidebar-student-notifications')) {
-        const link = document.createElement('a');
-        link.id = 'sidebar-student-notifications';
-        link.className = 'sidebar-link' + (window.location.pathname.includes('/student/notifications') ? ' active' : '');
-        link.href = '/student/notifications.html';
-        link.innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    const profileDropdown = document.querySelector('.app-header-profile');
+    if (profileDropdown && !document.getElementById('header-notification-dropdown')) {
+      const notifContainer = document.createElement('div');
+      notifContainer.className = 'dropdown me-2';
+      notifContainer.id = 'header-notification-dropdown';
+      notifContainer.innerHTML = `
+        <button class="btn btn-glass btn-sm border-0 d-flex align-items-center justify-content-center position-relative" data-bs-toggle="dropdown" aria-expanded="false" id="notifBellBtn" style="width: 36px; height: 36px; padding: 8px; border-radius: 8px; color: var(--text-primary); background: transparent;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell" style="width: 20px; height: 20px;">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
           </svg>
-          <span>Notifications</span>
-        `;
-        if (settingsLink) {
-          sidebarMenu.insertBefore(link, settingsLink);
-        } else {
-          sidebarMenu.appendChild(link);
-        }
-      }
+          <span class="position-absolute top-1 start-75 translate-middle p-1 bg-danger border border-light rounded-circle d-none" id="notifBadge" style="width: 8px; height: 8px;"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" id="headerNotifList" style="width: 320px; max-height: 400px; overflow-y: auto; background: var(--bg-secondary); border: 1px solid var(--border-color); font-family: 'Plus Jakarta Sans', sans-serif;">
+          <li class="px-3 py-2 border-bottom border-glass d-flex justify-content-between align-items-center mb-1">
+            <span class="fw-bold text-dark fs-7">Notifications</span>
+            <button onclick="markAllNotificationsRead()" class="btn btn-link p-0 text-decoration-none small text-primary" style="font-size: 0.75rem;">Clear All</button>
+          </li>
+          <div id="headerNotifItems">
+            <div class="text-center py-4 text-secondary small">Loading...</div>
+          </div>
+        </ul>
+      `;
+      profileDropdown.insertBefore(notifContainer, profileDropdown.firstChild);
+
+      const bellBtn = notifContainer.querySelector('#notifBellBtn');
+      bellBtn.addEventListener('show.bs.dropdown', () => {
+        loadHeaderNotifications();
+      });
+
+      // Run an initial check for unread alerts to show red dot
+      loadHeaderNotifications();
     }
   }
 });
@@ -404,4 +414,92 @@ if ('serviceWorker' in navigator) {
         console.error('Trackify Service Worker registration failed:', error);
       });
   });
+}
+
+// Header Notification Bell Logic
+async function loadHeaderNotifications() {
+  const itemsContainer = document.getElementById('headerNotifItems');
+  const badge = document.getElementById('notifBadge');
+  if (!itemsContainer) return;
+
+  const res = await apiCall('/api/announcements');
+  if (!res.success) {
+    itemsContainer.innerHTML = `<div class="px-3 py-3 text-danger small">Failed to load notifications</div>`;
+    return;
+  }
+
+  const announcements = res.announcements || [];
+  if (announcements.length === 0) {
+    itemsContainer.innerHTML = `
+      <div class="text-center py-4 text-secondary small">
+        <i class="bi bi-bell-slash fs-4 d-block mb-1"></i>
+        No new notifications
+      </div>
+    `;
+    badge.classList.add('d-none');
+    return;
+  }
+
+  // Check read IDs
+  let readIds = [];
+  try {
+    readIds = JSON.parse(localStorage.getItem('read_notifications') || '[]');
+  } catch (e) {
+    readIds = [];
+  }
+
+  const unreadAnnouncements = announcements.filter(a => !readIds.includes(a.id));
+  if (unreadAnnouncements.length > 0) {
+    badge.classList.remove('d-none');
+  } else {
+    badge.classList.add('d-none');
+  }
+
+  itemsContainer.innerHTML = '';
+  announcements.slice(0, 10).forEach(ann => {
+    const isUnread = !readIds.includes(ann.id);
+    const dateStr = new Date(ann.created_at).toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    itemsContainer.innerHTML += `
+      <li class="px-3 py-2.5 border-bottom border-glass" style="transition: background 0.2s ease; background: ${isUnread ? 'rgba(37, 99, 235, 0.04)' : 'transparent'};">
+        <div class="d-flex align-items-center justify-content-between mb-1">
+          <span class="badge bg-secondary-subtle text-secondary py-0.5 px-1.5 fs-9 fw-bold text-uppercase">${ann.category}</span>
+          <span class="text-secondary small" style="font-size: 0.68rem;">${dateStr}</span>
+        </div>
+        <h4 class="fw-bold text-dark fs-8 mb-1" style="margin-bottom: 2px; font-size: 0.82rem;">${escapeHtmlForBell(ann.title)}</h4>
+        <p class="text-secondary mb-0 fs-8" style="line-height: 1.35; white-space: pre-wrap; font-size: 0.76rem;">${escapeHtmlForBell(ann.content)}</p>
+      </li>
+    `;
+  });
+}
+
+function escapeHtmlForBell(str) {
+  if (typeof str !== 'string') return str;
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+async function markAllNotificationsRead() {
+  const itemsContainer = document.getElementById('headerNotifItems');
+  const badge = document.getElementById('notifBadge');
+  if (!itemsContainer) return;
+
+  const res = await apiCall('/api/announcements');
+  if (res.success && res.announcements) {
+    const ids = res.announcements.map(a => a.id);
+    localStorage.setItem('read_notifications', JSON.stringify(ids));
+    badge.classList.add('d-none');
+    showAlert('All notifications marked as read.', 'success');
+    loadHeaderNotifications();
+  }
 }
