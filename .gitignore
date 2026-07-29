@@ -3,3 +3,5 @@ node_modules/
 .DS_Store
 *.log
 .gemini/
+*firebase-service-account.json
+*firebase-admin-sdk.json

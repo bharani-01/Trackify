@@ -635,9 +635,9 @@ app.use((err, req, res, next) => {
 // START SERVER
 const { initWebSocketServer } = require('./src/services/websocketService');
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '127.0.0.1', () => {
   console.log(`Trackify Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  console.log(`Landing Page: http://localhost:${PORT}`);
+  console.log(`Landing Page: http://127.0.0.1:${PORT}`);
   
   // Attach Real-time WebSocket Server
   try {
@@ -654,4 +654,4 @@ const server = app.listen(PORT, () => {
     console.error('Failed to start background reminders scheduler service:', err.message);
   }
 });
-// Nodemon trigger reload to pick up env port, VAPID key and CORS changes
+// Nodemon trigger reload to pick up env port, VAPID key, Firebase credentials and CORS production domain changes
