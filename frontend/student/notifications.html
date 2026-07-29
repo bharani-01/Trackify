@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - Trackify</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+  
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trackify">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+
+  <style>
+    .notif-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+    }
+    
+    .notif-card:hover {
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    .notif-badge-General {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #3b82f6;
+    }
+    
+    .notif-badge-Academic {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+    
+    .notif-badge-Exam {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+    
+    .notif-badge-Emergency {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+    
+    .notif-badge-Event {
+      background-color: rgba(139, 92, 246, 0.1);
+      color: #8b5cf6;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/student/dashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg><span>Dashboard</span></a>
+        <a class="sidebar-link" href="/student/attendance"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span>Attendance</span></a>
+        <a class="sidebar-link" href="/student/timetable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Time Table</span></a>
+        <a class="sidebar-link" href="/student/settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span>Profile</span></a>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <h1 class="app-header-title">Notifications Hub</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <div class="profile-avatar-container">
+              <!-- Rendered dynamically -->
+            </div>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="text-secondary small">Student Profile</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-content animate-fade-in-up py-4">
+        
+        <div class="row g-4">
+          <!-- Left Column: Preference controls -->
+          <div class="col-lg-5">
+            <div class="glass-card border-glass p-4 rounded-4 shadow-sm bg-white mb-4">
+              <h2 class="h5 fw-bold mb-3">Push Preferences</h2>
+              <p class="text-secondary small mb-4">Opt in or out of real-time alerts and scheduler reminder warnings.</p>
+              
+              <div class="form-check form-switch mb-3.5 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
+                <div>
+                  <label class="form-check-label fw-bold text-dark" for="pushNotifsToggle">Web Push Notifications</label>
+                  <div class="text-secondary small">Receive instant alerts on this browser.</div>
+                </div>
+                <input class="form-check-input ms-0" type="checkbox" role="switch" id="pushNotifsToggle" checked onchange="saveNotificationPreferences()">
+              </div>
+
+              <div class="form-check form-switch mb-3.5 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
+                <div>
+                  <label class="form-check-label fw-bold text-dark" for="dailyRemindersToggle">Daily Logging Reminders</label>
+                  <div class="text-secondary small">Remind me to log attendance every weekday.</div>
+                </div>
+                <input class="form-check-input ms-0" type="checkbox" role="switch" id="dailyRemindersToggle" checked onchange="saveNotificationPreferences()">
+              </div>
+
+              <div class="form-check form-switch mb-4 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
+                <div>
+                  <label class="form-check-label fw-bold text-dark" for="lowAttendanceToggle">Low Attendance Warnings</label>
+                  <div class="text-secondary small">Alert me if my average drops below 80%.</div>
+                </div>
+                <input class="form-check-input ms-0" type="checkbox" role="switch" id="lowAttendanceToggle" checked onchange="saveNotificationPreferences()">
+              </div>
+
+              <div class="p-3 rounded-3 border bg-light text-center" style="border-color: var(--border-color) !important;">
+                <div class="small fw-semibold text-secondary mb-1">Service Status</div>
+                <div id="serviceStatusBadge" class="badge bg-secondary-subtle text-secondary py-1 px-3 fs-8">Checking...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Notifications Feed -->
+          <div class="col-lg-7">
+            <div class="glass-card border-glass p-4 rounded-4 shadow-sm bg-white">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="h5 fw-bold mb-0">Message History Feed</h2>
+                <button onclick="loadAnnouncements()" class="btn btn-glass btn-sm p-1.5 border-0 text-secondary" title="Refresh">
+                  <i class="bi bi-arrow-clockwise fs-5"></i>
+                </button>
+              </div>
+
+              <!-- History list -->
+              <div id="notificationsFeed" class="d-flex flex-column gap-3">
+                <div class="text-center py-5 text-secondary">
+                  <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+                  <span class="ms-2">Loading alert logs...</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script>
+    async function loadNotificationsPage() {
+      // 1. Fetch user data to populate dynamic headers
+      const meResult = await apiCall('/api/auth/me');
+      if (meResult.success && meResult.user) {
+        document.getElementById('user-header-name').innerText = meResult.user.name;
+      } else {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      // 2. Fetch notification preferences settings
+      const settingsRes = await apiCall('/api/settings');
+      if (settingsRes.success && settingsRes.settings) {
+        document.getElementById('pushNotifsToggle').checked = settingsRes.settings.push_notifications !== false;
+        document.getElementById('dailyRemindersToggle').checked = settingsRes.settings.daily_reminders !== false;
+        document.getElementById('lowAttendanceToggle').checked = settingsRes.settings.low_attendance_warnings !== false;
+      }
+
+      // 3. Check browser push subscription status
+      updateServiceStatus();
+
+      // 4. Load message history list (announcements)
+      loadAnnouncements();
+    }
+
+    function updateServiceStatus() {
+      const badge = document.getElementById('serviceStatusBadge');
+      if (!('Notification' in window)) {
+        badge.innerText = 'Not Supported';
+        badge.className = 'badge bg-danger-subtle text-danger py-1 px-3 fs-8';
+        return;
+      }
+
+      if (Notification.permission === 'granted') {
+        badge.innerText = 'Connected & Registered';
+        badge.className = 'badge bg-success-subtle text-success py-1 px-3 fs-8';
+      } else if (Notification.permission === 'denied') {
+        badge.innerText = 'Blocked in Browser';
+        badge.className = 'badge bg-danger-subtle text-danger py-1 px-3 fs-8';
+      } else {
+        badge.innerText = 'Pending Permission';
+        badge.className = 'badge bg-warning-subtle text-warning py-1 px-3 fs-8';
+      }
+    }
+
+    async function saveNotificationPreferences() {
+      const push_notifications = document.getElementById('pushNotifsToggle').checked;
+      const daily_reminders = document.getElementById('dailyRemindersToggle').checked;
+      const low_attendance_warnings = document.getElementById('lowAttendanceToggle').checked;
+
+      // Maintain others unchanged
+      const settingsRes = await apiCall('/api/settings');
+      let minimum_attendance = 80;
+      let notifications = true;
+      let email_timer = '18:00';
+      if (settingsRes.success && settingsRes.settings) {
+        minimum_attendance = settingsRes.settings.minimum_attendance;
+        notifications = settingsRes.settings.notifications;
+        email_timer = settingsRes.settings.email_timer;
+      }
+
+      const res = await apiCall('/api/settings', {
+        method: 'PUT',
+        body: {
+          minimum_attendance,
+          notifications,
+          daily_reminders,
+          email_timer,
+          low_attendance_warnings,
+          push_notifications
+        }
+      });
+
+      if (res.success) {
+        showAlert('Notification preferences updated successfully', 'success');
+        updateServiceStatus();
+      } else {
+        showAlert(res.message || 'Failed to update preferences', 'danger');
+      }
+    }
+
+    async function loadAnnouncements() {
+      const feed = document.getElementById('notificationsFeed');
+      feed.innerHTML = `
+        <div class="text-center py-4 text-secondary">
+          <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
+          <span class="ms-2">Loading alert logs...</span>
+        </div>
+      `;
+
+      const res = await apiCall('/api/announcements');
+      if (!res.success) {
+        feed.innerHTML = `<div class="alert alert-danger">${res.message || 'Failed to retrieve notification feed.'}</div>`;
+        return;
+      }
+
+      const list = res.announcements || [];
+      if (list.length === 0) {
+        feed.innerHTML = `
+          <div class="text-center py-5 text-secondary">
+            <i class="bi bi-bell-slash fs-2 mb-2 d-block"></i>
+            No notification logs found.
+          </div>
+        `;
+        return;
+      }
+
+      feed.innerHTML = '';
+      list.forEach(ann => {
+        const dateStr = new Date(ann.created_at).toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        });
+
+        const categoryClass = `notif-badge-${ann.category}`;
+
+        feed.innerHTML += `
+          <div class="p-3.5 notif-card">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="badge ${categoryClass} px-2 py-1 fs-8 fw-semibold">${escapeHtml(ann.category)}</span>
+              <span class="text-secondary small" style="font-size: 0.72rem;">${dateStr}</span>
+            </div>
+            <h3 class="h6 fw-bold text-dark mb-1">${escapeHtml(ann.title)}</h3>
+            <p class="text-secondary mb-0 small" style="line-height: 1.4; white-space: pre-wrap;">${escapeHtml(ann.content)}</p>
+          </div>
+        `;
+      });
+    }
+
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return str;
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    window.onload = loadNotificationsPage;
+  </script>
+</body>
+</html>

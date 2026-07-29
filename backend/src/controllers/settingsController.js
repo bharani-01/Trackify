@@ -33,7 +33,7 @@ const getSettings = async (req, res) => {
  * Update settings configurations
  */
 const updateSettings = async (req, res) => {
-  const { minimum_attendance, notifications, daily_reminders, email_timer, low_attendance_warnings } = req.body;
+  const { minimum_attendance, notifications, daily_reminders, email_timer, low_attendance_warnings, push_notifications } = req.body;
 
   try {
     // Student settings minimum attendance is locked. Retrieve existing value or default to 80.
@@ -49,18 +49,19 @@ const updateSettings = async (req, res) => {
       notifications,
       daily_reminders,
       email_timer,
-      low_attendance_warnings
+      low_attendance_warnings,
+      push_notifications
     });
 
     // Log action to audit logs & send configuration email alert
     const auditLogRepository = require('../repositories/auditLogRepository');
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    const alertStatus = `Min Target: ${finalMinAttendance}%, Reminders: ${notifications}, Daily: ${daily_reminders}, Timer: ${email_timer}, LowWarn: ${low_attendance_warnings}`;
+    const alertStatus = `Min Target: ${finalMinAttendance}%, Reminders: ${notifications}, Daily: ${daily_reminders}, Timer: ${email_timer}, LowWarn: ${low_attendance_warnings}, Push: ${push_notifications}`;
     await auditLogRepository.logAction(req.user.id, 'SETTINGS_UPDATED', `Attendance Configurations updated. ${alertStatus}`, ip);
 
     try {
       const { sendSettingsUpdatedEmail } = require('../utils/emailHelper');
-      const details = `Minimum Target Attendance: ${finalMinAttendance}%\nReminders Enabled: ${notifications}\nDaily Reminders: ${daily_reminders ? 'ON' : 'OFF'}\nEmail Timer: ${email_timer}\nLow Attendance Alarm: ${low_attendance_warnings ? 'ON' : 'OFF'}`;
+      const details = `Minimum Target Attendance: ${finalMinAttendance}%\nReminders Enabled: ${notifications}\nDaily Reminders: ${daily_reminders ? 'ON' : 'OFF'}\nEmail Timer: ${email_timer}\nLow Attendance Alarm: ${low_attendance_warnings ? 'ON' : 'OFF'}\nPush Notifications: ${push_notifications ? 'ON' : 'OFF'}`;
       
       await sendSettingsUpdatedEmail(req.user.email, req.user.name, details);
       await auditLogRepository.logAction(req.user.id, 'EMAIL_DISPATCHED', `Settings update notification email sent to ${req.user.email}`, ip);

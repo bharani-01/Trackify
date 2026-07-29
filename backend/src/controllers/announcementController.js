@@ -94,6 +94,27 @@ class AnnouncementController {
         }
       }
 
+      // Send real-time push notifications to students
+      try {
+        const students = await userRepo.findStudentsByContext({
+          department_id: department_id || null,
+          semester: semester || null
+        });
+
+        if (students && students.length > 0) {
+          const studentIds = students.map(s => s.id);
+          const pushService = require('../services/pushNotificationService');
+          await pushService.sendPush(
+            studentIds,
+            `Notice: ${title.trim()}`,
+            content.trim().substring(0, 100) + (content.trim().length > 100 ? '...' : ''),
+            { category: category || 'General', type: 'announcement', id: newAnn.id }
+          );
+        }
+      } catch (pushErr) {
+        console.error('[ANNOUNCEMENT PUSH WARNING]: Failed to send push alerts:', pushErr.message);
+      }
+
       return res.status(201).json({
         success: true,
         message: 'Announcement published successfully',

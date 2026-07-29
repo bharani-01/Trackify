@@ -17,6 +17,7 @@ const getSettings = async (req, res) => {
     const summaryEnabled = await systemSettingsRepository.getSetting('summary_email_enabled', 'true');
     const summaryInterval = await systemSettingsRepository.getSetting('summary_email_interval', '15');
     const lastSummaryDate = await systemSettingsRepository.getSetting('last_summary_date', '');
+    const globalPush = await systemSettingsRepository.getSetting('global_push_notifications', 'true');
 
     return res.status(200).json({
       success: true,
@@ -25,6 +26,7 @@ const getSettings = async (req, res) => {
         maintenance_mode: maintMode === 'true',
         maintenance_bypass_emails: bypassEmails,
         global_email_notifications: globalEmail === 'true',
+        global_push_notifications: globalPush === 'true',
         mail_from_auth: mailFromAuth,
         mail_from_reminders: mailFromReminders,
         mail_from_notices: mailFromNotices,
@@ -58,7 +60,8 @@ const updateSettings = async (req, res) => {
     mail_from_notices,
     mail_from_backups,
     summary_email_enabled,
-    summary_email_interval
+    summary_email_interval,
+    global_push_notifications
   } = req.body;
 
   try {
@@ -90,6 +93,10 @@ const updateSettings = async (req, res) => {
 
     if (global_email_notifications !== undefined) {
       await systemSettingsRepository.setSetting('global_email_notifications', global_email_notifications ? 'true' : 'false');
+    }
+
+    if (global_push_notifications !== undefined) {
+      await systemSettingsRepository.setSetting('global_push_notifications', global_push_notifications ? 'true' : 'false');
     }
 
     if (mail_from_auth !== undefined) {

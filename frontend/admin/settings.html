@@ -262,6 +262,14 @@
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="summarySwitch" checked>
             </div>
 
+            <div class="form-check form-switch mb-3 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="pushSwitch">Global Push Broadcast</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Allow real-time push alerts to target student browsers.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="pushSwitch" checked>
+            </div>
+
             <div class="form-floating mb-4">
               <input type="number" class="form-control" id="summaryInterval" min="1" max="90" placeholder="Summary Interval (Days)" value="15" required>
               <label for="summaryInterval" class="text-secondary">Summary Email Interval (Days)</label>
@@ -273,6 +281,18 @@
             </div>
 
             <button onclick="saveConfigs()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save System Variables</button>
+          </div>
+
+          <div class="glass-card border-glass mt-4 bg-white">
+            <h2 class="h5 fw-bold mb-4">Personal Configuration</h2>
+            <div class="form-check form-switch mb-4 p-3 border bg-white d-flex justify-content-between align-items-center" style="padding-left: 3rem; border-radius: 0px;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="personalPushSwitch">Personal Web Push Notifications</label>
+                <div class="text-secondary small" style="font-size: 0.8rem;">Receive push notifications in this administrator browser session.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="personalPushSwitch" checked>
+            </div>
+            <button onclick="savePersonalConfig()" class="btn btn-glow w-100 py-3" style="border-radius: 0px;">Save Personal Preferences</button>
           </div>
         </div>
 
@@ -638,6 +658,7 @@
         document.getElementById('maintSwitch').checked = response.settings.maintenance_mode;
         document.getElementById('bypassEmails').value = response.settings.maintenance_bypass_emails || '';
         document.getElementById('emailSwitch').checked = response.settings.global_email_notifications;
+        document.getElementById('pushSwitch').checked = response.settings.global_push_notifications !== false;
         
         // Load custom senders
         document.getElementById('senderAuth').value = response.settings.mail_from_auth || '';
@@ -651,6 +672,12 @@
 
         // Fetch db diagnostics
         loadDbDiagnostics();
+      }
+
+      // Fetch personal configurations for this admin
+      const personalRes = await apiCall('/api/settings');
+      if (personalRes.success && personalRes.settings) {
+        document.getElementById('personalPushSwitch').checked = personalRes.settings.push_notifications !== false;
       }
 
       // Pre-fill manual summary dates (past 15 days, ending yesterday)
@@ -749,6 +776,7 @@
       const maintenance_mode = document.getElementById('maintSwitch').checked;
       const maintenance_bypass_emails = document.getElementById('bypassEmails').value.trim();
       const global_email_notifications = document.getElementById('emailSwitch').checked;
+      const global_push_notifications = document.getElementById('pushSwitch').checked;
       const summary_email_enabled = document.getElementById('summarySwitch').checked;
       const summary_email_interval = parseInt(document.getElementById('summaryInterval').value, 10) || 15;
       
@@ -763,6 +791,7 @@
           maintenance_mode, 
           maintenance_bypass_emails,
           global_email_notifications,
+          global_push_notifications,
           summary_email_enabled,
           summary_email_interval
         }
@@ -775,6 +804,29 @@
         showAlert('System configuration parameters saved successfully!', 'success');
       } else {
         showAlert(response.message || 'Failed to save system settings.', 'danger');
+      }
+    }
+
+    async function savePersonalConfig() {
+      const personalPush = document.getElementById('personalPushSwitch').checked;
+      const saveBtn = document.querySelector('button[onclick="savePersonalConfig()"]');
+      saveBtn.disabled = true;
+      saveBtn.innerText = 'Saving...';
+
+      const response = await apiCall('/api/settings', {
+        method: 'PUT',
+        body: {
+          push_notifications: personalPush
+        }
+      });
+
+      saveBtn.disabled = false;
+      saveBtn.innerText = 'Save Personal Preferences';
+
+      if (response.success) {
+        showAlert('Personal push preferences saved successfully!', 'success');
+      } else {
+        showAlert(response.message || 'Failed to save personal preferences.', 'danger');
       }
     }
 

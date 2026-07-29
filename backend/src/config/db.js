@@ -232,8 +232,10 @@ const initMigrations = async (retries = 3) => {
           daily_reminders BOOLEAN DEFAULT TRUE,
           email_timer VARCHAR(10) DEFAULT '18:00',
           low_attendance_warnings BOOLEAN DEFAULT TRUE,
+          push_notifications BOOLEAN DEFAULT TRUE,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE settings ADD COLUMN IF NOT EXISTS push_notifications BOOLEAN DEFAULT TRUE;
     `);
 
     // Seed default custom mail senders and summary settings
@@ -362,6 +364,15 @@ const initMigrations = async (retries = 3) => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS category VARCHAR(50) DEFAULT 'auth';
+
+      CREATE TABLE IF NOT EXISTS user_device_tokens (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+          device_token TEXT UNIQUE NOT NULL,
+          device_type VARCHAR(50) DEFAULT 'web',
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
     `);
 
     // 10. Performance Indexes
@@ -371,6 +382,7 @@ const initMigrations = async (retries = 3) => {
       CREATE INDEX IF NOT EXISTS idx_attendance_user_date ON attendance(user_id, date);
       CREATE INDEX IF NOT EXISTS idx_attendance_user_subject ON attendance(user_id, subject_id);
       CREATE INDEX IF NOT EXISTS idx_announcements_dept_sem ON announcements(department_id, semester, is_pinned, created_at);
+      CREATE INDEX IF NOT EXISTS idx_device_tokens_user_id ON user_device_tokens(user_id);
     `);
 
     await client.query('COMMIT');

@@ -12,6 +12,7 @@ const settingsRoutes = require('./src/routes/settingsRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const departmentRoutes = require('./src/routes/departmentRoutes');
 const announcementRoutes = require('./src/routes/announcementRoutes');
+const notificationRoutes = require('./src/routes/notificationRoutes');
 const apiAuditLogger = require('./src/middleware/apiAuditLogger');
 const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
@@ -73,7 +74,7 @@ app.use((req, res, next) => {
   // Hardened Security Headers (HSTS, CSP, Permissions-Policy)
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://cdn.jsdelivr.net https://v2.jokeapi.dev https://accounts.google.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src 'self' https://accounts.google.com;");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://cdn.jsdelivr.net https://v2.jokeapi.dev https://accounts.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src 'self' https://accounts.google.com;");
 
   // Prevent caching of sensitive routes and API responses
   if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/student')) {
@@ -543,6 +544,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 // Protected HTML pages for student and admin
 app.use('/student', protectHtml('student'), express.static(path.join(__dirname, '../frontend/student'), { extensions: ['html'] }));
@@ -652,3 +654,4 @@ const server = app.listen(PORT, () => {
     console.error('Failed to start background reminders scheduler service:', err.message);
   }
 });
+// Nodemon trigger reload to pick up env port, VAPID key and CORS changes

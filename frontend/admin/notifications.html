@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Push - Admin Portal</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+  
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trackify">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+
+  <style>
+    /* Premium mock mobile phone notification banner preview */
+    .phone-mockup {
+      width: 100%;
+      max-width: 320px;
+      height: 520px;
+      border: 12px solid #0f172a;
+      border-radius: 40px;
+      background: radial-gradient(circle at top, #1e293b, #0f172a);
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    }
+    
+    .phone-notch {
+      width: 140px;
+      height: 20px;
+      background-color: #0f172a;
+      border-bottom-left-radius: 18px;
+      border-bottom-right-radius: 18px;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+    }
+    
+    .phone-screen {
+      padding: 50px 16px 16px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+    }
+
+    .phone-time {
+      position: absolute;
+      top: 12px;
+      left: 24px;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .phone-icons {
+      position: absolute;
+      top: 12px;
+      right: 24px;
+      color: #ffffff;
+      font-size: 0.78rem;
+      display: flex;
+      gap: 6px;
+    }
+    
+    .push-banner-preview {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 16px;
+      padding: 12px 14px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      color: #ffffff;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      animation: bannerSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    
+    @keyframes bannerSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .app-icon-preview {
+      width: 32px;
+      height: 32px;
+      background-color: #2563eb;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      flex-shrink: 0;
+    }
+    
+    .banner-content {
+      min-width: 0;
+      flex: 1;
+    }
+    
+    .banner-title {
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .banner-body {
+      font-size: 0.75rem;
+      color: #e2e8f0;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .banner-meta {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg><span>Admin Overview</span></a>
+        <a class="sidebar-link" href="/admin/users"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Manage Users</span></a>
+        <a class="sidebar-link" href="/admin/departments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polyline points="12 2 2 7 12 12 22 7 12 2"></polyline><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span>Departments</span></a>
+        <a class="sidebar-link" href="/admin/timetable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable Builder</span></a>
+        <a class="sidebar-link" href="/admin/adjustments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span>Schedule Adjustments</span></a>
+        <a class="sidebar-link" href="/admin/holidays"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></svg><span>Holidays Manager</span></a>
+        <a class="sidebar-link" href="/admin/announcements"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span>Announcements</span></a>
+        <a class="sidebar-link" href="/admin/audit-logs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Activity Audit Logs</span></a>
+        <a class="sidebar-link" href="/admin/client-errors"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>App Crash Logs</span></a>
+        <a class="sidebar-link" href="/admin/subject-hours"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Subject Hours</span></a>
+        <a class="sidebar-link" href="/admin/settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg><span>System Settings</span></a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span>Log Out</span></a>
+      </div>
+    </aside>
+
+    <div class="app-main-wrapper">
+      
+      <header class="app-header">
+        <h1 class="app-header-title">Custom Push Notifications</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="app-content animate-fade-in-up">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h5 fw-bold mb-1">Send Custom Push Banner</h2>
+            <p class="text-secondary small mb-0">Dispatch instant, targeted push alerts to students' web browsers or PWA sessions.</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          
+          <!-- Form Section -->
+          <div class="col-lg-7">
+            <div class="glass-card border-glass p-4 rounded-4 shadow-sm bg-white">
+              <h3 class="h5 fw-bold mb-4">Notification Composer</h3>
+              
+              <form id="pushForm" onsubmit="sendPushNotification(event)">
+                
+                <div class="mb-4">
+                  <label class="form-label small fw-bold text-secondary mb-2">Recipient Target</label>
+                  <div class="row g-2">
+                    <div class="col-6 col-sm-3">
+                      <input type="radio" class="btn-check" name="pushTarget" id="targetAll" value="all" checked onchange="toggleTargetFields()">
+                      <label class="btn btn-outline-secondary w-100 py-2.5 small" for="targetAll">All Students</label>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                      <input type="radio" class="btn-check" name="pushTarget" id="targetDept" value="department" onchange="toggleTargetFields()">
+                      <label class="btn btn-outline-secondary w-100 py-2.5 small" for="targetDept">Department</label>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                      <input type="radio" class="btn-check" name="pushTarget" id="targetSem" value="semester" onchange="toggleTargetFields()">
+                      <label class="btn btn-outline-secondary w-100 py-2.5 small" for="targetSem">Semester</label>
+                    </div>
+                    <div class="col-6 col-sm-3">
+                      <input type="radio" class="btn-check" name="pushTarget" id="targetUser" value="student" onchange="toggleTargetFields()">
+                      <label class="btn btn-outline-secondary w-100 py-2.5 small" for="targetUser">Individual</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dynamic Target Inputs -->
+                <div id="deptInputGroup" class="mb-3 d-none">
+                  <label class="form-label small fw-bold text-secondary mb-1">Target Department</label>
+                  <select class="form-select" id="targetDeptSelect">
+                    <option value="">Select Department...</option>
+                  </select>
+                </div>
+
+                <div id="semInputGroup" class="mb-3 d-none">
+                  <label class="form-label small fw-bold text-secondary mb-1">Target Semester</label>
+                  <select class="form-select" id="targetSemSelect">
+                    <option value="">Select Semester...</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                  </select>
+                </div>
+
+                <div id="studentInputGroup" class="mb-3 d-none">
+                  <label class="form-label small fw-bold text-secondary mb-1">Student Register Number or Email</label>
+                  <input type="text" class="form-control" id="targetStudentInput" placeholder="e.g. student1@trackify.com or REG001">
+                </div>
+
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control" id="pushTitle" placeholder="Notification Title" required oninput="updatePreview()">
+                  <label for="pushTitle">Notification Title *</label>
+                </div>
+                
+                <div class="form-floating mb-3">
+                  <textarea class="form-control" id="pushBody" placeholder="Write message here..." style="height: 120px;" required oninput="updatePreview()"></textarea>
+                  <label for="pushBody">Message Content *</label>
+                </div>
+
+                <div class="row g-2 mb-4">
+                  <div class="col-md-6">
+                    <label class="form-label small fw-bold text-secondary mb-1">Category Category</label>
+                    <select class="form-select" id="pushCategory">
+                      <option value="General">General</option>
+                      <option value="Academic">Academic</option>
+                      <option value="Exam">Examination</option>
+                      <option value="Emergency">Emergency Alert</option>
+                      <option value="Event">Event</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary rounded-pill px-4 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  <span>Dispatch Notification</span>
+                </button>
+              </form>
+            </div>
+          </div>
+          
+          <!-- Live OS Mockup Preview Section -->
+          <div class="col-lg-5">
+            <div class="text-center mb-3">
+              <span class="badge bg-secondary-subtle text-secondary px-3 py-1.5 fs-8 text-uppercase tracking-wider fw-bold">Live OS Banner Preview</span>
+            </div>
+            
+            <div class="phone-mockup">
+              <div class="phone-notch"></div>
+              <div class="phone-time" id="mockPhoneTime">12:30 PM</div>
+              <div class="phone-icons">
+                <span>5G</span>
+                <span>🔋 85%</span>
+              </div>
+              
+              <div class="phone-screen">
+                <div class="push-banner-preview" id="livePushBanner">
+                  <div class="app-icon-preview">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                  </div>
+                  <div class="banner-content">
+                    <div class="d-flex align-items-center justify-content-between">
+                      <div class="banner-title" id="previewTitle">Notice Title</div>
+                      <span style="font-size: 0.62rem; color: #cbd5e1; flex-shrink: 0; margin-left: 6px;">now</span>
+                    </div>
+                    <div class="banner-body" id="previewBody">This is a live preview of the background push notification content as you compose it.</div>
+                    <div class="banner-meta">Trackify • <span id="previewCategory">General</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script>
+    async function loadNotificationsPage() {
+      // 1. Fetch profile to verify admin role
+      const res = await apiCall('/api/auth/me');
+      if (!res.success || res.user?.role !== 'admin') {
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      document.getElementById('user-header-name').innerText = res.user.name;
+
+      // Update mock phone time
+      const date = new Date();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      minutes = minutes < 10 ? '0' + minutes : minutes;
+      document.getElementById('mockPhoneTime').innerText = `${hours}:${minutes} ${ampm}`;
+
+      // 2. Fetch Departments to populate selection dropdown
+      const deptRes = await apiCall('/api/departments');
+      if (deptRes.success && Array.isArray(deptRes.departments)) {
+        const select = document.getElementById('targetDeptSelect');
+        deptRes.departments.forEach(dept => {
+          select.innerHTML += `<option value="${dept.code}">${dept.name} (${dept.code})</option>`;
+        });
+      }
+    }
+
+    function toggleTargetFields() {
+      const selectedTarget = document.querySelector('input[name="pushTarget"]:checked').value;
+      
+      document.getElementById('deptInputGroup').classList.add('d-none');
+      document.getElementById('semInputGroup').classList.add('d-none');
+      document.getElementById('studentInputGroup').classList.add('d-none');
+      
+      if (selectedTarget === 'department') {
+        document.getElementById('deptInputGroup').classList.remove('d-none');
+      } else if (selectedTarget === 'semester') {
+        document.getElementById('semInputGroup').classList.remove('d-none');
+      } else if (selectedTarget === 'student') {
+        document.getElementById('studentInputGroup').classList.remove('d-none');
+      }
+    }
+
+    function updatePreview() {
+      const title = document.getElementById('pushTitle').value || 'Notice Title';
+      const body = document.getElementById('pushBody').value || 'This is a live preview of the background push notification content as you compose it.';
+      const cat = document.getElementById('pushCategory').value;
+      
+      document.getElementById('previewTitle').innerText = title;
+      document.getElementById('previewBody').innerText = body;
+      document.getElementById('previewCategory').innerText = cat;
+      
+      // Trigger subtle slide-in animation refresh on changes
+      const banner = document.getElementById('livePushBanner');
+      banner.style.animation = 'none';
+      banner.offsetHeight; // trigger reflow
+      banner.style.animation = null;
+    }
+
+    document.getElementById('pushCategory').addEventListener('change', updatePreview);
+
+    async function sendPushNotification(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const target = document.querySelector('input[name="pushTarget"]:checked').value;
+      const title = document.getElementById('pushTitle').value;
+      const body = document.getElementById('pushBody').value;
+      const category = document.getElementById('pushCategory').value;
+      
+      let targetValue = null;
+      if (target === 'department') {
+        targetValue = document.getElementById('targetDeptSelect').value;
+        if (!targetValue) {
+          showAlert('Please select a target department', 'danger');
+          return;
+        }
+      } else if (target === 'semester') {
+        targetValue = document.getElementById('targetSemSelect').value;
+        if (!targetValue) {
+          showAlert('Please select a target semester', 'danger');
+          return;
+        }
+      } else if (target === 'student') {
+        targetValue = document.getElementById('targetStudentInput').value;
+        if (!targetValue || !targetValue.trim()) {
+          showAlert('Please enter the target student email or register number', 'danger');
+          return;
+        }
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...`;
+
+      try {
+        const res = await apiCall('/api/notifications/send-custom', {
+          method: 'POST',
+          body: {
+            target,
+            targetValue,
+            title,
+            body,
+            category
+          }
+        });
+
+        if (res.success) {
+          showAlert(res.message, 'success');
+          // Reset form inputs except the target settings
+          document.getElementById('pushTitle').value = '';
+          document.getElementById('pushBody').value = '';
+          updatePreview();
+        } else {
+          showAlert(res.message, 'danger');
+        }
+      } catch (err) {
+        console.error(err);
+        showAlert('Network error sending push notifications', 'danger');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          <span>Dispatch Notification</span>
+        `;
+      }
+    }
+
+    window.onload = loadNotificationsPage;
+  </script>
+</body>
+</html>

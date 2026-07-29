@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const systemSettingsRepository = require('../repositories/systemSettingsRepository');
+const pushNotificationService = require('./pushNotificationService');
 
 // Sleep helper to throttle email dispatches to prevent rate-limiting on Resend
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -328,6 +329,12 @@ const runDailyRemindersSweep = async (currentTimeStr = null, previewOnly = false
         });
       } else {
         await sendDailyMarkingReminder(row.email, row.name);
+        await pushNotificationService.sendPush(
+          [row.id],
+          'Daily Attendance Reminder',
+          `Hello ${row.name}, this is a reminder to log your attendance in Trackify today.`,
+          { category: 'Reminder' }
+        );
         await auditLogRepository.logAction(
           row.id, 
           'EMAIL_DISPATCHED', 
@@ -383,6 +390,12 @@ const runLowAttendanceSweep = async (previewOnly = false) => {
         });
       } else {
         await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target, student.id);
+        await pushNotificationService.sendPush(
+          [student.id],
+          'Urgent: Low Attendance Alert',
+          `Your average attendance has dropped to ${currentPercentage}% (minimum target is ${target}%).`,
+          { category: 'Warning' }
+        );
         await auditLogRepository.logAction(
           student.id, 
           'EMAIL_DISPATCHED', 

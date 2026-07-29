@@ -18,7 +18,7 @@ const getByUserId = async (userId) => {
  * @returns {Promise<object>}
  */
 const update = async (userId, settings) => {
-  const { minimum_attendance, theme, notifications, daily_reminders, email_timer, low_attendance_warnings } = settings;
+  const { minimum_attendance, theme, notifications, daily_reminders, email_timer, low_attendance_warnings, push_notifications } = settings;
   
   // Set fallback values
   const minAttendance = minimum_attendance ? parseInt(minimum_attendance, 10) : 80;
@@ -27,10 +27,11 @@ const update = async (userId, settings) => {
   const dailyRem = daily_reminders !== undefined ? !!daily_reminders : true;
   const timerVal = email_timer || '18:00';
   const lowWarn = low_attendance_warnings !== undefined ? !!low_attendance_warnings : true;
+  const pushNot = push_notifications !== undefined ? !!push_notifications : true;
 
   const query = `
-    INSERT INTO settings (user_id, minimum_attendance, theme, notifications, daily_reminders, email_timer, low_attendance_warnings)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO settings (user_id, minimum_attendance, theme, notifications, daily_reminders, email_timer, low_attendance_warnings, push_notifications)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     ON CONFLICT (user_id)
     DO UPDATE SET 
       minimum_attendance = EXCLUDED.minimum_attendance,
@@ -38,11 +39,12 @@ const update = async (userId, settings) => {
       notifications = EXCLUDED.notifications,
       daily_reminders = EXCLUDED.daily_reminders,
       email_timer = EXCLUDED.email_timer,
-      low_attendance_warnings = EXCLUDED.low_attendance_warnings
+      low_attendance_warnings = EXCLUDED.low_attendance_warnings,
+      push_notifications = EXCLUDED.push_notifications
     RETURNING *
   `;
   
-  const result = await db.query(query, [userId, minAttendance, activeTheme, notifsActive, dailyRem, timerVal, lowWarn]);
+  const result = await db.query(query, [userId, minAttendance, activeTheme, notifsActive, dailyRem, timerVal, lowWarn, pushNot]);
   return result.rows[0];
 };
 

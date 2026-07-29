@@ -1,3 +1,32 @@
+// Import Firebase App and Messaging compatibility scripts
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
+
+firebase.initializeApp({
+  apiKey: "AIzaSyB3WJO-g8N1NHwmu_yJ_y5p5cwGTBYggss",
+  authDomain: "trackify-6f561.firebaseapp.com",
+  projectId: "trackify-6f561",
+  storageBucket: "trackify-6f561.firebasestorage.app",
+  messagingSenderId: "488314328374",
+  appId: "1:488314328374:web:7190c726d2f5ddbcc98f97",
+  measurementId: "G-XG7JZVJJR1"
+});
+
+const messaging = firebase.messaging();
+
+messaging.onBackgroundMessage((payload) => {
+  console.log('[sw.js] Received background message ', payload);
+  const notificationTitle = payload.notification.title || 'Trackify Alert';
+  const notificationOptions = {
+    body: payload.notification.body || '',
+    icon: '/assets/images/favicon-192.png',
+    badge: '/assets/images/favicon-192.png',
+    data: payload.data
+  };
+
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
+
 const CACHE_NAME = 'trackify-cache-v2';
 const OFFLINE_URL = '/login.html';
 

@@ -244,7 +244,137 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+
+  // Inject Custom Push link into the sidebar dynamically if we are in admin area
+  if (window.location.pathname.startsWith('/admin/')) {
+    const sidebarMenu = document.querySelector('.app-sidebar .sidebar-menu');
+    if (sidebarMenu) {
+      const logoutLink = sidebarMenu.querySelector('.logout-link');
+      if (!document.getElementById('sidebar-custom-push')) {
+        const link = document.createElement('a');
+        link.id = 'sidebar-custom-push';
+        link.className = 'sidebar-link' + (window.location.pathname.includes('/admin/notifications') ? ' active' : '');
+        link.href = '/admin/notifications.html';
+        link.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>Custom Push</span>
+        `;
+        if (logoutLink) {
+          sidebarMenu.insertBefore(link, logoutLink);
+        } else {
+          sidebarMenu.appendChild(link);
+        }
+      }
+    }
+  }
+
+  // Inject Notifications link into student sidebar dynamically if we are in student area
+  if (window.location.pathname.startsWith('/student/')) {
+    const sidebarMenu = document.querySelector('.app-sidebar .sidebar-menu');
+    if (sidebarMenu) {
+      const settingsLink = Array.from(sidebarMenu.querySelectorAll('.sidebar-link')).find(link => link.getAttribute('href').includes('/student/settings'));
+      if (!document.getElementById('sidebar-student-notifications')) {
+        const link = document.createElement('a');
+        link.id = 'sidebar-student-notifications';
+        link.className = 'sidebar-link' + (window.location.pathname.includes('/student/notifications') ? ' active' : '');
+        link.href = '/student/notifications.html';
+        link.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          <span>Notifications</span>
+        `;
+        if (settingsLink) {
+          sidebarMenu.insertBefore(link, settingsLink);
+        } else {
+          sidebarMenu.appendChild(link);
+        }
+      }
+    }
+  }
 });
+
+// Helper to dynamically load external scripts
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+// Initialize FCM Web Push token retrieval and registration
+async function initPushNotifications(registration) {
+  try {
+    // 1. Fetch public VAPID key from backend
+    const vapidRes = await apiCall('/api/notifications/vapid-key');
+    if (!vapidRes.success || !vapidRes.vapidKey) {
+      console.warn('[FCM] VAPID key not configured on backend. Skipping push registration.');
+      return;
+    }
+
+    // 2. Load Firebase scripts dynamically if not loaded
+    if (typeof firebase === 'undefined') {
+      await loadScript('https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js');
+      await loadScript('https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js');
+    }
+
+    // 3. Initialize Firebase app
+    if (!firebase.apps.length) {
+      firebase.initializeApp({
+        apiKey: "AIzaSyB3WJO-g8N1NHwmu_yJ_y5p5cwGTBYggss",
+        authDomain: "trackify-6f561.firebaseapp.com",
+        projectId: "trackify-6f561",
+        storageBucket: "trackify-6f561.firebasestorage.app",
+        messagingSenderId: "488314328374",
+        appId: "1:488314328374:web:7190c726d2f5ddbcc98f97",
+        measurementId: "G-XG7JZVJJR1"
+      });
+    }
+
+    const messaging = firebase.messaging();
+
+    // 4. Request Permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      console.warn('[FCM] Notification permission denied.');
+      return;
+    }
+
+    // 5. Get FCM Token passing the PWA service worker registration
+    const token = await messaging.getToken({
+      serviceWorkerRegistration: registration,
+      vapidKey: vapidRes.vapidKey
+    });
+
+    if (token) {
+      console.log('[FCM] Retrieved Web FCM Token:', token);
+      
+      // 6. Save token to backend
+      const regRes = await apiCall('/api/notifications/register-token', {
+        method: 'POST',
+        body: { token, device_type: 'web' }
+      });
+      if (regRes.success) {
+        console.log('[FCM] FCM Token registered on backend successfully.');
+      } else {
+        console.error('[FCM] Failed to register token on backend:', regRes.message);
+      }
+    } else {
+      console.warn('[FCM] No token retrieved.');
+    }
+  } catch (err) {
+    console.error('[FCM ERROR] Error initializing push notifications:', err.message);
+  }
+}
 
 // Register Service Worker for PWA support
 if ('serviceWorker' in navigator) {
@@ -252,6 +382,23 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
         console.log('Trackify Service Worker registered with scope:', registration.scope);
+        // Only trigger push notifications registration for logged-in sessions (cookie token exists)
+        // We defer this slightly to let initial page load calls finish first
+        setTimeout(() => {
+          // Check if user is authenticated by fetching profile
+          apiCall('/api/auth/me').then(userRes => {
+            if (userRes.success && userRes.user) {
+              // Verify if push notifications are enabled in settings configurations
+              apiCall('/api/settings').then(settingsRes => {
+                if (settingsRes.success && settingsRes.settings && settingsRes.settings.push_notifications !== false) {
+                  initPushNotifications(registration);
+                } else {
+                  console.log('[FCM] User has opted-out of push notifications in settings. Skipping registration.');
+                }
+              });
+            }
+          });
+        }, 1500);
       })
       .catch((error) => {
         console.error('Trackify Service Worker registration failed:', error);

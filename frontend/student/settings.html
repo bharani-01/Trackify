@@ -374,6 +374,14 @@
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="notifsToggle" checked>
             </div>
 
+            <div class="form-check form-switch mb-3 p-3 border rounded-3 d-flex justify-content-between align-items-center" style="padding-left: 3rem; background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div>
+                <label class="form-check-label fw-bold text-dark" for="pushNotifsToggle">Web Push Notifications</label>
+                <div class="text-secondary small">Receive instant alerts and notice updates in this browser.</div>
+              </div>
+              <input class="form-check-input ms-0" type="checkbox" role="switch" id="pushNotifsToggle" checked>
+            </div>
+
             <div class="form-check form-switch p-3 border rounded-3 d-flex justify-content-between align-items-center" style="padding-left: 3rem; background: var(--bg-primary); border-color: var(--border-color) !important;">
               <div>
                 <label class="form-check-label fw-bold text-dark" for="lowAttendanceAlert">Low Attendance Warnings</label>
@@ -573,6 +581,7 @@
       if (response.success && response.settings) {
         document.getElementById('minAttendance').value = response.settings.minimum_attendance;
         document.getElementById('notifsToggle').checked = response.settings.notifications;
+        document.getElementById('pushNotifsToggle').checked = response.settings.push_notifications !== false;
         document.getElementById('dailyReminderToggle').checked = response.settings.daily_reminders !== false;
         document.getElementById('lowAttendanceAlert').checked = response.settings.low_attendance_warnings !== false;
         document.getElementById('reminderTimer').value = response.settings.email_timer || '18:00';
@@ -610,6 +619,7 @@
       const minimum_attendance = document.getElementById('minAttendance').value;
       const notifications = document.getElementById('notifsToggle').checked;
       const low_attendance_warnings = document.getElementById('lowAttendanceAlert').checked;
+      const push_notifications = document.getElementById('pushNotifsToggle').checked;
 
       // Keep others unchanged
       const daily_reminders = document.getElementById('dailyReminderToggle').checked;
@@ -622,7 +632,8 @@
           notifications,
           daily_reminders,
           email_timer,
-          low_attendance_warnings
+          low_attendance_warnings,
+          push_notifications
         }
       });
 
@@ -646,6 +657,7 @@
       const minimum_attendance = document.getElementById('minAttendance').value;
       const notifications = document.getElementById('notifsToggle').checked;
       const low_attendance_warnings = document.getElementById('lowAttendanceAlert').checked;
+      const push_notifications = document.getElementById('pushNotifsToggle').checked;
 
       const response = await apiCall('/api/settings', {
         method: 'PUT',
@@ -654,7 +666,8 @@
           notifications,
           daily_reminders,
           email_timer,
-          low_attendance_warnings
+          low_attendance_warnings,
+          push_notifications
         }
       });
 
