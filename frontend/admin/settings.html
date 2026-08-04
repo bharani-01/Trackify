@@ -111,6 +111,25 @@
         display: none; /* Hide scrollbars for a clean look */
       }
 
+      #previewRecipientsList {
+        scrollbar-width: thin;
+        scrollbar-color: #94a3b8 transparent;
+      }
+      #previewRecipientsList::-webkit-scrollbar {
+        width: 6px;
+      }
+      #previewRecipientsList::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.03);
+        border-radius: 4px;
+      }
+      #previewRecipientsList::-webkit-scrollbar-thumb {
+        background: #94a3b8;
+        border-radius: 4px;
+      }
+      #previewRecipientsList::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+
       .subtab-link {
         display: inline-flex;
         align-items: center;
@@ -608,7 +627,7 @@
             <!-- Left side: List of recipients -->
             <div class="col-md-4">
               <label class="form-label small fw-bold text-secondary text-uppercase d-block mb-2" style="font-size: 0.72rem; letter-spacing: 0.05em;">Recipients List</label>
-              <div class="list-group rounded-3 overflow-hidden shadow-sm" id="previewRecipientsList" style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border-color);">
+              <div class="list-group rounded-3 shadow-sm p-1" id="previewRecipientsList" style="max-height: 420px; overflow-y: scroll; border: 1px solid var(--border-color);">
                 <!-- Dynamic items -->
               </div>
             </div>

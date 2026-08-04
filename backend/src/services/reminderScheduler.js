@@ -28,7 +28,7 @@ const sendDailyMarkingReminder = async (email, name, previewOnly = false) => {
       <p style="color: #475569; font-size: 16px;">Hello ${safeName},</p>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">This is your scheduled daily reminder to mark your attendance logs in the Trackify student portal today.</p>
       <div style="margin: 24px 0;">
-        <a href="http://localhost:3000/student/attendance" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; display: inline-block;">Mark Attendance Now</a>
+        <a href="${process.env.APP_URL || 'https://trackifyapp.co.in'}/student/attendance" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; display: inline-block;">Mark Attendance Now</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
       <p style="color: #94a3b8; font-size: 12px;">You can customize or disable these daily reminders anytime under your Student settings page.</p>
@@ -722,7 +722,6 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
                 <!-- TO address -->
                 <div style="font-family: 'Caveat', cursive; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px;">TO</div>
                 <div style="font-family: 'Caveat', cursive; font-size: 22px; font-weight: 600; color: #fff; line-height: 1.2;">${escapeHtml(student.name)}</div>
-                <div style="font-family: 'Inter', sans-serif; font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px;">SRET, Chennai — 600 054</div>
               </td>
             </tr>
           </table>
@@ -795,7 +794,7 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
       <tr>
         <td class="email-footer-cell" style="text-align:center; padding:24px 20px 36px; font-family:'Inter',sans-serif; font-size:12px; color:#9CA3AF; line-height:1.7;">
           This email is sent from <strong style="color:#374151;">Trackify</strong>.<br>
-          Need help? Contact <a class="email-footer-link" href="mailto:contact@bharani-01.xyz" style="color:#111827; font-weight:700; text-decoration:none;">contact@bharani-01.xyz</a>
+          Need help? Contact <a class="email-footer-link" href="mailto:contact@trackifyapp.co.in" style="color:#111827; font-weight:700; text-decoration:none;">contact@trackifyapp.co.in</a>
           <div class="email-footer-sig" style="color:#374151; font-weight:700; margin-top:6px;">Happy Learning 📚<br>Team Trackify</div>
         </td>
       </tr>
