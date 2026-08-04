@@ -6,6 +6,7 @@
   <title>Manage Users - Admin Portal</title>
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
   <style>
     /* Modal input and select overrides to enforce consistent light-theme forms */
@@ -105,14 +106,71 @@
         </div>
 
         
-        <div class="glass-card border-glass mb-4 p-3">
-          <div class="row g-2">
-            <div class="col-12">
-              <div class="form-floating">
-                <input type="text" class="form-control border-light" id="searchBox" placeholder="Search by name or register number..." onkeyup="filterUsers()">
-                <label for="searchBox">Search by Student Name or Registration Number...</label>
+        <!-- Advanced Sorting & Multi-Field Filtering Toolbar -->
+        <div class="glass-card border-glass mb-4 p-3 shadow-sm">
+          <div class="row g-2 align-items-center">
+            <!-- Search Query Input -->
+            <div class="col-lg-4 col-md-6">
+              <div class="input-group">
+                <span class="input-group-text bg-white text-secondary border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0 text-dark" id="searchBox" placeholder="Search by name, reg number, or email..." oninput="applyFiltersAndSort()">
               </div>
             </div>
+
+            <!-- Filter by Department -->
+            <div class="col-lg-2 col-md-3 col-6">
+              <select class="form-select text-secondary small fw-semibold" id="filterDepartment" onchange="applyFiltersAndSort()">
+                <option value="">All Departments</option>
+              </select>
+            </div>
+
+            <!-- Filter by Semester -->
+            <div class="col-lg-2 col-md-3 col-6">
+              <select class="form-select text-secondary small fw-semibold" id="filterSemester" onchange="applyFiltersAndSort()">
+                <option value="">All Semesters</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
+            </div>
+
+            <!-- Filter by Attendance Status -->
+            <div class="col-lg-2 col-md-6 col-6">
+              <select class="form-select text-secondary small fw-semibold" id="filterAttendance" onchange="applyFiltersAndSort()">
+                <option value="">All Attendance Levels</option>
+                <option value="low">🚨 Below Target (< Target %)</option>
+                <option value="risk">⚠️ At Risk (< 80%)</option>
+                <option value="safe">✅ Safe (≥ 80%)</option>
+                <option value="high">⭐ High Performers (≥ 90%)</option>
+              </select>
+            </div>
+
+            <!-- Sort By Selector -->
+            <div class="col-lg-2 col-md-6 col-6">
+              <select class="form-select text-secondary small fw-semibold" id="sortBy" onchange="applyFiltersAndSort()">
+                <option value="name_asc">Sort: Name (A-Z)</option>
+                <option value="name_desc">Sort: Name (Z-A)</option>
+                <option value="reg_asc">Sort: Reg No (Asc)</option>
+                <option value="att_asc">Sort: Attendance (Low → High)</option>
+                <option value="att_desc">Sort: Attendance (High → Low)</option>
+                <option value="login_desc">Sort: Last Login (Recent)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Active Filter Pills & Reset Action Bar -->
+          <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top text-secondary small" id="filterSummaryBar" style="display: none !important;">
+            <div class="d-flex align-items-center gap-2 flex-wrap" id="activeFilterPills">
+              <!-- Rendered dynamically -->
+            </div>
+            <button type="button" class="btn btn-link text-decoration-none text-danger small p-0 fw-semibold" onclick="resetFilters()">
+              <i class="bi bi-x-circle me-1"></i>Reset All Filters
+            </button>
           </div>
         </div>
 
@@ -566,11 +624,24 @@
         departmentsList = deptsResponse.departments;
         const deptSelect = document.getElementById('edit-department');
         deptSelect.innerHTML = '<option value="" disabled selected>Select Department</option>';
+        
+        const filterDeptSelect = document.getElementById('filterDepartment');
+        if (filterDeptSelect) {
+          filterDeptSelect.innerHTML = '<option value="">All Departments</option>';
+        }
+
         departmentsList.forEach(dept => {
           const opt = document.createElement('option');
           opt.value = dept.code;
           opt.textContent = `${dept.name} (${dept.code})`;
           deptSelect.appendChild(opt);
+
+          if (filterDeptSelect) {
+            const fOpt = document.createElement('option');
+            fOpt.value = dept.code;
+            fOpt.textContent = `${dept.code} - ${dept.name}`;
+            filterDeptSelect.appendChild(fOpt);
+          }
         });
       }
 
@@ -583,8 +654,7 @@
         document.getElementById('active-count').innerText = activeUsersList.length;
         document.getElementById('suspended-count').innerText = suspendedUsersList.length;
 
-        renderUsers(activeUsersList);
-        renderSuspendedUsers(suspendedUsersList);
+        applyFiltersAndSort();
       } else {
         document.getElementById('users-container').innerHTML = '<tr><td colspan="6" class="text-danger text-center p-3">Failed to load user directories.</td></tr>';
       }
@@ -1136,25 +1206,120 @@
       }
     }
 
-    // Client-side search filtration
-    function filterUsers() {
-      const query = document.getElementById('searchBox').value.toLowerCase().trim();
-      let selector = '.user-row';
-      if (activeTab === 'pending') selector = '.pending-row';
-      if (activeTab === 'suspended') selector = '.suspended-row';
-      if (activeTab === 'admins') selector = '.admin-row';
+    // Advanced Client-side Search, Multi-Field Filtering & Multi-Column Sorting Engine
+    function applyFiltersAndSort() {
+      const query = (document.getElementById('searchBox').value || '').toLowerCase().trim();
+      const deptFilter = document.getElementById('filterDepartment').value;
+      const semFilter = document.getElementById('filterSemester').value;
+      const attFilter = document.getElementById('filterAttendance').value;
+      const sortOption = document.getElementById('sortBy').value;
 
-      const rows = document.querySelectorAll(selector);
-      rows.forEach(row => {
-        const name = (row.getAttribute('data-name') || '').toLowerCase();
-        const reg = (row.getAttribute('data-reg') || '').toLowerCase();
-        
-        if (name.includes(query) || reg.includes(query)) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
+      function filterAndSortList(rawList) {
+        let filtered = rawList.filter(user => {
+          const name = (user.name || '').toLowerCase();
+          const reg = (user.register_number || '').toLowerCase();
+          const email = (user.email || '').toLowerCase();
+          const matchesQuery = !query || name.includes(query) || reg.includes(query) || email.includes(query);
+
+          const userDept = (user.department || '').trim().toUpperCase();
+          const matchesDept = !deptFilter || userDept === deptFilter.trim().toUpperCase();
+
+          const matchesSem = !semFilter || String(user.semester) === String(semFilter);
+
+          let matchesAtt = true;
+          const attRate = user.attendance_percentage !== null && user.attendance_percentage !== undefined ? user.attendance_percentage : 100;
+          const targetMin = user.minimum_attendance || 80;
+
+          if (attFilter === 'low') {
+            matchesAtt = attRate < targetMin;
+          } else if (attFilter === 'risk') {
+            matchesAtt = attRate < 80;
+          } else if (attFilter === 'safe') {
+            matchesAtt = attRate >= 80;
+          } else if (attFilter === 'high') {
+            matchesAtt = attRate >= 90;
+          }
+
+          return matchesQuery && matchesDept && matchesSem && matchesAtt;
+        });
+
+        filtered.sort((a, b) => {
+          if (sortOption === 'name_asc') {
+            return (a.name || '').localeCompare(b.name || '');
+          } else if (sortOption === 'name_desc') {
+            return (b.name || '').localeCompare(a.name || '');
+          } else if (sortOption === 'reg_asc') {
+            return (a.register_number || '').localeCompare(b.register_number || '');
+          } else if (sortOption === 'att_asc') {
+            const rateA = a.attendance_percentage !== null ? a.attendance_percentage : 100;
+            const rateB = b.attendance_percentage !== null ? b.attendance_percentage : 100;
+            return rateA - rateB;
+          } else if (sortOption === 'att_desc') {
+            const rateA = a.attendance_percentage !== null ? a.attendance_percentage : 100;
+            const rateB = b.attendance_percentage !== null ? b.attendance_percentage : 100;
+            return rateB - rateA;
+          } else if (sortOption === 'login_desc') {
+            const timeA = a.last_login ? new Date(a.last_login).getTime() : 0;
+            const timeB = b.last_login ? new Date(b.last_login).getTime() : 0;
+            return timeB - timeA;
+          }
+          return 0;
+        });
+
+        return filtered;
+      }
+
+      const activeFiltered = filterAndSortList(activeUsersList);
+      renderUsers(activeFiltered);
+
+      const suspendedFiltered = filterAndSortList(suspendedUsersList);
+      renderSuspendedUsers(suspendedFiltered);
+
+      const pendingFiltered = filterAndSortList(pendingList);
+      renderPending(pendingFiltered);
+
+      const adminsFiltered = filterAndSortList(adminsList);
+      renderAdmins(adminsFiltered);
+
+      updateFilterSummaryBar(query, deptFilter, semFilter, attFilter, activeFiltered.length);
+    }
+
+    function updateFilterSummaryBar(query, dept, sem, att, matchCount) {
+      const summaryBar = document.getElementById('filterSummaryBar');
+      const pillsContainer = document.getElementById('activeFilterPills');
+      if (!summaryBar || !pillsContainer) return;
+
+      const hasActiveFilters = query || dept || sem || att;
+      if (!hasActiveFilters) {
+        summaryBar.style.setProperty('display', 'none', 'important');
+        return;
+      }
+
+      summaryBar.style.setProperty('display', 'flex', 'important');
+      pillsContainer.innerHTML = `<span class="fw-bold text-dark me-1">Showing ${matchCount} match${matchCount === 1 ? '' : 'es'}:</span>`;
+
+      if (query) {
+        pillsContainer.innerHTML += `<span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill py-1 px-2.5">Search: "${escapeHtml(query)}"</span>`;
+      }
+      if (dept) {
+        pillsContainer.innerHTML += `<span class="badge bg-info-subtle text-info-emphasis border border-info-subtle rounded-pill py-1 px-2.5">Dept: ${escapeHtml(dept)}</span>`;
+      }
+      if (sem) {
+        pillsContainer.innerHTML += `<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle rounded-pill py-1 px-2.5">Sem: ${escapeHtml(sem)}</span>`;
+      }
+      if (att) {
+        const attLabels = { low: 'Below Target', risk: '< 80%', safe: '≥ 80%', high: '≥ 90%' };
+        pillsContainer.innerHTML += `<span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle rounded-pill py-1 px-2.5">Attendance: ${attLabels[att] || att}</span>`;
+      }
+    }
+
+    function resetFilters() {
+      document.getElementById('searchBox').value = '';
+      document.getElementById('filterDepartment').value = '';
+      document.getElementById('filterSemester').value = '';
+      document.getElementById('filterAttendance').value = '';
+      document.getElementById('sortBy').value = 'name_asc';
+      applyFiltersAndSort();
     }
 
     async function rejectRegistration(id) {
