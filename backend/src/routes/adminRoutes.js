@@ -119,6 +119,22 @@ router.route('/holidays')
 router.route('/holidays/:id')
   .delete(deleteAdminHoliday);
 
+// Attendance Conflicts management
+const { getAdminConflicts, resolveAllConflicts, deleteSingleConflict } = require('../controllers/conflictController');
+router.route('/conflicts')
+  .get(getAdminConflicts);
+router.post('/conflicts/resolve-all', resolveAllConflicts);
+router.delete('/conflicts/:id', deleteSingleConflict);
+
+// Master Attendance Management routes
+const { getAllStudentAttendance, targetedClearAttendance, updateStudentAttendanceAdmin, deleteStudentAttendanceAdmin } = require('../controllers/adminAttendanceController');
+router.route('/attendance')
+  .get(getAllStudentAttendance);
+router.post('/attendance/clear', targetedClearAttendance);
+router.route('/attendance/:id')
+  .put(updateStudentAttendanceAdmin)
+  .delete(deleteStudentAttendanceAdmin);
+
 // Table visualizer management
 const { visualizeTable } = require('../controllers/visualizerController');
 router.get('/visualize', visualizeTable);

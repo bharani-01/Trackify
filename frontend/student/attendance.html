@@ -291,6 +291,7 @@
                 <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
                 <button type="button" class="btn btn-sm btn-glass border-danger text-danger flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Absent')">✗ Mark All Absent</button>
                 <button type="button" class="btn btn-sm btn-glass border-primary text-primary flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('On Duty')">ℹ Mark All OD</button>
+                <button type="button" class="btn btn-sm btn-glass border-secondary text-secondary flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="clearAttendanceForDate()">🗑 Clear Attendance</button>
               </div>
 
               
@@ -603,6 +604,7 @@
             statusAreaHtml = `
               <div id="status-display-period-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end me-md-4">
                 ${badgeMarkup}
+                <button type="button" onclick="deleteMarking('${logId}')" class="btn btn-sm btn-light text-danger border border-danger-subtle px-2 py-1 rounded-pill fw-semibold ms-1" style="font-size: 0.72rem;" title="Reset this marking">Clear</button>
               </div>
               <div id="status-edit-period-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end me-md-4" style="display: none !important;">
                 <div class="apple-segmented-pill">
@@ -610,6 +612,7 @@
                   <button type="button" class="segmented-item ${isAbsent ? 'active-absent' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent', '${logId}')">Absent</button>
                   <button type="button" class="segmented-item ${isOD ? 'active-od' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty', '${logId}')">OD</button>
                 </div>
+                <button type="button" onclick="deleteMarking('${logId}')" class="btn btn-sm btn-light text-danger border border-danger-subtle px-2 py-1 rounded-pill fw-semibold ms-1" style="font-size: 0.72rem;" title="Reset this marking">Clear</button>
               </div>
             `;
           } else {
@@ -712,6 +715,28 @@
       
       showAlert(`Successfully marked ${successfulCount} classes as ${status}`, 'success');
       await fetchChecklist();
+    }
+
+    async function clearAttendanceForDate() {
+      if (currentDateHoliday) {
+        showAlert('Attendance logging is disabled on holidays.', 'warning');
+        return;
+      }
+      if (!confirm(`Are you sure you want to clear all marked attendance for ${currentSelectedDate}?`)) {
+        return;
+      }
+
+      showAlert('Clearing attendance for this date...', 'info');
+      const response = await apiCall(`/api/attendance/clear?date=${currentSelectedDate}`, {
+        method: 'DELETE'
+      });
+
+      if (response.success) {
+        showAlert(`Successfully cleared attendance for ${currentSelectedDate}`, 'success');
+        await fetchChecklist();
+      } else {
+        showAlert(response.message || 'Failed to clear attendance', 'danger');
+      }
     }
 
     function enableCardEditMode(period) {

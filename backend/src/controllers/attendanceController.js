@@ -23,6 +23,11 @@ const getAttendanceLogs = async (req, res) => {
       const holidays = await holidayRepository.getByDateAndTarget(startDate, req.user.department, req.user.semester);
       if (holidays.length > 0) {
         holiday = holidays[0];
+        // Automatically purge any pre-marked attendance records logged for this holiday date
+        if (logs.length > 0) {
+          await attendanceRepository.deleteByDate(req.user.id, startDate);
+          logs = [];
+        }
       }
     }
 
@@ -57,6 +62,8 @@ const markAttendance = async (req, res) => {
     // Check if the date is a holiday for this student
     const holidays = await holidayRepository.getByDateAndTarget(date, req.user.department, req.user.semester);
     if (holidays.length > 0) {
+      // Purge any pre-marked attendance records for this student on this holiday date
+      await attendanceRepository.deleteByDate(req.user.id, date);
       return res.status(400).json({
         success: false,
         message: `Attendance logging is disabled on holidays (${holidays[0].name})`
@@ -108,6 +115,24 @@ const updateAttendance = async (req, res) => {
   }
 
   try {
+    const existingRecord = await attendanceRepository.getById(id, req.user.id);
+    if (!existingRecord) {
+      return res.status(404).json({
+        success: false,
+        message: 'Attendance record not found or unauthorized'
+      });
+    }
+
+    // Check if date is a holiday
+    const holidays = await holidayRepository.getByDateAndTarget(existingRecord.date, req.user.department, req.user.semester);
+    if (holidays.length > 0) {
+      await attendanceRepository.delete(id, req.user.id);
+      return res.status(400).json({
+        success: false,
+        message: `Attendance logging is disabled on holidays (${holidays[0].name})`
+      });
+    }
+
     const updatedRecord = await attendanceRepository.update(id, req.user.id, {
       status,
       remarks
@@ -138,6 +163,54 @@ const updateAttendance = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: 'Failed to update attendance'
+    });
+  }
+};
+
+/**
+ * Clear all attendance records for a specific date
+ */
+const clearAttendanceByDate = async (req, res) => {
+  const date = req.query.date || req.body.date;
+
+  if (!date) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide a date to clear attendance'
+    });
+  }
+
+  try {
+    const holidays = await holidayRepository.getByDateAndTarget(date, req.user.department, req.user.semester);
+    if (holidays.length > 0) {
+      await attendanceRepository.deleteByDate(req.user.id, date);
+      return res.status(400).json({
+        success: false,
+        message: `Attendance logging is disabled on holidays (${holidays[0].name})`
+      });
+    }
+
+    const count = await attendanceRepository.deleteByDate(req.user.id, date);
+
+    // Log action
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    await auditLogRepository.logAction(
+      req.user.id,
+      'CLEAR_ATTENDANCE',
+      `Cleared all attendance records for date ${date} (${count} entries removed)`,
+      ip
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: `Cleared ${count} attendance record(s) for ${date}`,
+      count
+    });
+  } catch (error) {
+    console.error('clearAttendanceByDate controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to clear attendance'
     });
   }
 };
@@ -299,5 +372,6 @@ module.exports = {
   markAttendance,
   updateAttendance,
   deleteAttendance,
+  clearAttendanceByDate,
   getStats
 };

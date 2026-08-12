@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getAttendanceLogs, markAttendance, updateAttendance, deleteAttendance, getStats } = require('../controllers/attendanceController');
+const { getAttendanceLogs, markAttendance, updateAttendance, deleteAttendance, clearAttendanceByDate, getStats } = require('../controllers/attendanceController');
 const { getStudentHolidays } = require('../controllers/holidayController');
 const { protect } = require('../middleware/authMiddleware');
 
@@ -10,6 +10,9 @@ router.use(protect);
 router.route('/')
   .get(getAttendanceLogs)
   .post(markAttendance);
+
+router.route('/clear')
+  .delete(clearAttendanceByDate);
 
 router.route('/stats')
   .get(getStats);

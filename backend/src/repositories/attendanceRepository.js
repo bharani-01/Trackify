@@ -71,6 +71,18 @@ const getByUserId = async (userId, filters = {}) => {
 };
 
 /**
+ * Get single attendance record by ID and user ID
+ * @param {string} id 
+ * @param {string} userId 
+ * @returns {Promise<object|null>}
+ */
+const getById = async (id, userId) => {
+  const query = 'SELECT * FROM attendance WHERE id = $1 AND user_id = $2';
+  const result = await db.query(query, [id, userId]);
+  return result.rows[0] || null;
+};
+
+/**
  * Log attendance record
  * @param {object} record - { user_id, subject_id, date, status, remarks }
  * @returns {Promise<object>}
@@ -124,6 +136,40 @@ const deleteRecord = async (id, userId) => {
 };
 
 /**
+ * Delete all attendance logs for a user on a specific date
+ * @param {string} userId 
+ * @param {string} date 
+ * @returns {Promise<number>} Count of deleted records
+ */
+const deleteByDate = async (userId, date) => {
+  const query = 'DELETE FROM attendance WHERE user_id = $1 AND date = $2 RETURNING id';
+  const result = await db.query(query, [userId, date]);
+  return result.rowCount;
+};
+
+/**
+ * Delete attendance logs for all users matching target cohort on a specific date (used when a holiday is declared)
+ * @param {string} date 
+ * @param {string|null} department 
+ * @param {number|string|null} semester 
+ * @returns {Promise<number>} Count of deleted records
+ */
+const deleteByDateAndTarget = async (date, department, semester) => {
+  const query = `
+    DELETE FROM attendance
+    WHERE date = $1
+      AND user_id IN (
+        SELECT id FROM users
+        WHERE ($2::text IS NULL OR department = $2)
+          AND ($3::int IS NULL OR semester = $3)
+      )
+  `;
+  const params = [date, department || null, semester ? parseInt(semester, 10) : null];
+  const result = await db.query(query, params);
+  return result.rowCount;
+};
+
+/**
  * Get subject-wise attendance aggregation statistics for a student
  * @param {string} userId 
  * @returns {Promise<Array>} Stats for each subject
@@ -157,8 +203,12 @@ const getSubjectStats = async (userId) => {
 
 module.exports = {
   getByUserId,
+  getById,
   create,
   update,
   delete: deleteRecord,
+  deleteByDate,
+  deleteByDateAndTarget,
   getSubjectStats
 };
+

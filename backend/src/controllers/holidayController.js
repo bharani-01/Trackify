@@ -1,4 +1,5 @@
 const holidayRepository = require('../repositories/holidayRepository');
+const attendanceRepository = require('../repositories/attendanceRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
 
 // Get all holidays (Admin)
@@ -30,6 +31,9 @@ const createAdminHoliday = async (req, res) => {
     }
 
     const holiday = await holidayRepository.create({ name, date, department, semester });
+
+    // Clean up any pre-marked student attendance records for this holiday date & scope
+    await attendanceRepository.deleteByDateAndTarget(date, department, semester);
 
     // Log action
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;

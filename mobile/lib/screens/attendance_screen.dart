@@ -141,6 +141,47 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
     }
   }
 
+  Future<void> _clearAttendanceForDate() async {
+    if (_holidayForDate != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Attendance logging is disabled on holidays')),
+      );
+      return;
+    }
+    final dateStr = _dateString(_selectedDate);
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: const Text('Clear Attendance', style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to clear all marked attendance for $dateStr?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.of(dialogCtx).pop(false), child: const Text('Cancel')),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEF4444), foregroundColor: Colors.white),
+            onPressed: () => Navigator.of(dialogCtx).pop(true),
+            child: const Text('Clear All'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      final response = await ApiClient.delete('/api/attendance/clear?date=$dateStr');
+      if (!mounted) return;
+      if (response['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'] ?? 'Attendance cleared')),
+        );
+        _loadChecklistData();
+        _loadHistoryLogs();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['message'] ?? 'Failed to clear attendance')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -304,9 +345,27 @@ class _AttendanceScreenState extends State<AttendanceScreen> with SingleTickerPr
                       ),
                     ),
                     SizedBox(width: 8),
-                    Text(
-                      '${(checklistProgress * 100).round()}%',
-                      style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${(checklistProgress * 100).round()}%',
+                          style: TextStyle(fontWeight: FontWeight.w900, fontSize: 18, color: Theme.of(context).brightness == Brightness.dark ? Colors.white : const Color(0xFF0F172A)),
+                        ),
+                        if (markedCount > 0 && _holidayForDate == null) ...[
+                          SizedBox(height: 2),
+                          InkWell(
+                            onTap: _clearAttendanceForDate,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2.0),
+                              child: Text(
+                                'Clear All',
+                                style: TextStyle(fontSize: 11, color: const Color(0xFFEF4444), fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
                     ),
                   ],
                 ),

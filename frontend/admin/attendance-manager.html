@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Manager - Admin Portal</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+  
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trackify">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+  <style>
+    .group-header-card {
+      background: var(--bg-tertiary, #f8fafc);
+      border-left: 4px solid var(--primary, #2563eb);
+      cursor: pointer;
+      transition: background 150ms ease;
+    }
+    .group-header-card:hover {
+      background: rgba(37, 99, 235, 0.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-layout">
+    
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg><span>Admin Overview</span></a>
+        <a class="sidebar-link" href="/admin/users"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Manage Users</span></a>
+        <a class="sidebar-link" href="/admin/departments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polyline points="12 2 2 7 12 12 22 7 12 2"></polyline><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span>Departments</span></a>
+        <a class="sidebar-link" href="/admin/timetable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable Builder</span></a>
+        <a class="sidebar-link" href="/admin/adjustments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span>Schedule Adjustments</span></a>
+        <a class="sidebar-link" href="/admin/holidays"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></svg><span>Holidays Manager</span></a>
+        <a class="sidebar-link active" href="/admin/attendance-manager"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span>Attendance Manager</span></a>
+        <a class="sidebar-link" href="/admin/announcements"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span>Announcements</span></a>
+        <a class="sidebar-link" href="/admin/audit-logs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Activity Audit Logs</span></a>
+        <a class="sidebar-link" href="/admin/client-errors"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>App Crash Logs</span></a>
+        <a class="sidebar-link" href="/admin/subject-hours"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg><span>Subject Hours</span></a>
+        <a class="sidebar-link" href="/admin/settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg><span>System Settings</span></a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span>Log Out</span></a>
+      </div>
+    </aside>
+
+    
+    <div class="app-main-wrapper">
+      
+      <header class="app-header">
+        <h1 class="app-header-title">Attendance Manager</h1>
+        <div class="app-header-profile">
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-7" style="width: 32px; height: 32px; border-radius: 8px;">A</span>
+            <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+              <div class="fw-bold text-dark fs-7" id="user-header-name">Admin User</div>
+              <div class="text-secondary small" style="font-size: 0.65rem;">System Administrator</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      
+      <main class="app-content animate-fade-in-up">
+        
+        <div class="row g-3 mb-4">
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">Total Records</div>
+              <div class="h3 fw-bold mb-0 text-primary" id="stat-total-records">0</div>
+            </div>
+          </div>
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">Present</div>
+              <div class="h3 fw-bold mb-0 text-success" id="stat-total-present">0</div>
+            </div>
+          </div>
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">Absent</div>
+              <div class="h3 fw-bold mb-0 text-danger" id="stat-total-absent">0</div>
+            </div>
+          </div>
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">On Duty (OD)</div>
+              <div class="h3 fw-bold mb-0 text-primary" id="stat-total-od">0</div>
+            </div>
+          </div>
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">Medical Leave</div>
+              <div class="h3 fw-bold mb-0 text-warning" id="stat-total-medical">0</div>
+            </div>
+          </div>
+          <div class="col-md-2 col-6">
+            <div class="glass-card border-glass p-3 h-100 text-center">
+              <div class="text-secondary small fw-semibold">Holiday Conflicts</div>
+              <div class="h3 fw-bold mb-0 text-danger" id="stat-total-conflicts">0</div>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="glass-card border-glass mb-4">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3 border-bottom">
+            <div>
+              <h2 class="h5 fw-bold mb-1 text-primary">Master Student Attendance Control</h2>
+              <p class="text-secondary small mb-0">Search, filter, group, edit, or perform targeted clear operations on student attendance across all cohorts.</p>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <button type="button" class="btn btn-outline-danger rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="openTargetedClearModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Clear Attendance...</span>
+              </button>
+              <button type="button" class="btn btn-danger rounded-pill px-3 py-2 fw-bold d-inline-flex align-items-center gap-2 shadow-sm" onclick="purgeHolidayConflicts()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                <span>Auto-Purge Conflicts</span>
+              </button>
+            </div>
+          </div>
+
+          
+          <div class="p-3 bg-light-subtle border-bottom">
+            <div class="row g-2">
+              <div class="col-md-3">
+                <input type="text" id="filter-search" class="form-control form-control-sm rounded-pill" placeholder="🔍 Search student, reg no, subject, holiday..." oninput="debounceFetchData()">
+              </div>
+              <div class="col-md-2">
+                <select id="filter-dept" class="form-select form-select-sm rounded-pill" onchange="fetchAttendanceData()">
+                  <option value="all">All Departments</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <select id="filter-sem" class="form-select form-select-sm rounded-pill" onchange="fetchAttendanceData()">
+                  <option value="all">All Semesters</option>
+                  <option value="1">Sem 1</option>
+                  <option value="2">Sem 2</option>
+                  <option value="3">Sem 3</option>
+                  <option value="4">Sem 4</option>
+                  <option value="5">Sem 5</option>
+                  <option value="6">Sem 6</option>
+                  <option value="7">Sem 7</option>
+                  <option value="8">Sem 8</option>
+                </select>
+              </div>
+              <div class="col-md-2">
+                <select id="filter-status" class="form-select form-select-sm rounded-pill" onchange="fetchAttendanceData()">
+                  <option value="all">All Statuses</option>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                  <option value="On Duty">On Duty</option>
+                  <option value="Medical Leave">Medical Leave</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <select id="filter-conflict" class="form-select form-select-sm rounded-pill" onchange="fetchAttendanceData()">
+                  <option value="all">All Records (Normal + Conflicts)</option>
+                  <option value="conflicts_only">⚠️ Holiday Conflicts Only</option>
+                  <option value="premarked_only">🕒 Pre-Marked Before Holiday Only</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row g-2 mt-1">
+              <div class="col-md-2">
+                <label class="form-label mb-0 small text-secondary">Start Date</label>
+                <input type="date" id="filter-start-date" class="form-control form-control-sm rounded-pill" onchange="fetchAttendanceData()">
+              </div>
+              <div class="col-md-2">
+                <label class="form-label mb-0 small text-secondary">End Date</label>
+                <input type="date" id="filter-end-date" class="form-control form-control-sm rounded-pill" onchange="fetchAttendanceData()">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label mb-0 small text-secondary">Group By</label>
+                <select id="filter-group-by" class="form-select form-select-sm rounded-pill" onchange="renderAttendanceView()">
+                  <option value="none">Flat Table List</option>
+                  <option value="date">Group by Date</option>
+                  <option value="student">Group by Student</option>
+                  <option value="subject">Group by Subject</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label mb-0 small text-secondary">Sort By</label>
+                <select id="filter-sort-by" class="form-select form-select-sm rounded-pill" onchange="fetchAttendanceData()">
+                  <option value="date">Date (Newest / Oldest)</option>
+                  <option value="student">Student Name (A-Z)</option>
+                  <option value="subject">Subject Name</option>
+                  <option value="status">Status</option>
+                </select>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill w-100" onclick="resetFilters()">Reset Filters</button>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="p-3" id="attendance-content-container">
+            <div class="text-center py-5">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  
+  <div class="modal fade" id="clearAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-glass rounded-4 shadow">
+        <div class="modal-header border-bottom px-4">
+          <h5 class="modal-title fw-bold text-danger d-flex align-items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Targeted Clear Attendance
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <p class="text-secondary small">Clear attendance records matching specific criteria (e.g. particular date, specific student, or cohort).</p>
+          
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Clear Action Scope</label>
+            <select id="clear-scope-type" class="form-select rounded-pill" onchange="toggleClearScopeFields()">
+              <option value="date">Clear All Attendance for a Specific Date</option>
+              <option value="student">Clear All Attendance for a Specific Student</option>
+              <option value="student_date">Clear Specific Student on a Specific Date</option>
+              <option value="cohort_date">Clear Department & Semester on a Date</option>
+              <option value="holiday_conflicts">Clear All Holiday Conflicts Only</option>
+            </select>
+          </div>
+
+          <div id="clear-field-date" class="mb-3">
+            <label class="form-label fw-semibold small">Target Date</label>
+            <input type="date" id="clear-target-date" class="form-control rounded-pill">
+          </div>
+
+          <div id="clear-field-student" class="mb-3" style="display: none;">
+            <label class="form-label fw-semibold small">Target Student (Email or Reg No)</label>
+            <input type="text" id="clear-target-student" class="form-control rounded-pill" placeholder="Enter student email or register number">
+          </div>
+
+          <div id="clear-field-cohort" class="mb-3" style="display: none;">
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label fw-semibold small">Department</label>
+                <select id="clear-target-dept" class="form-select rounded-pill">
+                  <option value="">Select Dept</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold small">Semester</label>
+                <select id="clear-target-sem" class="form-select rounded-pill">
+                  <option value="">Select Sem</option>
+                  <option value="1">Sem 1</option>
+                  <option value="2">Sem 2</option>
+                  <option value="3">Sem 3</option>
+                  <option value="4">Sem 4</option>
+                  <option value="5">Sem 5</option>
+                  <option value="6">Sem 6</option>
+                  <option value="7">Sem 7</option>
+                  <option value="8">Sem 8</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-warning small mb-0 rounded-3">
+            ⚠️ <strong>Warning:</strong> Clearing attendance will permanently delete matching records from student logs and update overall statistics.
+          </div>
+        </div>
+        <div class="modal-footer border-top px-4 py-3">
+          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold" onclick="executeTargetedClear()">Execute Clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <div class="modal fade" id="editAttendanceModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-glass rounded-4 shadow">
+        <div class="modal-header border-bottom px-4">
+          <h5 class="modal-title fw-bold text-primary">Edit Attendance Record</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+          <input type="hidden" id="edit-record-id">
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Student</label>
+            <input type="text" id="edit-record-student" class="form-control rounded-pill bg-light" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Date & Class</label>
+            <input type="text" id="edit-record-details" class="form-control rounded-pill bg-light" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Attendance Status</label>
+            <select id="edit-record-status" class="form-select rounded-pill">
+              <option value="Present">Present</option>
+              <option value="Absent">Absent</option>
+              <option value="On Duty">On Duty</option>
+              <option value="Medical Leave">Medical Leave</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Remarks / Notes</label>
+            <input type="text" id="edit-record-remarks" class="form-control rounded-pill" placeholder="Period details or admin notes">
+          </div>
+        </div>
+        <div class="modal-footer border-top px-4 py-3">
+          <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary rounded-pill px-4 fw-bold" onclick="saveRecordEdit()">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    let rawRecordsData = [];
+    let debounceTimer = null;
+    let clearModal = null;
+    let editModal = null;
+
+    async function initPage() {
+      clearModal = new bootstrap.Modal(document.getElementById('clearAttendanceModal'));
+      editModal = new bootstrap.Modal(document.getElementById('editAttendanceModal'));
+      
+      await fetchUserSession();
+      await fetchAttendanceData();
+    }
+
+    async function fetchUserSession() {
+      const res = await apiCall('/api/auth/me');
+      if (res.success && res.user && res.user.role === 'admin') {
+        document.getElementById('user-header-name').innerText = res.user.name;
+      } else {
+        window.location.href = '/login';
+      }
+    }
+
+    function debounceFetchData() {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(fetchAttendanceData, 300);
+    }
+
+    async function fetchAttendanceData() {
+      const search = document.getElementById('filter-search').value;
+      const department = document.getElementById('filter-dept').value;
+      const semester = document.getElementById('filter-sem').value;
+      const status = document.getElementById('filter-status').value;
+      const conflictFilter = document.getElementById('filter-conflict').value;
+      const startDate = document.getElementById('filter-start-date').value;
+      const endDate = document.getElementById('filter-end-date').value;
+      const sortBy = document.getElementById('filter-sort-by').value;
+
+      const queryParams = new URLSearchParams({
+        search, department, semester, status, conflictFilter, startDate, endDate, sortBy
+      });
+
+      const res = await apiCall(`/api/admin/attendance?${queryParams.toString()}`);
+      if (res.success) {
+        rawRecordsData = res.records || [];
+        
+        // Update Stats
+        const stats = res.summaryStats || {};
+        document.getElementById('stat-total-records').innerText = stats.total_records || 0;
+        document.getElementById('stat-total-present').innerText = stats.total_present || 0;
+        document.getElementById('stat-total-absent').innerText = stats.total_absent || 0;
+        document.getElementById('stat-total-od').innerText = stats.total_od || 0;
+        document.getElementById('stat-total-medical').innerText = stats.total_medical || 0;
+        document.getElementById('stat-total-conflicts').innerText = stats.total_conflicts || 0;
+
+        // Populate departments dropdown if empty
+        const deptSelect = document.getElementById('filter-dept');
+        const clearDeptSelect = document.getElementById('clear-target-dept');
+        if (res.departments && deptSelect.options.length <= 1) {
+          res.departments.forEach(d => {
+            deptSelect.innerHTML += `<option value="${d.code}">${d.name} (${d.code})</option>`;
+            clearDeptSelect.innerHTML += `<option value="${d.code}">${d.name} (${d.code})</option>`;
+          });
+        }
+
+        renderAttendanceView();
+      } else {
+        showAlert(res.message || 'Failed to load attendance records', 'danger');
+      }
+    }
+
+    function renderAttendanceView() {
+      const groupMode = document.getElementById('filter-group-by').value;
+      const container = document.getElementById('attendance-content-container');
+
+      if (!rawRecordsData || rawRecordsData.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5">
+            <div class="text-secondary fw-bold fs-6 mb-1">No Attendance Records Found</div>
+            <div class="text-muted small">Try adjusting your filters or date selection.</div>
+          </div>
+        `;
+        return;
+      }
+
+      if (groupMode === 'none') {
+        renderFlatTable(container, rawRecordsData);
+      } else if (groupMode === 'date') {
+        renderGroupedByDate(container, rawRecordsData);
+      } else if (groupMode === 'student') {
+        renderGroupedByStudent(container, rawRecordsData);
+      } else if (groupMode === 'subject') {
+        renderGroupedBySubject(container, rawRecordsData);
+      }
+    }
+
+    function renderFlatTable(container, records) {
+      let rowsHtml = '';
+      records.forEach(r => {
+        rowsHtml += buildRecordRowHtml(r);
+      });
+
+      container.innerHTML = `
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Student Details</th>
+                <th>Cohort</th>
+                <th>Date</th>
+                <th>Subject & Class</th>
+                <th>Status</th>
+                <th>Holiday Conflict</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderGroupedByDate(container, records) {
+      const groups = {};
+      records.forEach(r => {
+        const dateKey = r.date || 'Unknown Date';
+        if (!groups[dateKey]) groups[dateKey] = [];
+        groups[dateKey].push(r);
+      });
+
+      let html = '';
+      Object.keys(groups).sort((a,b) => b.localeCompare(a)).forEach((date, idx) => {
+        const groupList = groups[date];
+        const count = groupList.length;
+        const conflictsCount = groupList.filter(r => r.is_holiday_conflict).length;
+
+        let rowsHtml = '';
+        groupList.forEach(r => {
+          rowsHtml += buildRecordRowHtml(r);
+        });
+
+        html += `
+          <div class="card border mb-3 rounded-3 overflow-hidden shadow-sm">
+            <div class="p-3 group-header-card d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#group-date-${idx}">
+              <div class="d-flex align-items-center gap-3">
+                <div class="fw-bold text-dark fs-6">📅 ${date}</div>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill">${count} Records</span>
+                ${conflictsCount > 0 ? `<span class="badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill">⚠️ ${conflictsCount} Holiday Conflicts</span>` : ''}
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-xs btn-outline-danger rounded-pill px-2.5 py-1 text-nowrap fw-bold" onclick="event.stopPropagation(); quickClearByDate('${date}')">🗑 Clear Date</button>
+                <span class="text-secondary small">▼</span>
+              </div>
+            </div>
+            <div class="collapse show" id="group-date-${idx}">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Student Details</th>
+                      <th>Cohort</th>
+                      <th>Date</th>
+                      <th>Subject & Class</th>
+                      <th>Status</th>
+                      <th>Holiday Conflict</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rowsHtml}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderGroupedByStudent(container, records) {
+      const groups = {};
+      records.forEach(r => {
+        const key = r.student_email || r.user_id;
+        if (!groups[key]) {
+          groups[key] = {
+            studentName: r.student_name,
+            regNo: r.register_number,
+            email: r.student_email,
+            dept: r.department,
+            sem: r.semester,
+            userId: r.user_id,
+            records: []
+          };
+        }
+        groups[key].records.push(r);
+      });
+
+      let html = '';
+      Object.keys(groups).forEach((key, idx) => {
+        const studentObj = groups[key];
+        const count = studentObj.records.length;
+        const presentCount = studentObj.records.filter(r => r.status === 'Present' || r.status === 'On Duty').length;
+        const pct = count > 0 ? Math.round((presentCount / count) * 100) : 100;
+
+        let rowsHtml = '';
+        studentObj.records.forEach(r => {
+          rowsHtml += buildRecordRowHtml(r);
+        });
+
+        html += `
+          <div class="card border mb-3 rounded-3 overflow-hidden shadow-sm">
+            <div class="p-3 group-header-card d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#group-student-${idx}">
+              <div class="d-flex align-items-center gap-3">
+                <div>
+                  <span class="fw-bold text-dark fs-6">👤 ${studentObj.studentName}</span>
+                  <span class="text-secondary small ms-2">(${studentObj.regNo || studentObj.email}) | ${studentObj.dept || ''} Sem ${studentObj.sem || ''}</span>
+                </div>
+                <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill">${pct}% Attendance (${presentCount}/${count})</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <button type="button" class="btn btn-xs btn-outline-danger rounded-pill px-2.5 py-1 text-nowrap fw-bold" onclick="event.stopPropagation(); quickClearByStudent('${studentObj.userId}', '${studentObj.studentName}')">🗑 Clear Student</button>
+                <span class="text-secondary small">▼</span>
+              </div>
+            </div>
+            <div class="collapse show" id="group-student-${idx}">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Student Details</th>
+                      <th>Cohort</th>
+                      <th>Date</th>
+                      <th>Subject & Class</th>
+                      <th>Status</th>
+                      <th>Holiday Conflict</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rowsHtml}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function renderGroupedBySubject(container, records) {
+      const groups = {};
+      records.forEach(r => {
+        const key = r.subject_name || 'General Class';
+        if (!groups[key]) groups[key] = [];
+        groups[key].push(r);
+      });
+
+      let html = '';
+      Object.keys(groups).forEach((subj, idx) => {
+        const list = groups[subj];
+        let rowsHtml = '';
+        list.forEach(r => {
+          rowsHtml += buildRecordRowHtml(r);
+        });
+
+        html += `
+          <div class="card border mb-3 rounded-3 overflow-hidden shadow-sm">
+            <div class="p-3 group-header-card d-flex align-items-center justify-content-between" data-bs-toggle="collapse" data-bs-target="#group-subj-${idx}">
+              <div class="d-flex align-items-center gap-3">
+                <div class="fw-bold text-dark fs-6">📚 ${subj}</div>
+                <span class="badge bg-secondary-subtle text-secondary border rounded-pill">${list.length} Logs</span>
+              </div>
+              <span class="text-secondary small">▼</span>
+            </div>
+            <div class="collapse show" id="group-subj-${idx}">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Student Details</th>
+                      <th>Cohort</th>
+                      <th>Date</th>
+                      <th>Subject & Class</th>
+                      <th>Status</th>
+                      <th>Holiday Conflict</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>${rowsHtml}</tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function buildRecordRowHtml(r) {
+      let statusBadge = `<span class="badge bg-secondary px-2 py-1">${r.status}</span>`;
+      if (r.status === 'Present') statusBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle px-2.5 py-1 fw-bold">✓ Present</span>`;
+      else if (r.status === 'Absent') statusBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2.5 py-1 fw-bold">✗ Absent</span>`;
+      else if (r.status === 'On Duty') statusBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2.5 py-1 fw-bold">ℹ OD</span>`;
+      else if (r.status === 'Medical Leave') statusBadge = `<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2.5 py-1 fw-bold">🏥 Medical</span>`;
+
+      let conflictBadge = `<span class="text-muted small">None</span>`;
+      if (r.is_holiday_conflict) {
+        if (r.conflict_type === 'Pre-Marked Before Holiday') {
+          conflictBadge = `<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 fs-9">🕒 Pre-Holiday (${r.holiday_name})</span>`;
+        } else {
+          conflictBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1 fs-9">⚠️ On Holiday (${r.holiday_name})</span>`;
+        }
+      }
+
+      return `
+        <tr>
+          <td>
+            <div class="fw-bold text-dark">${r.student_name}</div>
+            <div class="text-secondary small font-monospace">${r.register_number || 'N/A'} | ${r.student_email}</div>
+          </td>
+          <td>
+            <span class="badge bg-light text-dark border px-2 py-1">${r.department || 'All'} - Sem ${r.semester || 'All'}</span>
+          </td>
+          <td>
+            <div class="fw-bold text-dark">${r.date}</div>
+          </td>
+          <td>
+            <div class="fw-semibold text-dark">${r.subject_name} <span class="text-muted small">(${r.subject_code})</span></div>
+            <div class="text-secondary small">${r.remarks || 'Class Period'}</div>
+          </td>
+          <td>${statusBadge}</td>
+          <td>${conflictBadge}</td>
+          <td class="text-end">
+            <button type="button" class="btn btn-xs btn-outline-primary rounded-pill px-2.5 py-1 me-1" onclick="openEditRecordModal('${r.attendance_id}', '${r.student_name}', '${r.date} - ${r.subject_name}', '${r.status}', '${r.remarks || ''}')">Edit</button>
+            <button type="button" class="btn btn-xs btn-outline-danger rounded-pill px-2.5 py-1" onclick="deleteSingleAttendance('${r.attendance_id}')">Delete</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-search').value = '';
+      document.getElementById('filter-dept').value = 'all';
+      document.getElementById('filter-sem').value = 'all';
+      document.getElementById('filter-status').value = 'all';
+      document.getElementById('filter-conflict').value = 'all';
+      document.getElementById('filter-start-date').value = '';
+      document.getElementById('filter-end-date').value = '';
+      document.getElementById('filter-group-by').value = 'none';
+      document.getElementById('filter-sort-by').value = 'date';
+      fetchAttendanceData();
+    }
+
+    function openTargetedClearModal() {
+      clearModal.show();
+    }
+
+    function toggleClearScopeFields() {
+      const type = document.getElementById('clear-scope-type').value;
+      document.getElementById('clear-field-date').style.display = (type.includes('date') || type === 'cohort_date') ? 'block' : 'none';
+      document.getElementById('clear-field-student').style.display = (type.includes('student')) ? 'block' : 'none';
+      document.getElementById('clear-field-cohort').style.display = (type === 'cohort_date') ? 'block' : 'none';
+    }
+
+    async function executeTargetedClear() {
+      const type = document.getElementById('clear-scope-type').value;
+      const date = document.getElementById('clear-target-date').value;
+      const studentInput = document.getElementById('clear-target-student').value;
+      const dept = document.getElementById('clear-target-dept').value;
+      const sem = document.getElementById('clear-target-sem').value;
+
+      const payload = {};
+      if (type.includes('date') || type === 'cohort_date') payload.date = date;
+      if (type.includes('student')) payload.userId = studentInput;
+      if (type === 'cohort_date') {
+        payload.department = dept;
+        payload.semester = sem;
+      }
+      if (type === 'holiday_conflicts') payload.isHolidayConflictOnly = true;
+
+      if (type === 'date' && !date) return showAlert('Please select target date', 'warning');
+      if (type === 'student' && !studentInput) return showAlert('Please enter student email or register number', 'warning');
+
+      if (!confirm('Are you sure you want to clear matching attendance records?')) return;
+
+      const res = await apiCall('/api/admin/attendance/clear', {
+        method: 'POST',
+        body: payload
+      });
+
+      if (res.success) {
+        clearModal.hide();
+        showAlert(res.message || 'Target attendance cleared', 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to clear attendance', 'danger');
+      }
+    }
+
+    async function quickClearByDate(date) {
+      if (!confirm(`Are you sure you want to clear ALL attendance records on ${date}?`)) return;
+
+      const res = await apiCall('/api/admin/attendance/clear', {
+        method: 'POST',
+        body: { date }
+      });
+
+      if (res.success) {
+        showAlert(`Cleared all records for ${date}`, 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to clear date', 'danger');
+      }
+    }
+
+    async function quickClearByStudent(userId, studentName) {
+      if (!confirm(`Are you sure you want to clear ALL attendance records for ${studentName}?`)) return;
+
+      const res = await apiCall('/api/admin/attendance/clear', {
+        method: 'POST',
+        body: { userId }
+      });
+
+      if (res.success) {
+        showAlert(`Cleared all records for ${studentName}`, 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to clear student', 'danger');
+      }
+    }
+
+    async function purgeHolidayConflicts() {
+      if (!confirm('Are you sure you want to auto-purge all holiday attendance conflict records?')) return;
+
+      const res = await apiCall('/api/admin/attendance/clear', {
+        method: 'POST',
+        body: { isHolidayConflictOnly: true }
+      });
+
+      if (res.success) {
+        showAlert(res.message || 'Holiday conflicts purged', 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to purge conflicts', 'danger');
+      }
+    }
+
+    function openEditRecordModal(id, studentName, details, status, remarks) {
+      document.getElementById('edit-record-id').value = id;
+      document.getElementById('edit-record-student').value = studentName;
+      document.getElementById('edit-record-details').value = details;
+      document.getElementById('edit-record-status').value = status;
+      document.getElementById('edit-record-remarks').value = remarks;
+      editModal.show();
+    }
+
+    async function saveRecordEdit() {
+      const id = document.getElementById('edit-record-id').value;
+      const status = document.getElementById('edit-record-status').value;
+      const remarks = document.getElementById('edit-record-remarks').value;
+
+      const res = await apiCall(`/api/admin/attendance/${id}`, {
+        method: 'PUT',
+        body: { status, remarks }
+      });
+
+      if (res.success) {
+        editModal.hide();
+        showAlert('Attendance record updated successfully', 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to update record', 'danger');
+      }
+    }
+
+    async function deleteSingleAttendance(id) {
+      if (!confirm('Are you sure you want to delete this attendance record?')) return;
+
+      const res = await apiCall(`/api/admin/attendance/${id}`, { method: 'DELETE' });
+      if (res.success) {
+        showAlert('Attendance record deleted', 'success');
+        await fetchAttendanceData();
+      } else {
+        showAlert(res.message || 'Failed to delete record', 'danger');
+      }
+    }
+
+    window.onload = initPage;
+  </script>
+</body>
+</html>
