@@ -534,8 +534,11 @@ const redirectIfLoggedIn = async (req, res, next) => {
   }
 };
 
+const webhookRoutes = require('./src/routes/webhookRoutes');
+
 // API ROUTES (Must be registered before static HTML middlewares)
 app.use('/api', apiAuditLogger);
+app.use('/api/webhooks', webhookRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/subjects', subjectRoutes);
 app.use('/api/timetable', timetableRoutes);

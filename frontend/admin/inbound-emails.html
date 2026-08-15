@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support Inbox - Admin Portal</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <style>
+    .badge-unread { background-color: rgba(37, 99, 235, 0.1); color: #2563eb; border: 1px solid rgba(37, 99, 235, 0.2); }
+    .badge-read { background-color: rgba(100, 116, 139, 0.1); color: #64748b; border: 1px solid rgba(100, 116, 139, 0.2); }
+    .badge-replied { background-color: rgba(16, 185, 129, 0.1); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.2); }
+    .badge-archived { background-color: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+
+    .email-row-unread { font-weight: 600; background-color: rgba(37, 99, 235, 0.02); }
+    .email-preview-card { border-radius: 8px; border: 1px solid var(--border-color, #e2e8f0); }
+    .email-body-box { background-color: var(--bg-surface, #f8fafc); border-radius: 6px; padding: 16px; min-height: 140px; max-height: 400px; overflow-y: auto; }
+    
+    .quick-template-btn { border: 1px dashed #cbd5e1; border-radius: 6px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; }
+    .quick-template-btn:hover { background-color: rgba(37, 99, 235, 0.08); border-color: #2563eb; color: #2563eb; }
+  </style>
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function() {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+  
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Trackify">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+</head>
+<body>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/admin/dashboard"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg><span>Admin Overview</span></a>
+        <a class="sidebar-link active" href="/admin/inbound-emails"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-mail"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg><span>Support Inbox <span id="sidebarUnreadBadge" class="badge rounded-pill bg-danger ms-1 d-none">0</span></span></a>
+        <a class="sidebar-link" href="/admin/users"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-users"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg><span>Manage Users</span></a>
+        <a class="sidebar-link" href="/admin/departments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-layers"><polyline points="12 2 2 7 12 12 22 7 12 2"></polyline><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg><span>Departments</span></a>
+        <a class="sidebar-link" href="/admin/timetable"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg><span>Timetable Builder</span></a>
+        <a class="sidebar-link" href="/admin/adjustments"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span>Schedule Adjustments</span></a>
+        <a class="sidebar-link" href="/admin/holidays"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></svg><span>Holidays Manager</span></a>
+        <a class="sidebar-link" href="/admin/attendance-manager"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg><span>Attendance Manager</span></a>
+        <a class="sidebar-link" href="/admin/announcements"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-bell"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg><span>Announcements</span></a>
+        <a class="sidebar-link" href="/admin/audit-logs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shield"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span>Activity Audit Logs</span></a>
+        <a class="sidebar-link" href="/admin/client-errors"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-alert-triangle"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span>App Crash Logs</span></a>
+        <a class="sidebar-link" href="/admin/settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sliders"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg><span>System Settings</span></a>
+        <a class="sidebar-link logout-link" href="#" onclick="handleLogout()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg><span>Log Out</span></a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="app-main-wrapper">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle Sidebar">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <h1 class="page-title">Support Inbox & Resend Emails</h1>
+        </div>
+        <div class="header-right">
+          <button class="theme-toggle" id="themeToggle" title="Toggle Dark/Light Theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </header>
+
+      <main class="app-content">
+        <div class="container-fluid p-0">
+          
+          <div class="row g-3 mb-4 align-items-center">
+            <div class="col-md-6">
+              <div class="nav nav-pills" id="inboxTabs">
+                <button class="nav-link active me-2" onclick="setFilterStatus('all')">All Emails</button>
+                <button class="nav-link me-2" onclick="setFilterStatus('unread')">Unread <span id="unreadTabBadge" class="badge bg-danger ms-1">0</span></button>
+                <button class="nav-link me-2" onclick="setFilterStatus('replied')">Replied</button>
+                <button class="nav-link" onclick="setFilterStatus('archived')">Archived</button>
+              </div>
+            </div>
+            <div class="col-md-6 text-md-end d-flex gap-2 justify-content-md-end">
+              <input type="text" id="searchInput" class="form-control" placeholder="Search by sender or subject..." style="max-width: 300px;" oninput="handleSearch()">
+              <button class="btn btn-outline-secondary" onclick="loadEmails()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg></button>
+            </div>
+          </div>
+
+          <!-- Email List Table Card -->
+          <div class="card shadow-sm border-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 140px;">Status</th>
+                    <th>Sender (From)</th>
+                    <th>Subject</th>
+                    <th style="width: 180px;">Received At</th>
+                    <th style="width: 130px; text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="emailTableBody">
+                  <tr>
+                    <td colspan="5" class="text-center py-5 text-muted">Loading support emails...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center mt-3" id="paginationControls">
+            <small class="text-muted" id="paginationInfo"></small>
+            <div>
+              <button class="btn btn-sm btn-outline-secondary me-1" id="prevBtn" onclick="changePage(-1)" disabled>Previous</button>
+              <button class="btn btn-sm btn-outline-secondary" id="nextBtn" onclick="changePage(1)" disabled>Next</button>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Email Details & Reply Modal -->
+  <div class="modal fade" id="emailDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title" id="modalSubject">Email Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="email-preview-card p-3 mb-3 bg-body-tertiary">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div>
+                <strong id="modalFrom" class="fs-6 text-body"></strong>
+                <div class="text-muted small">To: <span id="modalTo"></span></div>
+              </div>
+              <div class="text-end">
+                <span id="modalStatusBadge" class="badge badge-unread mb-1">Unread</span>
+                <div class="text-muted small" id="modalDate"></div>
+              </div>
+            </div>
+          </div>
+
+          <label class="form-label fw-semibold text-secondary">Original Email Content:</label>
+          <div class="email-body-box mb-4" id="modalBody"></div>
+
+          <!-- If already replied, show previous reply -->
+          <div id="previousReplyBox" class="alert alert-success d-none mb-4">
+            <h6 class="fw-bold mb-1">Previous Reply Sent (<span id="modalRepliedDate"></span>):</h6>
+            <div id="modalReplyText" class="small white-space-pre-wrap"></div>
+          </div>
+
+          <!-- Reply Section -->
+          <div class="card border p-3">
+            <h6 class="fw-bold mb-3 d-flex align-items-center"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-corner-up-left me-2"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg> Send Response / Reply</h6>
+            
+            <div class="mb-3">
+              <label class="form-label small text-muted">Quick Reply Templates (Canned Responses):</label>
+              <div class="d-flex flex-wrap gap-2">
+                <button type="button" class="quick-template-btn" onclick="applyTemplate('account_approved')">🎓 Account Approved</button>
+                <button type="button" class="quick-template-btn" onclick="applyTemplate('attendance_resolved')">📊 Attendance Adjustment Resolved</button>
+                <button type="button" class="quick-template-btn" onclick="applyTemplate('tech_issue_resolved')">🛠️ Tech Issue Fixed</button>
+                <button type="button" class="quick-template-btn" onclick="applyTemplate('support_ack')">💬 Support Ack</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="replyTextarea" class="form-label small fw-semibold">Custom Message Body:</label>
+              <textarea class="form-control" id="replyTextarea" rows="5" placeholder="Type your custom reply message here..."></textarea>
+            </div>
+
+            <div class="text-end">
+              <button type="button" class="btn btn-primary px-4" id="sendReplyBtn" onclick="submitEmailReply()">
+                <span class="spinner-border spinner-border-sm me-1 d-none" id="replySpinner"></span>
+                Send Reply via Resend
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer justify-content-between border-top">
+          <div>
+            <button type="button" class="btn btn-sm btn-outline-warning" onclick="toggleArchiveCurrentEmail()">Archive</button>
+            <button type="button" class="btn btn-sm btn-outline-danger ms-1" onclick="deleteCurrentEmail()">Delete</button>
+          </div>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  <script>
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentPage = 1;
+    let currentEmailId = null;
+    let currentEmailData = null;
+    let detailModal = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      detailModal = new bootstrap.Modal(document.getElementById('emailDetailModal'));
+      
+      // Theme toggle setup
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const currentTheme = document.documentElement.getAttribute('data-theme');
+          const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+        });
+      }
+
+      // Sidebar toggle setup
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+          document.documentElement.classList.toggle('sidebar-collapsed');
+          localStorage.setItem('sidebar-collapsed', document.documentElement.classList.contains('sidebar-collapsed'));
+        });
+      }
+
+      loadEmails();
+    });
+
+    function setFilterStatus(status) {
+      currentFilter = status;
+      currentPage = 1;
+      
+      document.querySelectorAll('#inboxTabs .nav-link').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      loadEmails();
+    }
+
+    let searchTimeout = null;
+    function handleSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        currentSearch = document.getElementById('searchInput').value.trim();
+        currentPage = 1;
+        loadEmails();
+      }, 300);
+    }
+
+    async function loadEmails() {
+      const tbody = document.getElementById('emailTableBody');
+      tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted"><span class="spinner-border spinner-border-sm me-2"></span>Loading emails...</td></tr>';
+
+      try {
+        const query = new URLSearchParams({
+          page: currentPage,
+          limit: 15,
+          status: currentFilter,
+          search: currentSearch
+        });
+
+        const res = await fetch(`/api/admin/inbound-emails?${query.toString()}`, { credentials: 'include' });
+        const json = await res.json();
+
+        if (!json.success) {
+          tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger py-4">${json.message || 'Error loading emails'}</td></tr>`;
+          return;
+        }
+
+        // Update badge counters
+        const unreadCount = json.unreadCount || 0;
+        document.getElementById('unreadTabBadge').innerText = unreadCount;
+        const sidebarBadge = document.getElementById('sidebarUnreadBadge');
+        if (sidebarBadge) {
+          sidebarBadge.innerText = unreadCount;
+          sidebarBadge.classList.toggle('d-none', unreadCount === 0);
+        }
+
+        if (!json.data || json.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center py-5 text-muted">No support emails found.</td></tr>';
+          updatePagination(0, 1, 15);
+          return;
+        }
+
+        tbody.innerHTML = json.data.map(item => {
+          const isUnread = item.status === 'unread';
+          let badgeClass = 'badge-read';
+          if (item.status === 'unread') badgeClass = 'badge-unread';
+          if (item.status === 'replied') badgeClass = 'badge-replied';
+          if (item.status === 'archived') badgeClass = 'badge-archived';
+
+          return `
+            <tr class="${isUnread ? 'email-row-unread' : ''}" style="cursor: pointer;" onclick="openEmailDetail('${item.id}')">
+              <td><span class="badge ${badgeClass} text-uppercase">${item.status}</span></td>
+              <td class="text-truncate" style="max-width: 200px;" title="${escapeHtml(item.from_address)}">${escapeHtml(item.from_address)}</td>
+              <td class="text-truncate" style="max-width: 320px;" title="${escapeHtml(item.subject)}">${escapeHtml(item.subject)}</td>
+              <td class="small text-muted">${new Date(item.received_at).toLocaleString()}</td>
+              <td text-align="right" onclick="event.stopPropagation()">
+                <button class="btn btn-sm btn-outline-primary" onclick="openEmailDetail('${item.id}')">View & Reply</button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        updatePagination(json.pagination.total, json.pagination.page, json.pagination.limit);
+      } catch (err) {
+        console.error('Error fetching emails:', err);
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger py-4">Failed to connect to server.</td></tr>';
+      }
+    }
+
+    function updatePagination(total, page, limit) {
+      const totalPages = Math.ceil(total / limit) || 1;
+      const start = total === 0 ? 0 : (page - 1) * limit + 1;
+      const end = Math.min(page * limit, total);
+      
+      document.getElementById('paginationInfo').innerText = `Showing ${start}-${end} of ${total} emails`;
+      document.getElementById('prevBtn').disabled = (page <= 1);
+      document.getElementById('nextBtn').disabled = (page >= totalPages);
+    }
+
+    function changePage(delta) {
+      currentPage += delta;
+      loadEmails();
+    }
+
+    async function openEmailDetail(id) {
+      currentEmailId = id;
+      document.getElementById('replyTextarea').value = '';
+      
+      try {
+        const res = await fetch(`/api/admin/inbound-emails/${id}`, { credentials: 'include' });
+        const json = await res.json();
+        if (!json.success) {
+          alert(json.message || 'Could not load email details');
+          return;
+        }
+
+        currentEmailData = json.data;
+        document.getElementById('modalSubject').innerText = currentEmailData.subject || '(No Subject)';
+        document.getElementById('modalFrom').innerText = currentEmailData.from_address;
+        document.getElementById('modalTo').innerText = currentEmailData.to_address;
+        document.getElementById('modalDate').innerText = new Date(currentEmailData.received_at).toLocaleString();
+        
+        const badge = document.getElementById('modalStatusBadge');
+        badge.innerText = currentEmailData.status.toUpperCase();
+        badge.className = `badge badge-${currentEmailData.status} mb-1`;
+
+        // Render HTML or Text content safely
+        const modalBody = document.getElementById('modalBody');
+        if (currentEmailData.html_body) {
+          modalBody.innerHTML = currentEmailData.html_body;
+        } else {
+          modalBody.innerText = currentEmailData.text_body || 'No message content.';
+        }
+
+        // Previous reply view
+        const prevBox = document.getElementById('previousReplyBox');
+        if (currentEmailData.status === 'replied' && currentEmailData.reply_message) {
+          prevBox.classList.remove('d-none');
+          document.getElementById('modalRepliedDate').innerText = currentEmailData.replied_at ? new Date(currentEmailData.replied_at).toLocaleString() : '';
+          document.getElementById('modalReplyText').innerText = currentEmailData.reply_message;
+        } else {
+          prevBox.classList.add('d-none');
+        }
+
+        detailModal.show();
+        loadEmails(); // Refresh unread count in table
+      } catch (err) {
+        console.error('Error opening email detail:', err);
+        alert('Failed to load email details.');
+      }
+    }
+
+    function applyTemplate(type) {
+      const textarea = document.getElementById('replyTextarea');
+      const senderName = currentEmailData ? currentEmailData.from_address.split('<')[0].trim() : 'User';
+
+      if (type === 'account_approved') {
+        textarea.value = `Hello ${senderName},\n\nYour student account registration for Trackify has been reviewed and approved by the administration team.\n\nYou can now log in to your student dashboard here:\nhttps://app.trackifyapp.co.in/login\n\nBest regards,\nTrackify System Administration`;
+      } else if (type === 'attendance_resolved') {
+        textarea.value = `Hello ${senderName},\n\nYour attendance correction request has been reviewed and updated in the system.\n\nPlease log in to your student dashboard to verify your updated attendance records.\n\nBest regards,\nTrackify Administration`;
+      } else if (type === 'tech_issue_resolved') {
+        textarea.value = `Hello ${senderName},\n\nThe technical issue you reported has been resolved by our engineering team.\n\nPlease clear your browser cache or re-open the app to verify. If you continue experiencing issues, feel free to reply to this email.\n\nBest regards,\nTrackify Technical Support`;
+      } else if (type === 'support_ack') {
+        textarea.value = `Hello ${senderName},\n\nThank you for reaching out to Trackify Support. We have received your request and our administration team is currently looking into it.\n\nWe will get back to you with an update shortly.\n\nBest regards,\nTrackify Support Team`;
+      }
+    }
+
+    async function submitEmailReply() {
+      if (!currentEmailId) return;
+      const message = document.getElementById('replyTextarea').value.trim();
+
+      if (!message) {
+        alert('Please enter a response message before sending.');
+        return;
+      }
+
+      const btn = document.getElementById('sendReplyBtn');
+      const spinner = document.getElementById('replySpinner');
+      btn.disabled = true;
+      spinner.classList.remove('d-none');
+
+      try {
+        const res = await fetch(`/api/admin/inbound-emails/${currentEmailId}/reply`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ replyMessage: message })
+        });
+
+        const json = await res.json();
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+
+        if (json.success) {
+          alert('Reply sent successfully!');
+          detailModal.hide();
+          loadEmails();
+        } else {
+          alert(`Failed to send reply: ${json.message}`);
+        }
+      } catch (err) {
+        btn.disabled = false;
+        spinner.classList.add('d-none');
+        console.error('Reply submit error:', err);
+        alert('Failed to send reply. Please check your network connection.');
+      }
+    }
+
+    async function toggleArchiveCurrentEmail() {
+      if (!currentEmailId) return;
+      try {
+        const res = await fetch(`/api/admin/inbound-emails/${currentEmailId}/status`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ status: 'archived' })
+        });
+        const json = await res.json();
+        if (json.success) {
+          detailModal.hide();
+          loadEmails();
+        }
+      } catch (err) {
+        console.error('Archive error:', err);
+      }
+    }
+
+    async function deleteCurrentEmail() {
+      if (!currentEmailId || !confirm('Are you sure you want to delete this email record?')) return;
+      try {
+        const res = await fetch(`/api/admin/inbound-emails/${currentEmailId}`, {
+          method: 'DELETE',
+          credentials: 'include'
+        });
+        const json = await res.json();
+        if (json.success) {
+          detailModal.hide();
+          loadEmails();
+        }
+      } catch (err) {
+        console.error('Delete error:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function handleLogout() {
+      fetch('/api/auth/logout', { method: 'POST', credentials: 'include' })
+        .then(() => window.location.href = '/login')
+        .catch(() => window.location.href = '/login');
+    }
+  </script>
+</body>
+</html>

@@ -373,6 +373,21 @@ const initMigrations = async (retries = 3) => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+
+      CREATE TABLE IF NOT EXISTS inbound_emails (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          email_id VARCHAR(255) UNIQUE,
+          from_address VARCHAR(255) NOT NULL,
+          to_address VARCHAR(255) NOT NULL,
+          subject TEXT,
+          text_body TEXT,
+          html_body TEXT,
+          status VARCHAR(50) DEFAULT 'unread',
+          replied_at TIMESTAMP,
+          reply_message TEXT,
+          received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          raw_payload JSONB
+      );
     `);
 
     // 10. Performance Indexes
@@ -383,6 +398,8 @@ const initMigrations = async (retries = 3) => {
       CREATE INDEX IF NOT EXISTS idx_attendance_user_subject ON attendance(user_id, subject_id);
       CREATE INDEX IF NOT EXISTS idx_announcements_dept_sem ON announcements(department_id, semester, is_pinned, created_at);
       CREATE INDEX IF NOT EXISTS idx_device_tokens_user_id ON user_device_tokens(user_id);
+      CREATE INDEX IF NOT EXISTS idx_inbound_emails_status ON inbound_emails(status);
+      CREATE INDEX IF NOT EXISTS idx_inbound_emails_received_at ON inbound_emails(received_at DESC);
     `);
 
     await client.query('COMMIT');

@@ -139,4 +139,12 @@ router.route('/attendance/:id')
 const { visualizeTable } = require('../controllers/visualizerController');
 router.get('/visualize', visualizeTable);
 
+// Inbound Support Emails management
+const { getInboundEmails, getInboundEmailById, replyToInboundEmail, updateInboundEmailStatus, deleteInboundEmail } = require('../controllers/inboundEmailController');
+router.get('/inbound-emails', getInboundEmails);
+router.get('/inbound-emails/:id', getInboundEmailById);
+router.post('/inbound-emails/:id/reply', replyToInboundEmail);
+router.put('/inbound-emails/:id/status', updateInboundEmailStatus);
+router.delete('/inbound-emails/:id', deleteInboundEmail);
+
 module.exports = router;
