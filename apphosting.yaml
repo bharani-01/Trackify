@@ -11,7 +11,3 @@ env:
     value: "production"
   - variable: HOST
     value: "0.0.0.0"
-  - variable: PORT
-    value: "8080"
-  - variable: DB_SSL
-    value: "true"
