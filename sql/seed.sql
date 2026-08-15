@@ -3,7 +3,7 @@
 INSERT INTO users (name, register_number, email, password_hash, role, department, semester)
 VALUES 
 ('System Administrator', 'ADMIN001', 'admin@trackify.com', '__ADMIN_PASSWORD_HASH__', 'admin', 'Management', 1)
-ON CONFLICT (email) DO NOTHING;
+ON CONFLICT (register_number) DO NOTHING;
 
 -- Seed Departments (E02 - B.Tech - (Cyber & IoT))
 INSERT INTO departments (code, name) VALUES

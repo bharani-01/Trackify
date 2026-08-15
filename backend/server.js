@@ -635,9 +635,10 @@ app.use((err, req, res, next) => {
 // START SERVER
 const { initWebSocketServer } = require('./src/services/websocketService');
 
-const server = app.listen(PORT, '127.0.0.1', () => {
+const HOST = process.env.HOST || '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
   console.log(`Trackify Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  console.log(`Landing Page: http://127.0.0.1:${PORT}`);
+  console.log(`Landing Page: http://${HOST}:${PORT}`);
   
   // Attach Real-time WebSocket Server
   try {

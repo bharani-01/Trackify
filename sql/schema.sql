@@ -37,11 +37,9 @@ CREATE TABLE IF NOT EXISTS subjects (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- TIMETABLE TABLE
--- user_id is NULL for admin-created master timetable templates
+-- TIMETABLE TABLE (Master Department-based Timetable)
 CREATE TABLE IF NOT EXISTS timetable (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     subject_id UUID REFERENCES subjects(id) ON DELETE CASCADE,
     day VARCHAR(15) CHECK (day IN ('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')),
     period INT NOT NULL,
@@ -113,8 +111,7 @@ CREATE TRIGGER update_users_updated_at
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_subjects_user_id ON subjects(user_id);
 CREATE INDEX IF NOT EXISTS idx_subjects_dept_sem ON subjects(department, semester) WHERE user_id IS NULL;
-CREATE INDEX IF NOT EXISTS idx_timetable_user_id ON timetable(user_id);
-CREATE INDEX IF NOT EXISTS idx_timetable_dept_sem ON timetable(department, semester) WHERE user_id IS NULL;
+CREATE INDEX IF NOT EXISTS idx_timetable_dept_sem ON timetable(department, semester);
 CREATE INDEX IF NOT EXISTS idx_attendance_user_subject ON attendance(user_id, subject_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_date ON attendance(date);
 CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON notifications(user_id) WHERE read = FALSE;
