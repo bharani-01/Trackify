@@ -1,11 +1,37 @@
 const db = require('../config/db');
 const { Resend } = require('resend');
+const { Webhook } = require('svix');
 
 // POST /api/webhooks/resend-inbound
 const handleResendInboundWebhook = async (req, res) => {
   try {
     const payload = req.body;
-    console.log('[RESEND INBOUND WEBHOOK]: Payload received:', JSON.stringify(payload).substring(0, 300));
+    const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
+
+    // Optional Svix Signature Verification (if RESEND_WEBHOOK_SECRET is set in environment)
+    if (webhookSecret) {
+      const svix_id = req.headers['svix-id'];
+      const svix_timestamp = req.headers['svix-timestamp'];
+      const svix_signature = req.headers['svix-signature'];
+
+      if (svix_id && svix_timestamp && svix_signature) {
+        try {
+          const wh = new Webhook(webhookSecret);
+          const rawBody = typeof payload === 'string' ? payload : JSON.stringify(payload);
+          wh.verify(rawBody, {
+            'svix-id': svix_id,
+            'svix-timestamp': svix_timestamp,
+            'svix-signature': svix_signature
+          });
+          console.log('[SVIX VERIFIED]: Inbound Resend webhook signature matches!');
+        } catch (svixErr) {
+          console.error('[SVIX VERIFICATION ERROR]: Invalid webhook signature:', svixErr.message);
+          return res.status(401).json({ success: false, message: 'Invalid webhook signature' });
+        }
+      }
+    }
+
+    console.log('[RESEND INBOUND WEBHOOK]: Processing event payload...');
 
     // Support both direct event payloads and wrapped webhook formats
     const eventType = payload.type || payload.event;
@@ -34,7 +60,7 @@ const handleResendInboundWebhook = async (req, res) => {
       let textBody = data.text || data.text_body || '';
       let htmlBody = data.html || data.html_body || '';
 
-      // If body is not in the webhook payload, attempt to fetch content using Resend SDK if API key exists
+      // If body is missing in webhook payload, attempt to fetch content using Resend SDK
       if (!textBody && !htmlBody && data.email_id && process.env.RESEND_API_KEY) {
         try {
           const resend = new Resend(process.env.RESEND_API_KEY);
@@ -83,7 +109,6 @@ const handleResendInboundWebhook = async (req, res) => {
     return res.status(200).json({ success: true, message: 'Inbound email event processed successfully' });
   } catch (error) {
     console.error('[RESEND WEBHOOK ERROR]:', error);
-    // Still return 200 to prevent Resend from retrying endlessly if internal parsing had an edge-case warning
     return res.status(200).json({ success: false, error: error.message });
   }
 };
