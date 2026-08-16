@@ -101,7 +101,7 @@ const sendWelcomeRegistrationEmail = async (email, name, isApproved) => {
     : 'Your Trackify account registration has been received successfully. Your account is currently pending administrative review and approval. We will notify you via email as soon as your administrator approves your access.';
   
   const buttonHtml = isApproved !== false
-    ? `<div style="margin: 24px 0;"><a href="${process.env.APP_URL || 'https://trackifyapp.co.in'}/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In Now</a></div>`
+    ? `<div style="margin: 24px 0;"><a href="${process.env.APP_URL || 'https://app.trackifyapp.co.in'}/login" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In Now</a></div>`
     : '';
 
   const htmlContent = `
@@ -128,7 +128,7 @@ const sendAccountApprovedEmail = async (email, name) => {
       <p style="color: #475569; font-size: 16px; line-height: 24px;">Great news! Your Trackify student account registration has been reviewed and approved by the administrator.</p>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">You now have full access to log attendance, view schedules, and analyze performance.</p>
       <div style="margin: 24px 0;">
-        <a href="${process.env.APP_URL || 'https://trackifyapp.co.in'}/login" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In To Trackify</a>
+        <a href="${process.env.APP_URL || 'https://app.trackifyapp.co.in'}/login" style="background-color: #10b981; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Log In To Trackify</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
       <p style="color: #94a3b8; font-size: 12px;">Trackify Academic Management System</p>

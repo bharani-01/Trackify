@@ -28,7 +28,7 @@ const sendDailyMarkingReminder = async (email, name, previewOnly = false) => {
       <p style="color: #475569; font-size: 16px;">Hello ${safeName},</p>
       <p style="color: #475569; font-size: 16px; line-height: 24px;">This is your scheduled daily reminder to mark your attendance logs in the Trackify student portal today.</p>
       <div style="margin: 24px 0;">
-        <a href="${process.env.APP_URL || 'https://trackifyapp.co.in'}/student/attendance" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; display: inline-block;">Mark Attendance Now</a>
+        <a href="${process.env.APP_URL || 'https://app.trackifyapp.co.in'}/student/attendance" style="background-color: #2563eb; color: #ffffff; padding: 12px 24px; text-decoration: none; font-weight: bold; display: inline-block;">Mark Attendance Now</a>
       </div>
       <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
       <p style="color: #94a3b8; font-size: 12px;">You can customize or disable these daily reminders anytime under your Student settings page.</p>
@@ -672,10 +672,10 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
     <div class="header-card">
         <div style="margin-bottom: 12px; text-align: center;">
             <!-- Light Theme Logo (shown in light mode on dark bg by default) -->
-            <img class="logo-light" src="https://trackifyapp.co.in/assets/images/logo_light.webp" alt="Trackify" width="130" height="auto" style="display:inline-block; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
+            <img class="logo-light" src="https://app.trackifyapp.co.in/assets/images/logo_light.webp" alt="Trackify" width="130" height="auto" style="display:inline-block; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
             <!-- Dark Theme Logo (hidden in light mode, shown as fallback if inverted) -->
             <!--[if !mso]><!-->
-            <img class="logo-dark" src="https://trackifyapp.co.in/assets/images/logo_dark.webp" alt="Trackify" width="130" height="auto" style="display:none; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #111827; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
+            <img class="logo-dark" src="https://app.trackifyapp.co.in/assets/images/logo_dark.webp" alt="Trackify" width="130" height="auto" style="display:none; width:130px; height:auto; border:0; outline:none; text-decoration:none; margin: 0 auto; color: #111827; font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">
             <!--<![endif]-->
         </div>
         <div class="eyebrow">Trackify Update</div>
@@ -708,7 +708,7 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
               <!-- Center: Trackify Favicon Seal -->
               <td style="width: 26%; text-align: center; vertical-align: middle; padding: 14px 0;">
                 <div style="display: inline-block; width: 54px; height: 54px; border-radius: 50%; background: #0f172a; border: 2px solid #6366f1; box-shadow: 0 0 0 4px rgba(99,102,241,0.25), 0 8px 20px rgba(0,0,0,0.5); text-align: center; vertical-align: middle; overflow: hidden;">
-                  <img src="https://trackifyapp.co.in/assets/images/favicon.webp" alt="T" width="34" height="34" style="display:inline-block; width:34px; height:34px; border:0; outline:none; border-radius:50%; margin-top: 9px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 800; line-height: 34px;">
+                  <img src="https://app.trackifyapp.co.in/assets/images/favicon.webp" alt="T" width="34" height="34" style="display:inline-block; width:34px; height:34px; border:0; outline:none; border-radius:50%; margin-top: 9px; color: #ffffff; font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 800; line-height: 34px;">
                 </div>
               </td>
 

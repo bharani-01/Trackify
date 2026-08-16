@@ -1,5 +1,5 @@
 # Trackify Robots.txt
-# https://trackifyapp.co.in
+# https://app.trackifyapp.co.in
 
 User-agent: *
 Allow: /
@@ -20,4 +20,4 @@ Disallow: /reset-password
 Disallow: /settings
 
 # Sitemap
-Sitemap: https://trackifyapp.co.in/sitemap.xml
+Sitemap: https://app.trackifyapp.co.in/sitemap.xml

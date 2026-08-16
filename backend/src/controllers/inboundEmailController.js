@@ -144,7 +144,7 @@ const replyToInboundEmail = async (req, res) => {
           <em>${(emailRecord.text_body || emailRecord.html_body || '').substring(0, 300)}...</em>
         </div>
         <div style="margin-top: 20px; font-size: 12px; color: #94a3b8; text-align: center;">
-          Sent by Trackify System Administration &bull; <a href="https://trackifyapp.co.in" style="color: #2563eb; text-decoration: none;">trackifyapp.co.in</a>
+          Sent by Trackify System Administration &bull; <a href="https://app.trackifyapp.co.in" style="color: #2563eb; text-decoration: none;">trackifyapp.co.in</a>
         </div>
       </div>
     `;
