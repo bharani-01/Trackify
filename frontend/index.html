@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
   <meta name="robots" content="index, follow">
   <meta name="application-name" content="Trackify">
   <link rel="canonical" href="https://app.trackifyapp.co.in/">
-  <meta name="theme-color" content="#0d0e12">
+  <meta name="theme-color" content="#2563eb">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -32,12 +32,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css?v=6.0">
+  <link rel="stylesheet" href="/assets/css/style.css?v=7.0">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   
   <script>
     (function() {
-      const theme = localStorage.getItem('theme') || 'dark';
+      const theme = localStorage.getItem('theme') || 'light';
       document.documentElement.setAttribute('data-theme', theme);
       if (localStorage.getItem('sidebar-collapsed') === 'true') {
         document.documentElement.classList.add('sidebar-collapsed');
@@ -47,7 +47,7 @@
   
   <link rel="manifest" href="/manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Trackify">
   <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
 
@@ -87,7 +87,7 @@
       transform: translateX(-50%);
       width: 1200px;
       height: 750px;
-      background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.15) 0%, rgba(147, 51, 234, 0.06) 45%, transparent 70%);
+      background: var(--hero-glow-bg);
       pointer-events: none;
       z-index: 0;
       filter: blur(80px);
@@ -100,29 +100,28 @@
   <nav class="navbar navbar-expand-lg apple-glass-nav sticky-top py-2.5">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center me-4" href="/">
-        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 28px; width: auto;">
-        <span class="fw-bold fs-4 text-white ms-2.5 brand-font" style="letter-spacing: -0.02em;">Trackify</span>
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo-img" style="height: 32px; width: auto;">
       </a>
 
-      <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="color: var(--text-primary);">
+        <span class="navbar-toggler-icon"></span>
       </button>
 
       <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
         <ul class="navbar-nav align-items-lg-center gap-lg-4 mx-auto my-3 my-lg-0">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white-50 fw-medium fs-7" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle fw-semibold fs-7" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--text-secondary);">
               Products
             </a>
-            <ul class="dropdown-menu dropdown-menu-dark border-glass shadow-lg py-2" style="background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(20px); border-radius: 18px; min-width: 260px;">
+            <ul class="dropdown-menu border-glass shadow-lg py-2" style="background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 18px; min-width: 260px;">
               <li>
                 <a class="dropdown-item d-flex align-items-center gap-3 py-2.5 px-3" href="/products/trackify">
                   <div class="product-icon-wrap product-icon-trackify" style="width: 34px; height: 34px; font-size: 1rem;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                   </div>
                   <div>
-                    <div class="fw-bold text-white fs-7">Trackify</div>
-                    <div class="text-white-50" style="font-size: 0.72rem;">Attendance &amp; Timetable</div>
+                    <div class="fw-bold fs-7" style="color: var(--text-primary);">Trackify</div>
+                    <div style="color: var(--text-muted); font-size: 0.72rem;">Attendance &amp; Timetable</div>
                   </div>
                 </a>
               </li>
@@ -132,30 +131,30 @@
                     <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
                   </div>
                   <div>
-                    <div class="fw-bold text-white fs-7">Inks</div>
-                    <div class="text-white-50" style="font-size: 0.72rem;">Campus Cloud Printing</div>
+                    <div class="fw-bold fs-7" style="color: var(--text-primary);">Inks</div>
+                    <div style="color: var(--text-muted); font-size: 0.72rem;">Campus Cloud Printing</div>
                   </div>
                 </a>
               </li>
               <li><hr class="dropdown-divider border-glass my-1"></li>
               <li>
-                <a class="dropdown-item py-2 px-3 fs-8 text-white-50" href="#products">
+                <a class="dropdown-item py-2 px-3 fs-8" href="#products" style="color: var(--text-muted);">
                   Explore All Products &rarr;
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white-50 fw-medium fs-7" href="#bunk-engine">Attendance Engine</a>
+            <a class="nav-link fw-semibold fs-7" href="#bunk-engine" style="color: var(--text-secondary);">Attendance Engine</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white-50 fw-medium fs-7" href="#inks-cloud">Campus Printing</a>
+            <a class="nav-link fw-semibold fs-7" href="#inks-cloud" style="color: var(--text-secondary);">Campus Printing</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white-50 fw-medium fs-7" href="#comparison">Compare Methods</a>
+            <a class="nav-link fw-semibold fs-7" href="#comparison" style="color: var(--text-secondary);">Compare Methods</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white-50 fw-medium fs-7" href="#platform-overview">Privacy &amp; Security</a>
+            <a class="nav-link fw-semibold fs-7" href="#platform-overview" style="color: var(--text-secondary);">Privacy &amp; Security</a>
           </li>
         </ul>
 
@@ -194,7 +193,7 @@
         </div>
 
         <!-- Trust Indicators (Clean SVG Primitives, NO Emojis) -->
-        <div class="d-flex align-items-center gap-4 flex-wrap text-white-50 fs-8 fw-semibold">
+        <div class="d-flex align-items-center gap-4 flex-wrap fs-8 fw-semibold" style="color: var(--text-muted);">
           <span class="d-flex align-items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             100% Free for Students
@@ -213,26 +212,26 @@
       <!-- Right Column (5 cols): Liquid Glass Refraction Surface Asset -->
       <div class="col-lg-5 apple-reveal visible">
         <div class="liquid-glass-card p-4 p-md-5">
-          <div class="d-flex justify-content-between align-items-center mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
             <span class="fs-8 fw-mono text-primary text-uppercase fw-bold">Mathematical Engine</span>
-            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8">80% TARGET MET</span>
+            <span class="badge-pill-success">80% TARGET MET</span>
           </div>
 
-          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
-            <div class="fs-8 text-white-50 uppercase fw-semibold mb-1">SAFE BUNK EQUATION</div>
-            <div class="fs-6 fw-mono text-white mb-2">(Attended + SafeBunks) / Total &ge; 80%</div>
-            <div class="d-flex justify-content-between align-items-center">
-              <span class="fs-8 text-white-50">Calculated Safety Buffer</span>
-              <span class="fs-6 fw-bold text-success">+3 Lectures Buffer</span>
+          <div class="p-4 rounded-4 mb-3" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+            <div class="fs-8 text-uppercase fw-bold mb-2" style="color: var(--text-muted); letter-spacing: 0.05em;">SAFE BUNK EQUATION</div>
+            <div class="fs-6 fw-mono mb-3" style="color: var(--text-primary); font-weight: 600;">(Attended + SafeBunks) / Total &ge; 80%</div>
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top border-glass">
+              <span class="fs-8 fw-semibold" style="color: var(--text-muted);">Calculated Safety Buffer</span>
+              <span class="fs-7 fw-bold text-success">+3 Lectures Buffer</span>
             </div>
           </div>
 
-          <div class="p-3.5 rounded-4" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2);">
+          <div class="p-3.5 rounded-4" style="background: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.15);">
             <div class="d-flex align-items-center gap-2 text-primary fw-bold fs-7 mb-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               Automated Sentinel:
             </div>
-            <div class="fs-8 text-white-50">Monitors daily schedules &amp; alerts before eligibility threshold drop.</div>
+            <div class="fs-8" style="color: var(--text-secondary); line-height: 1.55;">Monitors daily schedules &amp; alerts before eligibility threshold drop.</div>
           </div>
         </div>
       </div>
@@ -258,8 +257,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
             </div>
             <div>
-              <h3 class="h6 text-white fw-bold mb-1">Fraction Boundary Formula</h3>
-              <p class="fs-7 text-white-50 mb-0">Computes <code>(Attended + Bunks) / TotalClasses &ge; Target</code> so you always know your exact buffer.</p>
+              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Fraction Boundary Formula</h3>
+              <p class="fs-7 mb-0" style="color: var(--text-muted);">Computes <code>(Attended + Bunks) / TotalClasses &ge; Target</code> so you always know your exact buffer.</p>
             </div>
           </div>
 
@@ -268,8 +267,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
             </div>
             <div>
-              <h3 class="h6 text-white fw-bold mb-1">Proactive Detention Sentinel</h3>
-              <p class="fs-7 text-white-50 mb-0">Alerts you before your percentage touches detention threshold, giving you actionable recovery steps.</p>
+              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Proactive Detention Sentinel</h3>
+              <p class="fs-7 mb-0" style="color: var(--text-muted);">Alerts you before your percentage touches detention threshold, giving you actionable recovery steps.</p>
             </div>
           </div>
         </div>
@@ -279,28 +278,30 @@
 
       <div class="col-lg-6 apple-reveal">
         <div class="liquid-glass-card p-4 p-md-5">
-          <div class="text-uppercase fs-8 text-primary fw-bold mb-2">SAFE BUNK MATHEMATICS</div>
-          <h3 class="h4 text-white fw-bold mb-3">Target Boundary: 80.0%</h3>
+          <div class="mb-3">
+            <span class="badge-pill-primary">SAFE BUNK MATHEMATICS</span>
+          </div>
+          <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary);">Target Boundary: 80.0%</h3>
           
-          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
-            <div class="d-flex justify-content-between text-white-50 fs-8 mb-1">
-              <span>CURRENT OVERALL STATUS</span>
-              <span class="text-success fw-bold">85.7% (24 / 28)</span>
+          <div class="p-4 rounded-4 mb-3" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
+            <div class="d-flex justify-content-between align-items-center fs-8 fw-bold mb-2">
+              <span style="color: var(--text-muted); letter-spacing: 0.04em;">CURRENT OVERALL STATUS</span>
+              <span class="text-success fs-7">85.7% (24 / 28)</span>
             </div>
-            <div class="progress mb-2" style="height: 6px;">
-              <div class="progress-bar bg-primary" style="width: 85.7%;"></div>
+            <div class="progress my-2" style="height: 8px; background: rgba(0,0,0,0.06); border-radius: 9999px; overflow: hidden;">
+              <div class="progress-bar bg-primary" style="width: 85.7%; border-radius: 9999px;"></div>
             </div>
-            <div class="fs-8 text-white-50">
-              Safe Bunks Equation: <code>(24 - 0.8 &times; 28) / 0.8 = 2 Bunks</code>
+            <div class="fs-8 pt-2 border-top border-glass mt-2" style="color: var(--text-secondary);">
+              Safe Bunks Equation: <code style="color: #d946ef; font-weight: 600;">(24 - 0.8 &times; 28) / 0.8 = 2 Bunks</code>
             </div>
           </div>
 
-          <div class="p-3.5 rounded-4" style="background: rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.3);">
+          <div class="p-4 rounded-4" style="background: rgba(16, 185, 129, 0.06); border: 1px dashed rgba(16, 185, 129, 0.3);">
             <div class="d-flex align-items-center gap-2 text-success fw-bold fs-7 mb-1">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               Calculated Recommendation:
             </div>
-            <div class="fs-8 text-white-50">You can bunk <strong>2 more classes</strong> and remain safely at <strong>80.0%</strong>.</div>
+            <div class="fs-8" style="color: var(--text-secondary); line-height: 1.55;">You can bunk <strong>2 more classes</strong> and remain safely at <strong>80.0%</strong>.</div>
           </div>
         </div>
       </div>
@@ -325,8 +326,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
             </div>
             <div>
-              <h3 class="h6 text-white fw-bold mb-1">Hostel-to-Counter Pipeline</h3>
-              <p class="fs-7 text-white-50 mb-0">Upload PDFs from your phone or laptop with full duplex &amp; paper preferences locked in.</p>
+              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Hostel-to-Counter Pipeline</h3>
+              <p class="fs-7 mb-0" style="color: var(--text-muted);">Upload PDFs from your phone or laptop with full duplex &amp; paper preferences locked in.</p>
             </div>
           </div>
 
@@ -335,8 +336,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
             </div>
             <div>
-              <h3 class="h6 text-white fw-bold mb-1">Malware-Free Cloud Security</h3>
-              <p class="fs-7 text-white-50 mb-0">Eliminate dangerous USB pendrive sharing on malware-infected public print computers.</p>
+              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Malware-Free Cloud Security</h3>
+              <p class="fs-7 mb-0" style="color: var(--text-muted);">Eliminate dangerous USB pendrive sharing on malware-infected public print computers.</p>
             </div>
           </div>
         </div>
@@ -350,18 +351,18 @@
             <div class="product-icon-wrap product-icon-inks" style="width: 42px; height: 42px; padding: 2px;">
               <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
             </div>
-            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1.5 fs-8 fw-bold">READY FOR PICKUP</span>
+            <span class="badge-pill-success">READY FOR PICKUP</span>
           </div>
 
-          <h3 class="h4 text-white fw-bold mb-1">Lab_Manual_Final.pdf</h3>
-          <div class="text-white-50 fs-8 mb-4">Submitted: 8:12 AM &bull; Queue Position: #1</div>
+          <h3 class="h4 fw-bold mb-1" style="color: var(--text-primary);">Lab_Manual_Final.pdf</h3>
+          <div class="fs-8 mb-4" style="color: var(--text-muted);">Submitted: 8:12 AM &bull; Queue Position: #1</div>
 
-          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(5, 150, 105, 0.08); border: 1px dashed rgba(5, 150, 105, 0.3);">
-            <div class="d-flex justify-content-between align-items-center mb-1">
+          <div class="p-4 rounded-4" style="background: rgba(5, 150, 105, 0.06); border: 1px dashed rgba(5, 150, 105, 0.3);">
+            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
               <span class="fw-bold text-success fs-7">Pickup Token: #INK-842</span>
-              <span class="badge bg-success text-white fs-8">COUNTER 1</span>
+              <span class="badge-pill-success">COUNTER 1</span>
             </div>
-            <div class="fs-8 text-white-50">14 Pages &bull; Double-Sided B&amp;W &bull; Spiral Bound</div>
+            <div class="fs-8 pt-1" style="color: var(--text-secondary); line-height: 1.55;">14 Pages &bull; Double-Sided B&amp;W &bull; Spiral Bound</div>
           </div>
         </div>
       </div>
@@ -382,23 +383,25 @@
           <div class="product-icon-wrap product-icon-trackify mb-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
           </div>
-          <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">ATTENDANCE INTELLIGENCE</span>
-          <h3 class="h3 text-white fw-bold mb-2">Smart Bunk Predictor</h3>
-          <p class="text-white-50 fs-6 mb-4">Fraction-based mathematical calculations instantly inform you of safe bunks and recovery requirements down to single-lecture accuracy.</p>
+          <div class="mb-2">
+            <span class="badge-pill-primary">ATTENDANCE INTELLIGENCE</span>
+          </div>
+          <h3 class="h3 fw-bold mb-2" style="color: var(--text-primary);">Smart Bunk Predictor</h3>
+          <p class="fs-6 mb-4" style="color: var(--text-muted);">Fraction-based mathematical calculations instantly inform you of safe bunks and recovery requirements down to single-lecture accuracy.</p>
 
-          <div class="p-3.5 rounded-4 mb-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+          <div class="p-3.5 rounded-4 mb-4" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
             <div class="row text-center g-2">
               <div class="col-4">
-                <div class="fs-4 fw-extrabold text-white">87.5%</div>
-                <div class="fs-8 text-white-50">Current Rate</div>
+                <div class="fs-4 fw-extrabold" style="color: var(--text-primary);">87.5%</div>
+                <div class="fs-8" style="color: var(--text-muted);">Current Rate</div>
               </div>
               <div class="col-4">
                 <div class="fs-4 fw-extrabold text-success">+3 Bunks</div>
-                <div class="fs-8 text-white-50">Safe Buffer</div>
+                <div class="fs-8" style="color: var(--text-muted);">Safe Buffer</div>
               </div>
               <div class="col-4">
                 <div class="fs-4 fw-extrabold text-primary">80%</div>
-                <div class="fs-8 text-white-50">Target Goal</div>
+                <div class="fs-8" style="color: var(--text-muted);">Target Goal</div>
               </div>
             </div>
           </div>
@@ -413,10 +416,14 @@
           <div class="p-2.5 rounded-3 bg-purple bg-opacity-10 text-purple mb-3 d-inline-block" style="color: #a855f7;">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
           </div>
-          <span class="badge bg-purple bg-opacity-20 border border-purple border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2" style="color: #c084fc;">PWA OFFLINE ENGINE</span>
-          <h3 class="h4 text-white fw-bold mb-2">100% Offline Ready</h3>
-          <p class="text-white-50 fs-7 mb-4">No campus Wi-Fi signal in basement lecture halls? Trackify logs attendance locally and syncs automatically when connection restores.</p>
-          <div class="badge bg-secondary bg-opacity-20 text-white-50 rounded-pill px-3 py-1.5 fs-8">INSTANT LOCALSTORAGE &amp; SERVICE WORKER SYNC</div>
+          <div class="mb-2">
+            <span class="badge-pill-purple">PWA OFFLINE ENGINE</span>
+          </div>
+          <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary);">100% Offline Ready</h3>
+          <p class="fs-7 mb-4" style="color: var(--text-muted);">No campus Wi-Fi signal in basement lecture halls? Trackify logs attendance locally and syncs automatically when connection restores.</p>
+          <div>
+            <span class="badge-pill-purple">INSTANT LOCALSTORAGE &amp; SERVICE WORKER SYNC</span>
+          </div>
         </div>
       </div>
 
@@ -426,9 +433,11 @@
           <div class="p-2.5 rounded-3 bg-success bg-opacity-10 text-success mb-3 d-inline-block">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           </div>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">ZERO DATA TRACKERS</span>
-          <h3 class="h4 text-white fw-bold mb-2">Privacy &amp; OAuth 2.0</h3>
-          <p class="text-white-50 fs-7 mb-4">Log in securely with Google OAuth 2.0. We request basic profile info strictly for personal account sync. Zero ad tracking.</p>
+          <div class="mb-2">
+            <span class="badge-pill-success">ZERO DATA TRACKERS</span>
+          </div>
+          <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary);">Privacy &amp; OAuth 2.0</h3>
+          <p class="fs-7 mb-4" style="color: var(--text-muted);">Log in securely with Google OAuth 2.0. We request basic profile info strictly for personal account sync. Zero ad tracking.</p>
           <a href="/privacy-policy" class="text-success text-decoration-none fw-semibold fs-7">Read Privacy Policy &rarr;</a>
         </div>
       </div>
@@ -439,9 +448,11 @@
           <div class="product-icon-wrap product-icon-inks mb-3" style="width: 42px; height: 42px; padding: 2px;">
             <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
           </div>
-          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">CAMPUS PRINT CLOUD</span>
-          <h3 class="h3 text-white fw-bold mb-2">Inks Print Pipeline</h3>
-          <p class="text-white-50 fs-6 mb-4">Remote document uploads, live queue status, malware protection, and instant pickup token generation at campus shop counters.</p>
+          <div class="mb-2">
+            <span class="badge-pill-success">CAMPUS PRINT CLOUD</span>
+          </div>
+          <h3 class="h3 fw-bold mb-2" style="color: var(--text-primary);">Inks Print Pipeline</h3>
+          <p class="fs-6 mb-4" style="color: var(--text-muted);">Remote document uploads, live queue status, malware protection, and instant pickup token generation at campus shop counters.</p>
           <a href="/products/inks" class="text-success text-decoration-none fw-semibold fs-7">Explore Inks Guide &rarr;</a>
         </div>
       </div>
@@ -458,45 +469,45 @@
 
     <div class="liquid-glass-card p-0 overflow-hidden">
       <div class="table-responsive">
-        <table class="apple-spec-table text-white">
+        <table class="apple-spec-table">
           <thead>
-            <tr style="background: rgba(255, 255, 255, 0.04);">
+            <tr style="background: var(--bg-card-subtle);">
               <th style="width: 34%;">Feature / Capability</th>
               <th class="text-primary" style="width: 22%;">Trackify Ecosystem</th>
-              <th class="text-white-50" style="width: 22%;">Sticky Notes &amp; Diaries</th>
-              <th class="text-white-50" style="width: 22%;">Excel / Google Sheets</th>
+              <th style="width: 22%; color: var(--text-muted);">Sticky Notes &amp; Diaries</th>
+              <th style="width: 22%; color: var(--text-muted);">Excel / Google Sheets</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="fw-semibold">Safe Bunk Math Engine</td>
               <td class="text-success fw-bold">&check; Automatic Fraction Formula</td>
-              <td class="text-white-50">&cross; Mental Guesswork</td>
-              <td class="text-white-50">&#9888; Manual Formulas Required</td>
+              <td style="color: var(--text-muted);">&cross; Mental Guesswork</td>
+              <td style="color: var(--text-muted);">&#9888; Manual Formulas Required</td>
             </tr>
             <tr>
               <td class="fw-semibold">Weekly Timetable Sync</td>
               <td class="text-success fw-bold">&check; 1-Tap Daily Schedule Grid</td>
-              <td class="text-white-50">&cross; Manual Hand Writing</td>
-              <td class="text-white-50">&#9888; Static Cell Grids</td>
+              <td style="color: var(--text-muted);">&cross; Manual Hand Writing</td>
+              <td style="color: var(--text-muted);">&#9888; Static Cell Grids</td>
             </tr>
             <tr>
               <td class="fw-semibold">Campus Cloud Printing</td>
               <td class="text-success fw-bold">&check; Inks Hostel Upload &amp; Queue</td>
-              <td class="text-white-50">&cross; 30-min Xerox Center Line</td>
-              <td class="text-white-50">&cross; USB Pendrive Viruses</td>
+              <td style="color: var(--text-muted);">&cross; 30-min Xerox Center Line</td>
+              <td style="color: var(--text-muted);">&cross; USB Pendrive Viruses</td>
             </tr>
             <tr>
               <td class="fw-semibold">Offline PWA Support</td>
               <td class="text-success fw-bold">&check; Works in Basement Labs</td>
               <td class="text-success fw-bold">&check; Physical Notebook</td>
-              <td class="text-white-50">&cross; Requires Active Signal</td>
+              <td style="color: var(--text-muted);">&cross; Requires Active Signal</td>
             </tr>
             <tr>
               <td class="fw-semibold">Ad Tracking &amp; Privacy</td>
               <td class="text-success fw-bold">&check; Zero Ads / OAuth 2.0</td>
               <td class="text-success fw-bold">&check; Private</td>
-              <td class="text-white-50">&#9888; Third-Party Account Needed</td>
+              <td style="color: var(--text-muted);">&#9888; Third-Party Account Needed</td>
             </tr>
           </tbody>
         </table>
@@ -512,27 +523,27 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
         </div>
         <div>
-          <h2 class="h5 text-white fw-bold mb-0">Platform Transparency &amp; Data Security</h2>
-          <span class="text-white-50 fs-7">Official Overview &amp; Google OAuth 2.0 Integration Policy</span>
+          <h2 class="h5 fw-bold mb-0" style="color: var(--text-primary);">Platform Transparency &amp; Data Security</h2>
+          <span class="fs-7" style="color: var(--text-muted);">Official Overview &amp; Google OAuth 2.0 Integration Policy</span>
         </div>
       </div>
 
       <div class="row g-4">
         <div class="col-md-6">
-          <h3 class="fs-6 text-white fw-bold mb-2">Application Purpose</h3>
-          <p class="text-white-50 fs-7 mb-0 leading-relaxed">
+          <h3 class="fs-6 fw-bold mb-2" style="color: var(--text-primary);">Application Purpose</h3>
+          <p class="fs-7 mb-0 leading-relaxed" style="color: var(--text-muted);">
             <strong>Trackify</strong> is an automated student attendance tracking and timetable management web application. It enables college students to log daily lecture attendance, monitor subject-wise percentages, calculate safe lecture bunks to maintain 80%+ eligibility, and organize academic schedules.
           </p>
         </div>
         <div class="col-md-6">
-          <h3 class="fs-6 text-white fw-bold mb-2">Google Sign-In &amp; OAuth Scope Usage</h3>
-          <p class="text-white-50 fs-7 mb-0 leading-relaxed">
+          <h3 class="fs-6 fw-bold mb-2" style="color: var(--text-primary);">Google Sign-In &amp; OAuth Scope Usage</h3>
+          <p class="fs-7 mb-0 leading-relaxed" style="color: var(--text-muted);">
             <strong>Trackify</strong> integrates Google OAuth 2.0 Sign-In to allow students to securely register and log in. We request access strictly to basic profile details (Name and Email) to authenticate accounts, save personal timetables, and sync attendance records securely across devices.
           </p>
         </div>
       </div>
 
-      <div class="border-top border-glass pt-3 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-2 fs-7 text-white-50">
+      <div class="border-top border-glass pt-3 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-2 fs-7" style="color: var(--text-muted);">
         <span>Student data is encrypted, kept confidential, and never sold or shared with third parties.</span>
         <div class="d-flex gap-3">
           <a href="/privacy-policy" class="text-primary text-decoration-none fw-semibold">Privacy Policy</a>
@@ -544,7 +555,7 @@
 
   <!-- Apple High-Impact CTA Banner -->
   <section class="container my-5 py-4 apple-reveal">
-    <div class="liquid-glass-card text-center p-5 position-relative overflow-hidden" style="background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.2), transparent 70%);">
+    <div class="liquid-glass-card text-center p-5 position-relative overflow-hidden" style="background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08), transparent 70%);">
       <h2 class="apple-headline mb-3">Your semester starts now.</h2>
       <p class="apple-subheadline mx-auto mb-4" style="max-width: 620px;">
         Join thousands of students managing attendance predictions and campus print workflows with absolute confidence.
@@ -557,49 +568,48 @@
   </section>
 
   <!-- Apple Multi-Column Footer -->
-  <footer class="border-top border-glass py-5 mt-5 text-white-50">
+  <footer class="border-top border-glass py-5 mt-5" style="color: var(--text-muted); border-color: var(--border-color) !important;">
     <div class="container">
       <div class="row g-4 mb-4 text-start">
         <div class="col-lg-4">
           <div class="d-flex align-items-center gap-2 mb-3">
-            <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 28px; width: auto;">
-            <span class="fw-bold text-white fs-5 brand-font">Trackify</span>
+            <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo-img" style="height: 32px; width: auto;">
           </div>
-          <p class="fs-7 text-white-50 mb-3" style="max-width: 320px; line-height: 1.6;">
+          <p class="fs-7 mb-3" style="max-width: 320px; line-height: 1.6; color: var(--text-muted);">
             A unified digital campus ecosystem built by students, for students. Powering attendance intelligence, campus cloud printing, and daily academic tools.
           </p>
         </div>
 
         <div class="col-6 col-lg-3">
-          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Products</h4>
+          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Products</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-white-50 text-decoration-none">Trackify Attendance</a></li>
-            <li><a href="/products/inks" class="text-white-50 text-decoration-none">Inks Campus Print</a></li>
-            <li><a href="/login" class="text-white-50 text-decoration-none">Student Portal</a></li>
+            <li><a href="/products/trackify" class="text-decoration-none" style="color: var(--text-muted);">Trackify Attendance</a></li>
+            <li><a href="/products/inks" class="text-decoration-none" style="color: var(--text-muted);">Inks Campus Print</a></li>
+            <li><a href="/login" class="text-decoration-none" style="color: var(--text-muted);">Student Portal</a></li>
           </ul>
         </div>
 
         <div class="col-6 col-lg-2">
-          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Product Guides</h4>
+          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Product Guides</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-white-50 text-decoration-none">Attendance Math</a></li>
-            <li><a href="/products/inks" class="text-white-50 text-decoration-none">Inks Print Guide</a></li>
-            <li><a href="/login" class="text-white-50 text-decoration-none">Student Portal</a></li>
+            <li><a href="/products/trackify" class="text-decoration-none" style="color: var(--text-muted);">Attendance Math</a></li>
+            <li><a href="/products/inks" class="text-decoration-none" style="color: var(--text-muted);">Inks Print Guide</a></li>
+            <li><a href="/login" class="text-decoration-none" style="color: var(--text-muted);">Student Portal</a></li>
           </ul>
         </div>
 
         <div class="col-12 col-lg-3">
-          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Trust &amp; Legal</h4>
+          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Trust &amp; Legal</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/privacy-policy" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
-            <li><a href="/terms" class="text-white-50 text-decoration-none">Terms &amp; Conditions</a></li>
-            <li><a href="/cookie-policy" class="text-white-50 text-decoration-none">Cookie Policy</a></li>
-            <li><a href="#platform-overview" class="text-white-50 text-decoration-none">OAuth Compliance Info</a></li>
+            <li><a href="/privacy-policy" class="text-decoration-none" style="color: var(--text-muted);">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-decoration-none" style="color: var(--text-muted);">Terms &amp; Conditions</a></li>
+            <li><a href="/cookie-policy" class="text-decoration-none" style="color: var(--text-muted);">Cookie Policy</a></li>
+            <li><a href="#platform-overview" class="text-decoration-none" style="color: var(--text-muted);">OAuth Compliance Info</a></li>
           </ul>
         </div>
       </div>
 
-      <div class="border-top border-glass pt-4 text-center fs-8 text-white-50">
+      <div class="border-top border-glass pt-4 text-center fs-8" style="color: var(--text-muted); border-color: var(--border-color) !important;">
         <p class="mb-0">&copy; 2026 Trackify. Built with Node, Postgres &amp; Modern Web.</p>
       </div>
     </div>
