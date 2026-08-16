@@ -1395,3 +1395,313 @@ h6 {
 [data-theme="dark"] .spotlight-tab-btn.active {
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
+
+/* ==========================================
+   APPLE DESIGN SYSTEM & LANDING PAGE STYLES
+   ========================================== */
+
+/* Apple Typography & Optical Tracking */
+.apple-display-title {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(2.75rem, 5.5vw, 4.75rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.apple-headline {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: clamp(2.2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.apple-subheadline {
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  color: var(--text-muted);
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.apple-gradient-text {
+  background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .apple-gradient-text {
+  background: linear-gradient(180deg, #0f172a 0%, #334155 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.apple-blue-gradient-text {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #9333ea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.apple-emerald-gradient-text {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Apple Frosted Glass Header */
+.apple-glass-nav {
+  background: var(--bg-secondary-translucent);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Apple Floating Cards & Glass Surfaces */
+.apple-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 28px;
+  padding: 2.25rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+}
+
+.apple-card:hover {
+  transform: translateY(-6px) scale(1.005);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.18);
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+[data-theme="dark"] .apple-card {
+  background: rgba(18, 18, 20, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .apple-card:hover {
+  border-color: rgba(96, 165, 250, 0.4);
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6), 0 0 30px rgba(59, 130, 246, 0.15);
+}
+
+/* Apple Buttons & Physical Press States */
+.apple-btn-primary {
+  background: #2563eb;
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.85rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  box-shadow: 0 4px 18px rgba(37, 99, 235, 0.3);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apple-btn-primary:hover {
+  background: #1d4ed8;
+  transform: scale(1.03);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.45);
+}
+
+.apple-btn-primary:active {
+  transform: scale(0.97);
+  transition: transform 0.05s ease;
+}
+
+.apple-btn-secondary {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.85rem 2rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.apple-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary);
+  transform: scale(1.03);
+}
+
+.apple-btn-secondary:active {
+  transform: scale(0.97);
+  transition: transform 0.05s ease;
+}
+
+/* Apple Hardware Device Mockup Frame */
+.apple-device-frame {
+  background: #0d0e12;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(0, 0, 0, 0.8);
+  overflow: hidden;
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-device-header {
+  background: #16181d;
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.apple-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.apple-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+
+.apple-dot-red { background: #ff5f56; }
+.apple-dot-yellow { background: #ffbd2e; }
+.apple-dot-green { background: #27c93f; }
+
+.apple-device-body {
+  padding: 28px;
+  background: radial-gradient(circle at 50% 0%, #171922 0%, #0d0e12 100%);
+}
+
+/* Dynamic Percentage Dial */
+.apple-gauge-container {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) calc(var(--gauge-val, 87.5) * 1%), rgba(255, 255, 255, 0.1) 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 0 30px rgba(37, 99, 235, 0.25);
+  transition: background 0.4s ease;
+}
+
+.apple-gauge-inner {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  background: #111319;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Apple Comparison Spec Table */
+.apple-spec-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.apple-spec-table th, .apple-spec-table td {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.95rem;
+}
+
+.apple-spec-table th {
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+}
+
+.apple-spec-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Scroll Animation Helper */
+.apple-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apple-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================
+   DESIGN-TASTE-FRONTEND-V1 EXTRA SPECIFICATIONS
+   ========================================== */
+
+/* Liquid Glass Refraction (Inner 1px highlight shadow) */
+.liquid-glass-card {
+  background: rgba(18, 18, 20, 0.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+  border-radius: 28px;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+}
+
+.liquid-glass-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(59, 130, 246, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 30px 60px -15px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.12);
+}
+
+/* Tactile Active Press Animation */
+.apple-btn-primary:active, .apple-btn-secondary:active {
+  transform: scale(0.98) !important;
+  transition: transform 0.05s ease !important;
+}
+
+/* Live Pulse Dot */
+.pulse-dot {
+  display: inline-block;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: inherit;
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Mobile Overrides */
+@media (max-width: 767.98px) {
+  .apple-display-title {
+    font-size: clamp(2.2rem, 8vw, 3rem);
+    text-align: left !important;
+  }
+  .apple-subheadline {
+    text-align: left !important;
+  }
+}

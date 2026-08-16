@@ -180,6 +180,24 @@ const getMasterSubjects = async (department, semester) => {
  */
 const createMasterSubject = async (subject) => {
   const { subject_code, subject_name, credits, color, department, semester, total_periods } = subject;
+  const cleanCode = subject_code.trim().toUpperCase();
+  const cleanDept = department.trim();
+  const sem = parseInt(semester, 10);
+
+  // Check if master subject already exists for cohort
+  const checkQuery = `
+    SELECT * FROM subjects
+    WHERE (UPPER(subject_code) = $1 OR UPPER(code) = $1)
+      AND (department_id = (SELECT id FROM departments WHERE UPPER(code) = UPPER($2) OR id::text = $2 LIMIT 1) OR UPPER(department) = UPPER($2))
+      AND semester = $3
+      AND user_id IS NULL
+    LIMIT 1
+  `;
+  const existing = await db.query(checkQuery, [cleanCode, cleanDept, sem]);
+  if (existing.rows.length > 0) {
+    return existing.rows[0];
+  }
+
   const query = `
     INSERT INTO subjects (subject_code, code, subject_name, name, credits, color, department, department_id, semester, total_periods)
     VALUES (
@@ -190,12 +208,12 @@ const createMasterSubject = async (subject) => {
     RETURNING *
   `;
   const result = await db.query(query, [
-    subject_code.trim().toUpperCase(),
+    cleanCode,
     subject_name.trim(),
     parseInt(credits, 10),
     color || '#3b82f6',
-    department,
-    parseInt(semester, 10),
+    cleanDept,
+    sem,
     total_periods ? parseInt(total_periods, 10) : 45
   ]);
   return result.rows[0];

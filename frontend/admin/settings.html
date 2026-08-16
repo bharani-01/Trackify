@@ -700,13 +700,17 @@
         document.getElementById('personalPushSwitch').checked = personalRes.settings.push_notifications !== false;
       }
 
-      // Pre-fill manual summary dates (past 15 days, ending yesterday)
+      // Pre-fill manual summary dates (past 15 days, ending today)
       const end = new Date();
-      end.setDate(end.getDate() - 1);
       const start = new Date();
-      start.setDate(end.getDate() - 14);
+      start.setDate(end.getDate() - 15);
 
-      const formatSqlDate = (d) => d.toISOString().split('T')[0];
+      const formatSqlDate = (d) => {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      };
       document.getElementById('summaryStartDate').value = formatSqlDate(start);
       document.getElementById('summaryEndDate').value = formatSqlDate(end);
 
@@ -721,15 +725,16 @@
     }
 
     async function loadSummaryStudents() {
-      const response = await apiCall('/api/admin/users');
+      const response = await apiCall('/api/admin/users?role=student');
       const select = document.getElementById('summaryUserSelect');
       if (response.success && response.users) {
         select.innerHTML = '<option value="all" selected>All Active Students</option>';
-        const activeStudents = response.users.filter(u => !u.is_suspended && u.is_approved !== false);
+        const activeStudents = response.users.filter(u => u.role === 'student' && !u.is_suspended && u.is_approved !== false);
+        activeStudents.sort((a, b) => a.name.localeCompare(b.name));
         activeStudents.forEach(student => {
           const opt = document.createElement('option');
           opt.value = student.id;
-          opt.textContent = `${student.name} (${student.email})`;
+          opt.textContent = `${student.name} (${student.department || 'Student'} - ${student.email})`;
           select.appendChild(opt);
         });
       }
@@ -995,12 +1000,25 @@
       const subjectField = document.getElementById('previewSubjectField');
       
       if (activePreviews.length === 0) {
-        listGroup.innerHTML = `<div class="p-3 text-center text-secondary small bg-white border rounded-3">No matching students found for this sweep.</div>`;
+        let reasonText = 'No students match the selected sweep criteria right now.';
+        if (activeSweepType === 'daily') {
+          reasonText = 'No students have unmarked classes for today (or today has 0 scheduled classes/holidays).';
+        } else if (activeSweepType === 'low-attendance') {
+          reasonText = 'All active students currently satisfy their minimum target attendance percentage (>80%).';
+        } else if (activeSweepType === 'summary') {
+          reasonText = 'No attendance activity recorded for students within the selected date range.';
+        }
+
+        listGroup.innerHTML = `<div class="p-3 text-center text-secondary small bg-white border rounded-3">${reasonText}</div>`;
         toField.innerText = 'none';
         subjectField.innerText = 'N/A';
         iframe.srcdoc = `
-          <div style="font-family: Arial, sans-serif; padding: 20px; text-align: center; color: #64748b;">
-            No email content is generated because no students match the sweep criteria right now.
+          <div style="font-family: 'Plus Jakarta Sans', Arial, sans-serif; padding: 40px 20px; text-align: center; color: #64748b;">
+            <div style="font-size: 32px; margin-bottom: 12px;">ℹ️</div>
+            <div style="font-weight: 700; color: #1e293b; font-size: 16px; margin-bottom: 8px;">0 Emails Match Sweep Condition</div>
+            <div style="font-size: 13px; max-width: 420px; margin: 0 auto; line-height: 1.5; color: #64748b;">
+              ${reasonText}
+            </div>
           </div>`;
         document.getElementById('confirmBroadcastBtn').disabled = true;
       } else {

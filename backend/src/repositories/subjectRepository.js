@@ -7,15 +7,16 @@ const db = require('../config/db');
  */
 const getAllByUserId = async (userId) => {
   const query = `
-    SELECT s.id, 
+    SELECT DISTINCT ON (COALESCE(s.subject_code, s.code))
+           s.id, 
            COALESCE(s.subject_code, s.code) AS subject_code, 
            COALESCE(s.subject_name, s.name) AS subject_name, 
            s.credits, s.color, s.total_periods, s.department_id, s.semester, s.created_at
     FROM users u
-    JOIN subjects s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department))
-                    AND s.semester = u.semester
+    JOIN subjects s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department) OR s.user_id = u.id)
+                    AND (s.semester = u.semester OR s.user_id = u.id)
     WHERE u.id = $1
-    ORDER BY COALESCE(s.subject_name, s.name) ASC
+    ORDER BY COALESCE(s.subject_code, s.code) ASC, s.created_at ASC, s.id ASC
   `;
   const result = await db.query(query, [userId]);
   return result.rows;

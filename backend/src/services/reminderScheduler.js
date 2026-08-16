@@ -218,13 +218,17 @@ const checkUnmarkedClassesForToday = async (userId, departmentId, semester, date
 
     // 2. Fetch base scheduled timetable slots for today
     const timetableRes = await db.query(
-      'SELECT period FROM timetable WHERE department_id = $1 AND semester = $2 AND day = $3',
+      `SELECT t.period FROM timetable t
+       LEFT JOIN departments d ON (t.department_id = d.id OR UPPER(t.department) = UPPER(d.code))
+       WHERE (t.department_id = $1 OR d.id = $1 OR UPPER(t.department) = (SELECT UPPER(code) FROM departments WHERE id = $1 LIMIT 1))
+         AND t.semester = $2 AND LOWER(t.day) = LOWER($3)`,
       [departmentId, semester, dayName]
     );
 
     // 3. Fetch cohort timetable adjustments for today
     const adjRes = await db.query(
-      'SELECT period, adjustment_type FROM timetable_adjustments WHERE department_id = $1 AND semester = $2 AND date = $3',
+      `SELECT period, adjustment_type FROM timetable_adjustments 
+       WHERE department_id = $1 AND semester = $2 AND date = $3`,
       [departmentId, semester, dateStr]
     );
 

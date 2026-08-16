@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,7 @@
   <meta name="robots" content="index, follow">
   <meta name="application-name" content="Trackify">
   <link rel="canonical" href="https://trackifyapp.co.in/">
-  <meta name="theme-color" content="#2563eb">
+  <meta name="theme-color" content="#0d0e12">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -27,13 +27,17 @@
   <meta name="twitter:description" content="Trackify is an automated student attendance tracker and timetable management web app. Track daily class attendance, calculate safe lecture bunks, and take control of your semester.">
   <meta name="twitter:image" content="https://trackifyapp.co.in/assets/images/favicon-512.png">
 
+  <!-- Google Fonts & Frameworks -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <link rel="stylesheet" href="/assets/css/style.css?v=6.0">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   
   <script>
     (function() {
-      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      const theme = localStorage.getItem('theme') || 'dark';
       document.documentElement.setAttribute('data-theme', theme);
       if (localStorage.getItem('sidebar-collapsed') === 'true') {
         document.documentElement.classList.add('sidebar-collapsed');
@@ -68,446 +72,552 @@
     }
   }
   </script>
+
+  <style>
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    
+    .apple-hero-glow {
+      position: absolute;
+      top: -160px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1200px;
+      height: 750px;
+      background: radial-gradient(circle at 50% 30%, rgba(37, 99, 235, 0.15) 0%, rgba(147, 51, 234, 0.06) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Navigation Bar -->
-  <nav class="navbar navbar-expand-lg glass-nav sticky-top">
-    <div class="container py-2">
-      <div class="d-flex align-items-center gap-2">
-        <a class="navbar-brand d-flex align-items-center text-white me-2" href="/">
-          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
-          <span class="fw-bold fs-4 text-white ms-2">Trackify</span>
-        </a>
-      </div>
+  <!-- Navigation Bar (Apple Frosted Glass Style) -->
+  <nav class="navbar navbar-expand-lg apple-glass-nav sticky-top py-2.5">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center me-4" href="/">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 28px; width: auto;">
+        <span class="fw-bold fs-4 text-white ms-2.5 brand-font" style="letter-spacing: -0.02em;">Trackify</span>
+      </a>
 
       <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
       </button>
 
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center gap-lg-3 my-3 my-lg-0">
+      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+        <ul class="navbar-nav align-items-lg-center gap-lg-4 mx-auto my-3 my-lg-0">
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-secondary fw-semibold" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle text-white-50 fw-medium fs-7" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Products
             </a>
-            <ul class="dropdown-menu dropdown-menu-end border-glass shadow-sm py-2" style="background: var(--bg-secondary); border-radius: 16px !important; min-width: 260px;">
+            <ul class="dropdown-menu dropdown-menu-dark border-glass shadow-lg py-2" style="background: rgba(18, 18, 20, 0.95); backdrop-filter: blur(20px); border-radius: 18px; min-width: 260px;">
               <li>
-                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/products/trackify">
-                  <div class="product-icon-wrap product-icon-trackify" style="width: 32px; height: 32px; font-size: 1rem;">
+                <a class="dropdown-item d-flex align-items-center gap-3 py-2.5 px-3" href="/products/trackify">
+                  <div class="product-icon-wrap product-icon-trackify" style="width: 34px; height: 34px; font-size: 1rem;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
                   </div>
                   <div>
-                    <div class="fw-bold text-dark fs-7">Trackify</div>
-                    <div class="text-secondary" style="font-size: 0.72rem;">Attendance &amp; Timetable</div>
+                    <div class="fw-bold text-white fs-7">Trackify</div>
+                    <div class="text-white-50" style="font-size: 0.72rem;">Attendance &amp; Timetable</div>
                   </div>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item d-flex align-items-center gap-2 py-2" href="/products/inks">
-                  <div class="product-icon-wrap product-icon-inks" style="width: 32px; height: 32px; padding: 2px;">
+                <a class="dropdown-item d-flex align-items-center gap-3 py-2.5 px-3" href="/products/inks">
+                  <div class="product-icon-wrap product-icon-inks" style="width: 34px; height: 34px; padding: 3px;">
                     <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
                   </div>
                   <div>
-                    <div class="fw-bold text-dark fs-7">Inks</div>
-                    <div class="text-secondary" style="font-size: 0.72rem;">Campus Cloud Printing</div>
+                    <div class="fw-bold text-white fs-7">Inks</div>
+                    <div class="text-white-50" style="font-size: 0.72rem;">Campus Cloud Printing</div>
                   </div>
                 </a>
               </li>
-              <li><hr class="dropdown-divider my-1 border-glass"></li>
+              <li><hr class="dropdown-divider border-glass my-1"></li>
               <li>
-                <a class="dropdown-item py-1.5 px-3 fs-8 text-secondary" href="#products">
-                  View All Products &rarr;
+                <a class="dropdown-item py-2 px-3 fs-8 text-white-50" href="#products">
+                  Explore All Products &rarr;
                 </a>
               </li>
             </ul>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-secondary fw-semibold" href="#why-trackify">Why For Students</a>
+            <a class="nav-link text-white-50 fw-medium fs-7" href="#bunk-engine">Attendance Engine</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-secondary fw-semibold" href="/login">Admin Portal</a>
+            <a class="nav-link text-white-50 fw-medium fs-7" href="#inks-cloud">Campus Printing</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white-50 fw-medium fs-7" href="#comparison">Compare Methods</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white-50 fw-medium fs-7" href="#platform-overview">Privacy &amp; Security</a>
           </li>
         </ul>
 
-        <div class="d-flex align-items-center gap-3 ms-lg-3 mt-3 mt-lg-0">
-          <a href="/login" class="btn btn-glow px-4 rounded-pill">Student Log In</a>
+        <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+          <a href="/login" class="apple-btn-primary py-2 px-4 fs-7">Student Portal ↗</a>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <header class="container my-5 py-5 text-center position-relative">
-    <div class="row justify-content-center">
-      <div class="col-lg-10 animate-fade-in-up">
-        <div class="d-flex justify-content-center mb-3">
-          <span class="student-hero-badge">
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            STUDENT ATTENDANCE &amp; ACADEMIC TRACKER
-          </span>
+  <!-- Hero Section (Asymmetric Left-Aligned Split — DESIGN_VARIANCE = 8) -->
+  <header class="container pt-5 pb-5 position-relative min-vh-100 d-flex align-items-center">
+    <div class="apple-hero-glow"></div>
+
+    <div class="row align-items-center g-5 position-relative z-1 w-100 mx-0">
+      
+      <!-- Left Column (7 cols): Asymmetric Headline & CTAs -->
+      <div class="col-lg-7 text-start apple-reveal visible">
+        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill mb-4" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2);">
+          <span class="pulse-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #3b82f6;"></span>
+          <span class="text-primary fs-8 fw-bold text-uppercase" style="letter-spacing: 0.08em;">Campus Academic Platform</span>
         </div>
-        <h1 class="display-3 fw-extrabold mb-2" style="letter-spacing: -0.02em;">
-          Trackify
+
+        <h1 class="apple-display-title mb-3 text-start">
+          Trackify.<br>
+          <span class="apple-gradient-text">Know every class. Bunk with precision.</span>
         </h1>
-        <p class="lead text-primary fw-semibold fs-3 mb-3">
-          Student Attendance &amp; Academic Tracker
-        </p>
-        <p class="lead text-secondary mb-4 fs-4 mx-auto" style="max-width: 820px; line-height: 1.6;">
-          Eliminate daily college friction. Track lecture attendance, calculate safe bunks with mathematical precision, manage department timetables, and own your semester with <strong>Trackify</strong>.
+        
+        <p class="apple-subheadline mb-4 text-start" style="max-width: 580px;">
+          Log daily lectures in seconds, calculate safe bunks automatically, and stay effortlessly above your 80% college target.
         </p>
 
-        <!-- Explicit Application Purpose & OAuth Verification Block -->
-        <div class="card border-glass p-4 p-md-5 my-4 mx-auto text-start shadow-sm position-relative overflow-hidden" style="max-width: 860px; background: var(--bg-secondary); border-radius: 20px; border-left: 5px solid var(--primary);">
-          <div class="d-flex align-items-center gap-3 mb-3">
-            <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-            </div>
-            <div>
-              <h2 class="h5 fw-bold text-dark mb-0">About Trackify &amp; Application Purpose</h2>
-              <span class="text-secondary fs-7">Official Overview &amp; Google OAuth 2.0 Integration Information</span>
-            </div>
-          </div>
-          
-          <div class="row g-4">
-            <div class="col-md-6">
-              <h3 class="fs-6 fw-bold text-dark mb-2">📌 What is Trackify?</h3>
-              <p class="text-secondary fs-7 mb-0 leading-relaxed">
-                <strong>Trackify</strong> is an automated student attendance tracking and timetable management web application designed for college students. It enables students to easily log daily lecture attendance, monitor subject-wise attendance percentages, calculate safe lecture bunks to maintain 80%+ eligibility, and organize weekly class schedules.
-              </p>
-            </div>
-            <div class="col-md-6">
-              <h3 class="fs-6 fw-bold text-dark mb-2">🔐 Google Sign-In &amp; Scope Usage</h3>
-              <p class="text-secondary fs-7 mb-0 leading-relaxed">
-                <strong>Trackify</strong> integrates Google OAuth 2.0 Sign-In so students can securely register and log in using their Google account. We request access only to basic profile information (Name and Email Address) to authenticate student accounts, save personal timetables, and sync attendance records across devices.
-              </p>
-            </div>
-          </div>
-
-          <div class="border-top border-glass pt-3 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-2 fs-7 text-secondary">
-            <span>🔒 Your data is kept strictly confidential, encrypted, and never sold or shared with third parties.</span>
-            <div class="d-flex gap-3">
-              <a href="/privacy-policy" class="text-primary text-decoration-none fw-semibold">Privacy Policy</a>
-              <a href="/terms" class="text-primary text-decoration-none fw-semibold">Terms of Service</a>
-            </div>
-          </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-5">
+          <a href="/login" class="apple-btn-primary">Launch Student Portal &rarr;</a>
+          <a href="#products" class="apple-btn-secondary">Explore Features &darr;</a>
         </div>
 
-        <div class="d-flex justify-content-center gap-3 flex-wrap mt-4">
-          <a href="/login" class="btn btn-glow btn-lg px-5 py-3 rounded-pill">Launch Trackify Portal ↗</a>
-          <a href="#products" class="btn btn-glass btn-lg px-4 py-3 rounded-pill">Explore Features ↓</a>
-        </div>
-
-        <!-- Live Trust Pills -->
-        <div class="d-flex justify-content-center align-items-center gap-4 flex-wrap mt-5 pt-3 text-secondary" style="font-size: 0.88rem; font-weight: 600;">
+        <!-- Trust Indicators (Clean SVG Primitives, NO Emojis) -->
+        <div class="d-flex align-items-center gap-4 flex-wrap text-white-50 fs-8 fw-semibold">
           <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             100% Free for Students
           </span>
           <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             Zero Ad Trackers &amp; Privacy-First
           </span>
           <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Mobile &amp; PWA Offline Ready
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Sub-50ms Latency &amp; Offline PWA
           </span>
         </div>
       </div>
+
+      <!-- Right Column (5 cols): Liquid Glass Refraction Surface Asset -->
+      <div class="col-lg-5 apple-reveal visible">
+        <div class="liquid-glass-card p-4 p-md-5">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <span class="fs-8 fw-mono text-primary text-uppercase fw-bold">Mathematical Engine</span>
+            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8">80% TARGET MET</span>
+          </div>
+
+          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <div class="fs-8 text-white-50 uppercase fw-semibold mb-1">SAFE BUNK EQUATION</div>
+            <div class="fs-6 fw-mono text-white mb-2">(Attended + SafeBunks) / Total &ge; 80%</div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="fs-8 text-white-50">Calculated Safety Buffer</span>
+              <span class="fs-6 fw-bold text-success">+3 Lectures Buffer</span>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-4" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2);">
+            <div class="d-flex align-items-center gap-2 text-primary fw-bold fs-7 mb-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Automated Sentinel:
+            </div>
+            <div class="fs-8 text-white-50">Monitors daily schedules &amp; alerts before eligibility threshold drop.</div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </header>
 
-  <!-- Multi-Product Bento Showcase -->
-  <section id="products" class="container my-5 py-4">
-    <div class="text-center mb-5 animate-fade-in-up">
-      <h2 class="display-6 fw-bold">Campus Productivity Products</h2>
-      <p class="text-secondary fs-5">Designed to solve specific student pain points with zero hassle.</p>
+  <!-- Apple Feature Highlight 1: "Attendance. Reengineered." -->
+  <section id="bunk-engine" class="container my-5 py-5">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6 apple-reveal">
+        <h2 class="apple-headline mb-3">
+          Attendance.<br>
+          <span class="apple-blue-gradient-text">Reengineered.</span>
+        </h2>
+        <p class="apple-subheadline mb-4">
+          No more guessing if you can skip a rainy Friday morning lecture. Trackify’s fraction engine calculates your exact safety margin in real time.
+        </p>
+
+        <div class="d-flex flex-column gap-3 mb-4">
+          <div class="d-flex gap-3">
+            <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            </div>
+            <div>
+              <h3 class="h6 text-white fw-bold mb-1">Fraction Boundary Formula</h3>
+              <p class="fs-7 text-white-50 mb-0">Computes <code>(Attended + Bunks) / TotalClasses &ge; Target</code> so you always know your exact buffer.</p>
+            </div>
+          </div>
+
+          <div class="d-flex gap-3">
+            <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            </div>
+            <div>
+              <h3 class="h6 text-white fw-bold mb-1">Proactive Detention Sentinel</h3>
+              <p class="fs-7 text-white-50 mb-0">Alerts you before your percentage touches detention threshold, giving you actionable recovery steps.</p>
+            </div>
+          </div>
+        </div>
+
+        <a href="/products/trackify" class="apple-btn-secondary py-2.5 px-4 fs-7">Read Attendance Math Guide &rarr;</a>
+      </div>
+
+      <div class="col-lg-6 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5">
+          <div class="text-uppercase fs-8 text-primary fw-bold mb-2">SAFE BUNK MATHEMATICS</div>
+          <h3 class="h4 text-white fw-bold mb-3">Target Boundary: 80.0%</h3>
+          
+          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <div class="d-flex justify-content-between text-white-50 fs-8 mb-1">
+              <span>CURRENT OVERALL STATUS</span>
+              <span class="text-success fw-bold">85.7% (24 / 28)</span>
+            </div>
+            <div class="progress mb-2" style="height: 6px;">
+              <div class="progress-bar bg-primary" style="width: 85.7%;"></div>
+            </div>
+            <div class="fs-8 text-white-50">
+              Safe Bunks Equation: <code>(24 - 0.8 &times; 28) / 0.8 = 2 Bunks</code>
+            </div>
+          </div>
+
+          <div class="p-3.5 rounded-4" style="background: rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.3);">
+            <div class="d-flex align-items-center gap-2 text-success fw-bold fs-7 mb-1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              Calculated Recommendation:
+            </div>
+            <div class="fs-8 text-white-50">You can bunk <strong>2 more classes</strong> and remain safely at <strong>80.0%</strong>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apple Feature Highlight 2: "Inks. Campus Cloud Printing." -->
+  <section id="inks-cloud" class="container my-5 py-4">
+    <div class="row align-items-center g-5 flex-row-reverse">
+      <div class="col-lg-6 apple-reveal">
+        <h2 class="apple-headline mb-3">
+          Inks.<br>
+          <span class="apple-emerald-gradient-text">Skip the Xerox queue.</span>
+        </h2>
+        <p class="apple-subheadline mb-4">
+          Upload assignments and lab manuals directly from your hostel room before 8:30 AM class. Live queue tracking with zero wait times.
+        </p>
+
+        <div class="d-flex flex-column gap-3 mb-4">
+          <div class="d-flex gap-3">
+            <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            </div>
+            <div>
+              <h3 class="h6 text-white fw-bold mb-1">Hostel-to-Counter Pipeline</h3>
+              <p class="fs-7 text-white-50 mb-0">Upload PDFs from your phone or laptop with full duplex &amp; paper preferences locked in.</p>
+            </div>
+          </div>
+
+          <div class="d-flex gap-3">
+            <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </div>
+            <div>
+              <h3 class="h6 text-white fw-bold mb-1">Malware-Free Cloud Security</h3>
+              <p class="fs-7 text-white-50 mb-0">Eliminate dangerous USB pendrive sharing on malware-infected public print computers.</p>
+            </div>
+          </div>
+        </div>
+
+        <a href="https://inks.trackifyapp.co.in/" target="_blank" rel="noopener noreferrer" class="apple-btn-primary py-2.5 px-4 fs-7" style="background: #059669; box-shadow: 0 4px 18px rgba(5, 150, 105, 0.3);">Launch Inks Cloud ↗</a>
+      </div>
+
+      <div class="col-lg-6 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5" style="border-color: rgba(16, 185, 129, 0.2);">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="product-icon-wrap product-icon-inks" style="width: 42px; height: 42px; padding: 2px;">
+              <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1.5 fs-8 fw-bold">READY FOR PICKUP</span>
+          </div>
+
+          <h3 class="h4 text-white fw-bold mb-1">Lab_Manual_Final.pdf</h3>
+          <div class="text-white-50 fs-8 mb-4">Submitted: 8:12 AM &bull; Queue Position: #1</div>
+
+          <div class="p-3.5 rounded-4 mb-3" style="background: rgba(5, 150, 105, 0.08); border: 1px dashed rgba(5, 150, 105, 0.3);">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="fw-bold text-success fs-7">Pickup Token: #INK-842</span>
+              <span class="badge bg-success text-white fs-8">COUNTER 1</span>
+            </div>
+            <div class="fs-8 text-white-50">14 Pages &bull; Double-Sided B&amp;W &bull; Spiral Bound</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Apple Bento Grid Showcase ("Designed for speed. Engineered for privacy.") -->
+  <section id="products" class="container my-5 py-5">
+    <div class="text-center mb-5 apple-reveal">
+      <h2 class="apple-headline">Designed for speed.<br><span class="apple-gradient-text">Engineered for control.</span></h2>
     </div>
 
     <div class="row g-4">
       
-      <!-- Product 1: Trackify (Attendance) -->
-      <div class="col-lg-6 animate-fade-in-up">
-        <div class="product-card">
-          <div class="product-card-header">
-            <div class="product-icon-wrap product-icon-trackify">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+      <!-- Card 1: Smart Attendance Engine (Col 7) -->
+      <div class="col-lg-7 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5 h-100">
+          <div class="product-icon-wrap product-icon-trackify mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+          </div>
+          <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">ATTENDANCE INTELLIGENCE</span>
+          <h3 class="h3 text-white fw-bold mb-2">Smart Bunk Predictor</h3>
+          <p class="text-white-50 fs-6 mb-4">Fraction-based mathematical calculations instantly inform you of safe bunks and recovery requirements down to single-lecture accuracy.</p>
+
+          <div class="p-3.5 rounded-4 mb-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);">
+            <div class="row text-center g-2">
+              <div class="col-4">
+                <div class="fs-4 fw-extrabold text-white">87.5%</div>
+                <div class="fs-8 text-white-50">Current Rate</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-4 fw-extrabold text-success">+3 Bunks</div>
+                <div class="fs-8 text-white-50">Safe Buffer</div>
+              </div>
+              <div class="col-4">
+                <div class="fs-4 fw-extrabold text-primary">80%</div>
+                <div class="fs-8 text-white-50">Target Goal</div>
+              </div>
             </div>
-            <span class="product-tag tag-live">LIVE PLATFORM</span>
           </div>
 
-          <h3 class="h3 fw-bold mb-1">Trackify</h3>
-          <div class="text-primary fw-semibold fs-7 mb-2">Smart Attendance &amp; Timetable Companion</div>
-          <p class="text-secondary fs-6 mb-0">
-            Never guess your attendance percentage again. Dynamic weekly timetables, 1-tap lecture logging, and mathematical safe-bunk prediction to keep you comfortably above 80%.
-          </p>
-
-          <ul class="product-features">
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Bunk Prediction Engine:</strong> Know exactly how many classes you can safely skip or must attend.</span>
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Spreadsheet-Style Timetable:</strong> Visual weekly class grid with lab and break support.</span>
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Low Attendance Alarms:</strong> Proactive alerts before you enter detention territory.</span>
-            </li>
-          </ul>
-
-          <div class="product-card-actions">
-            <a href="/products/trackify" class="btn-explore">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-              <span>Explore Trackify</span>
-            </a>
-            <a href="/login" class="btn-launch-sm">
-              <span>Launch Portal ↗</span>
-            </a>
-          </div>
+          <a href="/products/trackify" class="text-primary text-decoration-none fw-semibold fs-7">Explore Trackify Feature Guide &rarr;</a>
         </div>
       </div>
 
-      <!-- Product 2: Inks (Campus Cloud Printing) -->
-      <div class="col-lg-6 animate-fade-in-up delay-1">
-        <div class="product-card">
-          <div class="product-card-header">
-            <div class="product-icon-wrap product-icon-inks" style="width: 44px; height: 44px; padding: 2px;">
-              <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
-            </div>
-            <span class="product-tag tag-live" style="background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.25);">CAMPUS PRINT CLOUD</span>
+      <!-- Card 2: PWA Offline-First Engine (Col 5) -->
+      <div class="col-lg-5 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5 h-100">
+          <div class="p-2.5 rounded-3 bg-purple bg-opacity-10 text-purple mb-3 d-inline-block" style="color: #a855f7;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
           </div>
-
-          <h3 class="h3 fw-bold mb-1">Inks</h3>
-          <div class="fw-semibold fs-7 mb-2" style="color: #059669;">Instant Campus Document Printing &amp; Queue</div>
-          <p class="text-secondary fs-6 mb-0">
-            Skip the stressful xerox lines before 8:30 AM class. Upload assignments, lab manuals, and notes from your room, track live printing queues, and grab ready copies.
-          </p>
-
-          <ul class="product-features">
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Zero-Wait Queue:</strong> Remote document upload with real-time queue completion timers.</span>
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Malware-Free Cloud:</strong> No USB pendrive sharing on public computers; direct PDF rendering.</span>
-            </li>
-            <li>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              <span><strong>Instant Pickup:</strong> Pick up printed papers directly at the shop counter.</span>
-            </li>
-          </ul>
-
-          <div class="product-card-actions">
-            <a href="/products/inks" class="btn-explore">
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-              <span>Explore Inks</span>
-            </a>
-            <a href="https://inks.trackifyapp.co.in/" target="_blank" rel="noopener noreferrer" class="btn-launch-sm" style="background: #059669; border-color: #059669;">
-              <span>Launch Inks ↗</span>
-            </a>
-          </div>
+          <span class="badge bg-purple bg-opacity-20 border border-purple border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2" style="color: #c084fc;">PWA OFFLINE ENGINE</span>
+          <h3 class="h4 text-white fw-bold mb-2">100% Offline Ready</h3>
+          <p class="text-white-50 fs-7 mb-4">No campus Wi-Fi signal in basement lecture halls? Trackify logs attendance locally and syncs automatically when connection restores.</p>
+          <div class="badge bg-secondary bg-opacity-20 text-white-50 rounded-pill px-3 py-1.5 fs-8">INSTANT LOCALSTORAGE &amp; SERVICE WORKER SYNC</div>
         </div>
       </div>
 
+      <!-- Card 3: Privacy First & OAuth 2.0 (Col 5) -->
+      <div class="col-lg-5 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5 h-100">
+          <div class="p-2.5 rounded-3 bg-success bg-opacity-10 text-success mb-3 d-inline-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </div>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">ZERO DATA TRACKERS</span>
+          <h3 class="h4 text-white fw-bold mb-2">Privacy &amp; OAuth 2.0</h3>
+          <p class="text-white-50 fs-7 mb-4">Log in securely with Google OAuth 2.0. We request basic profile info strictly for personal account sync. Zero ad tracking.</p>
+          <a href="/privacy-policy" class="text-success text-decoration-none fw-semibold fs-7">Read Privacy Policy &rarr;</a>
+        </div>
+      </div>
+
+      <!-- Card 4: Inks Cloud Printing (Col 7) -->
+      <div class="col-lg-7 apple-reveal">
+        <div class="liquid-glass-card p-4 p-md-5 h-100">
+          <div class="product-icon-wrap product-icon-inks mb-3" style="width: 42px; height: 42px; padding: 2px;">
+            <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
+          </div>
+          <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-30 rounded-pill px-3 py-1 fs-8 fw-bold mb-2">CAMPUS PRINT CLOUD</span>
+          <h3 class="h3 text-white fw-bold mb-2">Inks Print Pipeline</h3>
+          <p class="text-white-50 fs-6 mb-4">Remote document uploads, live queue status, malware protection, and instant pickup token generation at campus shop counters.</p>
+          <a href="/products/inks" class="text-success text-decoration-none fw-semibold fs-7">Explore Inks Guide &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Apple Comparison Matrix: "Trackify vs Traditional Methods" -->
+  <section id="comparison" class="container my-5 py-4 apple-reveal">
+    <div class="text-center mb-5">
+      <h2 class="apple-headline">Why students choose Trackify.</h2>
+      <p class="apple-subheadline">Say goodbye to mental arithmetic, lost paper diaries, and bloated spreadsheets.</p>
+    </div>
+
+    <div class="liquid-glass-card p-0 overflow-hidden">
+      <div class="table-responsive">
+        <table class="apple-spec-table text-white">
+          <thead>
+            <tr style="background: rgba(255, 255, 255, 0.04);">
+              <th style="width: 34%;">Feature / Capability</th>
+              <th class="text-primary" style="width: 22%;">Trackify Ecosystem</th>
+              <th class="text-white-50" style="width: 22%;">Sticky Notes &amp; Diaries</th>
+              <th class="text-white-50" style="width: 22%;">Excel / Google Sheets</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="fw-semibold">Safe Bunk Math Engine</td>
+              <td class="text-success fw-bold">&check; Automatic Fraction Formula</td>
+              <td class="text-white-50">&cross; Mental Guesswork</td>
+              <td class="text-white-50">&#9888; Manual Formulas Required</td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Weekly Timetable Sync</td>
+              <td class="text-success fw-bold">&check; 1-Tap Daily Schedule Grid</td>
+              <td class="text-white-50">&cross; Manual Hand Writing</td>
+              <td class="text-white-50">&#9888; Static Cell Grids</td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Campus Cloud Printing</td>
+              <td class="text-success fw-bold">&check; Inks Hostel Upload &amp; Queue</td>
+              <td class="text-white-50">&cross; 30-min Xerox Center Line</td>
+              <td class="text-white-50">&cross; USB Pendrive Viruses</td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Offline PWA Support</td>
+              <td class="text-success fw-bold">&check; Works in Basement Labs</td>
+              <td class="text-success fw-bold">&check; Physical Notebook</td>
+              <td class="text-white-50">&cross; Requires Active Signal</td>
+            </tr>
+            <tr>
+              <td class="fw-semibold">Ad Tracking &amp; Privacy</td>
+              <td class="text-success fw-bold">&check; Zero Ads / OAuth 2.0</td>
+              <td class="text-success fw-bold">&check; Private</td>
+              <td class="text-white-50">&#9888; Third-Party Account Needed</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
-  <!-- Interactive Student Feature Spotlight -->
-  <section id="why-trackify" class="container my-5 py-4">
-    <div class="glass-card p-4 p-md-5">
-      <div class="text-center mb-4">
-        <h2 class="fs-2 fw-bold">Built to Remove Student Friction</h2>
-        <p class="text-secondary fs-6">College life has enough tests and deadlines — your daily tools should be effortless.</p>
-        
-        <!-- Segmented Tab Controls -->
-        <div class="d-inline-flex gap-2 p-1 border border-glass rounded-pill mt-2 bg-light">
-          <button class="spotlight-tab-btn active" id="tab-btn-1" onclick="switchSpotlightTab('attendance')">⚡ Attendance Precision</button>
-          <button class="spotlight-tab-btn" id="tab-btn-2" onclick="switchSpotlightTab('print')">🖨️ Zero-Wait Print</button>
-          <button class="spotlight-tab-btn" id="tab-btn-3" onclick="switchSpotlightTab('privacy')">🔒 Privacy &amp; Speed</button>
+  <!-- Platform Overview & OAuth Security Section -->
+  <section id="platform-overview" class="container my-5 py-4 apple-reveal">
+    <div class="liquid-glass-card p-4 p-md-5">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="p-2.5 rounded-3 bg-primary bg-opacity-10 text-primary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <div>
+          <h2 class="h5 text-white fw-bold mb-0">Platform Transparency &amp; Data Security</h2>
+          <span class="text-white-50 fs-7">Official Overview &amp; Google OAuth 2.0 Integration Policy</span>
         </div>
       </div>
 
-      <!-- Tab Content Area -->
-      <div id="spotlight-content" class="mt-4 pt-2">
-        <div class="row align-items-center g-4" id="tab-content-attendance">
-          <div class="col-md-6">
-            <span class="badge bg-primary text-white mb-2 py-1 px-2.5">TRACKIFY ATTENDANCE</span>
-            <h3 class="h4 fw-bold mb-3">Math-backed confidence before every skipped class</h3>
-            <p class="text-secondary fs-6 leading-relaxed mb-3">
-              Instead of guessing if you can take Friday off, Trackify uses exact fraction logic:
-              <br><code>Attendance = (Attended + SafeBunk) / TotalClasses</code>.
-            </p>
-            <p class="text-secondary fs-6 mb-4">
-              It tells you the exact count — e.g. <em>"You can bunk 3 more classes and stay at 81.2%"</em> or <em>"Attend the next 2 classes to reach 80.0%"</em>.
-            </p>
-            <a href="/products/trackify" class="btn btn-glass btn-sm">Read Full Trackify Guide &rarr;</a>
-          </div>
-          <div class="col-md-6">
-            <div class="glass-card p-4 border-glass" style="background: var(--bg-primary);">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold fs-7">Data Structures &amp; Algorithms</span>
-                <span class="badge bg-success text-white">85.7% SAFE</span>
-              </div>
-              <div class="progress mb-3" style="height: 8px;">
-                <div class="progress-bar bg-success" style="width: 85.7%;"></div>
-              </div>
-              <div class="p-3 rounded-3" style="background: rgba(16, 185, 129, 0.08); border: 1px dashed rgba(16, 185, 129, 0.3);">
-                <div class="fw-bold fs-7 text-success mb-1">Prediction Engine Status:</div>
-                <div class="fs-8 text-secondary">You can safely skip <strong>2 lectures</strong> and remain above 80.0%.</div>
-              </div>
-            </div>
-          </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <h3 class="fs-6 text-white fw-bold mb-2">Application Purpose</h3>
+          <p class="text-white-50 fs-7 mb-0 leading-relaxed">
+            <strong>Trackify</strong> is an automated student attendance tracking and timetable management web application. It enables college students to log daily lecture attendance, monitor subject-wise percentages, calculate safe lecture bunks to maintain 80%+ eligibility, and organize academic schedules.
+          </p>
         </div>
-
-        <div class="row align-items-center g-4 d-none" id="tab-content-print">
-          <div class="col-md-6">
-            <span class="badge text-white mb-2 py-1 px-2.5" style="background: #059669;">INKS CLOUD PRINT</span>
-            <h3 class="h4 fw-bold mb-3">Upload in your hostel. Pick up on the way to lecture.</h3>
-            <p class="text-secondary fs-6 leading-relaxed mb-3">
-              Forget virus-infected pendrives and 40-student morning crowds outside the xerox center. Send documents directly from your browser with your exact page preferences locked in.
-            </p>
-            <a href="/products/inks" class="btn btn-glass btn-sm">Read Full Inks Guide &rarr;</a>
-          </div>
-          <div class="col-md-6">
-            <div class="glass-card p-4 border-glass" style="background: var(--bg-primary);">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold fs-7">Lab_Report_Final_V2.pdf</span>
-                <span class="badge text-white" style="background: #059669;">READY FOR PICKUP</span>
-              </div>
-              <div class="p-3 rounded-3" style="background: rgba(5, 150, 105, 0.08); border: 1px dashed rgba(5, 150, 105, 0.3);">
-                <div class="fw-bold fs-7 text-success mb-1">Pickup Token: #INK-842</div>
-                <div class="fs-8 text-secondary">Double-sided, Color Cover (14 pages) — Ready at counter.</div>
-              </div>
-            </div>
-          </div>
+        <div class="col-md-6">
+          <h3 class="fs-6 text-white fw-bold mb-2">Google Sign-In &amp; OAuth Scope Usage</h3>
+          <p class="text-white-50 fs-7 mb-0 leading-relaxed">
+            <strong>Trackify</strong> integrates Google OAuth 2.0 Sign-In to allow students to securely register and log in. We request access strictly to basic profile details (Name and Email) to authenticate accounts, save personal timetables, and sync attendance records securely across devices.
+          </p>
         </div>
+      </div>
 
-        <div class="row align-items-center g-4 d-none" id="tab-content-privacy">
-          <div class="col-md-6">
-            <span class="badge bg-secondary text-white mb-2 py-1 px-2.5">SPEED &amp; PRIVACY</span>
-            <h3 class="h4 fw-bold mb-3">Zero Ads. Zero Tracking. Sub-second performance.</h3>
-            <p class="text-secondary fs-6 leading-relaxed mb-3">
-              We believe student tools should be blisteringly fast and respect your privacy. No third-party data broker SDKs, no video ads before logging attendance, and zero bloatware.
-            </p>
-            <a href="/privacy-policy" class="btn btn-glass btn-sm">Read Our Privacy Policy &rarr;</a>
-          </div>
-          <div class="col-md-6">
-            <div class="glass-card p-4 border-glass" style="background: var(--bg-primary);">
-              <div class="row g-3 text-center">
-                <div class="col-6">
-                  <div class="p-3 rounded-3" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                    <div class="fs-3 fw-bold mono-stat text-primary">&lt; 50ms</div>
-                    <div class="fs-8 text-secondary">Marking Latency</div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="p-3 rounded-3" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                    <div class="fs-3 fw-bold mono-stat text-success">0</div>
-                    <div class="fs-8 text-secondary">Annoying Ads</div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="p-3 rounded-3" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                    <div class="fs-3 fw-bold mono-stat text-warning">100%</div>
-                    <div class="fs-8 text-secondary">Free For Students</div>
-                  </div>
-                </div>
-                <div class="col-6">
-                  <div class="p-3 rounded-3" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-                    <div class="fs-3 fw-bold mono-stat" style="color: #9333ea;">PWA</div>
-                    <div class="fs-8 text-secondary">Offline Ready</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <div class="border-top border-glass pt-3 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-2 fs-7 text-white-50">
+        <span>Student data is encrypted, kept confidential, and never sold or shared with third parties.</span>
+        <div class="d-flex gap-3">
+          <a href="/privacy-policy" class="text-primary text-decoration-none fw-semibold">Privacy Policy</a>
+          <a href="/terms" class="text-primary text-decoration-none fw-semibold">Terms of Service</a>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- CTA Banner -->
-  <section class="container my-5 py-4">
-    <div class="glass-card text-center p-5 border-glass" style="background: radial-gradient(circle at 50% 50%, var(--primary-subtle), transparent 80%);">
-      <h2 class="display-6 fw-bold mb-3">Join the Future of Campus Productivity</h2>
-      <p class="text-secondary mx-auto mb-4 fs-6" style="max-width: 600px;">
-        Start managing your classes, attendance predictions, and campus workflows with ease today.
+  <!-- Apple High-Impact CTA Banner -->
+  <section class="container my-5 py-4 apple-reveal">
+    <div class="liquid-glass-card text-center p-5 position-relative overflow-hidden" style="background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.2), transparent 70%);">
+      <h2 class="apple-headline mb-3">Your semester starts now.</h2>
+      <p class="apple-subheadline mx-auto mb-4" style="max-width: 620px;">
+        Join thousands of students managing attendance predictions and campus print workflows with absolute confidence.
       </p>
       <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="/login" class="btn btn-glow btn-lg px-5 py-3 rounded-pill">Access Trackify Portal ↗</a>
-        <a href="/products/trackify" class="btn btn-glass btn-lg px-4 py-3 rounded-pill">Learn More</a>
+        <a href="/login" class="apple-btn-primary py-3 px-5 fs-6">Access Student Portal ↗</a>
+        <a href="/products/trackify" class="apple-btn-secondary py-3 px-4 fs-6">Explore Products</a>
       </div>
     </div>
   </section>
 
-  <!-- Multi-Product Footer -->
-  <footer class="border-top border-glass py-5 mt-5 text-secondary">
+  <!-- Apple Multi-Column Footer -->
+  <footer class="border-top border-glass py-5 mt-5 text-white-50">
     <div class="container">
       <div class="row g-4 mb-4 text-start">
         <div class="col-lg-4">
           <div class="d-flex align-items-center gap-2 mb-3">
             <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 28px; width: auto;">
+            <span class="fw-bold text-white fs-5 brand-font">Trackify</span>
           </div>
-          <p class="fs-7 text-secondary mb-3" style="max-width: 320px; line-height: 1.6;">
+          <p class="fs-7 text-white-50 mb-3" style="max-width: 320px; line-height: 1.6;">
             A unified digital campus ecosystem built by students, for students. Powering attendance intelligence, campus cloud printing, and daily academic tools.
           </p>
         </div>
 
         <div class="col-6 col-lg-3">
-          <h4 class="fw-bold fs-7 text-dark mb-3 text-uppercase" style="letter-spacing: 0.05em;">Products</h4>
+          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Products</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-secondary text-decoration-none">Trackify Attendance</a></li>
-            <li><a href="/products/inks" class="text-secondary text-decoration-none">Inks Campus Print</a></li>
-            <li><a href="/login" class="text-secondary text-decoration-none">Student Portal</a></li>
+            <li><a href="/products/trackify" class="text-white-50 text-decoration-none">Trackify Attendance</a></li>
+            <li><a href="/products/inks" class="text-white-50 text-decoration-none">Inks Campus Print</a></li>
+            <li><a href="/login" class="text-white-50 text-decoration-none">Student Portal</a></li>
           </ul>
         </div>
 
         <div class="col-6 col-lg-2">
-          <h4 class="fw-bold fs-7 text-dark mb-3 text-uppercase" style="letter-spacing: 0.05em;">Product Guides</h4>
+          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Product Guides</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-secondary text-decoration-none">Attendance Math</a></li>
-            <li><a href="/products/inks" class="text-secondary text-decoration-none">Inks Print Guide</a></li>
-            <li><a href="/login" class="text-secondary text-decoration-none">Student Portal</a></li>
+            <li><a href="/products/trackify" class="text-white-50 text-decoration-none">Attendance Math</a></li>
+            <li><a href="/products/inks" class="text-white-50 text-decoration-none">Inks Print Guide</a></li>
+            <li><a href="/login" class="text-white-50 text-decoration-none">Student Portal</a></li>
           </ul>
         </div>
 
         <div class="col-12 col-lg-3">
-          <h4 class="fw-bold fs-7 text-dark mb-3 text-uppercase" style="letter-spacing: 0.05em;">Trust &amp; Legal</h4>
+          <h4 class="fw-bold fs-7 text-white mb-3 text-uppercase" style="letter-spacing: 0.05em;">Trust &amp; Legal</h4>
           <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/privacy-policy" class="text-secondary text-decoration-none">Privacy Policy</a></li>
-            <li><a href="/terms" class="text-secondary text-decoration-none">Terms &amp; Conditions</a></li>
-            <li><a href="/cookie-policy" class="text-secondary text-decoration-none">Cookie Policy</a></li>
+            <li><a href="/privacy-policy" class="text-white-50 text-decoration-none">Privacy Policy</a></li>
+            <li><a href="/terms" class="text-white-50 text-decoration-none">Terms &amp; Conditions</a></li>
+            <li><a href="/cookie-policy" class="text-white-50 text-decoration-none">Cookie Policy</a></li>
+            <li><a href="#platform-overview" class="text-white-50 text-decoration-none">OAuth Compliance Info</a></li>
           </ul>
         </div>
       </div>
 
-      <div class="border-top border-glass pt-4 text-center fs-8 text-secondary">
+      <div class="border-top border-glass pt-4 text-center fs-8 text-white-50">
         <p class="mb-0">&copy; 2026 Trackify. Built with Node, Postgres &amp; Modern Web.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Tab Switcher Script -->
+  <!-- Scroll Observer JavaScript -->
   <script>
-    function switchSpotlightTab(tabKey) {
-      const tabs = ['attendance', 'print', 'privacy'];
-      tabs.forEach((key, index) => {
-        const contentEl = document.getElementById(`tab-content-${key}`);
-        const btnEl = document.getElementById(`tab-btn-${index + 1}`);
-        if (key === tabKey) {
-          contentEl.classList.remove('d-none');
-          btnEl.classList.add('active');
-        } else {
-          contentEl.classList.add('d-none');
-          btnEl.classList.remove('active');
-        }
-      });
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.apple-reveal').forEach(el => observer.observe(el));
+    });
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

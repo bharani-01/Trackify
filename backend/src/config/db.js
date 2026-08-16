@@ -208,10 +208,15 @@ const initMigrations = async (retries = 3) => {
       SET subject_id = master_sub.id
       FROM subjects old_sub
       JOIN users u ON old_sub.user_id = u.id
-      JOIN subjects master_sub ON (master_sub.department_id = u.department_id OR TRIM(UPPER(master_sub.department)) = TRIM(UPPER(u.department)))
-                              AND master_sub.semester = u.semester
-                              AND (TRIM(UPPER(master_sub.subject_code)) = TRIM(UPPER(old_sub.subject_code)) OR TRIM(UPPER(master_sub.code)) = TRIM(UPPER(old_sub.code)))
-                              AND master_sub.user_id IS NULL
+      JOIN (
+        SELECT DISTINCT ON (COALESCE(department_id::text, department), semester, UPPER(COALESCE(subject_code, code)))
+               id, department_id, department, semester, subject_code, code
+        FROM subjects
+        WHERE user_id IS NULL
+        ORDER BY COALESCE(department_id::text, department), semester, UPPER(COALESCE(subject_code, code)), created_at ASC, id ASC
+      ) master_sub ON (master_sub.department_id = u.department_id OR TRIM(UPPER(master_sub.department)) = TRIM(UPPER(u.department)))
+                  AND master_sub.semester = u.semester
+                  AND (TRIM(UPPER(master_sub.subject_code)) = TRIM(UPPER(old_sub.subject_code)) OR TRIM(UPPER(master_sub.code)) = TRIM(UPPER(old_sub.code)))
       WHERE a.subject_id = old_sub.id AND old_sub.user_id IS NOT NULL;
     `);
 
