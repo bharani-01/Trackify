@@ -12,6 +12,7 @@
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   <script>
     (function () {
+      window.location.replace('/student/dashboard');
       const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
       document.documentElement.setAttribute('data-theme', theme);
       if (localStorage.getItem('sidebar-collapsed') === 'true') {

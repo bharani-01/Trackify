@@ -102,6 +102,14 @@ const updateSubject = async (req, res) => {
  * Delete a subject
  */
 const deleteSubject = async (req, res) => {
+  // Block subject deletion for non-admin/student accounts
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      message: 'Subject deletion is disabled for student accounts. Only institution administrators can delete master subjects.'
+    });
+  }
+
   const { id } = req.params;
 
   try {

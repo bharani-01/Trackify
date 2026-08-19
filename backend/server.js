@@ -549,6 +549,11 @@ app.use('/api/departments', departmentRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/notifications', notificationRoutes);
 
+// Redirect direct access to student subjects page to student dashboard
+app.get(['/student/subjects', '/student/subjects.html'], (req, res) => {
+  return res.redirect('/student/dashboard');
+});
+
 // Protected HTML pages for student and admin
 app.use('/student', protectHtml('student'), express.static(path.join(__dirname, '../frontend/student'), { extensions: ['html'] }));
 app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../frontend/admin'), { extensions: ['html'] }));
