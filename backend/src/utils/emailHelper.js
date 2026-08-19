@@ -5,14 +5,36 @@ const db = require('../config/db');
  * Queue an email to the persistent database email_queue table
  */
 const queueEmail = async (email, name, subject, htmlContent, category = 'auth') => {
+  const cleanEmail = email.toLowerCase().trim();
+  const cleanName = name.trim();
+  const cleanSubject = subject.trim();
+
+  // De-duplication check: Suppress identical email queued within last 60 seconds or currently pending/processing
+  try {
+    const dupCheck = await db.query(
+      `SELECT id FROM email_queue 
+       WHERE recipient_email = $1 AND subject = $2 
+         AND (status IN ('pending', 'processing') OR created_at > NOW() - INTERVAL '60 seconds')
+       LIMIT 1`,
+      [cleanEmail, cleanSubject]
+    );
+
+    if (dupCheck.rows.length > 0) {
+      console.warn(`[EMAIL QUEUE DUP SUPPRESSED]: Suppressed duplicate email queue for ${cleanEmail} (Subject: "${cleanSubject}", Existing ID: ${dupCheck.rows[0].id})`);
+      return dupCheck.rows[0].id;
+    }
+  } catch (dupErr) {
+    console.error('[EMAIL QUEUE DUP CHECK WARNING]: Non-blocking check error:', dupErr.message);
+  }
+
   const query = `
     INSERT INTO email_queue (recipient_email, recipient_name, subject, html_content, status, category)
     VALUES ($1, $2, $3, $4, 'pending', $5)
     RETURNING id
   `;
   try {
-    const result = await db.query(query, [email.toLowerCase().trim(), name.trim(), subject.trim(), htmlContent, category]);
-    console.log(`[EMAIL QUEUE]: Email queued for ${email} with Queue ID: ${result.rows[0].id}`);
+    const result = await db.query(query, [cleanEmail, cleanName, cleanSubject, htmlContent, category]);
+    console.log(`[EMAIL QUEUE]: Email queued for ${cleanEmail} with Queue ID: ${result.rows[0].id}`);
     return result.rows[0].id;
   } catch (error) {
     console.error('[EMAIL QUEUE ERROR]: Failed to enqueue email:', error.message);

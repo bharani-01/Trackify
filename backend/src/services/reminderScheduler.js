@@ -116,7 +116,15 @@ const sendLowAttendanceWarning = async (email, name, percentage, target, userId,
 /**
  * Process queued emails sequentially using a persistent retry queue
  */
+let isProcessingQueue = false;
+
+/**
+ * Process queued emails sequentially using a persistent retry queue
+ */
 const processEmailQueue = async () => {
+  if (isProcessingQueue) return;
+  isProcessingQueue = true;
+
   try {
     const globalEmail = await systemSettingsRepository.getSetting('global_email_notifications', 'true');
     if (globalEmail !== 'true') {
@@ -124,17 +132,24 @@ const processEmailQueue = async () => {
       return;
     }
 
-    const query = `
-      SELECT * FROM email_queue
-      WHERE status = 'pending' 
-         OR (status = 'failed' AND retry_count < 3)
-      ORDER BY created_at ASC
-      LIMIT 5
+    // Atomically select and mark selected items as 'processing' using SKIP LOCKED to prevent duplicate picking across workers/instances
+    const updateQuery = `
+      UPDATE email_queue
+      SET status = 'processing', updated_at = CURRENT_TIMESTAMP
+      WHERE id IN (
+        SELECT id FROM email_queue
+        WHERE status = 'pending' 
+           OR (status = 'failed' AND retry_count < 3)
+        ORDER BY created_at ASC
+        FOR UPDATE SKIP LOCKED
+        LIMIT 5
+      )
+      RETURNING *
     `;
-    const res = await db.query(query);
+    const res = await db.query(updateQuery);
     if (res.rows.length === 0) return;
 
-    console.log(`[EMAIL QUEUE WORKER]: Found ${res.rows.length} pending/failed email queue items to process...`);
+    console.log(`[EMAIL QUEUE WORKER]: Claimed ${res.rows.length} pending/failed email queue items for processing...`);
     const { Resend } = require('resend');
     const resendApiKey = process.env.RESEND_API_KEY;
 
@@ -199,6 +214,8 @@ const processEmailQueue = async () => {
     }
   } catch (error) {
     console.error('[EMAIL QUEUE WORKER CRITICAL EXCEPTION]:', error.message);
+  } finally {
+    isProcessingQueue = false;
   }
 };
 
@@ -321,6 +338,21 @@ const runDailyRemindersSweep = async (currentTimeStr = null, previewOnly = false
 
   const res = await db.query(query, params);
   for (const row of res.rows) {
+    // Check if daily reminder was ALREADY queued/sent for this user today
+    if (!previewOnly) {
+      const alreadySentCheck = await db.query(
+        `SELECT id FROM email_queue 
+         WHERE recipient_email = $1 
+           AND category = 'reminders' 
+           AND subject = 'Daily Attendance Marking Reminder'
+           AND created_at >= CURRENT_DATE`,
+        [row.email.toLowerCase().trim()]
+      );
+      if (alreadySentCheck.rows.length > 0) {
+        continue;
+      }
+    }
+
     const hasUnmarked = await checkUnmarkedClassesForToday(row.id, row.department_id, row.semester, todayDateStr, todayDayName);
     if (hasUnmarked) {
       if (previewOnly) {
@@ -393,6 +425,19 @@ const runLowAttendanceSweep = async (previewOnly = false) => {
           html
         });
       } else {
+        // Check if low attendance warning was ALREADY queued/sent for this user today
+        const warningCheck = await db.query(
+          `SELECT id FROM email_queue 
+           WHERE recipient_email = $1 
+             AND category = 'reminders' 
+             AND subject = 'Urgent: Low Attendance Warning Alert'
+             AND created_at >= CURRENT_DATE`,
+          [student.email.toLowerCase().trim()]
+        );
+        if (warningCheck.rows.length > 0) {
+          continue;
+        }
+
         await sendLowAttendanceWarning(student.email, student.name, currentPercentage, target, student.id);
         await pushNotificationService.sendPush(
           [student.id],

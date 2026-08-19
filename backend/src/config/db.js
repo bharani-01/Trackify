@@ -362,13 +362,15 @@ const initMigrations = async (retries = 3) => {
           recipient_name VARCHAR(100) NOT NULL,
           subject VARCHAR(200) NOT NULL,
           html_content TEXT NOT NULL,
-          status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed')),
+          status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'sent', 'failed')),
           retry_count INT DEFAULT 0,
           error_message TEXT,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       ALTER TABLE email_queue ADD COLUMN IF NOT EXISTS category VARCHAR(50) DEFAULT 'auth';
+      ALTER TABLE email_queue DROP CONSTRAINT IF EXISTS email_queue_status_check;
+      ALTER TABLE email_queue ADD CONSTRAINT email_queue_status_check CHECK (status IN ('pending', 'processing', 'sent', 'failed'));
 
       CREATE TABLE IF NOT EXISTS user_device_tokens (
           id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
