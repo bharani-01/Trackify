@@ -250,6 +250,7 @@ const initMigrations = async (retries = 3) => {
       ('mail_from_reminders', 'Trackify Reminders <reminders@mail.trackifyapp.co.in>'),
       ('mail_from_notices', 'Trackify Notices <notices@mail.trackifyapp.co.in>'),
       ('mail_from_backups', 'Trackify Backups <backups@mail.trackifyapp.co.in>'),
+      ('mail_from_support', 'Trackify Support <support@mail.trackifyapp.co.in>'),
       ('summary_email_enabled', 'true'),
       ('summary_email_interval', '15'),
       ('last_summary_date', TO_CHAR(CURRENT_DATE, 'YYYY-MM-DD'))

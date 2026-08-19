@@ -14,6 +14,7 @@ const getSettings = async (req, res) => {
     const mailFromReminders = await systemSettingsRepository.getSetting('mail_from_reminders', '');
     const mailFromNotices = await systemSettingsRepository.getSetting('mail_from_notices', '');
     const mailFromBackups = await systemSettingsRepository.getSetting('mail_from_backups', '');
+    const mailFromSupport = await systemSettingsRepository.getSetting('mail_from_support', '');
     const summaryEnabled = await systemSettingsRepository.getSetting('summary_email_enabled', 'true');
     const summaryInterval = await systemSettingsRepository.getSetting('summary_email_interval', '15');
     const lastSummaryDate = await systemSettingsRepository.getSetting('last_summary_date', '');
@@ -31,6 +32,7 @@ const getSettings = async (req, res) => {
         mail_from_reminders: mailFromReminders,
         mail_from_notices: mailFromNotices,
         mail_from_backups: mailFromBackups,
+        mail_from_support: mailFromSupport,
         summary_email_enabled: summaryEnabled === 'true',
         summary_email_interval: parseInt(summaryInterval, 10) || 15,
         last_summary_date: lastSummaryDate
@@ -59,6 +61,7 @@ const updateSettings = async (req, res) => {
     mail_from_reminders,
     mail_from_notices,
     mail_from_backups,
+    mail_from_support,
     summary_email_enabled,
     summary_email_interval,
     global_push_notifications
@@ -113,6 +116,10 @@ const updateSettings = async (req, res) => {
 
     if (mail_from_backups !== undefined) {
       await systemSettingsRepository.setSetting('mail_from_backups', mail_from_backups);
+    }
+
+    if (mail_from_support !== undefined) {
+      await systemSettingsRepository.setSetting('mail_from_support', mail_from_support);
     }
 
     if (summary_email_enabled !== undefined) {

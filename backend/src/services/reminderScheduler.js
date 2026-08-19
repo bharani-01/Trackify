@@ -747,7 +747,7 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
               <!-- Left: FROM address -->
               <td style="padding: 18px 16px 20px 20px; vertical-align: top; width: 34%;">
                 <div style="font-family: 'Caveat', cursive; font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;">FROM</div>
-                <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55); line-height: 1.5;">Trackify System<br>attendance@trackify.app</div>
+                <div style="font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55); line-height: 1.5;">Trackify System<br>attendance@mail.trackifyapp.co.in</div>
               </td>
 
               <!-- Center: Trackify Favicon Seal -->
@@ -843,7 +843,7 @@ const send15DayAttendanceSummary = async (userId, startDate, endDate, previewOnl
       <tr>
         <td class="email-footer-cell" style="text-align:center; padding:24px 20px 36px; font-family:'Inter',sans-serif; font-size:12px; color:#9CA3AF; line-height:1.7;">
           This email is sent from <strong style="color:#374151;">Trackify</strong>.<br>
-          Need help? Contact <a class="email-footer-link" href="mailto:contact@trackifyapp.co.in" style="color:#111827; font-weight:700; text-decoration:none;">contact@trackifyapp.co.in</a>
+          Need help? Contact <a class="email-footer-link" href="mailto:support@mail.trackifyapp.co.in" style="color:#111827; font-weight:700; text-decoration:none;">support@mail.trackifyapp.co.in</a>
           <div class="email-footer-sig" style="color:#374151; font-weight:700; margin-top:6px;">Happy Learning 📚<br>Team Trackify</div>
         </td>
       </tr>

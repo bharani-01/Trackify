@@ -82,6 +82,29 @@ const getInboundEmailById = async (req, res) => {
       email.status = 'read';
     }
 
+    // Fallback attempt: if body is placeholder or empty, extract from raw_payload
+    if ((!email.html_body && (!email.text_body || email.text_body.startsWith('Incoming email received from'))) && email.raw_payload) {
+      try {
+        const parsedPayload = typeof email.raw_payload === 'string' ? JSON.parse(email.raw_payload) : email.raw_payload;
+        const textKeys = ['text', 'text_body', 'body_text', 'body-plain', 'plain', 'content', 'message'];
+        const htmlKeys = ['html', 'html_body', 'body_html', 'body-html'];
+        const dataObj = parsedPayload.data || parsedPayload;
+
+        for (const k of htmlKeys) {
+          if (dataObj[k] && typeof dataObj[k] === 'string' && dataObj[k].trim()) {
+            email.html_body = dataObj[k].trim();
+            break;
+          }
+        }
+        for (const k of textKeys) {
+          if (dataObj[k] && typeof dataObj[k] === 'string' && dataObj[k].trim()) {
+            email.text_body = dataObj[k].trim();
+            break;
+          }
+        }
+      } catch (_) {}
+    }
+
     return res.status(200).json({
       success: true,
       data: email
@@ -118,8 +141,12 @@ const replyToInboundEmail = async (req, res) => {
       recipientEmail = recipientEmail.trim();
     }
 
+    const systemSettingsRepository = require('../repositories/systemSettingsRepository');
     const replySubject = customSubject || (emailRecord.subject.startsWith('Re:') ? emailRecord.subject : `Re: ${emailRecord.subject}`);
-    const fromSender = process.env.MAIL_FROM || 'Trackify Support <support@mail.trackifyapp.co.in>';
+    let fromSender = await systemSettingsRepository.getSetting('mail_from_support');
+    if (!fromSender) {
+      fromSender = process.env.MAIL_FROM_SUPPORT || process.env.MAIL_FROM || 'Trackify Support <support@mail.trackifyapp.co.in>';
+    }
     const resendApiKey = process.env.RESEND_API_KEY;
 
     if (!resendApiKey) {

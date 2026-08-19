@@ -334,6 +334,10 @@
                   <input type="text" class="form-control bg-white" id="senderReminders" placeholder="Reminders Sender">
                   <label class="text-secondary" for="senderReminders">Reminders Sender (Check-Ins, Warnings)</label>
                 </div>
+                <div class="form-floating mb-3">
+                  <input type="text" class="form-control bg-white" id="senderSupport" placeholder="Support Sender">
+                  <label class="text-secondary" for="senderSupport">Support Replies Sender (Inbox Responses)</label>
+                </div>
               </div>
               
               <div class="col-md-6">
@@ -685,6 +689,7 @@
         document.getElementById('senderReminders').value = response.settings.mail_from_reminders || '';
         document.getElementById('senderNotices').value = response.settings.mail_from_notices || '';
         document.getElementById('senderBackups').value = response.settings.mail_from_backups || '';
+        document.getElementById('senderSupport').value = response.settings.mail_from_support || '';
 
         // Load automated summaries settings
         document.getElementById('summarySwitch').checked = response.settings.summary_email_enabled;
@@ -860,6 +865,7 @@
       const mail_from_reminders = document.getElementById('senderReminders').value.trim();
       const mail_from_notices = document.getElementById('senderNotices').value.trim();
       const mail_from_backups = document.getElementById('senderBackups').value.trim();
+      const mail_from_support = document.getElementById('senderSupport').value.trim();
 
       const saveBtn = document.getElementById('saveSendersBtn');
       saveBtn.disabled = true;
@@ -871,7 +877,8 @@
           mail_from_auth, 
           mail_from_reminders, 
           mail_from_notices, 
-          mail_from_backups 
+          mail_from_backups,
+          mail_from_support
         }
       });
 
@@ -1418,5 +1425,6 @@
 
     window.onload = loadData;
   </script>
+  <script src="/assets/js/app-nav.js"></script>
 </body>
 </html>
