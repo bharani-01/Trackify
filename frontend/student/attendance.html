@@ -48,6 +48,42 @@
 
     /* Mobile Responsive Optimizations for Attendance Logging */
     @media (max-width: 768px) {
+      .app-content {
+        padding: 1rem 0.5rem !important;
+      }
+
+      .top-actions-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        gap: 0.5rem !important;
+      }
+
+      .top-actions-container .btn {
+        flex: 1 1 calc(50% - 0.25rem) !important;
+        justify-content: center !important;
+        padding: 0.5rem 0.25rem !important;
+        font-size: 0.78rem !important;
+      }
+
+      #bulk-actions-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+      }
+
+      #bulk-actions-container .btn {
+        width: 100% !important;
+        padding: 0.55rem 0.25rem !important;
+        font-size: 0.74rem !important;
+        white-space: normal !important;
+      }
+
+      .day-strip-container {
+        max-width: calc(100vw - 90px) !important;
+      }
+
       #quick-dates-container {
         width: 100%;
         display: flex;
@@ -76,7 +112,6 @@
         gap: 0.35rem !important;
         width: 100%;
         margin-top: 0.75rem;
-        /* Spacing for Mark Attendance button group on mobile */
       }
 
       .attendance-btn-group .btn {
@@ -236,7 +271,7 @@
       
       <main class="app-content animate-fade-in-up">
         
-        <div class="d-flex align-items-center justify-content-end mb-4 w-100 gap-2">
+        <div class="d-flex align-items-center justify-content-end mb-4 w-100 gap-2 top-actions-container">
           <a href="/student/history" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-secondary border-secondary d-inline-flex align-items-center gap-2" title="View Full Attendance History">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
@@ -287,11 +322,11 @@
               <div id="holiday-banner-container" class="mb-4" style="display: none;"></div>
 
               
-              <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-nowrap" id="bulk-actions-container" style="display: none !important;">
-                <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
-                <button type="button" class="btn btn-sm btn-glass border-danger text-danger flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('Absent')">✗ Mark All Absent</button>
-                <button type="button" class="btn btn-sm btn-glass border-primary text-primary flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="markAll('On Duty')">ℹ Mark All OD</button>
-                <button type="button" class="btn btn-sm btn-glass border-secondary text-secondary flex-fill py-2 px-1 text-center fw-bold rounded-pill text-nowrap" style="font-size: 0.78rem;" onclick="clearAttendanceForDate()">🗑 Clear Attendance</button>
+              <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-wrap" id="bulk-actions-container" style="display: none !important;">
+                <button type="button" class="btn btn-sm btn-glass border-success text-success flex-fill py-2 px-1 text-center fw-bold rounded-pill" style="font-size: 0.78rem;" onclick="markAll('Present')">✓ Mark All Present</button>
+                <button type="button" class="btn btn-sm btn-glass border-danger text-danger flex-fill py-2 px-1 text-center fw-bold rounded-pill" style="font-size: 0.78rem;" onclick="markAll('Absent')">✗ Mark All Absent</button>
+                <button type="button" class="btn btn-sm btn-glass border-primary text-primary flex-fill py-2 px-1 text-center fw-bold rounded-pill" style="font-size: 0.78rem;" onclick="markAll('On Duty')">ℹ Mark All OD</button>
+                <button type="button" class="btn btn-sm btn-glass border-secondary text-secondary flex-fill py-2 px-1 text-center fw-bold rounded-pill" style="font-size: 0.78rem;" onclick="clearAttendanceForDate()">🗑 Clear Attendance</button>
               </div>
 
               

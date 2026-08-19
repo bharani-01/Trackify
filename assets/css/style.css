@@ -1066,6 +1066,16 @@ h6 {
     padding: 0.25rem 0.4rem !important;
     font-size: 0.65rem !important;
   }
+
+  /* Attendance Card Mobile Container Containment */
+  .glass-card {
+    padding: 1rem 0.75rem !important;
+    max-width: 100% !important;
+  }
+
+  .class-attendance-card {
+    max-width: 100% !important;
+  }
 }
 
 /* Compulsively normalize logo scaling between light/dark themes to account for native padding differences */
