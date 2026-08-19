@@ -82,27 +82,43 @@ const getInboundEmailById = async (req, res) => {
       email.status = 'read';
     }
 
-    // Fallback attempt: if body is placeholder or empty, extract from raw_payload
-    if ((!email.html_body && (!email.text_body || email.text_body.startsWith('Incoming email received from'))) && email.raw_payload) {
+    // Fallback attempt: if body is placeholder or empty, fetch live from Resend Receiving API
+    if ((!email.html_body && (!email.text_body || email.text_body.startsWith('Incoming email received from'))) && email.email_id && process.env.RESEND_API_KEY) {
       try {
-        const parsedPayload = typeof email.raw_payload === 'string' ? JSON.parse(email.raw_payload) : email.raw_payload;
-        const textKeys = ['text', 'text_body', 'body_text', 'body-plain', 'plain', 'content', 'message'];
-        const htmlKeys = ['html', 'html_body', 'body_html', 'body-html'];
-        const dataObj = parsedPayload.data || parsedPayload;
+        const resend = new Resend(process.env.RESEND_API_KEY);
+        const detail = await resend.emails.receiving.get(email.email_id);
+        if (detail && detail.data && detail.data.raw && detail.data.raw.download_url) {
+          const rawRes = await fetch(detail.data.raw.download_url);
+          const mimeText = await rawRes.text();
+          
+          const decodeQP = (s) => {
+            if (!s) return '';
+            const clean = s.replace(/=\r?\n/g, '');
+            return clean.replace(/(?:=[0-9A-Fa-f]{2})+/g, (m) => {
+              try {
+                return Buffer.from(m.replace(/=/g, ''), 'hex').toString('utf-8');
+              } catch (_) {
+                return m;
+              }
+            });
+          };
+          let text = '';
+          let html = '';
+          const htmlMatch = mimeText.match(/Content-Type:\s*text\/html;?[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*?\r?\n([\s\S]*?)(?=\r?\n--[^\r\n]+--|\r?\n--[^\r\n]+|$)/i);
+          if (htmlMatch && htmlMatch[1]) html = decodeQP(htmlMatch[1].trim());
 
-        for (const k of htmlKeys) {
-          if (dataObj[k] && typeof dataObj[k] === 'string' && dataObj[k].trim()) {
-            email.html_body = dataObj[k].trim();
-            break;
+          const textMatch = mimeText.match(/Content-Type:\s*text\/plain;?[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*?\r?\n([\s\S]*?)(?=\r?\n--[^\r\n]+--|\r?\n--[^\r\n]+|$)/i);
+          if (textMatch && textMatch[1]) text = decodeQP(textMatch[1].trim());
+
+          if (text || html) {
+            email.text_body = text || email.text_body;
+            email.html_body = html || email.html_body;
+            await db.query(`UPDATE inbound_emails SET text_body = $1, html_body = $2 WHERE id = $3;`, [email.text_body, email.html_body, id]);
           }
         }
-        for (const k of textKeys) {
-          if (dataObj[k] && typeof dataObj[k] === 'string' && dataObj[k].trim()) {
-            email.text_body = dataObj[k].trim();
-            break;
-          }
-        }
-      } catch (_) {}
+      } catch (err) {
+        console.warn('[INBOUND EMAIL FETCH NOTICE]: Could not auto-fetch body from Resend API:', err.message);
+      }
     }
 
     return res.status(200).json({

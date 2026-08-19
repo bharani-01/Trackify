@@ -2,6 +2,64 @@ const db = require('../config/db');
 const { Resend } = require('resend');
 const { Webhook } = require('svix');
 
+// Bulletproof UTF-8 Quoted-Printable Decoder
+function decodeQuotedPrintable(str) {
+  if (!str) return '';
+  const clean = str.replace(/=\r?\n/g, '');
+  return clean.replace(/(?:=[0-9A-Fa-f]{2})+/g, (match) => {
+    try {
+      return Buffer.from(match.replace(/=/g, ''), 'hex').toString('utf-8');
+    } catch (_) {
+      return match;
+    }
+  });
+}
+
+function parseMimeBody(mimeString) {
+  let text = '';
+  let html = '';
+
+  if (!mimeString) return { text, html };
+
+  const htmlMatch = mimeString.match(/Content-Type:\s*text\/html;?[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*?\r?\n([\s\S]*?)(?=\r?\n--[^\r\n]+--|\r?\n--[^\r\n]+|$)/i);
+  if (htmlMatch && htmlMatch[1]) {
+    html = decodeQuotedPrintable(htmlMatch[1].trim());
+  }
+
+  const textMatch = mimeString.match(/Content-Type:\s*text\/plain;?[^\r\n]*\r?\n(?:[^\r\n]+\r?\n)*?\r?\n([\s\S]*?)(?=\r?\n--[^\r\n]+--|\r?\n--[^\r\n]+|$)/i);
+  if (textMatch && textMatch[1]) {
+    text = decodeQuotedPrintable(textMatch[1].trim());
+  }
+
+  if (!text && !html) {
+    const parts = mimeString.split(/\r?\n\r?\n/);
+    if (parts.length > 1) {
+      text = decodeQuotedPrintable(parts.slice(1).join('\n\n').trim());
+    } else {
+      text = decodeQuotedPrintable(mimeString);
+    }
+  }
+
+  return { text, html };
+}
+
+// Helper to fetch and parse body from Resend Receiving API download_url
+async function fetchBodyFromResendReceiving(emailId) {
+  if (!emailId || !process.env.RESEND_API_KEY) return { text: '', html: '' };
+  try {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const detail = await resend.emails.receiving.get(emailId);
+    if (detail && detail.data && detail.data.raw && detail.data.raw.download_url) {
+      const rawRes = await fetch(detail.data.raw.download_url);
+      const mimeText = await rawRes.text();
+      return parseMimeBody(mimeText);
+    }
+  } catch (err) {
+    console.warn('[INBOUND EMAIL FETCH NOTICE]: Could not fetch email body via Resend receiving API:', err.message);
+  }
+  return { text: '', html: '' };
+}
+
 // Helper to extract text and html body content from diverse webhook payload formats
 function extractBodyContent(obj) {
   if (!obj || typeof obj !== 'object') return { text: '', html: '' };
@@ -14,19 +72,18 @@ function extractBodyContent(obj) {
 
   for (const key of htmlKeys) {
     if (typeof obj[key] === 'string' && obj[key].trim().length > 0) {
-      html = obj[key].trim();
+      html = decodeQuotedPrintable(obj[key].trim());
       break;
     }
   }
 
   for (const key of textKeys) {
     if (typeof obj[key] === 'string' && obj[key].trim().length > 0) {
-      text = obj[key].trim();
+      text = decodeQuotedPrintable(obj[key].trim());
       break;
     }
   }
 
-  // Deep check nested payload, data, or body objects if top-level search yielded nothing
   if (!text && !html && obj.data && typeof obj.data === 'object') {
     const nested = extractBodyContent(obj.data);
     text = nested.text;
@@ -35,12 +92,6 @@ function extractBodyContent(obj) {
 
   if (!text && !html && obj.payload && typeof obj.payload === 'object') {
     const nested = extractBodyContent(obj.payload);
-    text = nested.text;
-    html = nested.html;
-  }
-
-  if (!text && !html && obj.body && typeof obj.body === 'object') {
-    const nested = extractBodyContent(obj.body);
     text = nested.text;
     html = nested.html;
   }
@@ -54,7 +105,7 @@ const handleResendInboundWebhook = async (req, res) => {
     const payload = req.body || {};
     const webhookSecret = process.env.RESEND_WEBHOOK_SECRET;
 
-    // Optional Svix Signature Verification (if RESEND_WEBHOOK_SECRET is set in environment)
+    // Optional Svix Signature Verification
     if (webhookSecret) {
       const svix_id = req.headers['svix-id'];
       const svix_timestamp = req.headers['svix-timestamp'];
@@ -79,7 +130,6 @@ const handleResendInboundWebhook = async (req, res) => {
 
     console.log('[RESEND INBOUND WEBHOOK]: Processing event payload...');
 
-    // Support both direct event payloads and wrapped webhook formats
     const eventType = payload.type || payload.event;
     const data = payload.data || payload;
 
@@ -106,24 +156,17 @@ const handleResendInboundWebhook = async (req, res) => {
 
       const subject = data.subject || payload.subject || '(No Subject)';
       
-      // Extract text and html body content recursively across all property names
+      // First attempt: extract body from direct webhook payload keys
       const extracted = extractBodyContent(payload);
       let textBody = extracted.text;
       let htmlBody = extracted.html;
 
-      // If body is missing in webhook payload, attempt to fetch content using Resend API / SDK
-      if (!textBody && !htmlBody && (data.email_id || data.id) && process.env.RESEND_API_KEY) {
-        const targetId = data.email_id || data.id;
-        try {
-          const resend = new Resend(process.env.RESEND_API_KEY);
-          const emailDetail = await resend.emails.get(targetId);
-          if (emailDetail && emailDetail.data) {
-            textBody = emailDetail.data.text || textBody;
-            htmlBody = emailDetail.data.html || htmlBody;
-          }
-        } catch (fetchErr) {
-          console.warn('[INBOUND EMAIL FETCH NOTICE]: Could not fetch email body via SDK:', fetchErr.message);
-        }
+      // Second attempt: fetch full MIME body directly from Resend Receiving API using download_url
+      if (!textBody && !htmlBody && (data.email_id || data.id)) {
+        const targetResendId = data.email_id || data.id;
+        const fetchedBody = await fetchBodyFromResendReceiving(targetResendId);
+        textBody = fetchedBody.text || textBody;
+        htmlBody = fetchedBody.html || htmlBody;
       }
 
       if (!textBody && !htmlBody) {
@@ -159,7 +202,6 @@ const handleResendInboundWebhook = async (req, res) => {
       console.log(`[INBOUND EMAIL SAVED]: Saved email from "${fromAddr}" with subject "${subject}" (ID: ${result.rows[0].id})`);
     }
 
-    // Always respond 200 OK to Resend webhooks quickly
     return res.status(200).json({ success: true, message: 'Inbound email event processed successfully' });
   } catch (error) {
     console.error('[RESEND WEBHOOK ERROR]:', error);
