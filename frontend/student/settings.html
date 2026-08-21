@@ -243,6 +243,12 @@
               <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
             </button>
 
+            <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#displayPrefsModal">
+              <span class="settings-list-icon text-primary"><i class="bi bi-palette-fill"></i></span>
+              <span class="settings-list-label">Display & Date Colors</span>
+              <span class="settings-list-chevron"><i class="bi bi-chevron-right"></i></span>
+            </button>
+
             <button class="settings-list-item" data-bs-toggle="modal" data-bs-target="#notificationPrefsModal">
               <span class="settings-list-icon text-success"><i class="bi bi-bell-fill"></i></span>
               <span class="settings-list-label">Notification Preferences</span>
@@ -283,6 +289,64 @@
         </div>
 
       </main>
+    </div>
+  </div>
+
+  <!-- MODAL: DISPLAY & DATE COLORS -->
+  <div class="modal fade" id="displayPrefsModal" tabindex="-1" aria-labelledby="displayPrefsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
+        <div class="modal-header border-bottom border-light p-4">
+          <h5 class="modal-title fw-bold text-dark" id="displayPrefsModalLabel">Display & Date Colors</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="displayPrefsForm" onsubmit="saveDisplayPreferences(event)">
+          <div class="modal-body p-4">
+            
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <div>
+                  <h6 class="fw-bold text-dark mb-1">Date Status Colors</h6>
+                  <p class="text-secondary small mb-0">Show mild color tints & glowing micro-dots on the calendar and attendance dates.</p>
+                </div>
+                <div class="form-check form-switch ms-3">
+                  <input class="form-check-input" type="checkbox" role="switch" id="dateColorsToggle" style="width: 2.5em; height: 1.35em; cursor: pointer;">
+                </div>
+              </div>
+            </div>
+
+            <!-- Color Palette Preview Card -->
+            <div class="p-3 rounded-3 border mb-2" style="background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div class="text-secondary small fw-semibold mb-2" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;">Status Colors Preview</div>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3);">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span> Present
+                </span>
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></span> Pending
+                </span>
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(239, 68, 68, 0.12); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3);">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444;"></span> Absent
+                </span>
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(59, 130, 246, 0.12); color: #2563eb; border: 1px solid rgba(59, 130, 246, 0.3);">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6;"></span> Holiday
+                </span>
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(168, 85, 247, 0.12); color: #9333ea; border: 1px solid rgba(168, 85, 247, 0.3);">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #a855f7;"></span> OD
+                </span>
+                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(148, 163, 184, 0.12); color: #64748b; border: 1px dashed rgba(148, 163, 184, 0.45);">
+                  <span style="font-size: 0.65rem;">OFF</span> Sundays
+                </span>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer border-top border-light p-3">
+            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-glow" id="saveDisplayPrefsBtn">Save Preferences</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -599,8 +663,57 @@
         showAlert('Failed to load user settings configurations.', 'danger');
       }
 
-      // 3. Verify push notification permission status and registration
+      // 3. Fetch user display & date color preferences
+      await loadDisplayPreferences();
+
+      // 4. Verify push notification permission status and registration
       updateServiceStatus();
+    }
+
+    async function loadDisplayPreferences() {
+      try {
+        const res = await apiCall('/api/user-preferences');
+        if (res.success && res.preferences) {
+          const enabled = res.preferences.date_colors_enabled !== false;
+          document.getElementById('dateColorsToggle').checked = enabled;
+          localStorage.setItem('trackify_date_colors_enabled', enabled ? 'true' : 'false');
+        }
+      } catch (err) {
+        console.error('Failed to load user preferences:', err);
+      }
+    }
+
+    async function saveDisplayPreferences(e) {
+      if (e) e.preventDefault();
+      const saveBtn = document.getElementById('saveDisplayPrefsBtn');
+      if (saveBtn) {
+        saveBtn.disabled = true;
+        saveBtn.innerText = 'Saving...';
+      }
+
+      const dateColorsEnabled = document.getElementById('dateColorsToggle').checked;
+
+      const res = await apiCall('/api/user-preferences', {
+        method: 'PUT',
+        body: {
+          date_colors_enabled: dateColorsEnabled
+        }
+      });
+
+      if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerText = 'Save Preferences';
+      }
+
+      if (res.success) {
+        localStorage.setItem('trackify_date_colors_enabled', dateColorsEnabled ? 'true' : 'false');
+        showAlert('Display & date color preferences saved successfully!', 'success');
+        const modalEl = document.getElementById('displayPrefsModal');
+        const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        modal.hide();
+      } else {
+        showAlert(res.message || 'Failed to save display preferences', 'danger');
+      }
     }
 
     // Profile form submit (Details & Avatar)

@@ -241,6 +241,15 @@ const initMigrations = async (retries = 3) => {
           updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       ALTER TABLE settings ADD COLUMN IF NOT EXISTS push_notifications BOOLEAN DEFAULT TRUE;
+
+      CREATE TABLE IF NOT EXISTS user_preferences (
+          id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id UUID UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+          date_colors_enabled BOOLEAN DEFAULT TRUE,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+      ALTER TABLE user_preferences ADD COLUMN IF NOT EXISTS date_colors_enabled BOOLEAN DEFAULT TRUE;
     `);
 
     // Seed default custom mail senders and summary settings

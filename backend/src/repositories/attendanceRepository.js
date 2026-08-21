@@ -9,7 +9,8 @@ const db = require('../config/db');
 const getByUserId = async (userId, filters = {}) => {
   const { startDate, endDate, subjectId, sortBy, sortOrder } = filters;
   let query = `
-    SELECT a.*, COALESCE(s.subject_name, s.name) AS subject_name, COALESCE(s.subject_code, s.code) AS subject_code, s.color
+    SELECT a.id, a.user_id, a.subject_id, TO_CHAR(a.date, 'YYYY-MM-DD') AS date, a.status, a.remarks, a.created_at,
+           COALESCE(s.subject_name, s.name) AS subject_name, COALESCE(s.subject_code, s.code) AS subject_code, s.color
     FROM attendance a
     JOIN subjects s ON a.subject_id = s.id
     WHERE a.user_id = $1
@@ -77,7 +78,11 @@ const getByUserId = async (userId, filters = {}) => {
  * @returns {Promise<object|null>}
  */
 const getById = async (id, userId) => {
-  const query = 'SELECT * FROM attendance WHERE id = $1 AND user_id = $2';
+  const query = `
+    SELECT id, user_id, subject_id, TO_CHAR(date, 'YYYY-MM-DD') AS date, status, remarks, created_at 
+    FROM attendance 
+    WHERE id = $1 AND user_id = $2
+  `;
   const result = await db.query(query, [id, userId]);
   return result.rows[0] || null;
 };

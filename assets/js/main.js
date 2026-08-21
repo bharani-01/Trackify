@@ -503,3 +503,17 @@ async function markAllNotificationsRead() {
     loadHeaderNotifications();
   }
 }
+
+// Global PWA Service Worker Registration for Seamless Native App Experience
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+      .then((reg) => {
+        // Successfully registered service worker with root scope
+      })
+      .catch((err) => {
+        console.warn('[Trackify PWA] Service Worker registration failed:', err);
+      });
+  });
+}
+

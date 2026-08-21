@@ -30,7 +30,7 @@ messaging.onBackgroundMessage((payload) => {
   }
 });
 
-const CACHE_NAME = 'trackify-cache-v5';
+const CACHE_NAME = 'trackify-cache-v6';
 const OFFLINE_URL = '/login.html';
 
 const ASSETS_TO_CACHE = [

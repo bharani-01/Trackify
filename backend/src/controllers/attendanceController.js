@@ -2,6 +2,9 @@ const attendanceRepository = require('../repositories/attendanceRepository');
 const settingsRepository = require('../repositories/settingsRepository');
 const auditLogRepository = require('../repositories/auditLogRepository');
 const holidayRepository = require('../repositories/holidayRepository');
+const timetableRepository = require('../repositories/timetableRepository');
+const subjectRepository = require('../repositories/subjectRepository');
+const adjustmentRepository = require('../repositories/adjustmentRepository');
 
 /**
  * Get attendance logs for the logged-in student (supports date range and subject filtering)
@@ -367,11 +370,309 @@ const getStats = async (req, res) => {
   }
 };
 
+/**
+ * Get comprehensive month-level attendance calendar summary with color dot statuses
+ */
+const getCalendarMonthSummary = async (req, res) => {
+  try {
+    const now = new Date();
+    const year = parseInt(req.query.year, 10) || now.getFullYear();
+    const month = parseInt(req.query.month, 10) || (now.getMonth() + 1); // 1-12
+    const subjectId = req.query.subjectId || null;
+
+    if (month < 1 || month > 12) {
+      return res.status(400).json({ success: false, message: 'Invalid month specified' });
+    }
+
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const endDate = `${year}-${String(month).padStart(2, '0')}-${String(daysInMonth).padStart(2, '0')}`;
+
+    // Helper for robust YYYY-MM-DD formatting without timezone shifts
+    const formatToDateStr = (d) => {
+      if (!d) return '';
+      if (typeof d === 'string') {
+        const match = d.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (match) return `${match[1]}-${match[2]}-${match[3]}`;
+      }
+      if (d instanceof Date) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+      return String(d).substring(0, 10);
+    };
+
+    // 1. Fetch all attendance logs for the student in this month
+    const logs = await attendanceRepository.getByUserId(req.user.id, {
+      startDate,
+      endDate,
+      subjectId
+    });
+
+    // 2. Fetch holidays for student's department and semester
+    const allHolidays = await holidayRepository.getByTarget(req.user.department, req.user.semester);
+    const monthHolidays = allHolidays.filter(h => {
+      const hDate = formatToDateStr(h.date);
+      return hDate >= startDate && hDate <= endDate;
+    });
+
+    // 3. Fetch student's timetable slots
+    const allSlots = await timetableRepository.getByUserId(req.user.id);
+    const slots = subjectId ? allSlots.filter(s => String(s.subject_id) === String(subjectId)) : allSlots;
+
+    // 4. Fetch all subjects for student dropdown filter
+    const subjects = await subjectRepository.getAllByUserId(req.user.id);
+
+    // Group logs by formatted date
+    const logsByDate = {};
+    logs.forEach(log => {
+      const d = formatToDateStr(log.date);
+      if (d) {
+        if (!logsByDate[d]) logsByDate[d] = [];
+        logsByDate[d].push({ ...log, date: d });
+      }
+    });
+
+    // Group holidays by formatted date
+    const holidaysByDate = {};
+    monthHolidays.forEach(h => {
+      const d = formatToDateStr(h.date);
+      if (d) {
+        holidaysByDate[d] = { ...h, date: d };
+      }
+    });
+
+    // Group timetable slots by day of week
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const slotsByDay = {};
+    dayNames.forEach(d => { slotsByDay[d] = []; });
+    slots.forEach(slot => {
+      if (slotsByDay[slot.day]) {
+        slotsByDay[slot.day].push(slot);
+      }
+    });
+
+    // Determine today string in local timezone YYYY-MM-DD
+    const todayObj = new Date();
+    const todayStr = formatToDateStr(todayObj);
+
+    // Compute status and dots for each day of the month
+    const days = {};
+    let totalPresentDays = 0;
+    let totalAbsentDays = 0;
+    let totalPendingDays = 0;
+    let totalMedicalDays = 0;
+    let totalOdDays = 0;
+    let totalHolidays = 0;
+    let totalConductedPeriods = 0;
+    let totalAttendedPeriods = 0;
+
+    for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+      const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+      const dayDate = new Date(year, month - 1, dayNum);
+      const dayOfWeek = dayNames[dayDate.getDay()];
+
+      const holiday = holidaysByDate[dateStr] || null;
+      const daySlots = slotsByDay[dayOfWeek] || [];
+      const dayLogs = logsByDate[dateStr] || [];
+
+      let status = 'off_day';
+      let dots = []; // Array of colors: 'green', 'yellow', 'red', 'blue', 'purple', 'orange'
+      let statusLabel = 'No Classes';
+
+      if (holiday) {
+        status = 'holiday';
+        statusLabel = `Holiday: ${holiday.name}`;
+        dots = ['blue'];
+        totalHolidays++;
+      } else if (daySlots.length === 0 && dayLogs.length === 0) {
+        status = 'off_day';
+        statusLabel = (dayOfWeek === 'Sunday' || dayOfWeek === 'Saturday') ? 'Weekend' : 'No Scheduled Classes';
+        dots = [];
+      } else {
+        const scheduledCount = daySlots.length;
+        const markedCount = dayLogs.length;
+
+        const presentCount = dayLogs.filter(l => l.status === 'Present').length;
+        const absentCount = dayLogs.filter(l => l.status === 'Absent').length;
+        const odCount = dayLogs.filter(l => l.status === 'On Duty').length;
+        const medicalCount = dayLogs.filter(l => l.status === 'Medical Leave').length;
+
+        const dotsSet = new Set();
+
+        if (dateStr > todayStr) {
+          // Future date
+          status = 'upcoming';
+          statusLabel = `${scheduledCount} Class${scheduledCount > 1 ? 'es' : ''} Scheduled`;
+          dots = ['future'];
+        } else if (dateStr === todayStr) {
+          // Today
+          if (markedCount === 0) {
+            status = 'pending';
+            statusLabel = 'Pending Marking';
+            dots = ['yellow'];
+            totalPendingDays++;
+          } else {
+            if (presentCount > 0) dotsSet.add('green');
+            if (odCount > 0) dotsSet.add('purple');
+            if (medicalCount > 0) dotsSet.add('orange');
+            if (absentCount > 0) dotsSet.add('red');
+
+            if (markedCount < scheduledCount) {
+              status = 'partial';
+              statusLabel = `${markedCount}/${scheduledCount} Marked (Pending)`;
+              dotsSet.add('yellow');
+              totalPendingDays++;
+            } else {
+              // All scheduled classes marked today
+              if (medicalCount === markedCount) {
+                status = 'medical';
+                statusLabel = 'Medical Leave (ML)';
+                totalMedicalDays++;
+              } else if (odCount === markedCount) {
+                status = 'od';
+                statusLabel = 'On Duty (OD)';
+                totalOdDays++;
+                totalPresentDays++;
+              } else if (absentCount === markedCount) {
+                status = 'absent';
+                statusLabel = 'All Absent';
+                totalAbsentDays++;
+              } else if (presentCount === markedCount) {
+                status = 'present';
+                statusLabel = 'All Marked Present';
+                totalPresentDays++;
+              } else {
+                status = 'mixed';
+                const parts = [];
+                if (presentCount > 0) parts.push(`${presentCount} Present`);
+                if (odCount > 0) parts.push(`${odCount} OD`);
+                if (medicalCount > 0) parts.push(`${medicalCount} ML`);
+                if (absentCount > 0) parts.push(`${absentCount} Absent`);
+                statusLabel = parts.join(', ');
+                if (presentCount + odCount + medicalCount >= absentCount) totalPresentDays++; else totalAbsentDays++;
+              }
+            }
+            dots = Array.from(dotsSet);
+          }
+          totalConductedPeriods += markedCount;
+          totalAttendedPeriods += (presentCount + odCount);
+        } else {
+          // Past date (< todayStr)
+          if (markedCount === 0) {
+            status = 'not_marked';
+            statusLabel = 'Not Marked / Missed';
+            dots = ['red'];
+            totalAbsentDays++;
+            totalConductedPeriods += scheduledCount;
+          } else {
+            if (presentCount > 0) dotsSet.add('green');
+            if (odCount > 0) dotsSet.add('purple');
+            if (medicalCount > 0) dotsSet.add('orange');
+            if (absentCount > 0) dotsSet.add('red');
+
+            if (markedCount < scheduledCount) {
+              status = 'partial_missed';
+              statusLabel = `${markedCount}/${scheduledCount} Marked (${scheduledCount - markedCount} Missed)`;
+              dotsSet.add('red');
+              totalAbsentDays++;
+              totalConductedPeriods += scheduledCount;
+              totalAttendedPeriods += (presentCount + odCount);
+            } else {
+              if (medicalCount === markedCount) {
+                status = 'medical';
+                statusLabel = 'Medical Leave (ML)';
+                totalMedicalDays++;
+              } else if (odCount === markedCount) {
+                status = 'od';
+                statusLabel = 'On Duty (OD)';
+                totalOdDays++;
+                totalPresentDays++;
+              } else if (absentCount === markedCount) {
+                status = 'absent';
+                statusLabel = 'All Absent';
+                totalAbsentDays++;
+              } else if (presentCount === markedCount) {
+                status = 'present';
+                statusLabel = 'Marked Present';
+                totalPresentDays++;
+              } else {
+                status = 'mixed';
+                const parts = [];
+                if (presentCount > 0) parts.push(`${presentCount} Present`);
+                if (odCount > 0) parts.push(`${odCount} OD`);
+                if (medicalCount > 0) parts.push(`${medicalCount} ML`);
+                if (absentCount > 0) parts.push(`${absentCount} Absent`);
+                statusLabel = parts.join(', ');
+                if (presentCount + odCount + medicalCount >= absentCount) totalPresentDays++; else totalAbsentDays++;
+              }
+              totalConductedPeriods += markedCount;
+              totalAttendedPeriods += (presentCount + odCount);
+            }
+            dots = Array.from(dotsSet);
+          }
+        }
+      }
+
+      days[dateStr] = {
+        date: dateStr,
+        dayNum,
+        dayOfWeek,
+        isToday: dateStr === todayStr,
+        isFuture: dateStr > todayStr,
+        isPast: dateStr < todayStr,
+        status,
+        statusLabel,
+        dots,
+        holiday,
+        scheduledSlots: daySlots,
+        logs: dayLogs
+      };
+    }
+
+    const monthlyPercentage = totalConductedPeriods > 0
+      ? Math.round((totalAttendedPeriods / totalConductedPeriods) * 100 * 10) / 10
+      : 100.0;
+
+    return res.status(200).json({
+      success: true,
+      year,
+      month,
+      daysInMonth,
+      startDate,
+      endDate,
+      today: todayStr,
+      summary: {
+        totalPresentDays,
+        totalAbsentDays,
+        totalPendingDays,
+        totalMedicalDays,
+        totalOdDays,
+        totalHolidays,
+        totalConductedPeriods,
+        totalAttendedPeriods,
+        monthlyPercentage
+      },
+      subjects,
+      days
+    });
+  } catch (error) {
+    console.error('getCalendarMonthSummary controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve calendar month summary'
+    });
+  }
+};
+
 module.exports = {
   getAttendanceLogs,
   markAttendance,
   updateAttendance,
   deleteAttendance,
   clearAttendanceByDate,
-  getStats
+  getStats,
+  getCalendarMonthSummary
 };

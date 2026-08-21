@@ -1,14 +1,19 @@
 const db = require('../config/db');
 
 const getAll = async () => {
-  const query = 'SELECT * FROM holidays ORDER BY date DESC';
+  const query = `
+    SELECT id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, department_id, department, semester, created_at 
+    FROM holidays 
+    ORDER BY date DESC
+  `;
   const result = await db.query(query);
   return result.rows;
 };
 
 const getByTarget = async (department, semester) => {
   const query = `
-    SELECT * FROM holidays 
+    SELECT id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, department_id, department, semester, created_at 
+    FROM holidays 
     WHERE 
       (department = $1 OR department IS NULL)
       AND (semester = $2 OR semester IS NULL)
@@ -20,7 +25,8 @@ const getByTarget = async (department, semester) => {
 
 const getByDateAndTarget = async (date, department, semester) => {
   const query = `
-    SELECT * FROM holidays 
+    SELECT id, name, TO_CHAR(date, 'YYYY-MM-DD') AS date, department_id, department, semester, created_at 
+    FROM holidays 
     WHERE 
       date = $1
       AND (department = $2 OR department IS NULL)

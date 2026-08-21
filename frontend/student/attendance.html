@@ -9,6 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <script src="/assets/js/lottie.min.js"></script>
   <style>
     /* Premium style improvements for quick actions */
     .quick-date-btn {
@@ -307,14 +308,76 @@
                   
                 </div>
 
-                <div class="calendar-trigger-btn" style="flex-shrink: 0;" title="Select custom date">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  <input type="date" id="attendanceDateSelect" onchange="onDateChanged(this.value)">
+                <div class="custom-datepicker-wrapper" style="flex-shrink: 0;">
+                  <button type="button" class="calendar-trigger-btn" id="calendarTriggerBtn" onclick="toggleCustomDatePicker(event)" title="Select custom date with attendance overview">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                      <line x1="16" y1="2" x2="16" y2="6"></line>
+                      <line x1="8" y1="2" x2="8" y2="6"></line>
+                      <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                  </button>
+
+                  <!-- Custom Color-Coded Calendar Popover -->
+                  <div class="custom-datepicker-popover" id="customDatePickerPopover" onclick="event.stopPropagation()">
+                    <div class="mini-cal-header">
+                      <div class="mini-cal-title" id="miniCalTitle">August 2026</div>
+                      <div class="mini-cal-nav">
+                        <button type="button" class="mini-cal-btn" onclick="prevMiniMonth()" title="Previous Month">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                        </button>
+                        <button type="button" class="mini-cal-btn" onclick="nextMiniMonth()" title="Next Month">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Weekday Header (Mon - Sun) -->
+                    <div class="mini-cal-grid">
+                      <div class="mini-cal-day-head">Mo</div>
+                      <div class="mini-cal-day-head">Tu</div>
+                      <div class="mini-cal-day-head">We</div>
+                      <div class="mini-cal-day-head">Th</div>
+                      <div class="mini-cal-day-head">Fr</div>
+                      <div class="mini-cal-day-head" style="color: var(--text-muted);">Sa</div>
+                      <div class="mini-cal-day-head" style="color: var(--text-muted);">Su</div>
+                    </div>
+
+                    <!-- Date Cells Grid -->
+                    <div class="mini-cal-grid" id="miniCalGrid">
+                      <!-- Dynamically rendered via JS with color rings & dots -->
+                    </div>
+
+                    <!-- Micro Legend Bar -->
+                    <div class="mini-cal-legend">
+                      <div class="mini-legend-item">
+                        <span class="mini-dot dot-green"></span>
+                        <span>Present</span>
+                      </div>
+                      <div class="mini-legend-item">
+                        <span class="mini-dot dot-yellow"></span>
+                        <span>Pending</span>
+                      </div>
+                      <div class="mini-legend-item">
+                        <span class="mini-dot dot-red"></span>
+                        <span>Absent</span>
+                      </div>
+                      <div class="mini-legend-item">
+                        <span class="mini-dot dot-blue"></span>
+                        <span>Holiday</span>
+                      </div>
+                      <div class="mini-legend-item">
+                        <span class="mini-dot dot-purple"></span>
+                        <span>OD</span>
+                      </div>
+                    </div>
+
+                    <!-- Footer Quick Actions -->
+                    <div class="mini-cal-footer">
+                      <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none text-secondary" style="font-size: 0.75rem;" onclick="closeCustomDatePicker()">Close</button>
+                      <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-0.5 fw-semibold" style="font-size: 0.72rem;" onclick="goToMiniToday()">Today</button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -353,8 +416,12 @@
     let daySlots = [];
     let currentDateHoliday = null;
 
-    // Initialize dates
+    // Mini Calendar Popover State
     const todayObj = new Date();
+    let miniCalYear = todayObj.getFullYear();
+    let miniCalMonth = todayObj.getMonth() + 1; // 1-12
+    let miniCalCache = {}; // Cache month summary data
+
     const todayDateFormatted = getFormattedDateString(todayObj);
     currentSelectedDate = todayDateFormatted;
 
@@ -362,13 +429,98 @@
       return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 
-    // Render dynamic rolling days strip (Apple/Stripe style - Extended 15-Card Sliding Track)
-    function renderRollingDaysStrip(centerDateStr) {
+    let currentHolidayLottieAnim = null;
+
+    function renderLottieHolidayAnimation(containerId) {
+      if (currentHolidayLottieAnim) {
+        try { currentHolidayLottieAnim.destroy(); } catch (e) {}
+        currentHolidayLottieAnim = null;
+      }
+      const animContainer = document.getElementById(containerId);
+      if (!animContainer) return;
+
+      if (typeof lottie !== 'undefined') {
+        currentHolidayLottieAnim = lottie.loadAnimation({
+          container: animContainer,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/assets/animations/enjoy-beach-vacation.json'
+        });
+      }
+    }
+
+    // Date Colors Option Preference (persisted in localStorage)
+    let isDateColorsEnabled = localStorage.getItem('trackify_date_colors_enabled') !== 'false'; // default true
+
+    function updateDateColorsUI() {
+      const btn = document.getElementById('toggleDateColorsBtn');
+      const dot = document.getElementById('toggleDateColorsDot');
+      const lbl = document.getElementById('toggleDateColorsLbl');
+      if (lbl) {
+        lbl.innerText = isDateColorsEnabled ? 'Colors: ON' : 'Colors: OFF';
+      }
+      if (dot) {
+        dot.style.background = isDateColorsEnabled ? '#10b981' : '#94a3b8';
+      }
+      if (btn) {
+        if (isDateColorsEnabled) {
+          btn.classList.remove('text-muted');
+          btn.classList.add('text-secondary');
+        } else {
+          btn.classList.add('text-muted');
+        }
+      }
+    }
+
+    async function toggleDateColorsPreference() {
+      isDateColorsEnabled = !isDateColorsEnabled;
+      localStorage.setItem('trackify_date_colors_enabled', isDateColorsEnabled ? 'true' : 'false');
+      updateDateColorsUI();
+      await renderRollingDaysStrip(currentSelectedDate);
+      const popover = document.getElementById('customDatePickerPopover');
+      if (popover && popover.classList.contains('is-open')) {
+        await renderMiniCalendarView();
+      }
+      // Persist to user_preferences DB table
+      apiCall('/api/user-preferences', {
+        method: 'PUT',
+        body: { date_colors_enabled: isDateColorsEnabled }
+      }).catch(err => console.error('Failed to sync preferences to DB:', err));
+
+      showAlert(`Date status colors turned ${isDateColorsEnabled ? 'ON' : 'OFF'}`, 'info');
+    }
+
+    // Render dynamic rolling days strip (Apple/Stripe style - Extended 15-Card Sliding Track with Mild Status Tints)
+    async function renderRollingDaysStrip(centerDateStr) {
       const parts = centerDateStr.split('-');
       const centerDate = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
       
       const container = document.getElementById('rolling-days-strip');
       if (!container) return;
+
+      // Determine months needed for the 15-day range (-7 to +7)
+      const firstDate = new Date(centerDate);
+      firstDate.setDate(centerDate.getDate() - 7);
+      const lastDate = new Date(centerDate);
+      lastDate.setDate(centerDate.getDate() + 7);
+
+      const monthsToFetch = new Set();
+      monthsToFetch.add(`${firstDate.getFullYear()}-${firstDate.getMonth() + 1}`);
+      monthsToFetch.add(`${lastDate.getFullYear()}-${lastDate.getMonth() + 1}`);
+
+      // Fetch month data in parallel if not already cached in miniCalCache
+      const fetchPromises = Array.from(monthsToFetch).map(async (key) => {
+        if (!miniCalCache[key]) {
+          const [y, m] = key.split('-');
+          const res = await apiCall(`/api/attendance/calendar-month?year=${y}&month=${m}`);
+          if (res.success) {
+            miniCalCache[key] = res;
+          }
+        }
+      });
+      await Promise.all(fetchPromises);
+
       container.innerHTML = '';
       
       // Render 15 cards: centerDate - 7 to centerDate + 7
@@ -384,15 +536,58 @@
         const dayName = daysAbbrev[current.getDay()];
         const monthName = monthsAbbrev[current.getMonth()];
         
-        const isActive = offset === 0;
+        const isActive = formattedDate === currentSelectedDate;
         const activeClass = isActive ? 'active-day-card' : '';
         const idAttr = isActive ? 'id="active-day-strip-card"' : '';
+
+        // Lookup day status from cache
+        const monthKey = `${current.getFullYear()}-${current.getMonth() + 1}`;
+        const monthData = miniCalCache[monthKey];
+        const dayInfo = monthData && monthData.days ? monthData.days[formattedDate] : null;
+
+        let statusTintClass = '';
+        const isWeekendDay = dayName === 'Sun' || dayName === 'Sat' || (dayInfo && dayInfo.status === 'off_day');
+
+        if (isWeekendDay) {
+          statusTintClass = 'strip-weekend';
+        } else if (isDateColorsEnabled && dayInfo) {
+          if (dayInfo.status === 'present' || dayInfo.status === 'marked_present') {
+            statusTintClass = 'strip-present';
+          } else if (dayInfo.status === 'pending' || dayInfo.status === 'partial') {
+            statusTintClass = 'strip-pending';
+          } else if (dayInfo.status === 'not_marked' || dayInfo.status === 'absent' || dayInfo.status === 'marked_absent') {
+            statusTintClass = 'strip-absent';
+          } else if (dayInfo.status === 'holiday') {
+            statusTintClass = 'strip-holiday';
+          } else if (dayInfo.status === 'od') {
+            statusTintClass = 'strip-od';
+          } else if (dayInfo.status === 'mixed' || dayInfo.status === 'partial_missed') {
+            statusTintClass = 'strip-mixed';
+          }
+        }
+
+        // Render micro-dots for active days, or clean small 'off' text for Sundays/weekends by default
+        let dotHtml = '';
+        if (isWeekendDay) {
+          dotHtml = `<span class="strip-off-label">off</span>`;
+        } else if (isDateColorsEnabled) {
+          if (dayInfo && dayInfo.dots && dayInfo.dots.length > 0) {
+            dotHtml = `<div class="d-flex align-items-center justify-content-center gap-1" style="margin-top: 2px; min-height: 5px;">` +
+              dayInfo.dots.map(c => `<span class="strip-status-dot dot-${c}"></span>`).join('') +
+              `</div>`;
+          } else {
+            dotHtml = `<div style="margin-top: 2px; min-height: 5px;"></div>`;
+          }
+        } else {
+          dotHtml = `<div style="margin-top: 2px; min-height: 5px;"></div>`;
+        }
         
         container.innerHTML += `
-          <button type="button" ${idAttr} class="day-strip-card ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
+          <button type="button" ${idAttr} class="day-strip-card ${statusTintClass} ${activeClass} d-flex flex-column align-items-center justify-content-center" onclick="selectDateFromStrip('${formattedDate}')">
             <span class="day-month-lbl">${monthName}</span>
             <span class="day-num-lbl">${dayNum}</span>
             <span class="day-name-lbl">${dayName}</span>
+            ${dotHtml}
           </button>
         `;
       }
@@ -408,16 +603,29 @@
 
     async function selectDateFromStrip(dateStr) {
       currentSelectedDate = dateStr;
-      document.getElementById('attendanceDateSelect').value = dateStr;
-      renderRollingDaysStrip(dateStr);
+      await renderRollingDaysStrip(dateStr);
       await fetchChecklist();
     }
 
     async function loadData() {
-      // Set input element value
-      document.getElementById('attendanceDateSelect').value = currentSelectedDate;
-      // Render strip centered at today
-      renderRollingDaysStrip(currentSelectedDate);
+      // Load user preferences from DB (with localStorage fallback)
+      try {
+        const prefRes = await apiCall('/api/user-preferences');
+        if (prefRes.success && prefRes.preferences) {
+          isDateColorsEnabled = prefRes.preferences.date_colors_enabled !== false;
+          localStorage.setItem('trackify_date_colors_enabled', isDateColorsEnabled ? 'true' : 'false');
+        }
+      } catch (err) {
+        console.warn('Could not fetch user preferences from server, using local preference:', err);
+      }
+      updateDateColorsUI();
+
+      // Check if URL specifies a target date (e.g. ?date=2026-08-21)
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDate = urlParams.get('date');
+      if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)) {
+        currentSelectedDate = urlDate;
+      }
 
       // Fetch user profile session
       const meResult = await apiCall('/api/auth/me');
@@ -428,8 +636,182 @@
         return;
       }
 
+      // Render strip centered at selected date with mild status tints
+      await renderRollingDaysStrip(currentSelectedDate);
+
       await fetchChecklist();
     }
+
+    // =========================================================================
+    // Custom Color-Coded Date Picker Popover Logic
+    // =========================================================================
+    function toggleCustomDatePicker(e) {
+      if (e) e.stopPropagation();
+      const popover = document.getElementById('customDatePickerPopover');
+      if (!popover) return;
+      if (popover.classList.contains('is-open')) {
+        closeCustomDatePicker();
+      } else {
+        openCustomDatePicker();
+      }
+    }
+
+    async function openCustomDatePicker() {
+      const popover = document.getElementById('customDatePickerPopover');
+      if (!popover) return;
+
+      // Sync mini calendar to selected date
+      if (currentSelectedDate) {
+        const parts = currentSelectedDate.split('-');
+        miniCalYear = parseInt(parts[0], 10);
+        miniCalMonth = parseInt(parts[1], 10);
+      }
+
+      popover.classList.add('is-open');
+      await renderMiniCalendarView();
+    }
+
+    function closeCustomDatePicker() {
+      const popover = document.getElementById('customDatePickerPopover');
+      if (popover) popover.classList.remove('is-open');
+    }
+
+    async function prevMiniMonth() {
+      miniCalMonth--;
+      if (miniCalMonth < 1) {
+        miniCalMonth = 12;
+        miniCalYear--;
+      }
+      await renderMiniCalendarView();
+    }
+
+    async function nextMiniMonth() {
+      miniCalMonth++;
+      if (miniCalMonth > 12) {
+        miniCalMonth = 1;
+        miniCalYear++;
+      }
+      await renderMiniCalendarView();
+    }
+
+    async function goToMiniToday() {
+      const now = new Date();
+      miniCalYear = now.getFullYear();
+      miniCalMonth = now.getMonth() + 1;
+      const todayStr = getFormattedDateString(now);
+      await selectDateFromMiniCalendar(todayStr);
+    }
+
+    async function renderMiniCalendarView() {
+      const titleEl = document.getElementById('miniCalTitle');
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      if (titleEl) {
+        titleEl.innerText = `${monthNames[miniCalMonth - 1]} ${miniCalYear}`;
+      }
+
+      const gridEl = document.getElementById('miniCalGrid');
+      if (!gridEl) return;
+      gridEl.innerHTML = `<div class="text-center py-3 w-100" style="grid-column: span 7;"><div class="spinner-border spinner-border-sm text-primary" role="status"></div></div>`;
+
+      const cacheKey = `${miniCalYear}-${miniCalMonth}`;
+      let data = miniCalCache[cacheKey];
+
+      if (!data) {
+        const res = await apiCall(`/api/attendance/calendar-month?year=${miniCalYear}&month=${miniCalMonth}`);
+        if (res.success) {
+          data = res;
+          miniCalCache[cacheKey] = res;
+        }
+      }
+
+      if (!data || !data.days) {
+        gridEl.innerHTML = `<div class="text-center py-2 text-danger small w-100" style="grid-column: span 7;">Failed to load</div>`;
+        return;
+      }
+
+      gridEl.innerHTML = '';
+
+      const firstDayOfMonth = new Date(data.year, data.month - 1, 1);
+      let startDayIndex = firstDayOfMonth.getDay() - 1;
+      if (startDayIndex === -1) startDayIndex = 6; // Sunday index 6
+
+      // Empty padding cells before 1st of month
+      for (let i = 0; i < startDayIndex; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'mini-cal-cell is-empty';
+        gridEl.appendChild(emptyCell);
+      }
+
+      // Date cells with colored status rings & micro-dots
+      for (let dayNum = 1; dayNum <= data.daysInMonth; dayNum++) {
+        const dateStr = `${data.year}-${String(data.month).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+        const dayInfo = data.days[dateStr] || {
+          date: dateStr,
+          dayNum,
+          status: 'off_day',
+          dots: []
+        };
+
+        const cell = document.createElement('div');
+        cell.className = 'mini-cal-cell';
+        cell.dataset.date = dateStr;
+
+        if (dateStr === currentSelectedDate) cell.classList.add('is-selected');
+        if (dayInfo.isToday) cell.classList.add('is-today');
+        if (dayInfo.dayOfWeek === 'Saturday' || dayInfo.dayOfWeek === 'Sunday') cell.classList.add('is-weekend');
+
+        // Ring classes
+        if (isDateColorsEnabled) {
+          if (dayInfo.status === 'present' || dayInfo.status === 'marked_present') cell.classList.add('ring-green');
+          else if (dayInfo.status === 'pending' || dayInfo.status === 'partial') cell.classList.add('ring-yellow');
+          else if (dayInfo.status === 'not_marked' || dayInfo.status === 'absent' || dayInfo.status === 'marked_absent') cell.classList.add('ring-red');
+          else if (dayInfo.status === 'mixed' || dayInfo.status === 'partial_missed') cell.classList.add('ring-mixed');
+          else if (dayInfo.status === 'od') cell.classList.add('ring-purple');
+          else if (dayInfo.status === 'holiday') cell.classList.add('ring-blue');
+        }
+
+        // Micro-dots HTML
+        let dotsHtml = '';
+        if (isDateColorsEnabled && dayInfo.dots && dayInfo.dots.length > 0) {
+          dotsHtml = `<div class="mini-cell-dots">` + dayInfo.dots.map(c => `<span class="mini-dot dot-${c}"></span>`).join('') + `</div>`;
+        } else {
+          dotsHtml = `<div class="mini-cell-dots"></div>`;
+        }
+
+        cell.innerHTML = `
+          <span class="mini-cell-date">${dayNum}</span>
+          ${dotsHtml}
+        `;
+
+        cell.onclick = () => selectDateFromMiniCalendar(dateStr);
+        gridEl.appendChild(cell);
+      }
+    }
+
+    async function selectDateFromMiniCalendar(dateStr) {
+      currentSelectedDate = dateStr;
+      closeCustomDatePicker();
+      renderRollingDaysStrip(dateStr);
+      await fetchChecklist();
+    }
+
+    // Dismiss popover on outside click
+    document.addEventListener('click', (e) => {
+      const popover = document.getElementById('customDatePickerPopover');
+      const triggerBtn = document.getElementById('calendarTriggerBtn');
+      if (popover && popover.classList.contains('is-open')) {
+        if (!popover.contains(e.target) && !triggerBtn.contains(e.target)) {
+          closeCustomDatePicker();
+        }
+      }
+    });
+
+    // Dismiss popover on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeCustomDatePicker();
+      }
+    });
 
     // Load classes checklist based on selected date
     async function fetchChecklist() {
@@ -546,18 +928,60 @@
 
         container.innerHTML = '';
 
-        if (daySlots.length === 0 || holiday) {
+        if (holiday) {
+          // Hide bulk actions completely on holidays
           document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
-          if (daySlots.length === 0) {
+          if (holidayBannerContainer) {
+            holidayBannerContainer.style.display = 'none';
+            holidayBannerContainer.innerHTML = '';
+          }
+
+          container.innerHTML = `
+            <div class="holiday-vacation-card rounded-4 text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up" style="background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, var(--bg-secondary) 100%); border: 1.5px solid rgba(59, 130, 246, 0.28);">
+              <div id="holiday-vacation-lottie" class="holiday-lottie-container mb-2"></div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold mb-2" style="font-size: 0.72rem;">Official College Holiday</span>
+              <h3 class="h6 fw-bold text-dark mb-1">${holiday.name}</h3>
+              <p class="text-secondary small mb-0" style="max-width: 380px; font-size: 0.8rem;">Attendance logging is disabled today. Take a break, relax, and enjoy your holiday!</p>
+            </div>
+          `;
+          renderLottieHolidayAnimation('holiday-vacation-lottie');
+          updateProgressBar(0, 0);
+          return;
+        }
+
+        if (daySlots.length === 0) {
+          document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
+          
+          if (targetDayName === 'Sunday' || targetDayName === 'Saturday') {
+            // Render beach vacation animation for Weekend Rest Days (Sundays / Saturdays)
             container.innerHTML = `
-              <div class="text-center py-5">
-                <h3 class="h6 fw-semibold text-secondary">No classes scheduled for this date</h3>
-                <p class="text-muted small mb-0">Enjoy your day off or select another date.</p>
+              <div class="holiday-vacation-card rounded-4 text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up" style="background: linear-gradient(180deg, rgba(148, 163, 184, 0.06) 0%, var(--bg-secondary) 100%); border: 1.5px dashed rgba(148, 163, 184, 0.42);">
+                <div id="weekend-vacation-lottie" class="holiday-lottie-container mb-2"></div>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-1 rounded-pill fw-bold mb-2" style="font-size: 0.72rem;">Weekend Off</span>
+                <h3 class="h6 fw-bold text-dark mb-1">${targetDayName} Rest Day</h3>
+                <p class="text-secondary small mb-0" style="max-width: 380px; font-size: 0.8rem;">No timetable lectures scheduled for ${targetDayName}. Relax and recharge for the upcoming week!</p>
               </div>
             `;
-            updateProgressBar(0, 0);
-            return;
+            renderLottieHolidayAnimation('weekend-vacation-lottie');
+          } else {
+            container.innerHTML = `
+              <div class="p-5 rounded-4 text-center d-flex flex-column align-items-center justify-content-center" style="background: var(--bg-secondary); border: 1px dashed var(--border-color);">
+                <div class="p-3 rounded-circle bg-primary-subtle text-primary mb-3 d-flex align-items-center justify-content-center" style="width: 54px; height: 54px;">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                  </svg>
+                </div>
+                <h3 class="h6 fw-bold text-dark mb-1">No Scheduled Classes</h3>
+                <p class="text-secondary small mb-0" style="max-width: 340px;">There are no timetable lectures scheduled for ${targetDayName}. No attendance logging required.</p>
+              </div>
+            `;
           }
+          updateProgressBar(0, 0);
+          return;
         } else {
           // Show bulk actions container since there are slots and no holiday
           document.getElementById('bulk-actions-container').style.setProperty('display', 'flex', 'important');
@@ -572,7 +996,7 @@
 
           if (slot.is_canceled) {
             container.innerHTML += `
-              <div class="p-3 mb-3 rounded-4 border bg-light text-muted gap-3 class-attendance-card" style="border-left: 5px solid #e2e8f0 !important; text-decoration: line-through; opacity: 0.65;">
+              <div class="p-3 mb-3 rounded-4 border text-muted gap-3 class-attendance-card" style="border-left: 5px solid #e2e8f0 !important; text-decoration: line-through; opacity: 0.65; background: var(--bg-secondary);">
                 <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
                   <div>
                     <span class="badge bg-secondary text-white px-2 py-0.5 fs-9 mb-1">Period ${slot.period}</span>
@@ -612,9 +1036,9 @@
             const isAbsent = matchLog.status === 'Absent';
             const isOD = matchLog.status === 'On Duty';
 
-            if (isPresent) cardBgStyle = 'background: rgba(16, 185, 129, 0.02);';
-            else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.02);';
-            else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.02);';
+            if (isPresent) cardBgStyle = 'background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.25) !important;';
+            else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.25) !important;';
+            else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.03); border-color: rgba(37, 99, 235, 0.25) !important;';
 
             editIconHtml = `
               <button type="button" onclick="enableCardEditMode('${slot.period}')" class="btn btn-sm text-secondary p-1 border-0 position-absolute top-0 end-0 m-3 edit-pencil-btn" title="Edit marking">
@@ -672,7 +1096,7 @@
           }
 
           container.innerHTML += `
-            <div class="p-3 mb-3 rounded-4 border bg-white shadow-sm gap-3 class-attendance-card position-relative" style="${cardBgStyle}">
+            <div class="p-3 mb-3 rounded-4 border d-flex justify-content-between align-items-center flex-wrap gap-3 class-attendance-card position-relative" style="${cardBgStyle} background: var(--bg-secondary); border-color: var(--border-color);">
               ${editIconHtml}
               <div>
                 <span class="badge bg-secondary-subtle text-secondary border px-2 py-0.5 fs-9 mb-1 fw-semibold">Period ${slot.period}</span>
@@ -748,8 +1172,10 @@
       const results = await Promise.all(promises);
       const successfulCount = results.filter(r => r.success).length;
       
+      miniCalCache = {}; // Invalidate calendar popover cache
       showAlert(`Successfully marked ${successfulCount} classes as ${status}`, 'success');
       await fetchChecklist();
+      await renderRollingDaysStrip(currentSelectedDate);
     }
 
     async function clearAttendanceForDate() {
@@ -767,8 +1193,10 @@
       });
 
       if (response.success) {
+        miniCalCache = {}; // Invalidate calendar popover cache
         showAlert(`Successfully cleared attendance for ${currentSelectedDate}`, 'success');
         await fetchChecklist();
+        await renderRollingDaysStrip(currentSelectedDate);
       } else {
         showAlert(response.message || 'Failed to clear attendance', 'danger');
       }
@@ -803,8 +1231,10 @@
           body: { status, remarks: `Period ${period}` }
         });
         if (response.success) {
+          miniCalCache = {}; // Invalidate calendar popover cache
           showAlert(`Updated status to ${status} for Period ${period}`, 'success');
           await fetchChecklist();
+          await renderRollingDaysStrip(currentSelectedDate);
         } else {
           showAlert(response.message, 'danger');
         }
@@ -825,8 +1255,10 @@
       });
 
       if (response.success) {
+        miniCalCache = {}; // Invalidate calendar popover cache
         showAlert(`Logged ${status} for Period ${period}`, 'success');
         await fetchChecklist();
+        await renderRollingDaysStrip(currentSelectedDate);
       } else {
         showAlert(response.message, 'danger');
       }
@@ -835,8 +1267,10 @@
     async function deleteMarking(id) {
       const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
       if (response.success) {
+        miniCalCache = {}; // Invalidate calendar popover cache
         showAlert('Attendance marking reset', 'success');
         await fetchChecklist();
+        await renderRollingDaysStrip(currentSelectedDate);
       } else {
         showAlert(response.message, 'danger');
       }

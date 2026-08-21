@@ -9,6 +9,7 @@ const subjectRoutes = require('./src/routes/subjectRoutes');
 const timetableRoutes = require('./src/routes/timetableRoutes');
 const attendanceRoutes = require('./src/routes/attendanceRoutes');
 const settingsRoutes = require('./src/routes/settingsRoutes');
+const userPreferencesRoutes = require('./src/routes/userPreferencesRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const departmentRoutes = require('./src/routes/departmentRoutes');
 const announcementRoutes = require('./src/routes/announcementRoutes');
@@ -544,6 +545,7 @@ app.use('/api/subjects', subjectRoutes);
 app.use('/api/timetable', timetableRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/user-preferences', userPreferencesRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/departments', departmentRoutes);
 app.use('/api/announcements', announcementRoutes);
@@ -552,6 +554,11 @@ app.use('/api/notifications', notificationRoutes);
 // Redirect direct access to student subjects page to student dashboard
 app.get(['/student/subjects', '/student/subjects.html'], (req, res) => {
   return res.redirect('/student/dashboard');
+});
+
+// Redirect direct access to student calendar page to mark attendance
+app.get(['/student/calendar', '/student/calendar.html'], (req, res) => {
+  return res.redirect('/student/attendance');
 });
 
 // Protected HTML pages for student and admin
