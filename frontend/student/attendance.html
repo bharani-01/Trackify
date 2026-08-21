@@ -601,11 +601,31 @@
       }, 50);
     }
 
+    function updateDateUrl(dateStr) {
+      if (window.history && window.history.replaceState) {
+        const url = new URL(window.location);
+        url.searchParams.set('date', dateStr);
+        window.history.replaceState({ date: dateStr }, '', url.pathname + url.search);
+      }
+    }
+
     async function selectDateFromStrip(dateStr) {
       currentSelectedDate = dateStr;
+      updateDateUrl(dateStr);
       await renderRollingDaysStrip(dateStr);
       await fetchChecklist();
     }
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlDate = urlParams.get('date');
+      if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate) && urlDate !== currentSelectedDate) {
+        currentSelectedDate = urlDate;
+        await renderRollingDaysStrip(currentSelectedDate);
+        await fetchChecklist();
+      }
+    });
 
     async function loadData() {
       // Load user preferences from DB (with localStorage fallback)
@@ -625,6 +645,8 @@
       const urlDate = urlParams.get('date');
       if (urlDate && /^\d{4}-\d{2}-\d{2}$/.test(urlDate)) {
         currentSelectedDate = urlDate;
+      } else {
+        updateDateUrl(currentSelectedDate);
       }
 
       // Fetch user profile session
@@ -790,8 +812,9 @@
 
     async function selectDateFromMiniCalendar(dateStr) {
       currentSelectedDate = dateStr;
+      updateDateUrl(dateStr);
       closeCustomDatePicker();
-      renderRollingDaysStrip(dateStr);
+      await renderRollingDaysStrip(dateStr);
       await fetchChecklist();
     }
 
@@ -937,11 +960,11 @@
           }
 
           container.innerHTML = `
-            <div class="holiday-vacation-card rounded-4 text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up" style="background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, var(--bg-secondary) 100%); border: 1.5px solid rgba(59, 130, 246, 0.28);">
-              <div id="holiday-vacation-lottie" class="holiday-lottie-container mb-2"></div>
-              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill fw-bold mb-2" style="font-size: 0.72rem;">Official College Holiday</span>
-              <h3 class="h6 fw-bold text-dark mb-1">${holiday.name}</h3>
-              <p class="text-secondary small mb-0" style="max-width: 380px; font-size: 0.8rem;">Attendance logging is disabled today. Take a break, relax, and enjoy your holiday!</p>
+            <div class="holiday-vacation-card text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up">
+              <div id="holiday-vacation-lottie" class="holiday-lottie-container mb-3"></div>
+              <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3.5 py-1.5 rounded-pill fw-bold mb-2" style="font-size: 0.75rem;">Official College Holiday</span>
+              <h3 class="h5 fw-bold text-dark mb-1">${holiday.name}</h3>
+              <p class="text-secondary small mb-0" style="max-width: 420px; font-size: 0.85rem;">Attendance logging is disabled today. Take a break, relax, and enjoy your holiday!</p>
             </div>
           `;
           renderLottieHolidayAnimation('holiday-vacation-lottie');
@@ -955,11 +978,11 @@
           if (targetDayName === 'Sunday' || targetDayName === 'Saturday') {
             // Render beach vacation animation for Weekend Rest Days (Sundays / Saturdays)
             container.innerHTML = `
-              <div class="holiday-vacation-card rounded-4 text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up" style="background: linear-gradient(180deg, rgba(148, 163, 184, 0.06) 0%, var(--bg-secondary) 100%); border: 1.5px dashed rgba(148, 163, 184, 0.42);">
-                <div id="weekend-vacation-lottie" class="holiday-lottie-container mb-2"></div>
-                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3 py-1 rounded-pill fw-bold mb-2" style="font-size: 0.72rem;">Weekend Off</span>
-                <h3 class="h6 fw-bold text-dark mb-1">${targetDayName} Rest Day</h3>
-                <p class="text-secondary small mb-0" style="max-width: 380px; font-size: 0.8rem;">No timetable lectures scheduled for ${targetDayName}. Relax and recharge for the upcoming week!</p>
+              <div class="holiday-vacation-card text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up">
+                <div id="weekend-vacation-lottie" class="holiday-lottie-container mb-3"></div>
+                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-3.5 py-1.5 rounded-pill fw-bold mb-2" style="font-size: 0.75rem;">Weekend Off</span>
+                <h3 class="h5 fw-bold text-dark mb-1">${targetDayName} Rest Day</h3>
+                <p class="text-secondary small mb-0" style="max-width: 420px; font-size: 0.85rem;">No timetable lectures scheduled for ${targetDayName}. Relax and recharge for the upcoming week!</p>
               </div>
             `;
             renderLottieHolidayAnimation('weekend-vacation-lottie');
