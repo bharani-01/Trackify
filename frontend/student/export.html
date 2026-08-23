@@ -8,7 +8,7 @@
   
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.4">
 
   <style>
     .export-card-option {
@@ -34,6 +34,28 @@
       border-color: rgba(239, 68, 68, 0.15) !important;
     }
 
+    .filter-chip {
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .filter-chip:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .filter-chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
     /* Print / PDF Statement Styling */
     @media print {
       body {
@@ -50,6 +72,8 @@
       .printable-statement-container {
         display: block !important;
         width: 100% !important;
+        border: none !important;
+        box-shadow: none !important;
       }
       .row-absent {
         background-color: #fee2e2 !important;
@@ -83,104 +107,58 @@
     
     <aside class="app-sidebar">
       <div class="sidebar-logo">
-        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+        <a href="/student/dashboard">
+          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+        </a>
       </div>
       <div class="sidebar-menu">
         <a class="sidebar-link" href="/student/dashboard">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" class="feather feather-grid">
-            <rect x="3" y="3" width="7" height="9"></rect>
-            <rect x="14" y="3" width="7" height="5"></rect>
-            <rect x="14" y="12" width="7" height="9"></rect>
-            <rect x="3" y="16" width="7" height="5"></rect>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
           <span>Dashboard</span>
         </a>
         <a class="sidebar-link active" href="/student/attendance">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-square">
-            <polyline points="9 11 12 14 22 4"></polyline>
-            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
           <span>Attendance</span>
         </a>
         <a class="sidebar-link" href="/student/timetable">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
-            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="16" y1="2" x2="16" y2="6"></line>
-            <line x1="8" y1="2" x2="8" y2="6"></line>
-            <line x1="3" y1="10" x2="21" y2="10"></line>
-          </svg>
-          <span>Time Table</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Timetable</span>
         </a>
         <a class="sidebar-link" href="/student/settings">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round" class="feather feather-user">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
-          </svg>
-          <span>Profile</span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span>Settings</span>
         </a>
       </div>
     </aside>
 
-    
     <div class="app-main-wrapper">
       
       <header class="app-header">
         <h1 class="app-header-title">Export Reports</h1>
         <div class="app-header-profile dropdown">
-          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
-            style="cursor: pointer;">
+          <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
             <div class="profile-avatar-container">
-              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6"
-                style="width: 36px; height: 36px; border-radius: 50%;" id="header-avatar-badge">S</span>
+              <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;" id="header-avatar-badge">S</span>
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
               <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
               <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
-          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2"
-            style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
+          <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid rgba(226,232,240,0.8);">
             <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2"
-                href="/student/settings">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"
-                  style="width: 16px; height: 16px;">
-                  <line x1="4" y1="21" x2="4" y2="14"></line>
-                  <line x1="4" y1="10" x2="4" y2="3"></line>
-                  <line x1="12" y1="21" x2="12" y2="12"></line>
-                  <line x1="12" y1="8" x2="12" y2="3"></line>
-                  <line x1="20" y1="21" x2="20" y2="16"></line>
-                  <line x1="20" y1="12" x2="20" y2="3"></line>
-                  <line x1="1" y1="14" x2="7" y2="14"></line>
-                  <line x1="9" y1="8" x2="15" y2="8"></line>
-                  <line x1="17" y1="16" x2="23" y2="16"></line>
-                </svg>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-dark d-flex align-items-center gap-2" href="/student/settings">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 <span>Settings</span>
               </a>
             </li>
+            <li><hr class="dropdown-divider" style="border-color: #f1f5f9;"></li>
             <li>
-              <hr class="dropdown-divider" style="border-color: #f1f5f9;">
-            </li>
-            <li>
-              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#"
-                onclick="handleLogout()">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger"
-                  style="width: 16px; height: 16px;">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-                  <polyline points="16 17 21 12 16 7"></polyline>
-                  <line x1="21" y1="12" x2="9" y2="12"></line>
-                </svg>
+              <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger" style="width: 16px; height: 16px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                 <span>Log Out</span>
               </a>
             </li>
@@ -188,13 +166,12 @@
         </div>
       </header>
 
-      
       <main class="app-content animate-fade-in-up">
         
         <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3 no-print">
           <div>
             <h2 class="h5 fw-bold mb-1">Export Attendance Records</h2>
-            <p class="text-secondary small mb-0">Generate CSV exports or print official Academic Attendance Statements.</p>
+            <p class="text-secondary small mb-0">Generate standalone interactive HTML reports, CSV sheets, or print official academic statements.</p>
           </div>
 
           <a href="/student/attendance" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-secondary border d-inline-flex align-items-center gap-2">
@@ -203,94 +180,133 @@
           </a>
         </div>
 
-        
+        <!-- 3 EXPORT MODES SELECTOR -->
         <div class="row g-3 mb-4 no-print">
-          <div class="col-md-6">
-            <div class="glass-card p-3 rounded-4 export-card-option active-option" id="card-mode-subject" onclick="switchExportMode('subject')">
+          <div class="col-md-4">
+            <div class="glass-card p-3 rounded-4 export-card-option active-option" id="card-mode-all" onclick="switchExportMode('all')">
               <div class="d-flex align-items-center gap-3">
                 <div class="p-2.5 rounded-circle bg-primary-subtle text-primary">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg>
                 </div>
                 <div>
-                  <h3 class="fs-6 fw-bold mb-0">Export by Subject</h3>
-                  <p class="text-secondary small mb-0">Filter and export attendance history for a specific course</p>
+                  <h3 class="fs-6 fw-bold mb-0">Export All Subjects</h3>
+                  <p class="text-secondary small mb-0">Consolidated report across all registered courses</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
+            <div class="glass-card p-3 rounded-4 export-card-option" id="card-mode-subject" onclick="switchExportMode('subject')">
+              <div class="d-flex align-items-center gap-3">
+                <div class="p-2.5 rounded-circle bg-info-subtle text-info">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                </div>
+                <div>
+                  <h3 class="fs-6 fw-bold mb-0">By Specific Subject</h3>
+                  <p class="text-secondary small mb-0">Detailed breakdown for a single course</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
             <div class="glass-card p-3 rounded-4 export-card-option" id="card-mode-date" onclick="switchExportMode('date')">
               <div class="d-flex align-items-center gap-3">
                 <div class="p-2.5 rounded-circle bg-success-subtle text-success">
                   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 </div>
                 <div>
-                  <h3 class="fs-6 fw-bold mb-0">Export by Date Range</h3>
-                  <p class="text-secondary small mb-0">Generate an Academic Bank Statement for a date period</p>
+                  <h3 class="fs-6 fw-bold mb-0">By Date Range</h3>
+                  <p class="text-secondary small mb-0">Ledger for a custom start & end date window</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        
-        <div id="section-export-subject" class="glass-card p-4 rounded-4 mb-4 border-glass no-print">
-          <h2 class="h6 fw-bold text-uppercase tracking-wide text-secondary mb-3">Option 1: Subject Attendance Export</h2>
+        <!-- CONFIGURATION & EXPORT ACTION CONTROLS -->
+        <div class="glass-card p-4 rounded-4 mb-4 border-glass no-print">
           
-          <div class="row g-3 align-items-end mb-4">
+          <!-- Subject Selector (in Single Subject Mode) -->
+          <div id="subject-selector-row" class="row g-3 align-items-end mb-3" style="display: none;">
             <div class="col-md-6">
-              <label for="exportSubjectSelect" class="form-label small fw-semibold text-secondary">Select Subject</label>
-              <select id="exportSubjectSelect" class="form-select border-light fw-semibold" onchange="previewSubjectExport()">
+              <label for="exportSubjectSelect" class="form-label small fw-semibold text-secondary">Select Course / Subject</label>
+              <select id="exportSubjectSelect" class="form-select border-light fw-semibold" onchange="onCriteriaChange()">
                 <option value="">Loading subjects...</option>
               </select>
             </div>
-            <div class="col-md-6 d-flex gap-2 justify-content-md-end">
-              <button type="button" class="btn btn-outline-success rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadSubjectCSV()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span>Download CSV</span>
-              </button>
-              <button type="button" class="btn btn-primary rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadSubjectPDF()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                <span>Download PDF Report</span>
-              </button>
-            </div>
           </div>
-        </div>
 
-        
-        <div id="section-export-date" class="glass-card p-4 rounded-4 mb-4 border-glass no-print" style="display: none;">
-          <h2 class="h6 fw-bold text-uppercase tracking-wide text-secondary mb-3">Option 2: Academic Bank Statement Export</h2>
-          
-          <div class="row g-3 align-items-end mb-4">
-            <div class="col-md-4">
+          <!-- Date Range Selector (in Date Range Mode) -->
+          <div id="date-range-row" class="row g-3 align-items-end mb-3" style="display: none;">
+            <div class="col-md-3">
               <label for="exportStartDate" class="form-label small fw-semibold text-secondary">From Date</label>
-              <input type="date" id="exportStartDate" class="form-control border-light fw-bold" onchange="previewDateExport()">
+              <input type="date" id="exportStartDate" class="form-control border-light fw-bold" onchange="onCriteriaChange()">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label for="exportEndDate" class="form-label small fw-semibold text-secondary">To Date</label>
-              <input type="date" id="exportEndDate" class="form-control border-light fw-bold" onchange="previewDateExport()">
+              <input type="date" id="exportEndDate" class="form-control border-light fw-bold" onchange="onCriteriaChange()">
             </div>
-            <div class="col-md-4 d-flex gap-2 justify-content-md-end">
-              <button type="button" class="btn btn-outline-success rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadDateCSV()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                <span>Download CSV</span>
-              </button>
-              <button type="button" class="btn btn-primary rounded-pill px-3.5 py-2 fw-bold d-inline-flex align-items-center gap-2" onclick="downloadDatePDF()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                <span>Download Statement PDF</span>
-              </button>
+          </div>
+
+          <!-- ADVANCED FILTER BAR -->
+          <div class="border-top pt-3 mt-3">
+            <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+              <span class="small fw-bold text-uppercase text-secondary tracking-wider" style="font-size: 0.72rem;">Filter Options</span>
+              <button type="button" class="btn btn-sm btn-link text-decoration-none text-secondary p-0 small" onclick="resetFilters()">Reset All Filters</button>
+            </div>
+
+            <div class="row g-2 align-items-center">
+              <div class="col-md-4">
+                <div class="input-group input-group-sm">
+                  <span class="input-group-text bg-transparent border-light text-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  </span>
+                  <input type="text" id="filterSearch" class="form-control form-control-sm border-light" placeholder="Search code, name, remarks..." oninput="applyFiltersAndRender()">
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <select id="filterStatusSelect" class="form-select form-select-sm border-light fw-semibold" onchange="applyFiltersAndRender()">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Present">Present Only (P)</option>
+                  <option value="Absent">Absent Only (A)</option>
+                  <option value="Medical">Medical Leave (M)</option>
+                  <option value="OD">On Duty (OD)</option>
+                  <option value="Holiday">College Holiday</option>
+                </select>
+              </div>
+
+              <div class="col-md-5 d-flex gap-2 justify-content-md-end flex-wrap mt-2 mt-md-0">
+                <!-- DOWNLOAD HTML REPORT -->
+                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadHTMLReport()" title="Download standalone interactive HTML report">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                  <span>Export HTML</span>
+                </button>
+
+                <!-- DOWNLOAD CSV -->
+                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadCSV()" title="Download CSV Spreadsheet">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                  <span>Export CSV</span>
+                </button>
+
+                <!-- DOWNLOAD PDF -->
+                <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadPDF()" title="Download PDF document">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span>Export PDF</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        
-        <div class="glass-card p-4 rounded-4 border-glass shadow-sm printable-statement-container" style="display: none;">
+        <!-- REPORT STATEMENT CONTAINER -->
+        <div class="glass-card p-4 rounded-4 border-glass shadow-sm printable-statement-container" id="printable-statement">
           
           <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
               <div class="text-uppercase tracking-wider text-primary fw-extrabold fs-7 mb-1" id="stmt-org-title">TRACKIFY ACADEMIC ATTENDANCE STATEMENT</div>
-              <h2 class="h5 fw-bold mb-1" id="stmt-main-title">Official Student Attendance Ledger</h2>
-              <div class="text-secondary small" id="stmt-period-lbl">Statement Period: Loading...</div>
+              <h2 class="h5 fw-bold mb-1" id="stmt-main-title">All Subjects Consolidated Attendance Report</h2>
+              <div class="text-secondary small" id="stmt-period-lbl">Academic Period: Overall Cumulative</div>
             </div>
             <div class="text-end">
               <div class="fw-bold text-dark fs-6" id="stmt-user-name">Student Name</div>
@@ -299,69 +315,99 @@
             </div>
           </div>
 
-          
+          <!-- METRICS BENTO CARDS -->
           <div class="row g-3 mb-4 text-center">
-            <div class="col-3">
-              <div class="p-2.5 bg-light rounded-3 border">
+            <div class="col-6 col-md-3">
+              <div class="p-3 bg-light rounded-3 border">
                 <div class="text-secondary small fs-9 uppercase font-semibold">Total Classes</div>
-                <div class="fs-5 fw-bold text-dark" id="stat-total">0</div>
+                <div class="fs-4 fw-bold text-dark" id="stat-total">0</div>
               </div>
             </div>
-            <div class="col-3">
-              <div class="p-2.5 bg-success-subtle rounded-3 border border-success-subtle">
+            <div class="col-6 col-md-3">
+              <div class="p-3 bg-success-subtle rounded-3 border border-success-subtle">
                 <div class="text-success small fs-9 uppercase font-semibold">Attended (P)</div>
-                <div class="fs-5 fw-bold text-success" id="stat-present">0</div>
+                <div class="fs-4 fw-bold text-success" id="stat-present">0</div>
               </div>
             </div>
-            <div class="col-3">
-              <div class="p-2.5 bg-danger-subtle rounded-3 border border-danger-subtle">
+            <div class="col-6 col-md-3">
+              <div class="p-3 bg-danger-subtle rounded-3 border border-danger-subtle">
                 <div class="text-danger small fs-9 uppercase font-semibold">Absences (A)</div>
-                <div class="fs-5 fw-bold text-danger" id="stat-absent">0</div>
+                <div class="fs-4 fw-bold text-danger" id="stat-absent">0</div>
               </div>
             </div>
-            <div class="col-3">
-              <div class="p-2.5 bg-primary-subtle rounded-3 border border-primary-subtle">
-                <div class="text-primary small fs-9 uppercase font-semibold">Attendance %</div>
-                <div class="fs-5 fw-bold text-primary" id="stat-percent">0%</div>
+            <div class="col-6 col-md-3">
+              <div class="p-3 bg-primary-subtle rounded-3 border border-primary-subtle">
+                <div class="text-primary small fs-9 uppercase font-semibold">Overall Attendance %</div>
+                <div class="fs-4 fw-bold text-primary" id="stat-percent">0%</div>
               </div>
             </div>
           </div>
 
-          
-          <div class="table-responsive">
-            <table class="table table-hover align-middle" id="export-preview-table">
-              <thead class="table-light">
-                <tr>
-                  <th scope="col" class="py-2 fs-8">Date</th>
-                  <th scope="col" class="py-2 fs-8">Period</th>
-                  <th scope="col" class="py-2 fs-8">Subject Code</th>
-                  <th scope="col" class="py-2 fs-8">Subject Name</th>
-                  <th scope="col" class="py-2 fs-8 text-center">Status</th>
-                  <th scope="col" class="py-2 fs-8">Remarks</th>
-                </tr>
-              </thead>
-              <tbody id="export-table-body">
-                <tr>
-                  <td colspan="6" class="text-center py-4 text-secondary">Loading attendance entries...</td>
-                </tr>
-              </tbody>
-            </table>
+          <!-- SUBJECT-WISE BREAKDOWN SUMMARY TABLE (ALL SUBJECTS MODE) -->
+          <div id="subject-summary-section" class="mb-4">
+            <h3 class="h6 fw-bold text-uppercase tracking-wider text-secondary mb-2" style="font-size: 0.78rem;">Subject-Wise Performance Summary</h3>
+            <div class="table-responsive">
+              <table class="table table-sm table-bordered align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="py-2 fs-8">Code</th>
+                    <th scope="col" class="py-2 fs-8">Subject Name</th>
+                    <th scope="col" class="py-2 fs-8 text-center">Attended</th>
+                    <th scope="col" class="py-2 fs-8 text-center">Conducted</th>
+                    <th scope="col" class="py-2 fs-8 text-center">Attendance %</th>
+                    <th scope="col" class="py-2 fs-8 text-center">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="subject-summary-tbody">
+                  <tr>
+                    <td colspan="6" class="text-center py-3 text-secondary">Loading subject statistics...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
+
+          <!-- DETAILED ATTENDANCE LEDGER -->
+          <div>
+            <h3 class="h6 fw-bold text-uppercase tracking-wider text-secondary mb-2" style="font-size: 0.78rem;">Detailed Attendance Log Entries</h3>
+            <div class="table-responsive">
+              <table class="table table-hover align-middle" id="export-preview-table">
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col" class="py-2 fs-8">Date</th>
+                    <th scope="col" class="py-2 fs-8">Period</th>
+                    <th scope="col" class="py-2 fs-8">Subject Code</th>
+                    <th scope="col" class="py-2 fs-8">Subject Name</th>
+                    <th scope="col" class="py-2 fs-8 text-center">Status</th>
+                    <th scope="col" class="py-2 fs-8">Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="export-table-body">
+                  <tr>
+                    <td colspan="6" class="text-center py-4 text-secondary">Loading attendance entries...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
 
       </main>
     </div>
   </div>
 
-  
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  
   <script>
-    let currentMode = 'subject'; // 'subject' or 'date'
+    let currentMode = 'all'; // 'all', 'subject', or 'date'
     let currentUser = null;
     let studentSubjects = [];
-    let currentLogsData = [];
+    let allLogsMaster = [];
+    let filteredLogs = [];
+    let subjectStatsData = [];
 
     window.onload = async () => {
       // 1. Fetch current student session profile
@@ -369,12 +415,18 @@
       if (meRes.success && meRes.user) {
         currentUser = meRes.user;
         const initial = currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'S';
-        document.getElementById('user-header-name').innerText = currentUser.name;
-        document.getElementById('header-avatar-badge').innerText = initial;
-        document.getElementById('stmt-user-name').innerText = currentUser.name;
-        document.getElementById('stmt-user-id').innerText = currentUser.register_number || currentUser.id || 'N/A';
-        document.getElementById('stmt-user-dept').innerText = currentUser.department_name || 'CSE';
-        document.getElementById('stmt-user-sem').innerText = currentUser.semester ? `Semester ${currentUser.semester}` : 'S1';
+        const userHeader = document.getElementById('user-header-name');
+        if (userHeader) userHeader.innerText = currentUser.name;
+        const avatarBadge = document.getElementById('header-avatar-badge');
+        if (avatarBadge) avatarBadge.innerText = initial;
+        const stmtName = document.getElementById('stmt-user-name');
+        if (stmtName) stmtName.innerText = currentUser.name;
+        const stmtId = document.getElementById('stmt-user-id');
+        if (stmtId) stmtId.innerText = currentUser.register_number || currentUser.id || 'N/A';
+        const stmtDept = document.getElementById('stmt-user-dept');
+        if (stmtDept) stmtDept.innerText = currentUser.department_name || 'CSE';
+        const stmtSem = document.getElementById('stmt-user-sem');
+        if (stmtSem) stmtSem.innerText = currentUser.semester ? `Semester ${currentUser.semester}` : 'S1';
       } else {
         window.location.href = '/login';
         return;
@@ -383,11 +435,10 @@
       // 2. Default date inputs to current month range
       const today = new Date();
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-      
       document.getElementById('exportStartDate').value = getFormattedDate(firstDay);
       document.getElementById('exportEndDate').value = getFormattedDate(today);
 
-      // 3. Fetch student subjects dropdown options safely
+      // 3. Fetch student subjects dropdown options
       const subRes = await apiCall('/api/subjects');
       if (subRes.success && subRes.subjects) {
         studentSubjects = subRes.subjects;
@@ -400,9 +451,11 @@
         });
         if (studentSubjects.length > 0) {
           select.value = studentSubjects[0].id;
-          await previewSubjectExport();
         }
       }
+
+      // 4. Initial load: All Subjects mode
+      await loadMasterData();
     };
 
     function getFormattedDate(d) {
@@ -411,61 +464,72 @@
 
     function switchExportMode(mode) {
       currentMode = mode;
+      document.getElementById('card-mode-all').classList.toggle('active-option', mode === 'all');
       document.getElementById('card-mode-subject').classList.toggle('active-option', mode === 'subject');
       document.getElementById('card-mode-date').classList.toggle('active-option', mode === 'date');
 
-      document.getElementById('section-export-subject').style.display = mode === 'subject' ? 'block' : 'none';
-      document.getElementById('section-export-date').style.display = mode === 'date' ? 'block' : 'none';
+      document.getElementById('subject-selector-row').style.display = mode === 'subject' ? 'flex' : 'none';
+      document.getElementById('date-range-row').style.display = mode === 'date' ? 'flex' : 'none';
 
-      if (mode === 'subject') {
-        previewSubjectExport();
+      onCriteriaChange();
+    }
+
+    async function loadMasterData() {
+      // Fetch stats
+      try {
+        const statsRes = await apiCall('/api/attendance/stats');
+        if (statsRes.success && statsRes.data) {
+          subjectStatsData = statsRes.data.subjectStats || [];
+        }
+      } catch (_) {}
+
+      // Fetch all attendance logs
+      const logsRes = await apiCall('/api/attendance');
+      if (logsRes.success && logsRes.logs) {
+        allLogsMaster = logsRes.logs;
       } else {
-        previewDateExport();
+        allLogsMaster = [];
+      }
+
+      applyFiltersAndRender();
+    }
+
+    async function onCriteriaChange() {
+      if (currentMode === 'all') {
+        document.getElementById('stmt-main-title').innerText = 'All Subjects Consolidated Attendance Report';
+        document.getElementById('stmt-period-lbl').innerText = 'Academic Period: Cumulative Overall';
+        await loadMasterData();
+      } else if (currentMode === 'subject') {
+        const subjectId = document.getElementById('exportSubjectSelect').value;
+        const selectedSub = studentSubjects.find(s => String(s.id) === String(subjectId));
+        const code = selectedSub ? (selectedSub.subject_code || selectedSub.code || '') : '';
+        const name = selectedSub ? (selectedSub.subject_name || selectedSub.name || '') : '';
+        document.getElementById('stmt-main-title').innerText = `Subject Report: ${name}`;
+        document.getElementById('stmt-period-lbl').innerText = `Course Code: ${code}`;
+
+        const res = await apiCall(`/api/attendance?subjectId=${subjectId}`);
+        allLogsMaster = (res.success && res.logs) ? res.logs : [];
+        applyFiltersAndRender();
+      } else if (currentMode === 'date') {
+        const startDate = document.getElementById('exportStartDate').value;
+        const endDate = document.getElementById('exportEndDate').value;
+        document.getElementById('stmt-main-title').innerText = `Official Student Attendance Statement`;
+        document.getElementById('stmt-period-lbl').innerText = `Statement Period: ${startDate} to ${endDate}`;
+
+        if (startDate && endDate) {
+          const res = await apiCall(`/api/attendance?startDate=${startDate}&endDate=${endDate}`);
+          allLogsMaster = (res.success && res.logs) ? res.logs : [];
+        } else {
+          allLogsMaster = [];
+        }
+        applyFiltersAndRender();
       }
     }
 
-    // PREVIEW SUBJECT EXPORT
-    async function previewSubjectExport() {
-      const subjectId = document.getElementById('exportSubjectSelect').value;
-      if (!subjectId) {
-        renderTable([], 'Please select a subject above.');
-        return;
-      }
-
-      const selectedSub = studentSubjects.find(s => String(s.id) === String(subjectId));
-      const code = selectedSub ? (selectedSub.subject_code || selectedSub.code || '') : '';
-      const name = selectedSub ? (selectedSub.subject_name || selectedSub.name || '') : '';
-
-      document.getElementById('stmt-main-title').innerText = `Subject Report: ${name}`;
-      document.getElementById('stmt-period-lbl').innerText = `Subject Code: ${code}`;
-
-      // Fetch all attendance logs for this subject
-      const res = await apiCall(`/api/attendance?subjectId=${subjectId}`);
-      if (res.success && res.logs) {
-        currentLogsData = res.logs;
-        renderTable(currentLogsData);
-      } else {
-        renderTable([], 'No attendance records found for this subject.');
-      }
-    }
-
-    // PREVIEW DATE RANGE EXPORT (BANK STATEMENT STYLE)
-    async function previewDateExport() {
-      const startDate = document.getElementById('exportStartDate').value;
-      const endDate = document.getElementById('exportEndDate').value;
-
-      document.getElementById('stmt-main-title').innerText = `Official Student Attendance Statement`;
-      document.getElementById('stmt-period-lbl').innerText = `Statement Period: ${startDate} to ${endDate}`;
-
-      if (!startDate || !endDate) return;
-
-      const res = await apiCall(`/api/attendance?startDate=${startDate}&endDate=${endDate}`);
-      if (res.success && res.logs) {
-        currentLogsData = res.logs;
-        renderTable(currentLogsData);
-      } else {
-        renderTable([], 'No attendance entries recorded in this date range.');
-      }
+    function resetFilters() {
+      document.getElementById('filterSearch').value = '';
+      document.getElementById('filterStatusSelect').value = 'ALL';
+      applyFiltersAndRender();
     }
 
     function parsePeriodNumber(log) {
@@ -474,25 +538,92 @@
       }
       if (log.remarks) {
         const match = String(log.remarks).match(/Period\s*(\d+)/i) || String(log.remarks).match(/(\d+)/);
-        if (match && match[1]) {
-          return parseInt(match[1], 10);
-        }
+        if (match && match[1]) return parseInt(match[1], 10);
       }
       return 1;
     }
 
     function getPeriodLabel(log) {
-      const pNum = parsePeriodNumber(log);
-      return `Period ${pNum}`;
+      return `Period ${parsePeriodNumber(log)}`;
     }
 
-    // RENDER TABLE & METRICS WITH ABSENT ROW HIGHLIGHTING
-    function renderTable(logs, emptyMsg = 'No records found.') {
+    function applyFiltersAndRender() {
+      const query = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
+      const statusFilter = document.getElementById('filterStatusSelect').value;
+
+      filteredLogs = allLogsMaster.filter(log => {
+        // Status filter
+        if (statusFilter !== 'ALL') {
+          const logStatus = (log.status || '').toLowerCase();
+          const target = statusFilter.toLowerCase();
+          if (target === 'present' && logStatus !== 'present') return false;
+          if (target === 'absent' && logStatus !== 'absent') return false;
+          if (target === 'medical' && !logStatus.includes('med')) return false;
+          if (target === 'od' && !logStatus.includes('od')) return false;
+          if (target === 'holiday' && !logStatus.includes('hol')) return false;
+        }
+
+        // Text Search
+        if (query) {
+          const code = (log.subject_code || '').toLowerCase();
+          const name = (log.subject_name || '').toLowerCase();
+          const rem = (log.remarks || '').toLowerCase();
+          const date = String(log.date || '').toLowerCase();
+          if (!code.includes(query) && !name.includes(query) && !rem.includes(query) && !date.includes(query)) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+
+      renderSubjectSummaryTable();
+      renderLogsTable(filteredLogs);
+    }
+
+    function renderSubjectSummaryTable() {
+      const summarySection = document.getElementById('subject-summary-section');
+      const tbody = document.getElementById('subject-summary-tbody');
+      if (!summarySection || !tbody) return;
+
+      if (currentMode === 'subject') {
+        summarySection.style.display = 'none';
+        return;
+      }
+
+      summarySection.style.display = 'block';
+      tbody.innerHTML = '';
+
+      if (!subjectStatsData || subjectStatsData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-2 text-secondary small">No subject summary statistics available.</td></tr>`;
+        return;
+      }
+
+      subjectStatsData.forEach(sub => {
+        const pct = sub.percentage !== undefined ? sub.percentage : 100;
+        const isSafe = pct >= 75;
+        const badgeColor = isSafe ? 'bg-success-subtle text-success border border-success-subtle' : 'bg-danger-subtle text-danger border border-danger-subtle';
+        const badgeText = isSafe ? 'Eligible (≥75%)' : 'Shortage (<75%)';
+
+        tbody.innerHTML += `
+          <tr>
+            <td class="font-monospace fw-bold fs-9">${sub.subject_code || sub.code || '-'}</td>
+            <td class="fw-semibold fs-9">${sub.subject_name || sub.name || 'Course'}</td>
+            <td class="text-center fw-bold text-success fs-9">${sub.present_count || 0}</td>
+            <td class="text-center fw-bold text-dark fs-9">${sub.conducted_count || 0}</td>
+            <td class="text-center fw-extrabold ${isSafe ? 'text-success' : 'text-danger'} fs-9">${pct}%</td>
+            <td class="text-center"><span class="badge ${badgeColor} px-2 py-0.5 fs-10 rounded-pill">${badgeText}</span></td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderLogsTable(logs) {
       const tbody = document.getElementById('export-table-body');
       tbody.innerHTML = '';
 
       if (!logs || logs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-secondary">${emptyMsg}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-secondary">No attendance entries match the current filter criteria.</td></tr>`;
         document.getElementById('stat-total').innerText = '0';
         document.getElementById('stat-present').innerText = '0';
         document.getElementById('stat-absent').innerText = '0';
@@ -500,29 +631,26 @@
         return;
       }
 
-      // Sort chronologically by date, then Period 1 to Period 7
-      const sortedLogs = [...logs].sort((a, b) => {
+      // Sort chronologically by date, then Period
+      const sorted = [...logs].sort((a, b) => {
         const dateA = String(a.date).split('T')[0];
         const dateB = String(b.date).split('T')[0];
-        if (dateA !== dateB) {
-          return dateA.localeCompare(dateB);
-        }
+        if (dateA !== dateB) return dateA.localeCompare(dateB);
         return parsePeriodNumber(a) - parsePeriodNumber(b);
       });
 
-      let total = sortedLogs.length;
+      let total = sorted.length;
       let present = 0;
       let absent = 0;
 
-      sortedLogs.forEach(log => {
-        const isAbsent = log.status === 'Absent';
-        const isPresent = log.status === 'Present';
+      sorted.forEach(log => {
+        const isAbsent = (log.status || '').toLowerCase() === 'absent';
+        const isPresent = (log.status || '').toLowerCase() === 'present';
         if (isPresent) present++;
         if (isAbsent) absent++;
 
         const cleanDate = String(log.date).split('T')[0];
         const periodStr = getPeriodLabel(log);
-
         const rowClass = isAbsent ? 'row-absent' : '';
         const badgeClass = isPresent ? 'bg-success text-white' : isAbsent ? 'bg-danger text-white' : 'bg-primary text-white';
 
@@ -533,6 +661,7 @@
             <td class="font-monospace fw-semibold">${log.subject_code || '-'}</td>
             <td class="fw-semibold">${log.subject_name || 'Subject'}</td>
             <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1 fs-9">${log.status}</span></td>
+            <td class="small text-secondary">${log.remarks || '-'}</td>
           </tr>
         `;
       });
@@ -544,58 +673,40 @@
       document.getElementById('stat-percent').innerText = `${percentage}%`;
     }
 
-    // DOWNLOAD CSV FOR SUBJECT
-    function downloadSubjectCSV() {
-      if (!currentLogsData || currentLogsData.length === 0) {
-        showAlert('No data to export', 'danger');
+    // =========================================================================
+    // EXPORT DOWNLOAD HANDLERS (CSV, PDF, HTML)
+    // =========================================================================
+
+    function downloadCSV() {
+      if (!filteredLogs || filteredLogs.length === 0) {
+        showAlert('No data matching the active filters to export', 'danger');
         return;
       }
-      const subId = document.getElementById('exportSubjectSelect').value;
-      const selectedSub = studentSubjects.find(s => String(s.id) === String(subId));
-      const code = selectedSub ? (selectedSub.subject_code || selectedSub.code || 'Export') : 'Export';
-      const filename = `Attendance_Subject_${code}_${new Date().toISOString().slice(0,10)}.csv`;
-      generateAndDownloadCSV(currentLogsData, filename);
-    }
-
-    // DOWNLOAD CSV FOR DATE STATEMENT
-    function downloadDateCSV() {
-      if (!currentLogsData || currentLogsData.length === 0) {
-        showAlert('No statement data to export', 'danger');
-        return;
-      }
-      const startDate = document.getElementById('exportStartDate').value;
-      const endDate = document.getElementById('exportEndDate').value;
-      const filename = `Attendance_Statement_${startDate}_to_${endDate}.csv`;
-      generateAndDownloadCSV(currentLogsData, filename);
-    }
-
-    function generateAndDownloadCSV(logs, filename) {
+      const filename = `Attendance_${currentMode.toUpperCase()}_${new Date().toISOString().slice(0,10)}.csv`;
       let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Student Name,Unique ID,Date,Period,Subject Code,Subject Name,Status\n";
+      csvContent += "Student Name,Reg Number,Department,Semester,Date,Period,Subject Code,Subject Name,Status,Remarks\n";
 
-      // Sort logs chronologically by date and ascending by period (Period 1 to Period 7)
-      const sortedLogs = [...logs].sort((a, b) => {
+      const sorted = [...filteredLogs].sort((a, b) => {
         const dateA = String(a.date).split('T')[0];
         const dateB = String(b.date).split('T')[0];
-        if (dateA !== dateB) {
-          return dateA.localeCompare(dateB);
-        }
+        if (dateA !== dateB) return dateA.localeCompare(dateB);
         return parsePeriodNumber(a) - parsePeriodNumber(b);
       });
 
-      sortedLogs.forEach(log => {
+      sorted.forEach(log => {
         const cleanDate = String(log.date).split('T')[0];
         const periodStr = getPeriodLabel(log);
-        const statusStr = log.status === 'Absent' ? 'ABSENT' : log.status;
-
         const row = [
           `"${currentUser ? currentUser.name : 'Student'}"`,
-          `"${currentUser ? (currentUser.register_number || currentUser.id) : ''}"`,
+          `"${currentUser ? (currentUser.register_number || currentUser.id || '') : ''}"`,
+          `"${currentUser ? (currentUser.department_name || '') : ''}"`,
+          `"${currentUser ? (currentUser.semester || '') : ''}"`,
           `"${cleanDate}"`,
           `"${periodStr}"`,
           `"${log.subject_code || ''}"`,
           `"${log.subject_name || ''}"`,
-          `"${statusStr}"`
+          `"${log.status || ''}"`,
+          `"${log.remarks || ''}"`
         ].join(",");
         csvContent += row + "\n";
       });
@@ -607,29 +718,16 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showAlert(`Downloaded ${filename} successfully!`, 'success');
+      showAlert(`Downloaded CSV successfully!`, 'success');
     }
 
-    // DOWNLOAD PDF REPORT VIA HTML2PDF / JSPDF
-    function downloadSubjectPDF() {
-      if (!currentLogsData || currentLogsData.length === 0) {
-        showAlert('No data available to generate PDF', 'danger');
+    function downloadPDF() {
+      if (!filteredLogs || filteredLogs.length === 0) {
+        showAlert('No data available to generate PDF statement', 'danger');
         return;
       }
-      generateAndDownloadPDF('Attendance_Subject_Report.pdf');
-    }
-
-    function downloadDatePDF() {
-      if (!currentLogsData || currentLogsData.length === 0) {
-        showAlert('No statement data available to generate PDF', 'danger');
-        return;
-      }
-      generateAndDownloadPDF('Academic_Attendance_Statement.pdf');
-    }
-
-    function generateAndDownloadPDF(filename) {
-      const element = document.querySelector('.printable-statement-container');
-      if (element) element.style.display = 'block';
+      const element = document.getElementById('printable-statement');
+      const filename = `Attendance_Statement_${currentMode}_${new Date().toISOString().slice(0,10)}.pdf`;
 
       if (window.html2pdf && element) {
         showAlert('Generating PDF statement, please wait...', 'info');
@@ -641,17 +739,318 @@
           jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
         html2pdf().set(opt).from(element).save().then(() => {
-          if (element) element.style.display = 'none';
           showAlert(`Downloaded ${filename} successfully!`, 'success');
         }).catch(err => {
           console.error('PDF export fallback:', err);
           window.print();
-          if (element) element.style.display = 'none';
         });
       } else {
         window.print();
-        if (element) element.style.display = 'none';
       }
+    }
+
+    // STANDALONE INTERACTIVE OFFLINE HTML REPORT GENERATOR
+    function downloadHTMLReport() {
+      if (!filteredLogs || filteredLogs.length === 0) {
+        showAlert('No data to export as HTML', 'danger');
+        return;
+      }
+
+      const reportDateStr = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', dateStyle: 'full', timeStyle: 'short' });
+      const studentName = currentUser ? currentUser.name : 'Student';
+      const studentReg = currentUser ? (currentUser.register_number || currentUser.id || 'N/A') : 'N/A';
+      const studentDept = currentUser ? (currentUser.department_name || 'CSE') : 'CSE';
+      const studentSem = currentUser ? (currentUser.semester ? `Semester ${currentUser.semester}` : 'S1') : 'S1';
+
+      const totalLogs = filteredLogs.length;
+      let presentCount = 0;
+      let absentCount = 0;
+
+      const sorted = [...filteredLogs].sort((a, b) => {
+        const dateA = String(a.date).split('T')[0];
+        const dateB = String(b.date).split('T')[0];
+        if (dateA !== dateB) return dateA.localeCompare(dateB);
+        return parsePeriodNumber(a) - parsePeriodNumber(b);
+      });
+
+      let tableRowsHtml = '';
+      sorted.forEach(log => {
+        const isAbsent = (log.status || '').toLowerCase() === 'absent';
+        const isPresent = (log.status || '').toLowerCase() === 'present';
+        if (isPresent) presentCount++;
+        if (isAbsent) absentCount++;
+
+        const cleanDate = String(log.date).split('T')[0];
+        const periodStr = getPeriodLabel(log);
+        const rowClass = isAbsent ? 'row-absent' : '';
+        const badgeColor = isPresent ? '#10b981' : isAbsent ? '#ef4444' : '#3b82f6';
+
+        tableRowsHtml += `
+          <tr class="${rowClass}" data-status="${(log.status || '').toLowerCase()}" data-search="${(cleanDate + ' ' + (log.subject_code || '') + ' ' + (log.subject_name || '') + ' ' + (log.remarks || '')).toLowerCase()}">
+            <td style="font-family: monospace; font-weight: 700;">${cleanDate}</td>
+            <td>${periodStr}</td>
+            <td style="font-family: monospace; font-weight: 600;">${log.subject_code || '-'}</td>
+            <td style="font-weight: 600;">${log.subject_name || 'Subject'}</td>
+            <td style="text-align: center;"><span style="display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700; color: #fff; background: ${badgeColor};">${log.status}</span></td>
+            <td style="color: #64748b; font-size: 0.85rem;">${log.remarks || '-'}</td>
+          </tr>
+        `;
+      });
+
+      const overallPercent = totalLogs > 0 ? Math.round((presentCount / totalLogs) * 100) : 0;
+
+      let subjectSummaryHtml = '';
+      if (subjectStatsData && subjectStatsData.length > 0) {
+        let subRows = '';
+        subjectStatsData.forEach(s => {
+          const pct = s.percentage !== undefined ? s.percentage : 100;
+          const isSafe = pct >= 75;
+          const badgeBg = isSafe ? '#dcfce7' : '#fee2e2';
+          const badgeColor = isSafe ? '#15803d' : '#b91c1c';
+          subRows += `
+            <tr>
+              <td style="font-family: monospace; font-weight: 700;">${s.subject_code || s.code || '-'}</td>
+              <td style="font-weight: 600;">${s.subject_name || s.name || 'Course'}</td>
+              <td style="text-align: center; color: #16a34a; font-weight: 700;">${s.present_count || 0}</td>
+              <td style="text-align: center; font-weight: 700;">${s.conducted_count || 0}</td>
+              <td style="text-align: center; font-weight: 800; color: ${isSafe ? '#16a34a' : '#dc2626'};">${pct}%</td>
+              <td style="text-align: center;"><span style="background: ${badgeBg}; color: ${badgeColor}; padding: 2px 8px; border-radius: 9999px; font-size: 0.75rem; font-weight: 700;">${isSafe ? 'Eligible' : 'Shortage'}</span></td>
+            </tr>
+          `;
+        });
+        subjectSummaryHtml = `
+          <div style="margin-bottom: 2rem;">
+            <h3 style="font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; margin-bottom: 0.5rem;">Subject Performance Breakdown</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 1rem;">
+              <thead>
+                <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; text-align: left; font-size: 0.8rem; color: #475569;">
+                  <th style="padding: 8px;">Code</th>
+                  <th style="padding: 8px;">Subject Name</th>
+                  <th style="padding: 8px; text-align: center;">Attended</th>
+                  <th style="padding: 8px; text-align: center;">Conducted</th>
+                  <th style="padding: 8px; text-align: center;">Attendance %</th>
+                  <th style="padding: 8px; text-align: center;">Status</th>
+                </tr>
+              </thead>
+              <tbody>${subRows}</tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      const standaloneHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Statement - ${studentName}</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --border: #e2e8f0;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem 1rem;
+      line-height: 1.5;
+    }
+    .report-container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.06);
+      padding: 2.5rem;
+    }
+    .header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .bento-card {
+      padding: 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #f8fafc;
+      text-align: center;
+    }
+    .bento-card .val {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+    .bento-card .lbl {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.05em;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th, table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    table thead tr {
+      background: #f1f5f9;
+    }
+    .row-absent {
+      background: #fee2e2 !important;
+      color: #991b1b !important;
+    }
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .search-box {
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      width: 280px;
+    }
+    .print-btn {
+      padding: 8px 18px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 9999px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .print-btn:hover { background: #1d4ed8; }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .report-container { border: none; box-shadow: none; padding: 0; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+    <div class="header-row">
+      <div>
+        <div style="font-size: 0.78rem; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.06em;">Trackify Academic Statement</div>
+        <h1 style="font-size: 1.4rem; margin: 4px 0 2px 0;">Official Attendance Ledger</h1>
+        <div style="font-size: 0.82rem; color: #64748b;">Generated on: ${reportDateStr}</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 1.1rem; font-weight: 700;">${studentName}</div>
+        <div style="font-size: 0.85rem; color: #64748b;">Reg No: <span style="font-family: monospace; font-weight: 700;">${studentReg}</span></div>
+        <div style="font-size: 0.85rem; color: #64748b;">Dept: ${studentDept} | Sem: ${studentSem}</div>
+      </div>
+    </div>
+
+    <!-- METRICS -->
+    <div class="bento-grid">
+      <div class="bento-card">
+        <div class="lbl">Total Classes</div>
+        <div class="val" style="color: #0f172a;" id="html-stat-total">${totalLogs}</div>
+      </div>
+      <div class="bento-card" style="background: #ecfdf5; border-color: #a7f3d0;">
+        <div class="lbl" style="color: #047857;">Attended (P)</div>
+        <div class="val" style="color: #059669;" id="html-stat-present">${presentCount}</div>
+      </div>
+      <div class="bento-card" style="background: #fef2f2; border-color: #fecaca;">
+        <div class="lbl" style="color: #b91c1c;">Absences (A)</div>
+        <div class="val" style="color: #dc2626;" id="html-stat-absent">${absentCount}</div>
+      </div>
+      <div class="bento-card" style="background: #eff6ff; border-color: #bfdbfe;">
+        <div class="lbl" style="color: #1d4ed8;">Attendance %</div>
+        <div class="val" style="color: #2563eb;" id="html-stat-pct">${overallPercent}%</div>
+      </div>
+    </div>
+
+    ${subjectSummaryHtml}
+
+    <!-- DETAILED LOGS -->
+    <div class="toolbar no-print">
+      <input type="text" class="search-box" id="offlineSearch" placeholder="Filter records in this statement..." oninput="filterOfflineTable()">
+      <button class="print-btn" onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+    <table id="offlineTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Period</th>
+          <th>Subject Code</th>
+          <th>Subject Name</th>
+          <th style="text-align: center;">Status</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="offlineTableBody">
+        ${tableRowsHtml}
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    function filterOfflineTable() {
+      const q = (document.getElementById('offlineSearch').value || '').toLowerCase();
+      const rows = document.querySelectorAll('#offlineTableBody tr');
+      let visible = 0;
+      let present = 0;
+      let absent = 0;
+
+      rows.forEach(r => {
+        const text = r.getAttribute('data-search') || '';
+        const status = r.getAttribute('data-status') || '';
+        const matches = !q || text.includes(q);
+        r.style.display = matches ? '' : 'none';
+        if (matches) {
+          visible++;
+          if (status === 'present') present++;
+          if (status === 'absent') absent++;
+        }
+      });
+
+      document.getElementById('html-stat-total').innerText = visible;
+      document.getElementById('html-stat-present').innerText = present;
+      document.getElementById('html-stat-absent').innerText = absent;
+      const pct = visible > 0 ? Math.round((present / visible) * 100) : 0;
+      document.getElementById('html-stat-pct').innerText = pct + '%';
+    }
+  <\/script>
+</body>
+</html>`;
+
+      const blob = new Blob([standaloneHTML], { type: 'text/html;charset=utf-8' });
+      const filename = `Attendance_Report_${studentName.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.html`;
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showAlert(`Downloaded interactive HTML report: ${filename}`, 'success');
     }
   </script>
   <script src="/assets/js/app-nav.js"></script>

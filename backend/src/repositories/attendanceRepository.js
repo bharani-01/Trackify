@@ -196,12 +196,13 @@ const getSubjectStats = async (userId) => {
       COALESCE(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)::int AS conducted_count
     FROM users u
     JOIN (
-      SELECT DISTINCT ON (COALESCE(department_id::text, department), semester, UPPER(COALESCE(subject_code, code)))
+      SELECT DISTINCT ON (UPPER(COALESCE(subject_code, code)))
              id, department_id, department, semester, subject_code, code, subject_name, name, credits, color, total_periods, user_id, created_at
       FROM subjects
-      ORDER BY COALESCE(department_id::text, department), semester, UPPER(COALESCE(subject_code, code)), created_at ASC, id ASC
-    ) s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department) OR s.user_id = u.id)
-        AND (s.semester = u.semester OR s.user_id = u.id)
+      WHERE user_id IS NULL
+      ORDER BY UPPER(COALESCE(subject_code, code)), created_at ASC, id ASC
+    ) s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department))
+        AND s.semester = u.semester
     LEFT JOIN attendance a ON s.id = a.subject_id AND a.user_id = u.id
     WHERE u.id = $1
     GROUP BY s.id, s.subject_code, s.code, s.subject_name, s.name, s.credits, s.color, s.total_periods, s.created_at

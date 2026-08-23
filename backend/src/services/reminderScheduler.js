@@ -474,8 +474,14 @@ const getSubjectStatsBetweenDates = async (userId, startDate, endDate) => {
       COALESCE(SUM(CASE WHEN a.status = 'On Duty' THEN 1 ELSE 0 END), 0)::int AS od_count,
       COALESCE(SUM(CASE WHEN a.status IN ('Present', 'Absent', 'On Duty') THEN 1 ELSE 0 END), 0)::int AS conducted_count
     FROM users u
-    JOIN subjects s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department))
-                    AND s.semester = u.semester
+    JOIN (
+      SELECT DISTINCT ON (UPPER(COALESCE(subject_code, code)))
+             id, department_id, department, semester, subject_code, code, subject_name, name
+      FROM subjects
+      WHERE user_id IS NULL
+      ORDER BY UPPER(COALESCE(subject_code, code)), created_at ASC, id ASC
+    ) s ON (s.department_id = u.department_id OR (u.department_id IS NULL AND s.department = u.department))
+        AND s.semester = u.semester
     LEFT JOIN attendance a ON s.id = a.subject_id AND a.user_id = u.id AND a.date >= $2 AND a.date <= $3
     WHERE u.id = $1
     GROUP BY s.id, s.subject_code, s.code, s.subject_name, s.name

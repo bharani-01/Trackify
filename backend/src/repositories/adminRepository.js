@@ -164,12 +164,14 @@ const getStats = async () => {
  */
 const getMasterSubjects = async (department, semester) => {
   const query = `
-    SELECT s.*, COALESCE(s.subject_code, s.code) AS subject_code, COALESCE(s.subject_name, s.name) AS subject_name
+    SELECT DISTINCT ON (UPPER(COALESCE(s.subject_code, s.code)))
+           s.*, COALESCE(s.subject_code, s.code) AS subject_code, COALESCE(s.subject_name, s.name) AS subject_name
     FROM subjects s
     LEFT JOIN departments d ON s.department_id = d.id
     WHERE (s.department_id::text = $1 OR UPPER(s.department) = UPPER($1) OR UPPER(d.code) = UPPER($1))
       AND s.semester = $2::int
-    ORDER BY COALESCE(s.subject_name, s.name) ASC
+      AND s.user_id IS NULL
+    ORDER BY UPPER(COALESCE(s.subject_code, s.code)), s.created_at ASC
   `;
   const result = await db.query(query, [department, parseInt(semester, 10)]);
   return result.rows;
