@@ -843,14 +843,14 @@ h6 {
 
 /* Section Separator */
 .section-separator {
-  border-bottom: 2px solid var(--text-primary);
-  padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.35rem;
   margin-bottom: 1.25rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 800;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
 .app-main-wrapper {
@@ -2636,3 +2636,123 @@ h6 {
   justify-content: space-between;
   padding-top: 0.35rem;
 }
+
+/* =========================================================================
+   Unified Component & Button Design System Tokens
+   ========================================================================= */
+
+/* 1. Primary Action Button */
+.btn-trackify-primary {
+  background-color: var(--primary, #2563eb);
+  color: #ffffff !important;
+  border: 1px solid var(--primary, #2563eb);
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.4rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-trackify-primary:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+  color: #ffffff !important;
+}
+
+/* 2. Secondary / Outline Glass Button */
+.btn-trackify-outline {
+  background-color: var(--bg-card-subtle, rgba(255, 255, 255, 0.05));
+  color: var(--text-secondary, #334155) !important;
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.4rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-trackify-outline:hover {
+  border-color: var(--primary, #2563eb);
+  color: var(--primary, #2563eb) !important;
+  background-color: rgba(37, 99, 235, 0.04);
+}
+
+/* 3. Subtle Danger Button */
+.btn-trackify-danger-subtle {
+  background: transparent;
+  color: var(--danger, #dc2626) !important;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition: all 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-trackify-danger-subtle:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: var(--danger, #dc2626);
+}
+
+/* 4. Ghost Action Button */
+.btn-trackify-ghost {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #64748b);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+.btn-trackify-ghost:hover {
+  color: var(--text-primary, #0f172a);
+  background: var(--bg-card-subtle, rgba(0, 0, 0, 0.04));
+}
+
+/* 5. Ghost Icon Button */
+.btn-trackify-ghost-icon {
+  background: transparent;
+  border: none;
+  padding: 6px;
+  border-radius: 6px;
+  color: var(--text-muted, #64748b);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background-color 0.15s ease;
+  cursor: pointer;
+}
+.btn-trackify-ghost-icon:hover {
+  color: var(--text-primary, #0f172a);
+  background-color: var(--bg-card-subtle, rgba(0, 0, 0, 0.04));
+}
+
+/* Preview Color Chips */
+.preview-chip-present { background: rgba(5, 150, 105, 0.1); color: #059669 !important; border: 1px solid rgba(5, 150, 105, 0.3); }
+.preview-chip-pending { background: rgba(217, 119, 6, 0.1); color: #d97706 !important; border: 1px solid rgba(217, 119, 6, 0.3); }
+.preview-chip-absent  { background: rgba(220, 38, 38, 0.1); color: #dc2626 !important; border: 1px solid rgba(220, 38, 38, 0.3); }
+.preview-chip-holiday { background: rgba(37, 99, 235, 0.1); color: #2563eb !important; border: 1px solid rgba(37, 99, 235, 0.3); }
+.preview-chip-od      { background: rgba(147, 51, 234, 0.1); color: #9333ea !important; border: 1px solid rgba(147, 51, 234, 0.3); }
+.preview-chip-off     { background: rgba(148, 163, 184, 0.1); color: #64748b !important; border: 1px dashed rgba(148, 163, 184, 0.45); }

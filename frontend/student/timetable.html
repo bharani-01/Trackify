@@ -14,16 +14,17 @@
     /* Styling to match the official timetable format and fit the screen */
     .timetable-grid-wrapper {
       background: var(--bg-secondary);
-      border: 2px solid var(--border-color);
-      border-radius: 0px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg, 12px);
       margin-bottom: 2rem;
       max-width: 100%;
       overflow-x: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
     .timetable-header-banner {
-      border-bottom: 2px solid var(--border-color);
-      padding: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.25rem;
       text-align: center;
       background: var(--bg-primary);
     }
@@ -32,30 +33,30 @@
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--text-primary);
-      letter-spacing: 0.05em;
+      letter-spacing: -0.02em;
       margin-bottom: 0.25rem;
-      text-transform: uppercase;
+      text-transform: none;
     }
 
     .timetable-header-banner p {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--text-secondary);
       margin-bottom: 0;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: normal;
     }
 
     .timetable-meta-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
       background: var(--bg-secondary);
     }
 
     .meta-box {
-      padding: 0.75rem;
-      border-right: 2px solid var(--border-color);
+      padding: 0.75rem 1rem;
+      border-right: 1px solid var(--border-color);
       text-align: center;
       font-size: 0.85rem;
     }
@@ -65,29 +66,29 @@
     }
 
     .meta-label {
-      font-weight: 700;
+      font-weight: 600;
       color: var(--text-secondary);
-      margin-right: 0.5rem;
+      margin-right: 0.4rem;
     }
 
     .meta-value {
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text-primary);
     }
 
     .sub-meta-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      border-bottom: 2px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
       background: var(--bg-primary);
-      font-weight: 800;
+      font-weight: 700;
       text-align: center;
       font-size: 0.85rem;
       padding: 0.5rem 0;
     }
 
     .sub-meta-box {
-      border-right: 2px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
     }
 
     .sub-meta-box:last-child {
@@ -101,10 +102,8 @@
       }
 
       .meta-box {
-        border-right: 2px solid var(--border-color);
-        !important;
-        border-bottom: 2px solid var(--border-color);
-        !important;
+        border-right: 1px solid var(--border-color) !important;
+        border-bottom: 1px solid var(--border-color) !important;
       }
 
       .meta-box:nth-child(2n) {
@@ -122,8 +121,7 @@
 
       .sub-meta-box {
         border-right: none !important;
-        border-bottom: 2px solid var(--border-color);
-        !important;
+        border-bottom: 1px solid var(--border-color) !important;
         padding: 0.25rem 0;
       }
 
@@ -136,78 +134,82 @@
       table-layout: fixed;
       width: 100%;
       min-width: 900px;
-      /* Force horizontal scroll on mobile/tablet viewports only */
       border-collapse: collapse;
       font-size: 0.85rem;
     }
 
     .timetable-table th,
     .timetable-table td {
-      border: 1px solid #94a3b8;
+      border: 1px solid var(--border-color);
       text-align: center;
       vertical-align: middle;
-      padding: 0.35rem !important;
+      padding: 0.4rem !important;
     }
 
     .timetable-table th {
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      font-weight: 800;
-      font-size: 0.75rem;
-      border-bottom: 2px solid var(--border-color);
+      font-weight: 700;
+      font-size: 0.78rem;
+      border-bottom: 1px solid var(--border-color);
+      letter-spacing: 0.01em;
     }
 
     .timetable-table td.day-column {
       background-color: var(--bg-primary);
-      font-weight: 800;
+      font-weight: 700;
       color: var(--text-primary);
-      border-right: 2px solid var(--border-color);
-      width: 100px;
+      border-right: 1px solid var(--border-color);
+      width: 95px;
     }
 
     .break-column {
       background-color: var(--bg-primary);
       color: var(--text-secondary);
-      font-weight: 800;
-      font-size: 0.65rem;
-      writing-mode: vertical-lr;
-      transform: rotate(180deg);
-      width: 35px;
-      letter-spacing: 0.1em;
-      border-left: 2px solid #334155;
-      border-right: 2px solid var(--border-color);
+      font-weight: 700;
+      font-size: 0.75rem;
+      writing-mode: vertical-rl;
+      white-space: nowrap;
+      width: 38px;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--border-color);
+      text-align: center;
+      vertical-align: middle;
+      padding: 1rem 0.2rem !important;
     }
 
     .timetable-cell-content {
-      min-height: 50px;
+      min-height: 48px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 0.2rem;
+      padding: 0.2rem 0.35rem;
     }
 
     .slot-code {
-      font-weight: 800;
+      font-weight: 700;
       font-size: 0.8rem;
-      color: #1e293b;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
     }
 
     .slot-name {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--text-secondary);
-      margin-top: 0.1rem;
-      font-weight: 600;
+      margin-top: 0.12rem;
+      font-weight: 500;
+      line-height: 1.25;
     }
 
     .slot-room {
-      font-size: 0.65rem;
-      color: #64748b;
-      margin-top: 0.25rem;
-      font-weight: 700;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+      font-weight: 600;
     }
 
     .empty-slot {
-      color: #cbd5e1;
+      color: var(--text-muted);
       font-size: 0.75rem;
       font-style: italic;
     }
@@ -282,7 +284,7 @@
     <div class="app-main-wrapper">
       
       <header class="app-header">
-        <h1 class="app-header-title">Time Table</h1>
+        <span class="app-header-title">Time Table</span>
         <div class="app-header-profile dropdown">
           <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
             style="cursor: pointer;">
@@ -291,7 +293,7 @@
                 style="width: 36px; height: 36px; border-radius: 50%;">S</span>
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
-              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="fw-bold fs-7" style="color: var(--text-primary);" id="user-header-name">Student</div>
               <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -385,17 +387,44 @@
             <table class="timetable-table">
               <thead>
                 <tr>
-                  <th style="width: 100px;">Time / Hour</th>
-                  <th>08:05 AM - 08:55 AM<br>I</th>
-                  <th>09:00 AM - 09:50 AM<br>II</th>
-                  <th style="width: 35px;">BREAK</th>
-                  <th>10:10 AM - 11:05 AM<br>III</th>
-                  <th>11:05 AM - 12:00 NOON<br>IV</th>
-                  <th style="width: 35px;">LUNCH BREAK</th>
-                  <th>01:00 PM - 01:50 PM<br>V</th>
-                  <th>01:50 PM - 02:40 PM<br>VI</th>
-                  <th style="width: 35px;">BREAK</th>
-                  <th>02:55 PM - 03:45 PM<br>VII</th>
+                  <th style="width: 90px; vertical-align: middle;">Day / Time</th>
+                  <th>
+                    <div class="fw-bold fs-7">Period I</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">08:05 – 08:55 AM</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period II</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">09:00 – 09:50 AM</div>
+                  </th>
+                  <th style="width: 38px; vertical-align: middle;">
+                    <div class="fw-bold" style="font-size: 0.72rem;">Break</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period III</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">10:10 – 11:05 AM</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period IV</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">11:05 – 12:00 PM</div>
+                  </th>
+                  <th style="width: 38px; vertical-align: middle;">
+                    <div class="fw-bold" style="font-size: 0.72rem;">Lunch</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period V</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">01:00 – 01:50 PM</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period VI</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">01:50 – 02:40 PM</div>
+                  </th>
+                  <th style="width: 38px; vertical-align: middle;">
+                    <div class="fw-bold" style="font-size: 0.72rem;">Break</div>
+                  </th>
+                  <th>
+                    <div class="fw-bold fs-7">Period VII</div>
+                    <div class="text-secondary small fw-normal" style="font-size: 0.68rem;">02:55 – 03:45 PM</div>
+                  </th>
                 </tr>
               </thead>
               <tbody id="student-timetable-grid-body">
@@ -433,7 +462,7 @@
         document.getElementById('meta-dept').innerText = user.department || 'N/A';
         document.getElementById('meta-sem').innerText = user.semester || 'N/A';
         document.getElementById('meta-program-code').innerText = `Program Code: ${user.department || 'N/A'}-${user.semester || 'N/A'}`;
-        document.getElementById('meta-branch').innerText = `B.Tech ${user.department || 'N/A'}`;
+        document.getElementById('meta-branch').innerText = user.department ? `B.Tech - ${user.department}` : 'B.Tech';
       } else {
         window.location.href = '/login';
         return;
@@ -449,7 +478,7 @@
 
         const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        daysOfWeek.forEach(day => {
+        daysOfWeek.forEach((day, index) => {
           const daySlots = timetable.filter(t => t.day === day);
           let rowHtml = `
             <tr>
@@ -466,7 +495,9 @@
             rowHtml += `<td>${getSlotCell(daySlots, 2)}</td>`;
           }
 
-          rowHtml += `<td class="break-column">BREAK (9:50-10:10)</td>`;
+          if (index === 0) {
+            rowHtml += `<td rowspan="${daysOfWeek.length}" class="break-column">Break (9:50–10:10)</td>`;
+          }
 
           // Check Periods 3 & 4
           const s3 = daySlots.find(s => s.period === 3);
@@ -478,7 +509,9 @@
             rowHtml += `<td>${getSlotCell(daySlots, 4)}</td>`;
           }
 
-          rowHtml += `<td class="break-column" style="letter-spacing: 0.05em;">LUNCH BREAK (12:00-1:00)</td>`;
+          if (index === 0) {
+            rowHtml += `<td rowspan="${daysOfWeek.length}" class="break-column">Lunch Break (12:00–1:00)</td>`;
+          }
 
           // Check Periods 5 & 6
           const s5 = daySlots.find(s => s.period === 5);
@@ -490,7 +523,10 @@
             rowHtml += `<td>${getSlotCell(daySlots, 6)}</td>`;
           }
 
-          rowHtml += `<td class="break-column">BREAK (2:40-2:55)</td>`;
+          if (index === 0) {
+            rowHtml += `<td rowspan="${daysOfWeek.length}" class="break-column">Break (2:40–2:55)</td>`;
+          }
+
           rowHtml += `<td>${getSlotCell(daySlots, 7)}</td>`;
 
           rowHtml += `</tr>`;
@@ -509,8 +545,8 @@
       const slot = daySlots.find(s => s.period === periodA);
       if (slot) {
         return `
-          <div class="timetable-cell-content" style="border-left: 4px solid ${slot.color || '#cbd5e1'} !important;">
-            <div class="slot-code">${slot.subject_code} [Combined]</div>
+          <div class="timetable-cell-content">
+            <div class="slot-code">${slot.subject_code}</div>
             <div class="slot-name">${slot.subject_name}</div>
             <div class="slot-room">${slot.room ? `Room: ${slot.room}` : '&nbsp;'}</div>
           </div>
@@ -522,7 +558,7 @@
       const slot = daySlots.find(s => s.period === periodNum);
       if (slot) {
         return `
-          <div class="timetable-cell-content" style="border-left: 3px solid ${slot.color || '#cbd5e1'} !important;">
+          <div class="timetable-cell-content">
             <div class="slot-code">${slot.subject_code}</div>
             <div class="slot-name">${slot.subject_name}</div>
             <div class="slot-room">${slot.room ? `Room: ${slot.room}` : '&nbsp;'}</div>

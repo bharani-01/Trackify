@@ -192,14 +192,14 @@
     <!-- Main Content Wrapper -->
     <div class="app-main-wrapper">
       <header class="app-header">
-        <h1 class="app-header-title">Profile Settings</h1>
+        <span class="app-header-title">Profile Settings</span>
         <div class="app-header-profile dropdown">
           <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
             <div class="profile-avatar-container">
               <!-- Rendered dynamically -->
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
-              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="fw-bold fs-7" style="color: var(--text-primary);" id="user-header-name">Student</div>
               <div class="text-secondary small">Student Profile</div>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
@@ -231,7 +231,7 @@
           <!-- Banner Header -->
           <div class="profile-summary-header">
             <img id="mainAvatarImg" src="/assets/images/avatars/Angel.svg" onerror="this.src='/assets/images/avatars/Trackify.svg'" class="settings-avatar-display" alt="Student Avatar">
-            <h2 class="h4 fw-bold mb-1 text-dark" id="mainProfileName">Loading...</h2>
+            <h2 class="h4 fw-bold mb-1" style="color: var(--text-primary);" id="mainProfileName">Loading...</h2>
             <p class="text-secondary small mb-0" id="mainProfileEmail">...</p>
           </div>
 
@@ -297,7 +297,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
         <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold text-dark" id="displayPrefsModalLabel">Display & Date Colors</h5>
+          <h5 class="modal-title fw-bold" style="color: var(--text-primary);" id="displayPrefsModalLabel">Display & Date Colors</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="displayPrefsForm" onsubmit="saveDisplayPreferences(event)">
@@ -306,7 +306,7 @@
             <div class="mb-4">
               <div class="d-flex justify-content-between align-items-center mb-2">
                 <div>
-                  <h6 class="fw-bold text-dark mb-1">Date Status Colors</h6>
+                  <h6 class="fw-bold mb-1" style="color: var(--text-primary);">Date Status Colors</h6>
                   <p class="text-secondary small mb-0">Show mild color tints & glowing micro-dots on the calendar and attendance dates.</p>
                 </div>
                 <div class="form-check form-switch ms-3">
@@ -317,24 +317,24 @@
 
             <!-- Color Palette Preview Card -->
             <div class="p-3 rounded-3 border mb-2" style="background: var(--bg-primary); border-color: var(--border-color) !important;">
-              <div class="text-secondary small fw-semibold mb-2" style="font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;">Status Colors Preview</div>
+              <div class="text-secondary small fw-semibold mb-2" style="font-size: 0.72rem; letter-spacing: 0.04em;">Status Colors Preview</div>
               <div class="d-flex flex-wrap gap-2">
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(16, 185, 129, 0.12); color: #059669; border: 1px solid rgba(16, 185, 129, 0.3);">
+                <span class="preview-chip-present">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981;"></span> Present
                 </span>
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(245, 158, 11, 0.12); color: #d97706; border: 1px solid rgba(245, 158, 11, 0.3);">
+                <span class="preview-chip-pending">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;"></span> Pending
                 </span>
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(239, 68, 68, 0.12); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.3);">
+                <span class="preview-chip-absent">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #ef4444;"></span> Absent
                 </span>
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(59, 130, 246, 0.12); color: #2563eb; border: 1px solid rgba(59, 130, 246, 0.3);">
+                <span class="preview-chip-holiday">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #3b82f6;"></span> Holiday
                 </span>
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(168, 85, 247, 0.12); color: #9333ea; border: 1px solid rgba(168, 85, 247, 0.3);">
+                <span class="preview-chip-od">
                   <span style="width: 6px; height: 6px; border-radius: 50%; background: #a855f7;"></span> OD
                 </span>
-                <span class="badge d-flex align-items-center gap-1.5 px-2.5 py-1.5 fw-semibold" style="background: rgba(148, 163, 184, 0.12); color: #64748b; border: 1px dashed rgba(148, 163, 184, 0.45);">
+                <span class="preview-chip-off">
                   <span style="font-size: 0.65rem;">OFF</span> Sundays
                 </span>
               </div>
@@ -342,8 +342,8 @@
 
           </div>
           <div class="modal-footer border-top border-light p-3">
-            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-glow" id="saveDisplayPrefsBtn">Save Preferences</button>
+            <button type="button" class="btn-trackify-outline" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-trackify-primary" id="saveDisplayPrefsBtn">Save Preferences</button>
           </div>
         </form>
       </div>
@@ -355,7 +355,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
         <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold text-dark" id="notificationPrefsModalLabel">Notification Preferences</h5>
+          <h5 class="modal-title fw-bold" style="color: var(--text-primary);" id="notificationPrefsModalLabel">Notification Preferences</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="notificationsForm">
@@ -369,7 +369,7 @@
 
             <div class="form-check form-switch mb-3 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
               <div>
-                <label class="form-check-label fw-bold text-dark" for="notifsToggle">Enable Reminders</label>
+                <label class="form-check-label fw-bold" style="color: var(--text-primary);" for="notifsToggle">Enable Reminders</label>
                 <div class="text-secondary small">Notify me if subject averages fall below target.</div>
               </div>
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="notifsToggle" checked>
@@ -377,7 +377,7 @@
 
             <div class="form-check form-switch mb-3 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
               <div>
-                <label class="form-check-label fw-bold text-dark" for="pushNotifsToggle">Web Push Notifications</label>
+                <label class="form-check-label fw-bold" style="color: var(--text-primary);" for="pushNotifsToggle">Web Push Notifications</label>
                 <div class="text-secondary small">Receive instant alerts and notice updates in this browser.</div>
               </div>
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="pushNotifsToggle" checked>
@@ -385,7 +385,7 @@
 
             <div class="form-check form-switch mb-4 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
               <div>
-                <label class="form-check-label fw-bold text-dark" for="lowAttendanceAlert">Low Attendance Warnings</label>
+                <label class="form-check-label fw-bold" style="color: var(--text-primary);" for="lowAttendanceAlert">Low Attendance Warnings</label>
                 <div class="text-secondary small">Send email alert if average falls below 80%.</div>
               </div>
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="lowAttendanceAlert" checked>
@@ -396,13 +396,13 @@
                 <div class="small fw-semibold text-secondary mb-0.5">Service Status</div>
                 <div id="serviceStatusBadge" class="badge bg-secondary-subtle text-secondary py-1 px-3 fs-8 mb-0">Checking...</div>
               </div>
-              <button type="button" onclick="triggerTestPush()" class="btn btn-outline-secondary btn-sm px-3 py-2 fs-8 fw-semibold" style="border-radius: 8px;"><i class="bi bi-send-fill me-1"></i> Send Test Push</button>
+              <button type="button" onclick="triggerTestPush()" class="btn-trackify-outline"><i class="bi bi-send-fill me-1"></i> Send Test Push</button>
             </div>
 
           </div>
           <div class="modal-footer border-top border-light p-4">
-            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-glow">Save Preferences</button>
+            <button type="button" class="btn-trackify-outline" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-trackify-primary">Save Preferences</button>
           </div>
         </form>
       </div>
@@ -414,7 +414,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
         <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold text-dark" id="scheduleRemindersModalLabel">Schedule Reminders</h5>
+          <h5 class="modal-title fw-bold" style="color: var(--text-primary);" id="scheduleRemindersModalLabel">Schedule Reminders</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="scheduleForm">
@@ -422,14 +422,14 @@
             
             <div class="form-check form-switch mb-4 p-3 border rounded-3 d-flex justify-content-between align-items-center bg-light" style="padding-left: 3rem; border-color: var(--border-color) !important;">
               <div>
-                <label class="form-check-label fw-bold text-dark" for="dailyReminderToggle">Daily Marking Reminders</label>
+                <label class="form-check-label fw-bold" style="color: var(--text-primary);" for="dailyReminderToggle">Daily Marking Reminders</label>
                 <div class="text-secondary small">Remind me to log attendance every weekday.</div>
               </div>
               <input class="form-check-input ms-0" type="checkbox" role="switch" id="dailyReminderToggle" checked>
             </div>
 
             <div class="form-group mb-2">
-              <label for="reminderTimer" class="fw-bold text-dark small mb-1.5" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary);">Schedule Reminder Email Timer</label>
+              <label for="reminderTimer" class="fw-bold small mb-1.5" style="font-size: 0.8rem; letter-spacing: 0.04em; color: var(--text-secondary);">Schedule Reminder Email Timer</label>
               <select class="form-select text-dark" id="reminderTimer" style="background: var(--bg-primary); border-color: var(--border-color);">
                 <option value="disabled">Disabled</option>
                 <option value="08:00">08:00 AM (Before Class)</option>
@@ -442,8 +442,8 @@
 
           </div>
           <div class="modal-footer border-top border-light p-4">
-            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-glow">Save Schedule</button>
+            <button type="button" class="btn-trackify-outline" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-trackify-primary">Save Schedule</button>
           </div>
         </form>
       </div>
@@ -455,7 +455,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
         <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold text-dark" id="editProfileModalLabel">Edit Profile Details</h5>
+          <h5 class="modal-title fw-bold" style="color: var(--text-primary);" id="editProfileModalLabel">Edit Profile Details</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="profileForm">
@@ -503,10 +503,10 @@
 
           </div>
           <div class="modal-footer border-top border-light p-4">
-            <button type="button" class="btn btn-glass" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Change password">
+            <button type="button" class="btn-trackify-outline" data-bs-toggle="modal" data-bs-target="#changePasswordModal" title="Change password">
               <i class="bi bi-lock-fill"></i> Change Password
             </button>
-            <button type="submit" class="btn btn-glow">Save Profile</button>
+            <button type="submit" class="btn-trackify-primary">Save Profile</button>
           </div>
         </form>
       </div>
@@ -520,7 +520,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
         <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold text-dark" id="changePasswordModalLabel">Change Password</h5>
+          <h5 class="modal-title fw-bold" style="color: var(--text-primary);" id="changePasswordModalLabel">Change Password</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <form id="passwordForm">
@@ -531,7 +531,7 @@
                 <input type="password" class="form-control text-dark" id="oldPassword" placeholder="Old Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
                 <label class="text-secondary" for="oldPassword">Current Password *</label>
               </div>
-              <button type="button" onclick="toggleFieldPwd('oldPassword','st_eyeOff1','st_eyeOn1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+              <button type="button" class="btn-trackify-ghost-icon" aria-label="Toggle password visibility" onclick="toggleFieldPwd('oldPassword','st_eyeOff1','st_eyeOn1')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
                 <svg id="st_eyeOff1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
                 <svg id="st_eyeOn1" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
               </button>
@@ -542,7 +542,7 @@
                 <input type="password" class="form-control text-dark" id="newPassword" placeholder="New Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
                 <label class="text-secondary" for="newPassword">New Password *</label>
               </div>
-              <button type="button" onclick="toggleFieldPwd('newPassword','st_eyeOff2','st_eyeOn2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+              <button type="button" class="btn-trackify-ghost-icon" aria-label="Toggle password visibility" onclick="toggleFieldPwd('newPassword','st_eyeOff2','st_eyeOn2')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
                 <svg id="st_eyeOff2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
                 <svg id="st_eyeOn2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
               </button>
@@ -553,7 +553,7 @@
                 <input type="password" class="form-control text-dark" id="confirmNewPassword" placeholder="Confirm Password" style="background: var(--bg-primary); border-color: var(--border-color); padding-right:52px;" required>
                 <label class="text-secondary" for="confirmNewPassword">Confirm New Password *</label>
               </div>
-              <button type="button" onclick="toggleFieldPwd('confirmNewPassword','st_eyeOff3','st_eyeOn3')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;background:none;border:none;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);outline:none;box-shadow:none;">
+              <button type="button" class="btn-trackify-ghost-icon" aria-label="Toggle password visibility" onclick="toggleFieldPwd('confirmNewPassword','st_eyeOff3','st_eyeOn3')" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:20;padding:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
                 <svg id="st_eyeOff3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10q9 6 18 0"/><path d="M6 12l-1.5 2.5"/><path d="M10 13v3"/><path d="M14 13v3"/><path d="M18 12l1.5 2.5"/></svg>
                 <svg id="st_eyeOn3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
               </button>
@@ -561,8 +561,8 @@
 
           </div>
           <div class="modal-footer border-top border-light p-4">
-            <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
-            <button type="submit" class="btn btn-glow">Change Password</button>
+            <button type="button" class="btn-trackify-outline" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn-trackify-primary">Change Password</button>
           </div>
         </form>
       </div>

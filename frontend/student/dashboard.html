@@ -64,6 +64,7 @@
     }
 
     .announcement-date {
+      font-size: 0.75rem !important;
       color: var(--text-muted, #64748b) !important;
     }
 
@@ -342,7 +343,7 @@
     <div class="app-main-wrapper">
       
       <header class="app-header">
-        <h1 class="app-header-title">Student Dashboard</h1>
+        <span class="app-header-title">Student Dashboard</span>
         <div class="app-header-profile dropdown">
           <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false"
             style="cursor: pointer;">
@@ -351,7 +352,7 @@
                 style="width: 36px; height: 36px; border-radius: 50%;">S</span>
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
-              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="fw-bold fs-7" style="color: var(--text-primary);" id="user-header-name">Student</div>
               <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -439,9 +440,9 @@
 
         
         <div class="section-separator d-flex justify-content-between align-items-center">
-          <span>Subject Directory & Performance</span>
+          <h2 class="h5 mb-0 fw-bold" style="font-size: 1rem; color: var(--text-primary);">Subject Directory &amp; Performance</h2>
           <span class="text-muted small d-none d-md-block"
-            style="font-size: 0.7rem; font-family: 'IBM Plex Mono', monospace; text-transform: none; letter-spacing: 0;">Real-time
+            style="font-size: 0.75rem; font-family: 'IBM Plex Mono', monospace; text-transform: none; letter-spacing: 0;">Real-time
             Attendance Analytics</span>
         </div>
         <div class="subject-table-wrapper table-responsive mb-4">
@@ -544,7 +545,7 @@
                 <td>
                   <div class="subject-info">
                     <span class="subject-code-badge" style="background-color: rgba(37, 99, 235, 0.08); color: ${primaryColor};">${subj.subject_code}</span>
-                    <h3 class="subject-name" title="${subj.subject_name}">${subj.subject_name}</h3>
+                    <span class="subject-name" title="${subj.subject_name}">${subj.subject_name}</span>
                   </div>
                 </td>
                 <td class="text-center fw-semibold text-dark">${subj.conducted_count}</td>
@@ -865,7 +866,7 @@
                   ${pinnedBadge}
                   ${catBadge}
                   ${priorityBadge}
-                  <span class="announcement-date small ms-auto" style="font-size: 0.72rem;">${dateStr}</span>
+                  <span class="announcement-date small ms-auto" style="font-size: 0.75rem;">${dateStr}</span>
                 </div>
                 <div class="fw-bold announcement-title fs-6 mb-1">${ann.title}</div>
                 <div class="announcement-content small" style="white-space: pre-wrap; line-height: 1.4;">${ann.content}</div>

@@ -134,14 +134,14 @@
     <div class="app-main-wrapper">
       
       <header class="app-header">
-        <h1 class="app-header-title">Export Reports</h1>
+        <span class="app-header-title">Export Reports</span>
         <div class="app-header-profile dropdown">
           <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
             <div class="profile-avatar-container">
               <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 36px; height: 36px; border-radius: 50%;" id="header-avatar-badge">S</span>
             </div>
             <div class="text-start d-none d-md-block" style="line-height: 1.1;">
-              <div class="fw-bold text-dark fs-7" id="user-header-name">Student</div>
+              <div class="fw-bold fs-7" style="color: var(--text-primary);" id="user-header-name">Student</div>
               <div class="text-secondary small" style="font-size: 0.65rem;">Student Profile</div>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
@@ -174,7 +174,7 @@
             <p class="text-secondary small mb-0">Generate standalone interactive HTML reports, CSV sheets, or print official academic statements.</p>
           </div>
 
-          <a href="/student/attendance" class="btn btn-sm btn-glass rounded-pill px-3.5 py-1.5 fw-semibold text-secondary border d-inline-flex align-items-center gap-2">
+          <a href="/student/attendance" class="btn-trackify-outline" title="Return to Attendance">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             <span>Back to Attendance</span>
           </a>
@@ -252,7 +252,7 @@
           <div class="border-top pt-3 mt-3">
             <div class="d-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
               <span class="small fw-bold text-uppercase text-secondary tracking-wider" style="font-size: 0.72rem;">Filter Options</span>
-              <button type="button" class="btn btn-sm btn-link text-decoration-none text-secondary p-0 small" onclick="resetFilters()">Reset All Filters</button>
+              <button type="button" class="btn-trackify-ghost p-0" onclick="resetFilters()">Reset All Filters</button>
             </div>
 
             <div class="row g-2 align-items-center">
@@ -278,19 +278,19 @@
 
               <div class="col-md-5 d-flex gap-2 justify-content-md-end flex-wrap mt-2 mt-md-0">
                 <!-- DOWNLOAD HTML REPORT -->
-                <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadHTMLReport()" title="Download standalone interactive HTML report">
+                <button type="button" class="btn-trackify-outline" onclick="downloadHTMLReport()" title="Download standalone interactive HTML report">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
                   <span>Export HTML</span>
                 </button>
 
                 <!-- DOWNLOAD CSV -->
-                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadCSV()" title="Download CSV Spreadsheet">
+                <button type="button" class="btn-trackify-outline" onclick="downloadCSV()" title="Download CSV Spreadsheet">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                   <span>Export CSV</span>
                 </button>
 
                 <!-- DOWNLOAD PDF -->
-                <button type="button" class="btn btn-sm btn-primary rounded-pill px-3 py-1.5 fw-bold d-inline-flex align-items-center gap-1.5" onclick="downloadPDF()" title="Download PDF document">
+                <button type="button" class="btn-trackify-primary" onclick="downloadPDF()" title="Download PDF document">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                   <span>Export PDF</span>
                 </button>
@@ -345,7 +345,7 @@
 
           <!-- SUBJECT-WISE BREAKDOWN SUMMARY TABLE (ALL SUBJECTS MODE) -->
           <div id="subject-summary-section" class="mb-4">
-            <h3 class="h6 fw-bold text-uppercase tracking-wider text-secondary mb-2" style="font-size: 0.78rem;">Subject-Wise Performance Summary</h3>
+            <h3 class="h6 fw-bold mb-2" style="font-size: 0.95rem; color: var(--text-primary);">Subject-Wise Performance Summary</h3>
             <div class="table-responsive">
               <table class="table table-sm table-bordered align-middle mb-0">
                 <thead class="table-light">
@@ -369,7 +369,7 @@
 
           <!-- DETAILED ATTENDANCE LEDGER -->
           <div>
-            <h3 class="h6 fw-bold text-uppercase tracking-wider text-secondary mb-2" style="font-size: 0.78rem;">Detailed Attendance Log Entries</h3>
+            <h3 class="h6 fw-bold mb-2" style="font-size: 0.95rem; color: var(--text-primary);">Detailed Attendance Log Entries</h3>
             <div class="table-responsive">
               <table class="table table-hover align-middle" id="export-preview-table">
                 <thead class="table-light">
