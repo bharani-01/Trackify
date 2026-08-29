@@ -60,7 +60,15 @@ const broadcastAuditLog = (logEntry) => {
   });
 };
 
+/**
+ * Get active connected WebSocket client count
+ */
+const getWebSocketClientCount = () => {
+  return wss && wss.clients ? wss.clients.size : 0;
+};
+
 module.exports = {
   initWebSocketServer,
-  broadcastAuditLog
+  broadcastAuditLog,
+  getWebSocketClientCount
 };

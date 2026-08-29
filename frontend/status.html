@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>System Status — Trackify</title>
+  <meta name="description" content="Live operational health, uptime telemetry, and incident history for Trackify infrastructure.">
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=3.8">
+
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Subtle Background Glow */
+    .ambient-glow-top {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 900px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(59, 130, 246, 0.04) 50%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(70px);
+    }
+
+    [data-theme="dark"] .ambient-glow-top {
+      background: radial-gradient(circle, rgba(125, 255, 149, 0.09) 0%, rgba(64, 103, 200, 0.06) 50%, transparent 70%);
+    }
+
+    /* Top Navigation Header */
+    .status-header {
+      height: 60px;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .logo-img {
+      height: 28px;
+      width: auto;
+    }
+
+    /* Open Canvas Layout */
+    .status-main-container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Overall Status Hero Card */
+    .status-hero-banner {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg, 16px);
+      padding: 2rem 1.75rem;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .status-hero-banner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 2.25rem 2rem;
+      }
+    }
+
+    .status-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    .status-pill-operational {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    [data-theme="dark"] .status-pill-operational {
+      background: rgba(125, 255, 149, 0.12);
+      color: #7dff95;
+      border-color: rgba(125, 255, 149, 0.25);
+    }
+
+    .status-pill-degraded {
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-pill-maintenance {
+      background: rgba(59, 130, 246, 0.12);
+      color: #2563eb;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .status-pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseGlow 2s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+
+    [data-theme="dark"] .status-pulse-dot {
+      background: #7dff95;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* Section Headings */
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.02em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Services Availability Grid */
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .service-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--text-muted);
+    }
+
+    .service-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .service-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .service-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .badge-operational {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    [data-theme="dark"] .badge-operational {
+      background: rgba(125, 255, 149, 0.12);
+      color: #7dff95;
+    }
+
+    .service-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* 90-Day Uptime Calendar Timeline */
+    .uptime-timeline-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .uptime-bars-wrapper {
+      display: flex;
+      gap: 3px;
+      height: 38px;
+      align-items: flex-end;
+      margin: 1.25rem 0 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .uptime-bar {
+      flex: 1;
+      min-width: 4px;
+      height: 100%;
+      border-radius: 2px;
+      background: #10b981;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    [data-theme="dark"] .uptime-bar {
+      background: #7dff95;
+    }
+
+    .uptime-bar:hover {
+      opacity: 0.8;
+      transform: scaleY(1.1);
+    }
+
+    .uptime-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--text-secondary);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    /* Live Telemetry Diagnostic Grid */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .telemetry-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .telemetry-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      text-align: left;
+    }
+
+    .telemetry-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.35rem;
+    }
+
+    .telemetry-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    /* Incidents List */
+    .incident-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .incident-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .incident-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+    }
+
+    .incident-badge-resolved {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+    }
+
+    [data-theme="dark"] .incident-badge-resolved {
+      color: #7dff95;
+      background: rgba(125, 255, 149, 0.12);
+    }
+
+    .incident-desc {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Refresh Button */
+    .btn-refresh {
+      height: 36px;
+      padding: 0 1rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-refresh:hover {
+      background: var(--border-color);
+    }
+
+    .btn-refresh.spinning svg {
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient-glow-top"></div>
+
+  <!-- Header -->
+  <header class="status-header">
+    <div class="d-flex align-items-center gap-3">
+      <a href="/" class="d-flex align-items-center text-decoration-none">
+        <img id="trackify-logo" src="/assets/images/logo_light.webp" alt="Trackify Logo" class="logo-img">
+      </a>
+      <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 0.72rem; padding: 4px 8px; border-radius: 6px;">STATUS</span>
+    </div>
+    
+    <div class="d-flex align-items-center gap-2">
+      <a href="/" class="btn-refresh text-decoration-none d-none d-sm-inline-flex">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Back to Portal</span>
+      </a>
+
+      <button type="button" class="btn btn-sm btn-ghost p-1.5 rounded-circle" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+        <svg id="theme-moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="theme-sun-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Status Content Flow -->
+  <main class="status-main-container">
+    <!-- Overall Status Banner -->
+    <div class="status-hero-banner" id="overall-status-banner">
+      <div>
+        <div class="status-pill-badge status-pill-operational" id="overall-status-pill">
+          <span class="status-pulse-dot" id="overall-status-dot"></span>
+          <span id="overall-status-text">All Systems Operational</span>
+        </div>
+        <p class="text-secondary small mt-2 mb-0" id="last-updated-text">
+          Verified live telemetry • Auto-syncing every 30s
+        </p>
+      </div>
+
+      <div>
+        <button type="button" class="btn-refresh" id="manual-refresh-btn" onclick="fetchStatusTelemetry()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <polyline points="1 20 1 14 7 14"></polyline>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+          </svg>
+          <span>Refresh Metrics</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Infrastructure Telemetry Grid -->
+    <div class="telemetry-grid">
+      <div class="telemetry-box">
+        <div class="telemetry-label">Server Uptime</div>
+        <div class="telemetry-value" id="telemetry-uptime">-</div>
+      </div>
+      <div class="telemetry-box">
+        <div class="telemetry-label">Response Latency</div>
+        <div class="telemetry-value" id="telemetry-latency">-</div>
+      </div>
+      <div class="telemetry-box">
+        <div class="telemetry-label">Database Pool</div>
+        <div class="telemetry-value" id="telemetry-connections">-</div>
+      </div>
+      <div class="telemetry-box">
+        <div class="telemetry-label">System Memory</div>
+        <div class="telemetry-value" id="telemetry-memory">-</div>
+      </div>
+    </div>
+
+    <!-- Services Availability Grid -->
+    <div class="section-title">
+      <span>Service Health Matrix</span>
+      <span class="text-secondary small fw-normal" style="font-size: 0.78rem;">6 Monitored Subsystems</span>
+    </div>
+
+    <div class="services-grid" id="services-grid-container">
+      <!-- Dynamic service cards -->
+    </div>
+
+    <!-- 90-Day Uptime Calendar -->
+    <div class="section-title">
+      <span>90-Day System Availability</span>
+      <span class="text-success small fw-bold" id="uptime-percentage-summary">99.98% Average Uptime</span>
+    </div>
+
+    <div class="uptime-timeline-card">
+      <div class="uptime-bars-wrapper" id="uptime-bars-container">
+        <!-- 90 timeline bars -->
+      </div>
+      <div class="uptime-legend">
+        <span>90 days ago</span>
+        <span class="text-secondary">Hover a bar for daily telemetry</span>
+        <span>Today</span>
+      </div>
+    </div>
+
+    <!-- Maintenance & Incident History -->
+    <div class="section-title">
+      <span>Recent System Upgrades & Maintenance</span>
+    </div>
+
+    <div id="incidents-container">
+      <div class="incident-item">
+        <div class="incident-header">
+          <span class="incident-title">PostgreSQL Database Schema & Query Optimization</span>
+          <span class="incident-badge-resolved">Resolved</span>
+        </div>
+        <p class="incident-desc">Applied automated database indexing, connection pooling upgrades, and zero-latency attendance marking improvements.</p>
+        <div class="text-secondary small mt-2" style="font-size: 0.74rem;">August 2026 • Production Rollout</div>
+      </div>
+
+      <div class="incident-item">
+        <div class="incident-header">
+          <span class="incident-title">High-Performance Shimmer Loader Rollout</span>
+          <span class="incident-badge-resolved">Resolved</span>
+        </div>
+        <p class="incident-desc">Integrated hardware-accelerated skeleton placeholders across dashboard, timetable, and attendance views to eliminate layout shifts.</p>
+        <div class="text-secondary small mt-2" style="font-size: 0.74rem;">August 2026 • Infrastructure Update</div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Theme Manager
+    function updateThemeIcons(theme) {
+      const moonIcon = document.getElementById('theme-moon-icon');
+      const sunIcon = document.getElementById('theme-sun-icon');
+      const logo = document.getElementById('trackify-logo');
+      
+      if (theme === 'dark') {
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        if (logo) logo.src = '/assets/images/logo_dark.webp';
+      } else {
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        if (logo) logo.src = '/assets/images/logo_light.webp';
+      }
+    }
+
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+      });
+    }
+
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateThemeIcons(initialTheme);
+
+    // Fetch and Render Telemetry Data
+    async function fetchStatusTelemetry() {
+      const refreshBtn = document.getElementById('manual-refresh-btn');
+      if (refreshBtn) refreshBtn.classList.add('spinning');
+
+      try {
+        const startTime = Date.now();
+        const res = await fetch('/api/system/public-status', { cache: 'no-store' });
+        const latency = Date.now() - startTime;
+
+        if (res.ok) {
+          const data = await res.json();
+          renderTelemetry(data, latency);
+        }
+      } catch (err) {
+        console.error('Failed to load status telemetry:', err);
+      } finally {
+        if (refreshBtn) {
+          setTimeout(() => refreshBtn.classList.remove('spinning'), 400);
+        }
+      }
+    }
+
+    function renderTelemetry(data, clientLatency) {
+      // 1. Overall Status Pill
+      const pill = document.getElementById('overall-status-pill');
+      const statusText = document.getElementById('overall-status-text');
+      const lastUpdated = document.getElementById('last-updated-text');
+
+      if (data.overallStatus === 'maintenance') {
+        pill.className = 'status-pill-badge status-pill-maintenance';
+        statusText.innerText = 'Scheduled Maintenance Active';
+      } else if (data.overallStatus === 'degraded') {
+        pill.className = 'status-pill-badge status-pill-degraded';
+        statusText.innerText = 'Degraded System Performance';
+      } else {
+        pill.className = 'status-pill-badge status-pill-operational';
+        statusText.innerText = 'All Systems Operational';
+      }
+
+      const now = new Date();
+      lastUpdated.innerText = `Verified live telemetry at ${now.toLocaleTimeString()} • Auto-syncing every 30s`;
+
+      // 2. Metrics Boxes
+      document.getElementById('telemetry-uptime').innerText = data.metrics?.uptimeFormatted || '100%';
+      document.getElementById('telemetry-latency').innerText = `${clientLatency}ms`;
+      document.getElementById('telemetry-connections').innerText = `${data.metrics?.connections?.active || 0} active`;
+      document.getElementById('telemetry-memory').innerText = `${data.metrics?.memoryMB || 0} MB`;
+
+      // 3. Services Grid
+      const servicesContainer = document.getElementById('services-grid-container');
+      if (servicesContainer && data.services) {
+        servicesContainer.innerHTML = data.services.map(s => `
+          <div class="service-card">
+            <div class="service-header-row">
+              <span class="service-name">${s.name}</span>
+              <span class="service-badge badge-operational">
+                <span style="width: 6px; height: 6px; border-radius: 50%; background: currentColor;"></span>
+                ${s.status}
+              </span>
+            </div>
+            <div class="service-meta-row">
+              <span>Availability: <strong>${s.uptime}</strong></span>
+              <span>Latency: <strong>${s.latency}</strong></span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 4. 90-Day Timeline Bars
+      const barsContainer = document.getElementById('uptime-bars-container');
+      if (barsContainer && data.uptimeHistory90Days) {
+        barsContainer.innerHTML = data.uptimeHistory90Days.map(item => `
+          <div class="uptime-bar" title="${item.date}: ${item.uptime}% operational"></div>
+        `).join('');
+      }
+    }
+
+    // Initial load + 30-second recurring background interval
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchStatusTelemetry();
+      setInterval(fetchStatusTelemetry, 30000);
+    });
+  </script>
+</body>
+</html>

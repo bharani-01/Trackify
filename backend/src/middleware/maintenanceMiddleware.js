@@ -34,12 +34,16 @@ const maintenanceMiddleware = async (req, res, next) => {
     const { isMaintenance, bypassEmails } = await getMaintenanceSettingsCached();
     const url = req.path.toLowerCase();
 
-    // Public endpoint to query maintenance mode status
+    // Dedicated public status endpoints
     if (url === '/api/system/maintenance-status') {
       return res.status(200).json({
         success: true,
         maintenance_mode: isMaintenance
       });
+    }
+
+    if (url === '/api/system/public-status') {
+      return next();
     }
 
     if (!isMaintenance) {
@@ -56,8 +60,15 @@ const maintenanceMiddleware = async (req, res, next) => {
       return next();
     }
 
-    // 2. Bypass the maintenance & 404 error pages
-    if (url === '/maintenance' || url === '/maintenance.html' || url === '/404' || url === '/404.html') {
+    // 2. Bypass the maintenance, status & 404 error pages
+    if (
+      url === '/maintenance' || 
+      url === '/maintenance.html' || 
+      url === '/status' || 
+      url === '/status.html' || 
+      url === '/404' || 
+      url === '/404.html'
+    ) {
       return next();
     }
 

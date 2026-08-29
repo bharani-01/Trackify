@@ -19,6 +19,8 @@ const { verifyToken } = require('./src/utils/authHelper');
 const userRepository = require('./src/repositories/userRepository');
 const systemSettingsRepository = require('./src/repositories/systemSettingsRepository');
 const { maintenanceMiddleware } = require('./src/middleware/maintenanceMiddleware');
+const { getPublicSystemStatus } = require('./src/controllers/systemStatusController');
+const alertService = require('./src/services/alertService');
 
 const app = express();
 app.disable('x-powered-by');
@@ -635,6 +637,14 @@ app.get(['/pending-approval', '/pending-approval.html'], async (req, res) => {
   }
 });
 
+// Public System Status Telemetry
+app.get('/api/system/public-status', getPublicSystemStatus);
+
+// Dedicated Status Page Route
+app.get(['/status', '/status.html'], (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/status.html'));
+});
+
 // Serve public static folder (Landing, Login, Register)
 app.use(express.static(path.join(__dirname, '../frontend'), { extensions: ['html'] }));
 
@@ -652,6 +662,21 @@ app.use((req, res) => {
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
+
+  // Trigger automated critical failure alert to administrator (bharani.cyber@gmail.com)
+  try {
+    alertService.notifySystemFailure({
+      type: err.name || 'Internal Server Error',
+      error: err.message,
+      stack: err.stack,
+      path: req.originalUrl || req.path,
+      method: req.method,
+      ip: req.ip || req.headers['x-forwarded-for'] || req.socket?.remoteAddress
+    }).catch((e) => console.error('[ALERT SERVICE ERROR]:', e.message));
+  } catch (e) {
+    // Non-blocking
+  }
+
   res.status(500).json({
     success: false,
     message: 'Internal Server Error'
@@ -680,5 +705,37 @@ const server = app.listen(PORT, HOST, () => {
   } catch (err) {
     console.error('Failed to start background reminders scheduler service:', err.message);
   }
+
+  // Broadcast Rollout Deployed Alert to Administrator (bharani.cyber@gmail.com)
+  try {
+    alertService.notifyRolloutDeployed({
+      port: PORT,
+      host: HOST
+    }).catch((e) => console.error('[ROLLOUT ALERT ERROR]:', e.message));
+  } catch (e) {
+    // Non-blocking
+  }
 });
-// Nodemon trigger reload to pick up env port, VAPID key, Firebase credentials, modular messaging and CORS production domain changes
+
+// Global Process Crash / Unhandled Rejection Alert Handlers
+process.on('unhandledRejection', (reason) => {
+  console.error('[UNHANDLED REJECTION]:', reason);
+  try {
+    alertService.notifySystemFailure({
+      type: 'Unhandled Promise Rejection',
+      error: reason instanceof Error ? reason.message : String(reason),
+      stack: reason instanceof Error ? reason.stack : ''
+    }).catch(() => {});
+  } catch (e) {}
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[UNCAUGHT EXCEPTION]:', err);
+  try {
+    alertService.notifySystemFailure({
+      type: 'Uncaught Process Exception',
+      error: err.message,
+      stack: err.stack
+    }).catch(() => {});
+  } catch (e) {}
+});
