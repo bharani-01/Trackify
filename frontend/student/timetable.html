@@ -213,6 +213,34 @@
       font-size: 0.75rem;
       font-style: italic;
     }
+
+    /* Skeleton Shimmer Loading for Timetable */
+    .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        var(--bg-primary) 0%,
+        var(--border-color) 50%,
+        var(--bg-primary) 100%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite ease-in-out;
+      border-radius: 6px;
+    }
+
+    [data-theme="dark"] .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      background-size: 200% 100%;
+    }
+
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   <script>
@@ -429,11 +457,37 @@
               </thead>
               <tbody id="student-timetable-grid-body">
                 <tr>
-                  <td colspan="11" class="text-center py-5 text-secondary">
-                    <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading timetable...</span>
-                    </div>
-                  </td>
+                  <td class="day-column"><div class="skeleton-shimmer mx-auto" style="width: 50px; height: 16px; border-radius: 4px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td rowspan="6" class="break-column">Break (9:50–10:10)</td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 75%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 50%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 60%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td rowspan="6" class="break-column">Lunch Break (12:00–1:00)</td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td rowspan="6" class="break-column">Break (2:40–2:55)</td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                </tr>
+                <tr>
+                  <td class="day-column"><div class="skeleton-shimmer mx-auto" style="width: 55px; height: 16px; border-radius: 4px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 60%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 75%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 50%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                </tr>
+                <tr>
+                  <td class="day-column"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 16px; border-radius: 4px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 75%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 50%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 60%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 65%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 75%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 50%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 60%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 40%; height: 11px; border-radius: 3px;"></div></td>
+                  <td><div class="skeleton-shimmer mx-auto mb-1" style="width: 70%; height: 14px; border-radius: 3px;"></div><div class="skeleton-shimmer mx-auto" style="width: 45%; height: 11px; border-radius: 3px;"></div></td>
                 </tr>
               </tbody>
             </table>

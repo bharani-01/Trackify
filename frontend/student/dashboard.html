@@ -272,6 +272,34 @@
         font-weight: 700;
       }
     }
+
+    /* Skeleton Shimmer Loading for Dashboard */
+    .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        var(--bg-primary) 0%,
+        var(--border-color) 50%,
+        var(--bg-primary) 100%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite ease-in-out;
+      border-radius: 6px;
+    }
+
+    [data-theme="dark"] .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      background-size: 200% 100%;
+    }
+
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   <script>
@@ -459,7 +487,43 @@
             </thead>
             <tbody id="subject-table-body">
               <tr>
-                <td colspan="6" class="text-center py-4 text-secondary small">Loading subject stats...</td>
+                <td>
+                  <div class="subject-info">
+                    <div class="skeleton-shimmer mb-1" style="width: 65px; height: 16px; border-radius: 4px;"></div>
+                    <div class="skeleton-shimmer" style="width: 170px; height: 18px; border-radius: 4px;"></div>
+                  </div>
+                </td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 28px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-end" style="padding-right: 2rem;"><div class="skeleton-shimmer ms-auto" style="width: 65px; height: 26px; border-radius: 6px;"></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="subject-info">
+                    <div class="skeleton-shimmer mb-1" style="width: 75px; height: 16px; border-radius: 4px;"></div>
+                    <div class="skeleton-shimmer" style="width: 135px; height: 18px; border-radius: 4px;"></div>
+                  </div>
+                </td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 28px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-end" style="padding-right: 2rem;"><div class="skeleton-shimmer ms-auto" style="width: 65px; height: 26px; border-radius: 6px;"></div></td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="subject-info">
+                    <div class="skeleton-shimmer mb-1" style="width: 60px; height: 16px; border-radius: 4px;"></div>
+                    <div class="skeleton-shimmer" style="width: 190px; height: 18px; border-radius: 4px;"></div>
+                  </div>
+                </td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 28px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+                <td class="text-end" style="padding-right: 2rem;"><div class="skeleton-shimmer ms-auto" style="width: 65px; height: 26px; border-radius: 6px;"></div></td>
               </tr>
             </tbody>
           </table>
@@ -475,6 +539,30 @@
   <script src="/assets/js/main.js"></script>
   <script>
     let myChart = null;
+
+    function renderDashboardTableSkeletons(count = 3) {
+      let html = '';
+      const widths = ['170px', '135px', '190px', '150px'];
+      const codeWidths = ['65px', '75px', '60px', '70px'];
+      for (let i = 0; i < count; i++) {
+        html += `
+          <tr>
+            <td>
+              <div class="subject-info">
+                <div class="skeleton-shimmer mb-1" style="width: ${codeWidths[i % codeWidths.length]}; height: 16px; border-radius: 4px;"></div>
+                <div class="skeleton-shimmer" style="width: ${widths[i % widths.length]}; height: 18px; border-radius: 4px;"></div>
+              </div>
+            </td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 28px; height: 18px; border-radius: 4px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 18px; border-radius: 4px;"></div></td>
+            <td class="text-end" style="padding-right: 2rem;"><div class="skeleton-shimmer ms-auto" style="width: 65px; height: 26px; border-radius: 6px;"></div></td>
+          </tr>
+        `;
+      }
+      return html;
+    }
 
     async function loadDashboard() {
       // 1. Fetch profile info
@@ -523,7 +611,7 @@
             </tr>
           `;
         } else {
-          stats.subjectStats.forEach(subj => {
+          stats.subjectStats.forEach((subj, idx) => {
             const percentage = parseFloat(subj.percentage);
 
             // Dynamic text color thresholds:
@@ -541,7 +629,7 @@
             const primaryColor = '#2563eb';
 
             tbody.innerHTML += `
-              <tr class="animate-fade-in-up subject-row" onclick="toggleMobileRow(this)">
+              <tr class="animate-card-reveal subject-row" style="animation-delay: ${idx * 35}ms;" onclick="toggleMobileRow(this)">
                 <td>
                   <div class="subject-info">
                     <span class="subject-code-badge" style="background-color: rgba(37, 99, 235, 0.08); color: ${primaryColor};">${subj.subject_code}</span>

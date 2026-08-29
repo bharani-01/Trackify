@@ -138,6 +138,154 @@
         margin-right: 0.5rem;
       }
     }
+
+    /* Class Attendance Card Balanced Layout */
+    .class-attendance-card {
+      transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      position: relative;
+    }
+
+    .class-attendance-card .card-inner-flex {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .class-attendance-card .class-info-col {
+      flex: 1 1 auto;
+      min-width: 0;
+      text-align: left;
+    }
+
+    .class-attendance-card .class-action-col {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    @media (max-width: 576px) {
+      .class-attendance-card .card-inner-flex {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 0.85rem !important;
+      }
+      .class-attendance-card .class-action-col {
+        width: 100%;
+        justify-content: flex-end !important;
+        border-top: 1px dashed var(--border-color);
+        padding-top: 0.65rem;
+      }
+      .class-attendance-card .status-action-wrap {
+        width: 100%;
+        justify-content: flex-end;
+      }
+      .class-attendance-card .apple-segmented-pill {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+      .class-attendance-card .apple-segmented-pill .segmented-item {
+        flex: 1;
+        text-align: center;
+        padding: 6px 2px !important;
+      }
+    }
+
+    /* In-App Custom Confirmation Modal */
+    .app-confirm-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      animation: backdropFadeIn 0.15s ease-out forwards;
+    }
+
+    .app-confirm-dialog {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.22);
+      transform-origin: center;
+      animation: dialogScaleIn 0.2s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+
+    [data-theme="dark"] .app-confirm-dialog {
+      background: var(--bg-card);
+      border-color: var(--border-color);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn-close-confirm {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .btn-close-confirm:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    @keyframes backdropFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes dialogScaleIn {
+      from { opacity: 0; transform: scale(0.93); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Skeleton Shimmer Loading */
+    .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        var(--bg-primary) 0%,
+        var(--border-color) 50%,
+        var(--bg-primary) 100%
+      );
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.5s infinite ease-in-out;
+      border-radius: 6px;
+    }
+
+    [data-theme="dark"] .skeleton-shimmer {
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.03) 0%,
+        rgba(255, 255, 255, 0.08) 50%,
+        rgba(255, 255, 255, 0.03) 100%
+      );
+      background-size: 200% 100%;
+    }
+
+    @keyframes skeletonShimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
   <script>
@@ -368,17 +516,48 @@
 
               
               <div class="d-flex align-items-center gap-2 mb-4 w-100 flex-wrap" id="bulk-actions-container" style="display: none !important;">
-                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('Present')">✓ Mark All Present</button>
-                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('Absent')">✗ Mark All Absent</button>
-                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('On Duty')">ℹ Mark All OD</button>
-                <button type="button" class="btn-trackify-danger-subtle flex-fill" onclick="clearAttendanceForDate()">🗑 Clear Attendance</button>
+                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('Present')">Mark All Present</button>
+                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('Absent')">Mark All Absent</button>
+                <button type="button" class="btn-trackify-outline flex-fill" onclick="markAll('On Duty')">Mark All OD</button>
+                <button type="button" class="btn-trackify-danger-subtle flex-fill" onclick="clearAttendanceForDate()">Clear Attendance</button>
               </div>
 
               
               <div id="today-schedule-container">
-                <div class="text-center py-5">
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                <div class="p-3 mb-3 rounded-4 border class-attendance-card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                  <div class="card-inner-flex">
+                    <div class="class-info-col">
+                      <div class="skeleton-shimmer mb-2" style="width: 58px; height: 16px; border-radius: 9999px;"></div>
+                      <div class="skeleton-shimmer mb-2" style="width: 65%; height: 20px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 40%; height: 14px; border-radius: 4px;"></div>
+                    </div>
+                    <div class="class-action-col">
+                      <div class="skeleton-shimmer" style="width: 175px; height: 32px; border-radius: 9999px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-3 mb-3 rounded-4 border class-attendance-card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                  <div class="card-inner-flex">
+                    <div class="class-info-col">
+                      <div class="skeleton-shimmer mb-2" style="width: 58px; height: 16px; border-radius: 9999px;"></div>
+                      <div class="skeleton-shimmer mb-2" style="width: 50%; height: 20px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 35%; height: 14px; border-radius: 4px;"></div>
+                    </div>
+                    <div class="class-action-col">
+                      <div class="skeleton-shimmer" style="width: 175px; height: 32px; border-radius: 9999px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-3 mb-3 rounded-4 border class-attendance-card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+                  <div class="card-inner-flex">
+                    <div class="class-info-col">
+                      <div class="skeleton-shimmer mb-2" style="width: 58px; height: 16px; border-radius: 9999px;"></div>
+                      <div class="skeleton-shimmer mb-2" style="width: 72%; height: 20px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 42%; height: 14px; border-radius: 4px;"></div>
+                    </div>
+                    <div class="class-action-col">
+                      <div class="skeleton-shimmer" style="width: 175px; height: 32px; border-radius: 9999px;"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -528,7 +707,7 @@
         const dayInfo = monthData && monthData.days ? monthData.days[formattedDate] : null;
 
         let statusTintClass = '';
-        const isWeekendDay = dayName === 'Sun' || dayName === 'Sat' || (dayInfo && dayInfo.status === 'off_day');
+        const isWeekendDay = dayName === 'Sun' || (dayInfo && dayInfo.status === 'off_day');
 
         if (isWeekendDay) {
           statusTintClass = 'strip-weekend';
@@ -818,32 +997,66 @@
       }
     });
 
+    let cachedTimetable = null;
+    let currentDayLogs = [];
+
+    function renderSkeletonSchedule(count = 3) {
+      let html = '';
+      for (let i = 0; i < count; i++) {
+        const widths = ['65%', '50%', '72%', '58%'];
+        const titleW = widths[i % widths.length];
+        html += `
+          <div class="p-3 mb-3 rounded-4 border class-attendance-card" style="background: var(--bg-secondary); border-color: var(--border-color);">
+            <div class="card-inner-flex">
+              <div class="class-info-col">
+                <div class="skeleton-shimmer mb-2" style="width: 58px; height: 16px; border-radius: 9999px;"></div>
+                <div class="skeleton-shimmer mb-2" style="width: ${titleW}; height: 20px; border-radius: 6px;"></div>
+                <div class="skeleton-shimmer" style="width: 38%; height: 14px; border-radius: 4px;"></div>
+              </div>
+              <div class="class-action-col">
+                <div class="skeleton-shimmer" style="width: 175px; height: 32px; border-radius: 9999px;"></div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      return html;
+    }
+
     // Load classes checklist based on selected date
     async function fetchChecklist() {
       const container = document.getElementById('today-schedule-container');
+      if (container && (!daySlots || daySlots.length === 0)) {
+        container.innerHTML = renderSkeletonSchedule(3);
+      }
       const dParts = currentSelectedDate.split('-');
       const targetDate = new Date(parseInt(dParts[0], 10), parseInt(dParts[1], 10) - 1, parseInt(dParts[2], 10));
 
       const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       const targetDayName = daysOfWeek[targetDate.getDay()];
 
-      // Update date title inside status bar (if element exists)
+      // Update date title inside status bar
       const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       const dateTitleEl = document.getElementById('progress-date-title');
       if (dateTitleEl) {
         dateTitleEl.innerText = `${targetDayName}, ${months[targetDate.getMonth()]} ${targetDate.getDate()}, ${targetDate.getFullYear()}`;
       }
 
-      // Fetch student's timetable schedule, adjustments, and log entries for the selected date
-      const timetableRes = await apiCall('/api/timetable');
-      const adjustmentsRes = await apiCall(`/api/timetable/adjustments?date=${currentSelectedDate}`);
-      const logsRes = await apiCall(`/api/attendance?startDate=${currentSelectedDate}&endDate=${currentSelectedDate}`);
+      // Fetch timetable (cached), adjustments, and log entries concurrently
+      const timetablePromise = cachedTimetable ? Promise.resolve({ success: true, timetable: cachedTimetable }) : apiCall('/api/timetable');
+      const [timetableRes, adjustmentsRes, logsRes] = await Promise.all([
+        timetablePromise,
+        apiCall(`/api/timetable/adjustments?date=${currentSelectedDate}`),
+        apiCall(`/api/attendance?startDate=${currentSelectedDate}&endDate=${currentSelectedDate}`)
+      ]);
 
       if (timetableRes.success && adjustmentsRes.success && logsRes.success) {
+        if (!cachedTimetable) cachedTimetable = timetableRes.timetable;
         const rawSlots = timetableRes.timetable.filter(s => s.day === targetDayName);
-        const dayLogs = logsRes.logs;
-        const dayAdjustments = adjustmentsRes.adjustments;
-        const holiday = logsRes.holiday; // Capture holiday from logs request
+        const dayLogs = logsRes.logs || [];
+        currentDayLogs = dayLogs;
+        const dayAdjustments = adjustmentsRes.adjustments || [];
+        const holiday = logsRes.holiday;
         currentDateHoliday = holiday;
 
         const holidayBannerContainer = document.getElementById('holiday-banner-container');
@@ -934,7 +1147,6 @@
         container.innerHTML = '';
 
         if (holiday) {
-          // Hide bulk actions completely on holidays
           document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
           if (holidayBannerContainer) {
             holidayBannerContainer.style.display = 'none';
@@ -958,7 +1170,6 @@
           document.getElementById('bulk-actions-container').style.setProperty('display', 'none', 'important');
           
           if (targetDayName === 'Sunday' || targetDayName === 'Saturday') {
-            // Render beach vacation animation for Weekend Rest Days (Sundays / Saturdays)
             container.innerHTML = `
               <div class="holiday-vacation-card text-center d-flex flex-column align-items-center justify-content-center animate-fade-in-up">
                 <div id="weekend-vacation-lottie" class="holiday-lottie-container mb-3"></div>
@@ -988,20 +1199,19 @@
           updateProgressBar(0, 0);
           return;
         } else {
-          // Show bulk actions container since there are slots and no holiday
           document.getElementById('bulk-actions-container').style.setProperty('display', 'flex', 'important');
         }
 
         let markedCount = 0;
         let activeTotal = 0;
 
-        daySlots.forEach(slot => {
+        daySlots.forEach((slot, idx) => {
           const start = slot.start_time.substring(0, 5);
           const end = slot.end_time.substring(0, 5);
 
           if (slot.is_canceled) {
             container.innerHTML += `
-              <div class="p-3 mb-3 rounded-4 border text-muted gap-3 class-attendance-card" style="border-left: 5px solid #e2e8f0 !important; text-decoration: line-through; opacity: 0.65; background: var(--bg-secondary);">
+              <div id="card-period-${slot.period}" class="p-3 mb-3 rounded-4 border text-muted gap-3 class-attendance-card animate-card-reveal" style="animation-delay: ${idx * 30}ms; border-left: 5px solid #e2e8f0 !important; text-decoration: line-through; opacity: 0.65; background: var(--bg-secondary);">
                 <div class="d-flex justify-content-between align-items-center w-100 flex-wrap">
                   <div>
                     <span class="badge bg-secondary text-white px-2 py-0.5 fs-9 mb-1">Period ${slot.period}</span>
@@ -1017,7 +1227,7 @@
             return;
           }
 
-          activeTotal++; // Only count non-canceled classes in checklist progress
+          activeTotal++;
 
           // Match log precisely by period
           const matchLog = dayLogs.find(l => {
@@ -1041,51 +1251,43 @@
             const isAbsent = matchLog.status === 'Absent';
             const isOD = matchLog.status === 'On Duty';
 
-            if (isPresent) cardBgStyle = 'background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.25) !important;';
-            else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.25) !important;';
-            else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.03); border-color: rgba(37, 99, 235, 0.25) !important;';
-
-            editIconHtml = `
-              <button type="button" onclick="enableCardEditMode('${slot.period}')" class="btn-trackify-ghost-icon position-absolute top-0 end-0 m-3" title="Edit marking">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
-              </button>
-            `;
+            if (isPresent) cardBgStyle = 'background: rgba(16, 185, 129, 0.04); border-color: rgba(16, 185, 129, 0.28) !important;';
+            else if (isAbsent) cardBgStyle = 'background: rgba(239, 68, 68, 0.04); border-color: rgba(239, 68, 68, 0.28) !important;';
+            else if (isOD) cardBgStyle = 'background: rgba(37, 99, 235, 0.04); border-color: rgba(37, 99, 235, 0.28) !important;';
 
             let badgeMarkup = '';
             if (isPresent) {
-              badgeMarkup = `<span class="badge bg-success-subtle text-success border border-success-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">✓ Present</span>`;
+              badgeMarkup = `<span class="badge bg-success-subtle text-success border border-success-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">Present</span>`;
             } else if (isAbsent) {
-              badgeMarkup = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">✗ Absent</span>`;
+              badgeMarkup = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">Absent</span>`;
             } else if (isOD) {
-              badgeMarkup = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">ℹ On Duty</span>`;
+              badgeMarkup = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">On Duty</span>`;
             } else {
               badgeMarkup = `<span class="badge bg-secondary-subtle text-secondary border px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">${matchLog.status}</span>`;
             }
 
             statusAreaHtml = `
-              <div id="status-display-period-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end me-md-4">
+              <div id="status-slot-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
                 ${badgeMarkup}
-                <button type="button" onclick="deleteMarking('${logId}')" class="btn-trackify-danger-subtle ms-1" title="Reset this marking">Clear</button>
-              </div>
-              <div id="status-edit-period-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end me-md-4" style="display: none !important;">
-                <div class="apple-segmented-pill">
-                  <button type="button" class="segmented-item ${isPresent ? 'active-present' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present', '${logId}')">Present</button>
-                  <button type="button" class="segmented-item ${isAbsent ? 'active-absent' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent', '${logId}')">Absent</button>
-                  <button type="button" class="segmented-item ${isOD ? 'active-od' : ''}" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty', '${logId}')">OD</button>
-                </div>
-                <button type="button" onclick="deleteMarking('${logId}')" class="btn-trackify-danger-subtle ms-1" title="Reset this marking">Clear</button>
+                <button type="button" onclick="deleteMarking('${logId}', '${slot.period}', '${slot.subject_id}')" class="btn-trackify-danger-subtle ms-1" title="Reset this marking">Clear</button>
               </div>
             `;
           } else {
             statusAreaHtml = `
-              <div class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
+              <div id="status-slot-${slot.period}" class="d-flex align-items-center gap-2 flex-wrap justify-content-md-end">
                 <div class="apple-segmented-pill">
-                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present')">Present</button>
-                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent')">Absent</button>
-                  <button type="button" class="segmented-item" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty')">OD</button>
+                  <button type="button" class="segmented-item seg-item-present" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Present')">
+                    <span class="seg-dot seg-dot-present"></span>
+                    <span>Present</span>
+                  </button>
+                  <button type="button" class="segmented-item seg-item-absent" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'Absent')">
+                    <span class="seg-dot seg-dot-absent"></span>
+                    <span>Absent</span>
+                  </button>
+                  <button type="button" class="segmented-item seg-item-od" onclick="handleSegmentClick(this, '${slot.subject_id}', '${slot.period}', 'On Duty')">
+                    <span class="seg-dot seg-dot-od"></span>
+                    <span>OD</span>
+                  </button>
                 </div>
               </div>
             `;
@@ -1093,24 +1295,32 @@
 
           let subLabel = '';
           if (slot.is_substituted) {
-            subLabel = `<div class="text-warning small" style="font-size:0.75rem; font-weight: 500;">★ Substituted from ${slot.original_subject_name}</div>`;
+            subLabel = `<div class="text-warning small" style="font-size:0.75rem; font-weight: 500;">Substituted from ${slot.original_subject_name}</div>`;
           } else if (slot.is_swapped) {
-            subLabel = `<div class="text-info small" style="font-size:0.75rem; font-weight: 500;">⇆ ${slot.swap_period_details}</div>`;
+            subLabel = `<div class="text-info small" style="font-size:0.75rem; font-weight: 500;">${slot.swap_period_details}</div>`;
           } else if (slot.is_extra) {
-            subLabel = `<div class="text-success small" style="font-size:0.75rem; font-weight: 500;">✚ Extra Period</div>`;
+            subLabel = `<div class="text-success small" style="font-size:0.75rem; font-weight: 500;">Extra Period</div>`;
           }
 
           container.innerHTML += `
-            <div class="p-3 mb-3 rounded-4 border d-flex justify-content-between align-items-center flex-wrap gap-3 class-attendance-card position-relative" style="${cardBgStyle} background: var(--bg-secondary); border-color: var(--border-color);">
-              ${editIconHtml}
-              <div>
-                <span class="badge bg-secondary-subtle text-secondary border px-2 py-0.5 fs-9 mb-1 fw-semibold">Period ${slot.period}</span>
-                <h3 class="fs-6 fw-bold mb-1">${slot.subject_name} <span class="text-secondary small font-monospace">(${slot.subject_code})</span></h3>
-                <div class="text-secondary small mb-1">Time: ${start} - ${end} ${slot.room ? `| Room: ${slot.room}` : ''}</div>
-                ${subLabel}
-              </div>
-              <div class="text-start text-md-end mt-2 mt-md-0">
-                ${statusAreaHtml}
+            <div id="card-period-${slot.period}" class="p-3 mb-3 rounded-4 border class-attendance-card animate-card-reveal position-relative" style="${cardBgStyle} animation-delay: ${idx * 30}ms; background: var(--bg-secondary); border-color: var(--border-color);">
+              <div class="card-inner-flex">
+                <div class="class-info-col">
+                  <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                    <span class="badge bg-secondary-subtle text-secondary border px-2 py-0.5 fs-9 fw-semibold">Period ${slot.period}</span>
+                    ${slot.is_substituted ? `<span class="badge bg-warning-subtle text-warning border px-2 py-0.5 fs-9 fw-medium">Substituted</span>` : ''}
+                    ${slot.is_extra ? `<span class="badge bg-success-subtle text-success border px-2 py-0.5 fs-9 fw-medium">Extra</span>` : ''}
+                  </div>
+                  <h3 class="fs-6 fw-bold mb-1 lh-sm text-dark">${slot.subject_name} <span class="text-secondary small font-monospace fw-normal">(${slot.subject_code})</span></h3>
+                  <div class="text-secondary small d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.8rem;">
+                    <span>Time: ${start} - ${end}</span>
+                    ${slot.room ? `<span>•</span><span>Room: ${slot.room}</span>` : ''}
+                    ${subLabel ? `<span>•</span>${subLabel}` : ''}
+                  </div>
+                </div>
+                <div class="class-action-col">
+                  ${statusAreaHtml}
+                </div>
               </div>
             </div>
           `;
@@ -1153,14 +1363,19 @@
         showAlert('Attendance logging is disabled on holidays.', 'warning');
         return;
       }
-      if (!confirm(`Are you sure you want to mark all scheduled classes on this day as ${status}?`)) {
-        return;
-      }
+
+      const confirmed = await showAppConfirm({
+        title: `Mark All as ${status}`,
+        message: `Are you sure you want to mark all scheduled classes on ${currentSelectedDate} as ${status}?`,
+        confirmText: `Mark All ${status}`,
+        confirmVariant: status === 'Absent' ? 'danger' : 'primary'
+      });
+      if (!confirmed) return;
       
       const activeSlots = daySlots.filter(s => !s.is_canceled);
       if (activeSlots.length === 0) return;
       
-      showAlert(`Logging bulk ${status} markings, please wait...`, 'info');
+      showAlert(`Logging bulk ${status} markings...`, 'info');
       
       const promises = activeSlots.map(slot => {
         return apiCall('/api/attendance', {
@@ -1175,9 +1390,9 @@
       });
       
       const results = await Promise.all(promises);
-      const successfulCount = results.filter(r => r.success).length;
+      const successfulCount = results.filter(r => r && r.success).length;
       
-      miniCalCache = {}; // Invalidate calendar popover cache
+      miniCalCache = {};
       showAlert(`Successfully marked ${successfulCount} classes as ${status}`, 'success');
       await fetchChecklist();
       await renderRollingDaysStrip(currentSelectedDate);
@@ -1188,9 +1403,14 @@
         showAlert('Attendance logging is disabled on holidays.', 'warning');
         return;
       }
-      if (!confirm(`Are you sure you want to clear all marked attendance for ${currentSelectedDate}?`)) {
-        return;
-      }
+
+      const confirmed = await showAppConfirm({
+        title: 'Clear Date Attendance',
+        message: `Are you sure you want to clear all marked attendance for ${currentSelectedDate}? All periods for this date will be reset to unmarked.`,
+        confirmText: 'Clear Attendance',
+        confirmVariant: 'danger'
+      });
+      if (!confirmed) return;
 
       showAlert('Clearing attendance for this date...', 'info');
       const response = await apiCall(`/api/attendance/clear?date=${currentSelectedDate}`, {
@@ -1198,7 +1418,7 @@
       });
 
       if (response.success) {
-        miniCalCache = {}; // Invalidate calendar popover cache
+        miniCalCache = {};
         showAlert(`Successfully cleared attendance for ${currentSelectedDate}`, 'success');
         await fetchChecklist();
         await renderRollingDaysStrip(currentSelectedDate);
@@ -1207,82 +1427,255 @@
       }
     }
 
-    function enableCardEditMode(period) {
-      const displayDiv = document.getElementById(`status-display-period-${period}`);
-      const editDiv = document.getElementById(`status-edit-period-${period}`);
-      if (displayDiv && editDiv) {
-        displayDiv.style.setProperty('display', 'none', 'important');
-        editDiv.style.setProperty('display', 'flex', 'important');
-      }
-    }
-
+    // Instant Optimistic Attendance Marking with Automatic Failure Rollback
     async function handleSegmentClick(btnEl, subjectId, period, status, existingLogId) {
       if (!btnEl) return;
 
-      const container = btnEl.parentElement;
-      if (container) {
-        Array.from(container.children).forEach(child => {
-          child.classList.remove('active-present', 'active-absent', 'active-od');
-        });
+      // 0. Offline guard
+      if (!navigator.onLine) {
+        showAlert('You are currently offline. Please check your connection.', 'warning');
+        return;
       }
 
-      if (status === 'Present') btnEl.classList.add('active-present');
-      else if (status === 'Absent') btnEl.classList.add('active-absent');
-      else if (status === 'On Duty') btnEl.classList.add('active-od');
+      const card = document.getElementById(`card-period-${period}`) || btnEl.closest('.class-attendance-card');
+      const slotEl = document.getElementById(`status-slot-${period}`);
 
-      if (existingLogId) {
-        const response = await apiCall(`/api/attendance/${existingLogId}`, {
-          method: 'PUT',
-          body: { status, remarks: `Period ${period}` }
-        });
-        if (response.success) {
-          miniCalCache = {}; // Invalidate calendar popover cache
-          showAlert(`Updated status to ${status} for Period ${period}`, 'success');
-          await fetchChecklist();
-          await renderRollingDaysStrip(currentSelectedDate);
+      // 1. Snapshot previous state
+      const prevSlotHtml = slotEl ? slotEl.innerHTML : '';
+      const prevCardBg = card ? card.style.background : '';
+      const prevCardBorder = card ? card.style.borderColor : '';
+      const previousLogsSnapshot = JSON.parse(JSON.stringify(currentDayLogs));
+
+      // 2. Determine badge markup and card tints
+      let badgeMarkup = '';
+      let cardBg = 'rgba(16, 185, 129, 0.04)';
+      let cardBorder = 'rgba(16, 185, 129, 0.28)';
+
+      if (status === 'Present') {
+        badgeMarkup = `<span class="badge bg-success-subtle text-success border border-success-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">Present</span>`;
+        cardBg = 'rgba(16, 185, 129, 0.04)';
+        cardBorder = 'rgba(16, 185, 129, 0.28)';
+      } else if (status === 'Absent') {
+        badgeMarkup = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">Absent</span>`;
+        cardBg = 'rgba(239, 68, 68, 0.04)';
+        cardBorder = 'rgba(239, 68, 68, 0.28)';
+      } else if (status === 'On Duty') {
+        badgeMarkup = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3.5 py-2 fs-7 fw-bold" style="border-radius: 9999px;">On Duty</span>`;
+        cardBg = 'rgba(37, 99, 235, 0.04)';
+        cardBorder = 'rgba(37, 99, 235, 0.28)';
+      }
+
+      // 3. Optimistic DOM Update (Immediate transition to Confirmed Badge + Clear button)
+      if (card) {
+        card.style.background = cardBg;
+        card.style.borderColor = cardBorder;
+      }
+      if (slotEl) {
+        slotEl.innerHTML = `
+          ${badgeMarkup}
+          <button type="button" onclick="deleteMarking('${existingLogId || 'pending'}', '${period}', '${subjectId}')" class="btn-trackify-danger-subtle ms-1" title="Reset this marking">Clear</button>
+        `;
+      }
+
+      // Update in-memory log & progress bar
+      const periodRemarks = `Period ${period}`;
+      const existingIdx = currentDayLogs.findIndex(l => l.remarks && l.remarks.includes(periodRemarks));
+      const wasAlreadyMarked = existingIdx !== -1;
+
+      if (wasAlreadyMarked) {
+        currentDayLogs[existingIdx].status = status;
+      } else {
+        currentDayLogs.push({ id: existingLogId || 'temp', subject_id: subjectId, status, remarks: periodRemarks });
+      }
+
+      const activeTotal = daySlots.filter(s => !s.is_canceled).length;
+      updateProgressBar(currentDayLogs.length, activeTotal);
+
+      // 4. Fire API in background
+      try {
+        let response;
+        if (existingLogId && existingLogId !== 'temp' && existingLogId !== 'pending') {
+          response = await apiCall(`/api/attendance/${existingLogId}`, {
+            method: 'PUT',
+            body: { status, remarks: periodRemarks }
+          });
         } else {
-          showAlert(response.message, 'danger');
+          response = await apiCall('/api/attendance', {
+            method: 'POST',
+            body: { subject_id: subjectId, date: currentSelectedDate, status, remarks: periodRemarks }
+          });
+          if (response.success && response.record) {
+            existingLogId = response.record.id;
+            // Update Clear button onclick with the real generated ID
+            if (slotEl) {
+              const clearBtn = slotEl.querySelector('button');
+              if (clearBtn) {
+                clearBtn.setAttribute('onclick', `deleteMarking('${existingLogId}', '${period}', '${subjectId}')`);
+              }
+            }
+          }
         }
-      } else {
-        await markQuick(subjectId, period, status);
+
+        if (response && response.success) {
+          showAlert(`Logged ${status} for Period ${period}`, 'success');
+          miniCalCache = {};
+        } else {
+          rollback();
+          showAlert(response ? response.message : 'Failed to save attendance', 'danger');
+        }
+      } catch (err) {
+        console.error('Error marking attendance:', err);
+        rollback();
+        showAlert('Network error while marking attendance. Changes reverted.', 'danger');
+      }
+
+      function rollback() {
+        if (slotEl) slotEl.innerHTML = prevSlotHtml;
+        if (card) {
+          card.style.background = prevCardBg;
+          card.style.borderColor = prevCardBorder;
+        }
+        currentDayLogs = previousLogsSnapshot;
+        updateProgressBar(currentDayLogs.length, activeTotal);
       }
     }
 
-    async function markQuick(subjectId, period, status) {
-      const response = await apiCall('/api/attendance', {
-        method: 'POST',
-        body: {
-          subject_id: subjectId,
-          date: currentSelectedDate,
-          status: status,
-          remarks: `Period ${period}`
+    async function deleteMarking(id, period, subjectId) {
+      if (!navigator.onLine) {
+        showAlert('You are currently offline. Please check your connection.', 'warning');
+        return;
+      }
+
+      const card = document.getElementById(`card-period-${period}`);
+      const slotEl = document.getElementById(`status-slot-${period}`);
+
+      const prevSlotHtml = slotEl ? slotEl.innerHTML : '';
+      const prevCardBg = card ? card.style.background : '';
+      const prevCardBorder = card ? card.style.borderColor : '';
+      const previousLogsSnapshot = JSON.parse(JSON.stringify(currentDayLogs));
+
+      // Optimistically restore the segmented picker
+      if (card) {
+        card.style.background = 'var(--bg-secondary)';
+        card.style.borderColor = 'var(--border-color)';
+      }
+      if (slotEl) {
+        slotEl.innerHTML = `
+          <div class="apple-segmented-pill">
+            <button type="button" class="segmented-item seg-item-present" onclick="handleSegmentClick(this, '${subjectId}', '${period}', 'Present')">
+              <span class="seg-dot seg-dot-present"></span>
+              <span>Present</span>
+            </button>
+            <button type="button" class="segmented-item seg-item-absent" onclick="handleSegmentClick(this, '${subjectId}', '${period}', 'Absent')">
+              <span class="seg-dot seg-dot-absent"></span>
+              <span>Absent</span>
+            </button>
+            <button type="button" class="segmented-item seg-item-od" onclick="handleSegmentClick(this, '${subjectId}', '${period}', 'On Duty')">
+              <span class="seg-dot seg-dot-od"></span>
+              <span>OD</span>
+            </button>
+          </div>
+        `;
+      }
+
+      const periodRemarks = `Period ${period}`;
+      currentDayLogs = currentDayLogs.filter(l => !(l.remarks && l.remarks.includes(periodRemarks)));
+      const activeTotal = daySlots.filter(s => !s.is_canceled).length;
+      updateProgressBar(currentDayLogs.length, activeTotal);
+
+      try {
+        if (id && id !== 'temp' && id !== 'pending') {
+          const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
+          if (response && response.success) {
+            showAlert('Attendance marking reset', 'success');
+            miniCalCache = {};
+          } else {
+            rollback();
+            showAlert(response ? response.message : 'Failed to reset marking', 'danger');
+          }
+        } else {
+          showAlert('Attendance marking reset', 'success');
         }
+      } catch (err) {
+        console.error('Error resetting marking:', err);
+        rollback();
+        showAlert('Network error while resetting marking. Changes reverted.', 'danger');
+      }
+
+      function rollback() {
+        if (slotEl) slotEl.innerHTML = prevSlotHtml;
+        if (card) {
+          card.style.background = prevCardBg;
+          card.style.borderColor = prevCardBorder;
+        }
+        currentDayLogs = previousLogsSnapshot;
+        updateProgressBar(currentDayLogs.length, activeTotal);
+      }
+    }
+
+    // In-App Custom Confirmation Dialog Handler
+    let activeConfirmResolver = null;
+
+    function showAppConfirm({ title = 'Confirm Action', message = 'Are you sure you want to proceed?', confirmText = 'Confirm', confirmVariant = 'primary', cancelText = 'Cancel' }) {
+      return new Promise((resolve) => {
+        activeConfirmResolver = resolve;
+        const modal = document.getElementById('app-confirm-modal');
+        const titleEl = document.getElementById('app-confirm-title');
+        const msgEl = document.getElementById('app-confirm-message');
+        const actionBtn = document.getElementById('app-confirm-action-btn');
+        const cancelBtn = document.getElementById('app-confirm-cancel-btn');
+
+        if (titleEl) titleEl.innerText = title;
+        if (msgEl) msgEl.innerText = message;
+        if (cancelBtn) cancelBtn.innerText = cancelText;
+        if (actionBtn) {
+          actionBtn.innerText = confirmText;
+          actionBtn.className = confirmVariant === 'danger'
+            ? 'btn-trackify-danger-subtle px-3.5 py-2 fs-7 fw-bold'
+            : 'btn-trackify-primary px-3.5 py-2 fs-7 fw-bold';
+        }
+
+        if (modal) modal.style.display = 'flex';
       });
+    }
 
-      if (response.success) {
-        miniCalCache = {}; // Invalidate calendar popover cache
-        showAlert(`Logged ${status} for Period ${period}`, 'success');
-        await fetchChecklist();
-        await renderRollingDaysStrip(currentSelectedDate);
-      } else {
-        showAlert(response.message, 'danger');
+    function closeAppConfirm(result) {
+      const modal = document.getElementById('app-confirm-modal');
+      if (modal) modal.style.display = 'none';
+      if (activeConfirmResolver) {
+        activeConfirmResolver(result);
+        activeConfirmResolver = null;
       }
     }
 
-    async function deleteMarking(id) {
-      const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
-      if (response.success) {
-        miniCalCache = {}; // Invalidate calendar popover cache
-        showAlert('Attendance marking reset', 'success');
-        await fetchChecklist();
-        await renderRollingDaysStrip(currentSelectedDate);
-      } else {
-        showAlert(response.message, 'danger');
-      }
-    }
+    // Dismiss modal on Escape key or backdrop click
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeAppConfirm(false);
+    });
 
     window.onload = loadData;
   </script>
+
+  <!-- In-App Custom Confirmation Modal Dialog -->
+  <div id="app-confirm-modal" class="app-confirm-backdrop" style="display: none;" onclick="if(event.target === this) closeAppConfirm(false);">
+    <div class="app-confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="app-confirm-title">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <h3 id="app-confirm-title" class="fs-6 fw-bold mb-0 text-dark">Confirm Action</h3>
+        <button type="button" class="btn-close-confirm" onclick="closeAppConfirm(false)" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <p id="app-confirm-message" class="text-secondary small mb-4 lh-base">Are you sure you want to proceed?</p>
+      <div class="d-flex align-items-center justify-content-end gap-2">
+        <button type="button" class="btn-trackify-ghost px-3 py-2 fs-7 fw-semibold" id="app-confirm-cancel-btn" onclick="closeAppConfirm(false)">Cancel</button>
+        <button type="button" class="btn-trackify-primary px-3.5 py-2 fs-7 fw-bold" id="app-confirm-action-btn" onclick="closeAppConfirm(true)">Confirm</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/js/app-nav.js"></script>
 </body>
 

@@ -2,758 +2,631 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pending Approval – Trackify</title>
-  <meta name="description" content="Your Trackify account is pending admin approval. Hang tight!">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Pending Approval — Trackify</title>
+  <meta name="description" content="Your Trackify student account registration is currently pending administrator verification.">
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=3.5">
+  
+  <script src="/assets/js/lottie.min.js"></script>
+
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
 
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg:        #f5f7ff;
-      --surface:   #ffffff;
-      --border:    #e4e9f2;
-      --text:      #1e2a3a;
-      --muted:     #6b7a95;
-      --amber:     #f59e0b;
-      --amber-bg:  #fffbeb;
-      --amber-bdr: #fde68a;
-      --blue:      #3b82f6;
-      --blue-dark: #1d4ed8;
-      --green:     #22c55e;
-      --red:       #ef4444;
-      --purple:    #8b5cf6;
-      --radius-lg: 24px;
-      --radius-md: 16px;
-      --radius-sm: 12px;
-      --shadow-card: 0 4px 6px -1px rgba(30,42,58,.06), 0 12px 40px -10px rgba(30,42,58,.10);
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--text);
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    /* ── NAV ── */
-    .pa-nav {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
+    /* Ambient Subtle Background Lighting */
+    .ambient-glow-top {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 800px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, rgba(147, 51, 234, 0.04) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(60px);
+    }
+
+    [data-theme="dark"] .ambient-glow-top {
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.16) 0%, rgba(99, 102, 241, 0.05) 50%, transparent 70%);
+    }
+
+    /* Header adjustments for mobile */
+    .pa-header {
+      height: 56px;
+      padding: 0 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
       position: sticky;
       top: 0;
-      z-index: 100;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
-    .pa-nav-logo { height: 32px; width: auto; }
-    .pa-nav-right { display: flex; align-items: center; gap: 10px; }
-    .btn-signout {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      padding: 7px 18px;
-      border-radius: 50px;
-      border: 1.5px solid #fca5a5;
-      background: #fff5f5;
-      color: #ef4444;
-      cursor: pointer;
-      transition: background .18s, color .18s;
-    }
-    .btn-signout:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
 
-    /* ── MAIN LAYOUT ── */
-    main {
-      flex: 1;
+    .logo-img {
+      height: 28px;
+      width: auto;
+    }
+
+    /* Open, Seamless Canvas Layout */
+    .approval-content-flow {
+      width: 100%;
+      max-width: 540px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 1.25rem 1.15rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Lottie Animation Display */
+    .approval-lottie-wrap {
+      width: 150px;
+      height: 150px;
+      margin: 0.25rem auto 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 16px;
+      flex-shrink: 0;
     }
 
-    .pa-wrapper {
-      width: 100%;
-      max-width: 520px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+    @media (min-width: 768px) {
+      .approval-lottie-wrap {
+        width: 190px;
+        height: 190px;
+        margin-bottom: 1.25rem;
+      }
     }
 
-    /* ── HERO CARD ── */
-    .hero-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-      padding: 40px 32px 36px;
-      text-align: center;
-    }
-
-    /* Queue badge */
-    .queue-badge {
+    /* Status Pill */
+    .status-capsule {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 50px;
-      background: var(--amber-bg);
-      border: 1.5px solid var(--amber-bdr);
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: .6px;
-      color: #b45309;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-    .queue-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--amber);
-      animation: blink 1.4s infinite ease-in-out;
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: .45; transform: scale(.8); }
-    }
-
-    /* Emoji */
-    .hero-emoji {
-      font-size: 4.5rem;
-      line-height: 1;
-      margin-bottom: 16px;
-      display: block;
-      animation: float 3.5s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .hero-title {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.85rem;
-      font-weight: 900;
-      color: var(--text);
-      line-height: 1.2;
-      margin-bottom: 10px;
-    }
-    .hero-sub {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.6;
-      max-width: 380px;
-      margin: 0 auto 28px;
-    }
-
-    /* ── JOKE CARD ── */
-    .joke-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-card);
-      padding: 28px 28px 24px;
-    }
-    .joke-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .joke-label {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.78rem;
-      font-weight: 800;
-      color: var(--purple);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-    }
-    .joke-label-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--purple);
-    }
-    .joke-category-tag {
+      gap: 0.45rem;
+      padding: 0.35rem 0.95rem;
+      border-radius: 9999px;
+      background: var(--warning-subtle);
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      color: var(--warning);
       font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 20px;
-      background: #f3f0ff;
-      color: #7c3aed;
-      border: 1px solid #ddd6fe;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
     }
 
-    .joke-body {
-      min-height: 80px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
-      transition: opacity .25s;
-    }
-    .joke-body.fading { opacity: 0; }
-
-    .joke-setup {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.5;
-    }
-    .joke-delivery {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: var(--muted);
-      line-height: 1.5;
-      font-style: italic;
-    }
-    .joke-single {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--text);
-      line-height: 1.6;
-    }
-    .joke-loading {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    .joke-spinner {
-      width: 18px; height: 18px;
-      border: 2.5px solid #e2e8f0;
-      border-top-color: var(--purple);
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      animation: spin .8s linear infinite;
+      background-color: var(--warning);
+      box-shadow: 0 0 8px var(--warning);
+      animation: pulseAnim 1.6s infinite ease-in-out;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    .joke-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      gap: 10px;
+    @keyframes pulseAnim {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.7); }
     }
-    .joke-rating {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .rating-btn {
-      background: none;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 5px 12px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all .15s;
-      color: var(--muted);
-    }
-    .rating-btn:hover { background: #f8fafc; border-color: #c7d2fe; color: var(--text); }
-    .rating-btn.active-up { background: #ecfdf5; border-color: #86efac; color: #16a34a; }
-    .rating-btn.active-dn { background: #fff5f5; border-color: #fca5a5; color: #dc2626; }
 
-    .btn-next-joke {
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.85rem;
+    .page-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.35rem, 5vw, 1.85rem);
       font-weight: 800;
-      padding: 8px 20px;
-      border-radius: 50px;
-      border: none;
-      background: linear-gradient(135deg, #7c3aed, #5b21b6);
-      color: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      box-shadow: 0 4px 14px rgba(124,58,237,.28);
-      transition: all .18s;
-      white-space: nowrap;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
     }
-    .btn-next-joke:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,.36); }
-    .btn-next-joke:active { transform: scale(.96); }
-    .btn-next-joke svg { flex-shrink: 0; }
 
-    /* ── STATUS PANEL ── */
-    .status-panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-card);
-      padding: 20px 22px;
+    .page-desc {
+      color: var(--text-secondary);
+      font-size: clamp(0.82rem, 3.2vw, 0.92rem);
+      line-height: 1.55;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* Seamless Student Profile Spec Grid */
+    .student-spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.65rem;
+      width: 100%;
+      max-width: 460px;
+      margin: 1.5rem 0 1.5rem;
+      text-align: left;
+    }
+
+    .spec-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 0.75rem 0.85rem;
       display: flex;
       flex-direction: column;
-      gap: 12px;
     }
 
-    .status-row {
+    .spec-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.15rem;
+    }
+
+    .spec-val {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .spec-val.mono {
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: -0.01em;
+    }
+
+    /* Seamless 4-Step Verification Track */
+    .verification-track {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
-    }
-    .status-label {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .status-label-icon { font-size: 1rem; }
-
-    /* Queue steps */
-    .queue-steps {
-      display: flex;
-      align-items: center;
-      gap: 0;
-      flex-wrap: nowrap;
-      margin: 4px 0;
-    }
-    .q-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 5px;
-      flex: 1;
       position: relative;
-      text-align: center;
+      width: 100%;
+      max-width: 460px;
+      margin: 0.5rem 0 1.75rem;
+      padding: 0 0.5rem;
     }
-    .q-step:not(:last-child)::after {
-      content: '';
+
+    .verification-track::before {
+      content: "";
       position: absolute;
       top: 14px;
-      left: 50%;
-      width: 100%;
+      left: 24px;
+      right: 24px;
       height: 2px;
-      background: #e2e8f0;
+      background: var(--border-color);
       z-index: 0;
     }
-    .q-step.done:not(:last-child)::after { background: #bbf7d0; }
-    .q-step.active:not(:last-child)::after { background: #fde68a; }
-    .q-step-circle {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem;
-      font-weight: 800;
-      z-index: 1;
-      position: relative;
-      border: 2px solid #e2e8f0;
-      background: var(--bg);
-      color: var(--muted);
-    }
-    .q-step.done .q-step-circle { background: #ecfdf5; border-color: #86efac; color: #16a34a; }
-    .q-step.active .q-step-circle { background: #fffbeb; border-color: var(--amber); color: #b45309; animation: blink 1.4s infinite; }
-    .q-step-label {
-      font-size: 0.62rem;
-      font-weight: 700;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .4px;
-      white-space: nowrap;
-    }
-    .q-step.done .q-step-label { color: #16a34a; }
-    .q-step.active .q-step-label { color: #b45309; }
 
-    /* Waiting line roast */
-    .roast-box {
-      background: linear-gradient(135deg, #f5f3ff, #ede9fe);
-      border: 1px solid #ddd6fe;
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #5b21b6;
-      min-height: 50px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: opacity .25s;
-    }
-    .roast-box.fading { opacity: 0; }
-    .roast-icon { font-size: 1.1rem; flex-shrink: 0; }
-
-    /* ── ACTIONS ── */
-    .actions-row {
+    .track-step {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: center;
+      gap: 0.35rem;
+      position: relative;
+      z-index: 1;
     }
-    .btn-check-status {
-      width: 100%;
-      padding: 15px 24px;
-      border: none;
-      border-radius: var(--radius-sm);
-      background: linear-gradient(135deg, #3b82f6, var(--blue-dark));
-      color: #fff;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
+
+    .step-node {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-color);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
       font-weight: 800;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      box-shadow: 0 6px 20px rgba(59,130,246,.28);
-      transition: all .18s;
-    }
-    .btn-check-status:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(59,130,246,.36); }
-    .btn-check-status:active { transform: scale(.97); }
-    .btn-check-status:disabled { opacity: .7; cursor: default; transform: none; }
-
-    .auto-refresh-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: var(--muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-    .auto-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green);
-      animation: blink 2s infinite;
-      display: inline-block;
+      transition: all 0.2s ease;
     }
 
-    /* ── TOAST ── */
-    #pa-toast {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--text);
-      color: #fff;
-      padding: 12px 22px;
-      border-radius: 50px;
-      font-size: 0.88rem;
-      font-weight: 600;
+    .track-step.done .step-node {
+      background: var(--success-subtle);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .track-step.active .step-node {
+      background: var(--warning-subtle);
+      border-color: var(--warning);
+      color: var(--warning);
+      box-shadow: 0 0 12px rgba(217, 119, 6, 0.4);
+    }
+
+    .step-text {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.01em;
       white-space: nowrap;
-      z-index: 9999;
-      transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
-      opacity: 0;
-      pointer-events: none;
-      max-width: calc(100vw - 32px);
-      white-space: normal;
-      text-align: center;
     }
-    #pa-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    #pa-toast.toast-success { background: #15803d; }
-    #pa-toast.toast-info { background: #1d4ed8; }
-    #pa-toast.toast-error { background: #b91c1c; }
 
-    /* ── RESPONSIVE ── */
-    @media (max-width: 480px) {
-      .hero-card { padding: 28px 20px 24px; }
-      .hero-emoji { font-size: 3.5rem; }
-      .hero-title { font-size: 1.5rem; }
-      .joke-card { padding: 20px 16px 18px; }
-      .joke-footer { flex-direction: column; gap: 12px; }
-      .btn-next-joke { width: 100%; justify-content: center; }
-      .joke-rating { justify-content: center; }
+    .track-step.done .step-text { color: var(--success); }
+    .track-step.active .step-text { color: var(--warning); font-weight: 800; }
+
+    /* Action Controls */
+    .btn-verify-action {
+      background: var(--primary);
+      color: #ffffff !important;
+      border: none;
+      border-radius: 12px;
+      padding: 0.85rem 1.75rem;
+      font-size: 0.92rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      cursor: pointer;
+      width: 100%;
+      max-width: 460px;
+      min-height: 48px;
+      touch-action: manipulation;
+      transition: transform 140ms cubic-bezier(0.2, 0, 0, 1), background-color 140ms ease, box-shadow 140ms ease;
+      box-shadow: 0 4px 16px rgba(37, 99, 235, 0.28);
+    }
+
+    .btn-verify-action:hover {
+      background: #1d4ed8;
+      box-shadow: 0 6px 22px rgba(37, 99, 235, 0.38);
+    }
+
+    .btn-verify-action:active {
+      transform: scale(0.97);
+    }
+
+    .btn-verify-action:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .live-pulse-note {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.85rem;
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--success);
+      animation: pulseAnim 2s infinite;
+    }
+
+    /* Small mobile tweaks (<360px) */
+    @media (max-width: 360px) {
+      .approval-content-flow {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+      .student-spec-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      .step-text {
+        font-size: 0.6rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  
-  <nav class="pa-nav">
-    <a href="/" aria-label="Go to Trackify home">
-      <img src="/assets/images/logo_light.webp" alt="Trackify" class="pa-nav-logo">
-    </a>
-    <div class="pa-nav-right">
-      <button class="btn-signout" id="logoutBtn">Sign out</button>
+  <!-- Ambient Glow -->
+  <div class="ambient-glow-top"></div>
+
+  <!-- Unified Top Navigation Bar -->
+  <nav class="pa-header">
+    <div class="d-flex align-items-center">
+      <a href="/" class="d-flex align-items-center text-decoration-none" aria-label="Home">
+        <img src="/assets/images/logo_light.webp" alt="Trackify" class="logo-img">
+      </a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <!-- Theme Switcher Button -->
+      <button type="button" class="theme-toggle" id="themeToggle" title="Toggle Light/Dark Theme" style="width: 34px; height: 34px;">
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+
+      <!-- Sign Out Action -->
+      <button type="button" class="btn-trackify-danger-subtle d-inline-flex align-items-center gap-1" id="logoutBtn" style="padding: 0.35rem 0.75rem; font-size: 0.75rem; border-radius: 8px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sign Out</span>
+      </button>
     </div>
   </nav>
 
-  <main>
-    <div class="pa-wrapper">
-
+  <!-- Open Canvas Main Area -->
+  <main class="flex-grow-1 d-flex align-items-center justify-content-center position-relative z-1">
+    <div class="approval-content-flow animate-card-reveal">
       
-      <div class="hero-card">
-        <div class="queue-badge">
-          <span class="queue-dot"></span>
-          Pending Admin Approval
-        </div>
-        <h1 class="hero-title">Your account's in the queue.</h1>
-        <p class="hero-sub">
-          The admin is reviewing your account details right now.<br>
-          Hang tight — we'll notify you the second you're in!
-        </p>
+      <!-- Lottie Animation Centerpiece -->
+      <div class="approval-lottie-wrap" id="approvalLottieContainer"></div>
 
-        
-        <div class="queue-steps">
-          <div class="q-step done">
-            <div class="q-step-circle">✓</div>
-            <div class="q-step-label">Submitted</div>
-          </div>
-          <div class="q-step done">
-            <div class="q-step-circle">✓</div>
-            <div class="q-step-label">Received</div>
-          </div>
-          <div class="q-step active">
-            <div class="q-step-circle">3</div>
-            <div class="q-step-label">Reviewing</div>
-          </div>
-          <div class="q-step">
-            <div class="q-step-circle">4</div>
-            <div class="q-step-label">Approved</div>
-          </div>
+      <!-- Live Status Pill -->
+      <div class="status-capsule">
+        <span class="pulse-dot"></span>
+        <span>Account Verification in Progress</span>
+      </div>
+
+      <!-- Main Headline -->
+      <h1 class="page-title">
+        Your Account Is Being Verified
+      </h1>
+      <p class="page-desc">
+        Your student registration is in the review queue. Once your credentials and department are confirmed by the administrator, access will unlock automatically.
+      </p>
+
+      <!-- Seamless Student Profile Specs -->
+      <div class="student-spec-grid" id="studentSpecGrid">
+        <div class="spec-card">
+          <span class="spec-label">Student Name</span>
+          <span class="spec-val" id="specName">Loading…</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-label">Register Number</span>
+          <span class="spec-val mono text-primary" id="specRegNumber">—</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-label">Department</span>
+          <span class="spec-val" id="specDept">—</span>
+        </div>
+        <div class="spec-card">
+          <span class="spec-label">Semester</span>
+          <span class="spec-val" id="specSemester">—</span>
         </div>
       </div>
 
-      
-      <div class="joke-card">
-        <div class="joke-header">
-          <div class="joke-label">
-            <div class="joke-label-dot"></div>
-            Dark Humor Break
+      <!-- Seamless 4-Step Verification Track -->
+      <div class="verification-track">
+        <div class="track-step done">
+          <div class="step-node">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
-          <span class="joke-category-tag" id="jokeCategoryTag">Loading…</span>
+          <span class="step-text">Submitted</span>
         </div>
-
-        <div class="joke-body" id="jokeBody">
-          <div class="joke-loading">
-            <div class="joke-spinner"></div>
-            Fetching your daily dose of dark humor…
+        <div class="track-step done">
+          <div class="step-node">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
           </div>
+          <span class="step-text">Credentials</span>
         </div>
-
-        <div class="joke-footer">
-          <div class="joke-rating">
-            <button class="rating-btn" id="rateUp" title="Good one">Ha!</button>
-            <button class="rating-btn" id="rateDn" title="Too dark">Too dark</button>
-          </div>
-          <button class="btn-next-joke" id="nextJokeBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.13"/></svg>
-            Next Joke
-          </button>
+        <div class="track-step active">
+          <div class="step-node">3</div>
+          <span class="step-text">Reviewing</span>
+        </div>
+        <div class="track-step">
+          <div class="step-node">4</div>
+          <span class="step-text">Access</span>
         </div>
       </div>
 
-      
-      <div class="status-panel">
-        <div class="status-row">
-          <div class="status-label">
-            Admin Simulation
-          </div>
-        </div>
-        <div class="roast-box" id="roastBox">
-          <span id="roastText">Admin is reviewing your register number right now...</span>
-        </div>
+      <!-- Action Button (Touch-optimized) -->
+      <button type="button" class="btn-verify-action" id="checkStatusBtn" onclick="checkApprovalStatus(true)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="refreshIcon">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+        </svg>
+        <span id="btnLabel">Check Verification Status</span>
+      </button>
+
+      <!-- Live Heartbeat Note -->
+      <div class="live-pulse-note">
+        <span class="live-dot"></span>
+        <span>Auto-syncing verification status every 10 seconds</span>
       </div>
 
-      
-      <div class="actions-row">
-        <button class="btn-check-status" id="checkStatusBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Am I Approved Yet?
-        </button>
-        <div class="auto-refresh-note">
-          <span class="auto-dot"></span>
-          Auto-checking every 10 seconds in the background
-        </div>
+      <!-- Support Footer Link -->
+      <div class="mt-4 pt-2">
+        <span class="text-secondary small" style="font-size: 0.78rem;">
+          Need urgent assistance? 
+          <a href="mailto:support@trackifyapp.co.in" class="text-primary fw-semibold text-decoration-none ms-1">Contact Administrator</a>
+        </span>
       </div>
 
     </div>
   </main>
 
-  
-  <div id="pa-toast" role="alert" aria-live="polite"></div>
-
-  
   <script src="/assets/js/main.js"></script>
   <script>
-  (() => {
-    // ── Helpers ──────────────────────────────────────────────
-    const $ = id => document.getElementById(id);
+    let approvalLottieAnim = null;
 
-    let toastTimer;
-    function showToast(msg, type = 'info', duration = 3500) {
-      const el = $('pa-toast');
-      el.textContent = msg;
-      el.className = `show toast-${type}`;
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => { el.className = ''; }, duration);
-    }
+    // 1. Initialize Approval Waiting Lottie Animation
+    function initApprovalLottie() {
+      const container = document.getElementById('approvalLottieContainer');
+      if (!container) return;
 
-    // ── Status messages ──────────────────────────────────────
-    const roasts = [
-      { text: 'Admin is reviewing your register number right now...' },
-      { text: 'Reviewing application credentials and department assignment.' },
-      { text: 'Verifying student account registration details.' },
-      { text: 'Account pending administrative sign-off.' },
-      { text: 'Checking verification records...' }
-    ];
-    let roastIdx = 0;
-    const roastBox = $('roastBox');
-    const roastText = $('roastText');
-
-    function cycleRoast() {
-      if (!roastBox || !roastText) return;
-      roastBox.classList.add('fading');
-      setTimeout(() => {
-        roastIdx = (roastIdx + 1) % roasts.length;
-        const r = roasts[roastIdx];
-        roastText.textContent = r.text;
-        roastBox.classList.remove('fading');
-      }, 250);
-    }
-    setInterval(cycleRoast, 7000);
-
-    // ── Jokes API (JokeAPI v2) ────────────────────────────────
-    const JOKE_API = 'https://v2.jokeapi.dev/joke/Programming,Miscellaneous,Dark,Pun?blacklistFlags=nsfw,religious,racist,explicit';
-    const jokeBody = $('jokeBody');
-    const jokeTag = $('jokeCategoryTag');
-
-    async function fetchJoke() {
-      jokeBody.classList.add('fading');
-      await new Promise(r => setTimeout(r, 250));
-
-      jokeBody.innerHTML = `<div class="joke-loading"><div class="joke-spinner"></div>Fetching a certified horrible joke…</div>`;
-      jokeBody.classList.remove('fading');
-      jokeTag.textContent = 'Loading…';
-
-      try {
-        const res = await fetch(JOKE_API);
-        const data = await res.json();
-
-        jokeBody.classList.add('fading');
-        await new Promise(r => setTimeout(r, 200));
-
-        jokeTag.textContent = data.category || 'Misc';
-
-        if (data.type === 'twopart') {
-          jokeBody.innerHTML = `
-            <div class="joke-setup">${escHtml(data.setup)}</div>
-            <div class="joke-delivery">→ ${escHtml(data.delivery)}</div>
-          `;
-        } else if (data.type === 'single') {
-          jokeBody.innerHTML = `<div class="joke-single">${escHtml(data.joke)}</div>`;
-        } else {
-          jokeBody.innerHTML = `<div class="joke-single">Joke machine broke. Like your patience. 😅</div>`;
-        }
-      } catch {
-        // Fallback jokes in case API fails
-        const fallbacks = [
-          { setup: "Why did the student's approval get delayed?", delivery: 'The admin confused "pending" with "pretending."' },
-          { setup: "What do approval queues and funerals have in common?", delivery: "Everyone's just waiting." },
-          { single: "My patience has a PhD — it took years to build up this much." },
-          { setup: "How many admins does it take to approve one student?", delivery: "Unknown. Nobody's ever seen it happen in real time." },
-        ];
-        const fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-        jokeTag.textContent = 'Dark Humor';
-        if (fb.single) {
-          jokeBody.innerHTML = `<div class="joke-single">${escHtml(fb.single)}</div>`;
-        } else {
-          jokeBody.innerHTML = `
-            <div class="joke-setup">${escHtml(fb.setup)}</div>
-            <div class="joke-delivery">→ ${escHtml(fb.delivery)}</div>
-          `;
-        }
+      if (typeof lottie !== 'undefined') {
+        approvalLottieAnim = lottie.loadAnimation({
+          container: container,
+          renderer: 'svg',
+          loop: true,
+          autoplay: true,
+          path: '/assets/animations/approval-waiting.json'
+        });
       }
-
-      jokeBody.classList.remove('fading');
-      // Reset ratings
-      $('rateUp').className = 'rating-btn';
-      $('rateDn').className = 'rating-btn';
     }
 
-    function escHtml(str) {
-      const d = document.createElement('div');
-      d.textContent = str;
-      return d.innerHTML;
+    // 2. Setup Theme Switcher
+    function initThemeToggle() {
+      const btn = document.getElementById('themeToggle');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const cur = document.documentElement.getAttribute('data-theme');
+          const next = cur === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem('theme', next);
+          updateLogoTheme(next);
+        });
+      }
+      updateLogoTheme(document.documentElement.getAttribute('data-theme'));
     }
 
-    // Initial fetch + next joke button
-    fetchJoke();
-    $('nextJokeBtn').addEventListener('click', fetchJoke);
+    function updateLogoTheme(theme) {
+      const logo = document.querySelector('.logo-img');
+      if (logo) {
+        logo.src = theme === 'dark' ? '/assets/images/logo_dark.webp' : '/assets/images/logo_light.webp';
+      }
+    }
 
-    // Ratings
-    $('rateUp').addEventListener('click', function () {
-      this.className = 'rating-btn active-up';
-      $('rateDn').className = 'rating-btn';
-      showToast('😂 Your laughter has been noted!', 'info', 2000);
-    });
-    $('rateDn').addEventListener('click', function () {
-      this.className = 'rating-btn active-dn';
-      $('rateUp').className = 'rating-btn';
-      showToast('🙈 Duly noted. We\'ll make it darker next time.', 'info', 2000);
-    });
+    // 3. Fetch User Profile Data & Populate Specs
+    async function loadUserProfile() {
+      try {
+        const res = await apiCall('/api/auth/me');
+        if (res && res.success && res.user) {
+          const u = res.user;
 
-    // Auto-fetch new joke every 2 minutes while waiting
-    setInterval(fetchJoke, 2 * 60 * 1000);
+          // Check if already approved
+          if (u.is_approved !== false && u.approval_status !== 'pending') {
+            showAlert('Your account has been approved! Redirecting...', 'success');
+            setTimeout(() => {
+              window.location.href = u.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+            }, 1200);
+            return;
+          }
 
-    // ── Approval status check ─────────────────────────────────
-    async function checkApprovalStatus(showFeedback = false) {
-      if (showFeedback) {
-        const btn = $('checkStatusBtn');
+          if (u.is_suspended) {
+            window.location.href = '/login?suspended=true';
+            return;
+          }
+
+          // Populate specs
+          document.getElementById('specName').innerText = u.name || 'Student';
+          document.getElementById('specRegNumber').innerText = u.register_number || 'Pending ID';
+          document.getElementById('specDept').innerText = u.department ? `${u.department}` : 'Assigned Dept';
+          document.getElementById('specSemester').innerText = u.semester ? `Semester ${u.semester}` : 'Semester 1';
+        } else {
+          window.location.href = '/login';
+        }
+      } catch (err) {
+        console.error('Failed to load user profile:', err);
+      }
+    }
+
+    // 4. Live Check Approval Status
+    async function checkApprovalStatus(isManual = false) {
+      const btn = document.getElementById('checkStatusBtn');
+      const icon = document.getElementById('refreshIcon');
+      const label = document.getElementById('btnLabel');
+
+      if (isManual && btn) {
         btn.disabled = true;
-        btn.innerHTML = `
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .8s linear infinite"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          Checking…`;
+        if (icon) icon.style.animation = 'spin 0.8s linear infinite';
+        if (label) label.innerText = 'Checking Status…';
       }
 
       try {
         const res = await apiCall('/api/auth/me');
         if (res && res.success && res.user) {
-          if (res.user.is_suspended) {
+          const u = res.user;
+
+          if (u.is_suspended) {
             window.location.href = '/login?suspended=true';
             return;
           }
-          if (res.user.is_approved !== false) {
-            showToast('🎉 You\'re approved! Redirecting to dashboard…', 'success', 3000);
+
+          if (u.is_approved !== false && u.approval_status !== 'pending') {
+            showAlert('🎉 Account approved! Unlocking access…', 'success');
             setTimeout(() => {
-              window.location.href = res.user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
-            }, 1400);
+              window.location.href = u.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+            }, 1000);
             return;
           }
-        }
-        if (showFeedback) {
-          showToast('Still pending! The admin is… probably on it. 🙃', 'info');
+
+          if (isManual) {
+            showAlert('Your account is still in the verification queue.', 'info');
+          }
         }
       } catch (err) {
-        console.error('Status check error:', err);
-        if (showFeedback) showToast('Could not reach the server. Check your connection.', 'error');
+        if (isManual) showAlert('Unable to reach server. Please try again.', 'danger');
       } finally {
-        if (showFeedback) {
-          const btn = $('checkStatusBtn');
+        if (isManual && btn) {
           btn.disabled = false;
-          btn.innerHTML = `
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            Am I Approved Yet?`;
+          if (icon) icon.style.animation = 'none';
+          if (label) label.innerText = 'Check Verification Status';
         }
       }
     }
 
-    $('checkStatusBtn').addEventListener('click', () => checkApprovalStatus(true));
-    $('logoutBtn').addEventListener('click', async () => {
+    // 5. Sign Out Handler
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
       await apiCall('/api/auth/logout', { method: 'POST' });
       window.location.href = '/login';
     });
 
-    // Auto-check every 10s
-    setInterval(() => checkApprovalStatus(false), 10000);
-  })();
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      initApprovalLottie();
+      initThemeToggle();
+      loadUserProfile();
+      // Auto-poll status every 10 seconds
+      setInterval(() => checkApprovalStatus(false), 10000);
+    });
   </script>
+
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </body>
 </html>

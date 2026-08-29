@@ -32,11 +32,19 @@ const setCachedBypassEmails = (emails) => {
 const maintenanceMiddleware = async (req, res, next) => {
   try {
     const { isMaintenance, bypassEmails } = await getMaintenanceSettingsCached();
+    const url = req.path.toLowerCase();
+
+    // Public endpoint to query maintenance mode status
+    if (url === '/api/system/maintenance-status') {
+      return res.status(200).json({
+        success: true,
+        maintenance_mode: isMaintenance
+      });
+    }
+
     if (!isMaintenance) {
       return next();
     }
-
-    const url = req.path.toLowerCase();
 
     // 1. Bypass static assets & favicon & manifest & service worker
     if (

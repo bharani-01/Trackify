@@ -99,14 +99,17 @@ function showAlert(message, type = 'success') {
   } else if (type === 'danger' || type === 'error') {
     bgCircleColor = '#ef4444';
     iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+  } else if (type === 'warning') {
+    bgCircleColor = '#f59e0b';
+    iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
   } else {
     bgCircleColor = '#3b82f6';
     iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
   }
 
   alertDiv.innerHTML = `
-    <div style="display: flex; align-items: center; background: #0f172a; color: #ffffff; padding: 10px 22px; border-radius: 50px; border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); margin-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 600; animation: toastSpringIn 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;">
-      <div style="width: 26px; height: 26px; border-radius: 50%; background-color: ${bgCircleColor}; display: flex; align-items: center; justify-content: center; margin-right: 12px; flex-shrink: 0; box-shadow: 0 2px 8px ${bgCircleColor}55;">
+    <div style="display: flex; align-items: center; background: rgba(15, 23, 42, 0.95); color: #ffffff; padding: 10px 22px; border-radius: 9999px; border: 1px solid rgba(255, 255, 255, 0.18); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); margin-bottom: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 600; animation: toastSpringIn 0.28s cubic-bezier(0.32, 0.72, 0, 1) forwards;">
+      <div style="width: 24px; height: 24px; border-radius: 50%; background-color: ${bgCircleColor}; display: flex; align-items: center; justify-content: center; margin-right: 10px; flex-shrink: 0; box-shadow: 0 2px 8px ${bgCircleColor}55;">
         ${iconSvg}
       </div>
       <span style="letter-spacing: -0.01em; color: #ffffff;">${message}</span>
@@ -115,13 +118,13 @@ function showAlert(message, type = 'success') {
 
   container.appendChild(alertDiv);
 
-  // Automatically remove after 3 seconds with exit transition
+  // Automatically remove after 3 seconds with symmetric exit transition
   setTimeout(() => {
     const innerPill = alertDiv.firstElementChild;
     if (innerPill) {
-      innerPill.style.animation = 'toastSpringOut 0.25s ease-in forwards';
+      innerPill.style.animation = 'toastSpringOut 0.2s cubic-bezier(0.4, 0, 1, 1) forwards';
     }
-    setTimeout(() => alertDiv.remove(), 250);
+    setTimeout(() => alertDiv.remove(), 200);
   }, 3000);
 }
 

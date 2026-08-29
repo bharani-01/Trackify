@@ -81,14 +81,14 @@ const markAttendance = async (req, res) => {
       remarks
     });
 
-    // Log action
+    // Log action asynchronously without blocking response
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    await auditLogRepository.logAction(
+    auditLogRepository.logAction(
       req.user.id,
       'MARK_ATTENDANCE',
       `Marked attendance for Subject ID ${subject_id} on ${date} as ${status} (${remarks || 'no remarks'})`,
       ip
-    );
+    ).catch(err => console.error('Background audit log error:', err));
 
     return res.status(201).json({
       success: true,
@@ -148,14 +148,14 @@ const updateAttendance = async (req, res) => {
       });
     }
 
-    // Log action
+    // Log action asynchronously without blocking response
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    await auditLogRepository.logAction(
+    auditLogRepository.logAction(
       req.user.id,
       'UPDATE_ATTENDANCE',
       `Updated attendance record ID ${id}: set status to ${status} (${remarks || 'no remarks'})`,
       ip
-    );
+    ).catch(err => console.error('Background audit log error:', err));
 
     return res.status(200).json({
       success: true,
@@ -195,14 +195,14 @@ const clearAttendanceByDate = async (req, res) => {
 
     const count = await attendanceRepository.deleteByDate(req.user.id, date);
 
-    // Log action
+    // Log action asynchronously without blocking response
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-    await auditLogRepository.logAction(
+    auditLogRepository.logAction(
       req.user.id,
       'CLEAR_ATTENDANCE',
       `Cleared all attendance records for date ${date} (${count} entries removed)`,
       ip
-    );
+    ).catch(err => console.error('Background audit log error:', err));
 
     return res.status(200).json({
       success: true,
