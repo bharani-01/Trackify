@@ -638,6 +638,17 @@ app.get(['/pending-approval', '/pending-approval.html'], async (req, res) => {
 // Serve public static folder (Landing, Login, Register)
 app.use(express.static(path.join(__dirname, '../frontend'), { extensions: ['html'] }));
 
+// Catch-All 404 Handler for API endpoints and Web Pages
+app.use((req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      success: false,
+      message: 'API endpoint not found'
+    });
+  }
+  res.status(404).sendFile(path.join(__dirname, '../frontend/404.html'));
+});
+
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error(err.stack);

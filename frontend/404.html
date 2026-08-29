@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>404 — Page Not Found | Trackify</title>
+  <meta name="description" content="Trackify 404 Page Not Found">
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=3.7">
+  
+  <script src="/assets/js/lottie.min.js"></script>
+
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Subtle Background Glow */
+    .ambient-glow-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+      max-width: 900px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(168, 7, 90, 0.03) 45%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(80px);
+    }
+
+    [data-theme="dark"] .ambient-glow-center {
+      background: radial-gradient(circle, rgba(64, 103, 200, 0.10) 0%, rgba(201, 100, 136, 0.05) 50%, transparent 70%);
+    }
+
+    /* Top Navigation Header with Actions On Top */
+    .notfound-header {
+      height: 60px;
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      position: relative;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      flex-shrink: 0;
+    }
+
+    .logo-img {
+      height: 28px;
+      width: auto;
+    }
+
+    /* Top Action Buttons */
+    .top-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn-notfound-primary {
+      height: 38px;
+      padding: 0 1.15rem;
+      background: var(--primary);
+      color: #ffffff !important;
+      border: none;
+      border-radius: 9999px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+      white-space: nowrap;
+    }
+
+    .btn-notfound-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    }
+
+    .btn-notfound-secondary {
+      height: 38px;
+      padding: 0 1rem;
+      background: var(--bg-secondary);
+      color: var(--text-primary) !important;
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.18s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-notfound-secondary:hover {
+      background: var(--border-color);
+    }
+
+    /* Full Page Lottie Stage */
+    .fullpage-lottie-stage {
+      flex: 1;
+      width: 100vw;
+      height: calc(100vh - 60px);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      padding: 1rem;
+    }
+
+    #notfound-lottie-container {
+      width: 100%;
+      height: 100%;
+      max-width: 1100px;
+      max-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #notfound-lottie-container svg {
+      width: 100% !important;
+      height: 100% !important;
+      transform: scale(1.05);
+      filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.06));
+    }
+
+    [data-theme="dark"] #notfound-lottie-container svg {
+      filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
+    }
+
+    /* Floating Navigation Pill Dock for Mobile */
+    @media (max-width: 576px) {
+      .top-nav-actions .btn-notfound-secondary {
+        display: none;
+      }
+      .top-nav-actions .btn-notfound-primary {
+        font-size: 0.78rem;
+        padding: 0 0.85rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient-glow-center"></div>
+
+  <!-- Header with Actions On Top -->
+  <header class="notfound-header">
+    <div class="d-flex align-items-center gap-2">
+      <a href="/" class="d-flex align-items-center text-decoration-none">
+        <img id="trackify-logo" src="/assets/images/logo_light.webp" alt="Trackify Logo" class="logo-img">
+      </a>
+    </div>
+    
+    <!-- Top Action Buttons -->
+    <div class="top-nav-actions">
+      <button type="button" class="btn-notfound-secondary" onclick="window.history.length > 1 ? window.history.back() : window.location.href='/'">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Go Back</span>
+      </button>
+
+      <button type="button" class="btn-notfound-primary" id="btn-return-home" onclick="smartRedirect()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span>Return to Dashboard</span>
+      </button>
+
+      <button type="button" class="btn btn-sm btn-ghost p-1.5 rounded-circle" id="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme" style="width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+        <svg id="theme-moon-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <svg id="theme-sun-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Full-Page Lottie Animation Stage -->
+  <main class="fullpage-lottie-stage">
+    <div id="notfound-lottie-container"></div>
+  </main>
+
+  <script>
+    // Theme Manager
+    function updateThemeIcons(theme) {
+      const moonIcon = document.getElementById('theme-moon-icon');
+      const sunIcon = document.getElementById('theme-sun-icon');
+      const logo = document.getElementById('trackify-logo');
+      
+      if (theme === 'dark') {
+        if (moonIcon) moonIcon.style.display = 'none';
+        if (sunIcon) sunIcon.style.display = 'block';
+        if (logo) logo.src = '/assets/images/logo_dark.webp';
+      } else {
+        if (moonIcon) moonIcon.style.display = 'block';
+        if (sunIcon) sunIcon.style.display = 'none';
+        if (logo) logo.src = '/assets/images/logo_light.webp';
+      }
+    }
+
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+      });
+    }
+
+    const initialTheme = document.documentElement.getAttribute('data-theme') || 'light';
+    updateThemeIcons(initialTheme);
+
+    // Render Full-Page Lottie Animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('notfound-lottie-container');
+      if (container && typeof lottie !== 'undefined') {
+        try {
+          lottie.loadAnimation({
+            container: container,
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: '/assets/animations/404.json'
+          });
+        } catch (e) {
+          console.error('Failed to load full-page 404 Lottie animation:', e);
+        }
+      }
+    });
+
+    // Smart Redirect based on session
+    async function smartRedirect() {
+      const btn = document.getElementById('btn-return-home');
+      if (btn) btn.disabled = true;
+      try {
+        const res = await fetch('/api/auth/me', { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.user) {
+            window.location.href = data.user.role === 'admin' ? '/admin/dashboard' : '/student/dashboard';
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn('Redirect check error:', err);
+      }
+      window.location.href = '/login';
+    }
+  </script>
+</body>
+</html>

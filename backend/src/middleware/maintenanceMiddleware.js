@@ -56,8 +56,8 @@ const maintenanceMiddleware = async (req, res, next) => {
       return next();
     }
 
-    // 2. Bypass the maintenance page itself
-    if (url === '/maintenance' || url === '/maintenance.html') {
+    // 2. Bypass the maintenance & 404 error pages
+    if (url === '/maintenance' || url === '/maintenance.html' || url === '/404' || url === '/404.html') {
       return next();
     }
 
