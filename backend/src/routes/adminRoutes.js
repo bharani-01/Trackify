@@ -106,10 +106,12 @@ router.post('/backups/remote/:id/restore', restoreRemoteBackup);
 router.delete('/backups/remote/:id', deleteRemoteBackup);
 
 // Schedule adjustments management
-const { getAdminAdjustments, saveAdminAdjustments } = require('../controllers/adjustmentController');
+const { getAdminAdjustments, saveAdminAdjustments, checkAdjustmentConflicts, autoResolveAdjustmentConflicts } = require('../controllers/adjustmentController');
 router.route('/adjustments')
   .get(getAdminAdjustments)
   .post(saveAdminAdjustments);
+router.post('/adjustments/check-conflicts', checkAdjustmentConflicts);
+router.post('/adjustments/auto-resolve', autoResolveAdjustmentConflicts);
 
 // Holidays management
 const { getAdminHolidays, createAdminHoliday, deleteAdminHoliday } = require('../controllers/holidayController');
@@ -119,12 +121,14 @@ router.route('/holidays')
 router.route('/holidays/:id')
   .delete(deleteAdminHoliday);
 
-// Attendance Conflicts management
-const { getAdminConflicts, resolveAllConflicts, deleteSingleConflict } = require('../controllers/conflictController');
+// Attendance & Timetable Conflicts management
+const { getAdminConflicts, resolveAllConflicts, deleteSingleConflict, getTimetableConflicts, autoResolveCohortTimetableConflicts } = require('../controllers/conflictController');
 router.route('/conflicts')
   .get(getAdminConflicts);
 router.post('/conflicts/resolve-all', resolveAllConflicts);
 router.delete('/conflicts/:id', deleteSingleConflict);
+router.get('/conflicts/timetable', getTimetableConflicts);
+router.post('/conflicts/timetable/auto-resolve', autoResolveCohortTimetableConflicts);
 
 // Master Attendance Management routes
 const { getAllStudentAttendance, targetedClearAttendance, updateStudentAttendanceAdmin, deleteStudentAttendanceAdmin } = require('../controllers/adminAttendanceController');

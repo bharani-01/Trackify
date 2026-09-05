@@ -2942,3 +2942,31 @@ h6 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Universal Skeleton Shimmer Loading States */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary, #f8fafc) 0%,
+    var(--border-color, #e2e8f0) 50%,
+    var(--bg-secondary, #f8fafc) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s infinite ease-in-out;
+  border-radius: 6px;
+}
+
+[data-theme="dark"] .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.03) 100%
+  );
+  background-size: 200% 100%;
+}
+
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

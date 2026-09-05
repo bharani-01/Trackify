@@ -323,8 +323,9 @@ const forgotPassword = async (req, res) => {
     const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
     await auditLogRepository.logAction(user.id, 'PASSWORD_RESET_REQUEST', `Password reset token requested for ${user.email}`, ip);
 
-    // Build reset link (dynamic protocol & host)
-    const resetUrl = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}`;
+    // Build reset link (prefers configured APP_URL)
+    const baseUrl = (process.env.APP_URL || `${req.protocol}://${req.get('host')}`).replace(/\/$/, '');
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
 
     // SECURITY: Never log full reset URLs — they contain secret tokens.
     // Only log a safe prefix in non-production environments for debugging.

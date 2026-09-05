@@ -76,8 +76,8 @@ app.use((req, res, next) => {
 
   // Hardened Security Headers (HSTS, CSP, Permissions-Policy)
   res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
-  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://accounts.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://cdn.jsdelivr.net https://v2.jokeapi.dev https://accounts.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src 'self' https://accounts.google.com;");
+  res.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://unpkg.com https://accounts.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: https: blob:; connect-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://v2.jokeapi.dev https://accounts.google.com https://fonts.googleapis.com https://fonts.gstatic.com https://www.gstatic.com https://firebaseinstallations.googleapis.com https://fcmregistrations.googleapis.com; frame-src 'self' https://accounts.google.com;");
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
 
   // Prevent caching of sensitive routes and API responses
   if (req.path.startsWith('/api') || req.path.startsWith('/admin') || req.path.startsWith('/student')) {
@@ -706,15 +706,7 @@ const server = app.listen(PORT, HOST, () => {
     console.error('Failed to start background reminders scheduler service:', err.message);
   }
 
-  // Broadcast Rollout Deployed Alert to Administrator (bharani.cyber@gmail.com)
-  try {
-    alertService.notifyRolloutDeployed({
-      port: PORT,
-      host: HOST
-    }).catch((e) => console.error('[ROLLOUT ALERT ERROR]:', e.message));
-  } catch (e) {
-    // Non-blocking
-  }
+  // Startup rollout alert emails disabled per administrator preference
 });
 
 // Global Process Crash / Unhandled Rejection Alert Handlers

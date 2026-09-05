@@ -13,7 +13,7 @@ const getAttendanceLogs = async (req, res) => {
   const { startDate, endDate, subjectId, sortBy, sortOrder } = req.query;
 
   try {
-    const logs = await attendanceRepository.getByUserId(req.user.id, {
+    let logs = await attendanceRepository.getByUserId(req.user.id, {
       startDate,
       endDate,
       subjectId,

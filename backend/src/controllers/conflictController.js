@@ -164,8 +164,88 @@ const deleteSingleConflict = async (req, res) => {
   }
 };
 
+const timetableConflictService = require('../services/timetableConflictService');
+const adjustmentRepository = require('../repositories/adjustmentRepository');
+
+/**
+ * Scan all active schedule adjustments for timetable clashes (room collisions, teacher double bookings, holidays)
+ */
+const getTimetableConflicts = async (req, res) => {
+  try {
+    const timetableConflicts = await timetableConflictService.getAllTimetableConflicts();
+    return res.status(200).json({
+      success: true,
+      timetableConflicts,
+      totalConflicts: timetableConflicts.reduce((sum, item) => sum + (item.conflicts?.length || 0), 0)
+    });
+  } catch (error) {
+    console.error('getTimetableConflicts error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve timetable conflicts'
+    });
+  }
+};
+
+/**
+ * Automatically resolve and save timetable conflicts for a cohort
+ */
+const autoResolveCohortTimetableConflicts = async (req, res) => {
+  const { department, semester, date } = req.body;
+
+  if (!department || !semester || !date) {
+    return res.status(400).json({
+      success: false,
+      message: 'Please provide department, semester, and date'
+    });
+  }
+
+  try {
+    const currentAdjustments = await adjustmentRepository.getByCohort(department, parseInt(semester, 10), date);
+    const resolveResult = await timetableConflictService.autoResolveAdjustments({
+      department,
+      semester: parseInt(semester, 10),
+      date,
+      adjustments: currentAdjustments
+    });
+
+    if (resolveResult.resolvedAdjustments) {
+      await adjustmentRepository.saveCohortAdjustments(
+        department,
+        parseInt(semester, 10),
+        date,
+        resolveResult.resolvedAdjustments
+      );
+
+      // Audit Log
+      const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      await auditLogRepository.logAction(
+        req.user.id,
+        'AUTO_RESOLVE_TIMETABLE_CONFLICTS',
+        `Auto-resolved ${resolveResult.resolvedCount} timetable conflicts for ${department} Sem ${semester} on ${date}`,
+        ip
+      );
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Successfully auto-resolved ${resolveResult.resolvedCount} timetable conflict(s)`,
+      ...resolveResult
+    });
+  } catch (error) {
+    console.error('autoResolveCohortTimetableConflicts error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to auto-resolve timetable conflicts'
+    });
+  }
+};
+
 module.exports = {
   getAdminConflicts,
   resolveAllConflicts,
-  deleteSingleConflict
+  deleteSingleConflict,
+  getTimetableConflicts,
+  autoResolveCohortTimetableConflicts
 };
+

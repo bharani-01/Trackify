@@ -152,9 +152,29 @@
 
               <!-- History list -->
               <div id="notificationsFeed" class="d-flex flex-column gap-3">
-                <div class="text-center py-5 text-secondary">
-                  <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-                  <span class="ms-2">Loading alert logs...</span>
+                <div class="p-3 bg-light rounded-3 border">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="skeleton-shimmer" style="width: 75px; height: 18px; border-radius: 9999px;"></div>
+                    <div class="skeleton-shimmer" style="width: 110px; height: 14px;"></div>
+                  </div>
+                  <div class="skeleton-shimmer mb-2" style="width: 65%; height: 18px;"></div>
+                  <div class="skeleton-shimmer" style="width: 90%; height: 14px;"></div>
+                </div>
+                <div class="p-3 bg-light rounded-3 border">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="skeleton-shimmer" style="width: 85px; height: 18px; border-radius: 9999px;"></div>
+                    <div class="skeleton-shimmer" style="width: 95px; height: 14px;"></div>
+                  </div>
+                  <div class="skeleton-shimmer mb-2" style="width: 50%; height: 18px;"></div>
+                  <div class="skeleton-shimmer" style="width: 85%; height: 14px;"></div>
+                </div>
+                <div class="p-3 bg-light rounded-3 border">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                    <div class="skeleton-shimmer" style="width: 70px; height: 18px; border-radius: 9999px;"></div>
+                    <div class="skeleton-shimmer" style="width: 105px; height: 14px;"></div>
+                  </div>
+                  <div class="skeleton-shimmer mb-2" style="width: 70%; height: 18px;"></div>
+                  <div class="skeleton-shimmer" style="width: 80%; height: 14px;"></div>
                 </div>
               </div>
             </div>
@@ -251,9 +271,29 @@
     async function loadAnnouncements() {
       const feed = document.getElementById('notificationsFeed');
       feed.innerHTML = `
-        <div class="text-center py-4 text-secondary">
-          <div class="spinner-border text-primary spinner-border-sm" role="status"></div>
-          <span class="ms-2">Loading alert logs...</span>
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="skeleton-shimmer" style="width: 75px; height: 18px; border-radius: 9999px;"></div>
+            <div class="skeleton-shimmer" style="width: 110px; height: 14px;"></div>
+          </div>
+          <div class="skeleton-shimmer mb-2" style="width: 65%; height: 18px;"></div>
+          <div class="skeleton-shimmer" style="width: 90%; height: 14px;"></div>
+        </div>
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="skeleton-shimmer" style="width: 85px; height: 18px; border-radius: 9999px;"></div>
+            <div class="skeleton-shimmer" style="width: 95px; height: 14px;"></div>
+          </div>
+          <div class="skeleton-shimmer mb-2" style="width: 50%; height: 18px;"></div>
+          <div class="skeleton-shimmer" style="width: 85%; height: 14px;"></div>
+        </div>
+        <div class="p-3 bg-light rounded-3 border">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="skeleton-shimmer" style="width: 70px; height: 18px; border-radius: 9999px;"></div>
+            <div class="skeleton-shimmer" style="width: 105px; height: 14px;"></div>
+          </div>
+          <div class="skeleton-shimmer mb-2" style="width: 70%; height: 18px;"></div>
+          <div class="skeleton-shimmer" style="width: 80%; height: 14px;"></div>
         </div>
       `;
 

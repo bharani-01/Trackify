@@ -34,6 +34,99 @@
       background-color: #e2e8f0 !important;
       color: var(--text-secondary); !important;
     }
+
+    /* Attendance Stats Modal & Planner Styles */
+    .stats-mode-pill {
+      padding: 5px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .stats-mode-pill:hover {
+      color: var(--primary);
+    }
+    .stats-mode-pill.active {
+      background: var(--primary);
+      color: #ffffff !important;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+    }
+
+    .sim-control-btn {
+      font-size: 0.74rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .sim-control-btn:hover {
+      background: var(--primary);
+      color: #ffffff !important;
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .target-pill-btn {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 9999px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .target-pill-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .target-pill-btn.active {
+      background: #2563eb;
+      color: #ffffff !important;
+      border-color: #2563eb;
+    }
+
+    .stepper-btn {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.15s ease;
+      line-height: 1;
+    }
+    .stepper-btn:hover {
+      background: var(--primary);
+      color: #ffffff !important;
+      border-color: var(--primary);
+    }
+    .stepper-btn-danger:hover {
+      background: #ef4444 !important;
+      border-color: #ef4444 !important;
+      color: #ffffff !important;
+    }
   </style>
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
     <script>
@@ -536,73 +629,151 @@
     </div>
   </div>
 
-  <!-- Student Subject Attendance Modal -->
+  <!-- Student Subject Attendance Modal with Image Export & Share -->
   <div class="modal fade" id="subjectAttendanceModal" tabindex="-1" aria-labelledby="subjectAttendanceModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color);">
-        <div class="modal-header border-bottom border-light p-4">
-          <h5 class="modal-title fw-bold" id="subjectAttendanceModalLabel">Attendance Stats: <span id="statsStudentName"></span></h5>
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+      <div class="modal-content glass-card border-glass p-0 shadow-lg text-start" style="background: var(--bg-secondary); border: 1px solid var(--border-color); max-height: 90vh;">
+        
+        <!-- Header -->
+        <div class="modal-header border-bottom border-light p-3 p-md-4 d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; background: rgba(37, 99, 235, 0.1); color: #2563eb;">
+              <i class="bi bi-graph-up-arrow fs-5"></i>
+            </div>
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <h5 class="modal-title fw-bold mb-0 text-dark" id="statsStudentName">Student Attendance</h5>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill py-0.5 px-2 fs-9 font-monospace" id="statsStudentReg"></span>
+              </div>
+              <div class="text-secondary small mt-0.5" id="statsStudentMeta" style="font-size: 0.78rem;">Department &amp; Semester</div>
+            </div>
+          </div>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body p-4">
-          <!-- Overall Summary Cards -->
-          <div class="row g-3 mb-4">
-            <div class="col-md-3 col-6">
-              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
-                <div class="text-secondary small fw-bold mb-1">Overall Attendance</div>
-                <h3 class="fw-bold text-dark mb-0 fs-4" id="statsOverallPercent">0%</h3>
+
+        <!-- Modal Body & Printable/Exportable Canvas Container -->
+        <div class="modal-body p-3 p-md-4" id="statsModalBody">
+          
+          <div id="attendanceExportCard" class="p-1 rounded-3" style="background: transparent;">
+            
+            <!-- Branded Header for Exported Image (shown during PNG capture) -->
+            <div id="exportCardBrandHeader" class="p-3 mb-3 rounded-3 border bg-light d-none">
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="/assets/images/favicon.webp" alt="Trackify" width="28" height="28" style="border-radius: 6px;">
+                  <div>
+                    <div class="fw-bold text-dark fs-6" style="letter-spacing: -0.3px;">TRACKIFY ACADEMIC INTELLIGENCE</div>
+                    <div class="text-secondary" style="font-size: 0.72rem;">Student Attendance &amp; Performance Statement</div>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-primary py-1 px-2.5 rounded-pill text-white fw-bold" style="font-size: 0.7rem;">OFFICIAL STATS</span>
+                  <div class="text-muted small mt-1" style="font-size: 0.68rem;" id="exportCardDate"></div>
+                </div>
               </div>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
-                <div class="text-secondary small fw-bold mb-1">Attended Classes</div>
-                <h3 class="fw-bold text-primary mb-0 fs-4" id="statsTotalPresent">0 / 0</h3>
+
+            <!-- Summary KPI Cards -->
+            <div class="row g-3 mb-4">
+              <div class="col-md-3 col-6">
+                <div class="p-3 bg-light rounded-3 text-center border shadow-sm h-100 d-flex flex-column justify-content-center">
+                  <div class="text-secondary small fw-bold mb-1">Overall Attendance</div>
+                  <h3 class="fw-bold text-dark mb-0 fs-4" id="statsOverallPercent">0%</h3>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="p-3 bg-light rounded-3 text-center border shadow-sm h-100 d-flex flex-column justify-content-center">
+                  <div class="text-secondary small fw-bold mb-1">Attended Classes</div>
+                  <h3 class="fw-bold text-primary mb-0 fs-4" id="statsTotalPresent">0 / 0</h3>
+                  <div class="text-muted small mt-1" style="font-size: 0.7rem;">Present + OD</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="p-3 bg-light rounded-3 text-center border shadow-sm h-100 d-flex flex-column justify-content-center">
+                  <div class="text-secondary small fw-bold mb-1">Target Threshold</div>
+                  <h3 class="fw-bold text-secondary mb-0 fs-4" id="statsTargetPercent">80%</h3>
+                  <div class="text-muted small mt-1" style="font-size: 0.7rem;">Minimum Goal</div>
+                </div>
+              </div>
+              <div class="col-md-3 col-6">
+                <div class="p-3 bg-light rounded-3 text-center border shadow-sm h-100 d-flex flex-column justify-content-center">
+                  <div class="text-secondary small fw-bold mb-1">Status Estimate</div>
+                  <div class="mt-1"><span class="badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8" id="statsOverallStatus">Safe</span></div>
+                  <div class="text-muted small mt-1" style="font-size: 0.7rem;" id="statsStatusCushion"></div>
+                </div>
               </div>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
-                <div class="text-secondary small fw-bold mb-1">Target Threshold</div>
-                <h3 class="fw-bold text-secondary mb-0 fs-4" id="statsTargetPercent">80%</h3>
+
+            <!-- Subject-wise Table -->
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0 border shadow-sm rounded-3 overflow-hidden" id="statsTable">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-3">Subject</th>
+                    <th>Conducted</th>
+                    <th>Present</th>
+                    <th>Absent</th>
+                    <th>OD / ML</th>
+                    <th>Rate</th>
+                    <th class="pe-3">Status / Forecast</th>
+                  </tr>
+                </thead>
+                <tbody id="subject-stats-tbody">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Branded Export Footer (visible in image capture) -->
+            <div id="exportCardBrandFooter" class="mt-3 pt-3 border-top border-light d-none text-center">
+              <div class="d-flex justify-content-between align-items-center text-muted small" style="font-size: 0.7rem;">
+                <div>Trackify Academic Management System</div>
+                <div class="fw-semibold">https://app.trackifyapp.co.in</div>
               </div>
             </div>
-            <div class="col-md-3 col-6">
-              <div class="p-3 bg-light rounded-3 text-center border shadow-sm">
-                <div class="text-secondary small fw-bold mb-1">Status Estimate</div>
-                <div class="mt-1"><span class="badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8" id="statsOverallStatus">Safe</span></div>
-              </div>
-            </div>
+
           </div>
 
-          <!-- Subject wise Table -->
-          <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0 border shadow-sm rounded-3 overflow-hidden">
-              <thead class="table-light">
-                <tr>
-                  <th class="ps-3">Subject</th>
-                  <th>Conducted</th>
-                  <th>Present</th>
-                  <th>Absent</th>
-                  <th>OD / ML</th>
-                  <th>Rate</th>
-                  <th class="pe-3">Status / Forecast</th>
-                </tr>
-              </thead>
-              <tbody id="subject-stats-tbody">
-                <!-- Rendered dynamically -->
-              </tbody>
-            </table>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="modal-footer border-top border-light p-3 p-md-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <!-- Left Export Tools -->
+          <div class="d-flex align-items-center gap-2 flex-wrap">
+            <button type="button" class="btn btn-outline-primary btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5" id="btnDownloadImg" onclick="downloadAttendanceImage()">
+              <i class="bi bi-download"></i>
+              <span>Download Img</span>
+            </button>
+            <button type="button" class="btn btn-outline-success btn-sm px-3 py-2 fw-semibold d-flex align-items-center gap-1.5" id="btnShareImg" onclick="shareAttendanceImage()">
+              <i class="bi bi-share-fill"></i>
+              <span>Share Img</span>
+            </button>
+          </div>
+
+          <!-- Right Dismiss -->
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-glow" data-bs-dismiss="modal">Close</button>
           </div>
         </div>
-        <div class="modal-footer border-top border-light p-4">
-          <button type="button" class="btn btn-glow" data-bs-dismiss="modal">Close</button>
-        </div>
+
       </div>
     </div>
   </div>
 
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return str || '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
     let activeUsersList = [];
     let suspendedUsersList = [];
     let pendingList = [];
@@ -730,9 +901,15 @@
                     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                   </svg>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 140px;">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 170px;">
                   <li>
-                    <button class="dropdown-item py-2 small fw-semibold text-primary" onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}', ${user.minimum_attendance || 80})">
+                    <button class="dropdown-item py-2 small fw-semibold text-primary" onclick="viewStudentSubjectAttendance('${user.id}', '${user.name}')">
+                      <i class="bi bi-graph-up-arrow me-1.5"></i> Attendance Stats &amp; Plan
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-dark" onclick="openEditModal('${user.id}', '${user.name}', '${user.department || ''}', '${user.semester || ''}', ${user.minimum_attendance || 80})">
                       Edit Profile
                     </button>
                   </li>
@@ -805,7 +982,13 @@
                     <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
                   </svg>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 140px;">
+                <ul class="dropdown-menu dropdown-menu-end shadow border-glass" style="min-width: 170px;">
+                  <li>
+                    <button class="dropdown-item py-2 small fw-semibold text-primary" onclick="viewStudentSubjectAttendance('${user.id}', '${user.name}')">
+                      <i class="bi bi-graph-up-arrow me-1.5"></i> Attendance Stats &amp; Plan
+                    </button>
+                  </li>
+                  <li><hr class="dropdown-divider"></li>
                   <li>
                     <button class="dropdown-item py-2 small fw-semibold text-success" onclick="toggleSuspension('${user.id}', true)">
                       Unsuspend Account
@@ -1378,81 +1561,48 @@
     }
 
     const subjectAttendanceModal = new bootstrap.Modal(document.getElementById('subjectAttendanceModal'));
+    let currentStatsUser = null;
+    let currentRawStats = null;
 
     async function viewStudentSubjectAttendance(userId, studentName) {
-      document.getElementById('statsStudentName').innerText = studentName;
+      const user = activeUsersList.find(u => u.id === userId) || 
+                   suspendedUsersList.find(u => u.id === userId) || 
+                   { id: userId, name: studentName, register_number: 'N/A', department: 'General', semester: '', minimum_attendance: 80 };
+
+      currentStatsUser = user;
+      currentRawStats = null;
+
+      // Populate header labels
+      document.getElementById('statsStudentName').innerText = user.name || studentName;
+      document.getElementById('statsStudentReg').innerText = user.register_number || 'N/A';
+      document.getElementById('statsStudentMeta').innerText = `${user.department || 'General'}${user.semester ? ' • Semester ' + user.semester : ''} • Target: ${user.minimum_attendance || 80}%`;
+
       const tbody = document.getElementById('subject-stats-tbody');
       tbody.innerHTML = `
         <tr>
           <td colspan="7" class="text-center py-4">
             <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
-            <span class="ms-2 small text-secondary">Fetching student attendance breakdown...</span>
+            <span class="ms-2 small text-secondary">Fetching student attendance records...</span>
           </td>
         </tr>
       `;
       
       document.getElementById('statsOverallPercent').innerText = '...';
       document.getElementById('statsTotalPresent').innerText = '...';
-      document.getElementById('statsTargetPercent').innerText = '...';
+      document.getElementById('statsTargetPercent').innerText = `${user.minimum_attendance || 80}%`;
       const statusBadge = document.getElementById('statsOverallStatus');
       statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-secondary text-white';
       statusBadge.innerText = 'Calculating';
+      const statusCushion = document.getElementById('statsStatusCushion');
+      if (statusCushion) statusCushion.innerText = '';
 
       subjectAttendanceModal.show();
 
       try {
         const res = await apiCall(`/api/admin/users/${userId}/attendance-stats`);
         if (res.success && res.stats) {
-          const stats = res.stats;
-          document.getElementById('statsOverallPercent').innerText = `${stats.overallPercentage}%`;
-          document.getElementById('statsTotalPresent').innerText = `${stats.totalPresent + stats.totalOD} / ${stats.totalConducted}`;
-          document.getElementById('statsTargetPercent').innerText = `${stats.targetPercentage}%`;
-          
-          if (stats.overallPrediction.status === 'Safe') {
-            statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-success-subtle text-success border border-success-subtle';
-            statusBadge.innerText = `Safe (+${stats.overallPrediction.safeAbsences})`;
-          } else {
-            statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-danger-subtle text-danger border border-danger-subtle';
-            statusBadge.innerText = `Alert (-${stats.overallPrediction.classesNeeded})`;
-          }
-
-          tbody.innerHTML = '';
-          if (!stats.subjectStats || stats.subjectStats.length === 0) {
-            tbody.innerHTML = `
-              <tr>
-                <td colspan="7" class="text-center py-4 text-secondary small">
-                  No subject records found for this student.
-                </td>
-              </tr>
-            `;
-            return;
-          }
-
-          stats.subjectStats.forEach(subj => {
-            const isLow = subj.percentage < stats.targetPercentage;
-            const forecastText = subj.prediction.status === 'Safe' 
-              ? `<span class="text-success small fw-bold">Can skip ${subj.prediction.safeAbsences} classes</span>`
-              : `<span class="text-danger small fw-bold">Attend next ${subj.prediction.classesNeeded} classes</span>`;
-
-            tbody.innerHTML += `
-              <tr>
-                <td class="ps-3">
-                  <div class="fw-bold text-dark small">${subj.subject_name}</div>
-                  <div class="text-secondary small font-monospace" style="font-size: 0.72rem;">${subj.subject_code}</div>
-                </td>
-                <td class="small fw-semibold text-secondary">${subj.conducted_count}</td>
-                <td class="small fw-semibold text-success">${subj.present_count}</td>
-                <td class="small fw-semibold text-danger">${subj.absent_count}</td>
-                <td class="small text-secondary">${subj.od_count || 0} / ${subj.medical_count}</td>
-                <td>
-                  <span class="fw-bold ${isLow ? 'text-danger' : 'text-success'} small">
-                    ${subj.percentage}%
-                  </span>
-                </td>
-                <td class="pe-3">${forecastText}</td>
-              </tr>
-            `;
-          });
+          currentRawStats = res.stats;
+          renderAttendanceStatsView();
         } else {
           tbody.innerHTML = `
             <tr>
@@ -1470,11 +1620,438 @@
               Network error fetching attendance breakdown.
             </td>
           </tr>
-        </h5>
-      </div>
-    </div>
-  </div>
         `;
+      }
+    }
+
+    function renderAttendanceStatsView() {
+      if (!currentRawStats) return;
+      const stats = currentRawStats;
+      const target = stats.targetPercentage || 80;
+
+      // Update KPI Cards
+      document.getElementById('statsOverallPercent').innerText = `${stats.overallPercentage}%`;
+      document.getElementById('statsOverallPercent').className = `fw-bold mb-0 fs-4 ${stats.overallPercentage < target ? 'text-danger' : 'text-success'}`;
+      document.getElementById('statsTotalPresent').innerText = `${stats.totalPresent + stats.totalOD} / ${stats.totalConducted}`;
+      document.getElementById('statsTargetPercent').innerText = `${target}%`;
+
+      const statusBadge = document.getElementById('statsOverallStatus');
+      const statusCushion = document.getElementById('statsStatusCushion');
+
+      if (stats.overallPrediction && stats.overallPrediction.status === 'Safe') {
+        const safeAbs = stats.overallPrediction.safeAbsences;
+        statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-success-subtle text-success border border-success-subtle';
+        statusBadge.innerText = `Safe (+${safeAbs})`;
+        if (statusCushion) statusCushion.innerText = `Can skip ${safeAbs} classes`;
+      } else {
+        const needed = stats.overallPrediction ? stats.overallPrediction.classesNeeded : 0;
+        statusBadge.className = 'badge py-1.5 px-3 fw-bold rounded-pill text-uppercase fs-8 bg-danger-subtle text-danger border border-danger-subtle';
+        statusBadge.innerText = `Alert (-${needed})`;
+        if (statusCushion) statusCushion.innerText = `Need ${needed} classes`;
+      }
+
+      // Render Subject Table
+      const tbody = document.getElementById('subject-stats-tbody');
+      tbody.innerHTML = '';
+
+      const subjects = stats.subjectStats || [];
+      if (subjects.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-4 text-secondary small">
+              No subject records found for this student.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      subjects.forEach(subj => {
+        const isLow = subj.percentage < target;
+        const progressWidth = Math.min(100, Math.max(0, subj.percentage));
+        const progressBarColor = isLow ? '#ef4444' : '#10b981';
+
+        const forecastHtml = subj.prediction && subj.prediction.status === 'Safe'
+          ? `<span class="text-success small fw-bold">Can skip ${subj.prediction.safeAbsences} classes</span>`
+          : `<span class="text-danger small fw-bold">Attend next ${subj.prediction ? subj.prediction.classesNeeded : 0} classes</span>`;
+
+        tbody.innerHTML += `
+          <tr>
+            <td class="ps-3">
+              <div class="fw-bold text-dark small">${escapeHtml(subj.subject_name || '')}</div>
+              <div class="text-secondary small font-monospace" style="font-size: 0.72rem;">${escapeHtml(subj.subject_code || '')}</div>
+            </td>
+            <td class="small fw-semibold text-secondary">${subj.conducted_count}</td>
+            <td class="small fw-semibold text-success">${subj.present_count}</td>
+            <td class="small fw-semibold text-danger">${subj.absent_count}</td>
+            <td class="small text-secondary">${subj.od_count || 0} / ${subj.medical_count || 0}</td>
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="fw-bold ${isLow ? 'text-danger' : 'text-success'} small" style="min-width: 44px;">
+                  ${subj.percentage}%
+                </span>
+              </div>
+              <div class="progress mt-1" style="height: 4px; width: 60px; background: rgba(0,0,0,0.06);">
+                <div class="progress-bar" style="width: ${progressWidth}%; background-color: ${progressBarColor};"></div>
+              </div>
+            </td>
+            <td class="pe-3">${forecastHtml}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Dynamic loader for html2canvas with multi-CDN fallback
+    async function ensureHtml2Canvas() {
+      if (window.html2canvas) return window.html2canvas;
+      const cdnUrls = [
+        'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js',
+        'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+        'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js'
+      ];
+      for (const url of cdnUrls) {
+        try {
+          await new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = url;
+            s.onload = () => resolve();
+            s.onerror = () => reject(new Error('Failed to load ' + url));
+            document.head.appendChild(s);
+          });
+          if (window.html2canvas) return window.html2canvas;
+        } catch (e) {
+          console.warn('html2canvas CDN load attempt failed:', url, e);
+        }
+      }
+      return window.html2canvas || null;
+    }
+
+    // Direct Native 2D Canvas fallback (100% offline & bulletproof)
+    function renderAttendanceCardNativeFallback() {
+      const stats = currentRawStats || {};
+      const user = currentStatsUser || {};
+      const subjects = stats.subjectStats || [];
+      const target = stats.targetPercentage || 80;
+
+      const scale = 2;
+      const width = 800 * scale;
+      const rowHeight = 44 * scale;
+      const baseHeight = (360 + Math.max(subjects.length, 1) * 44 + 60) * scale;
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = baseHeight;
+      const ctx = canvas.getContext('2d');
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const bg = isDark ? '#0f172a' : '#ffffff';
+      const cardBg = isDark ? '#1e293b' : '#f8fafc';
+      const textPrimary = isDark ? '#f8fafc' : '#0f172a';
+      const textSecondary = isDark ? '#94a3b8' : '#64748b';
+      const borderColor = isDark ? '#334155' : '#e2e8f0';
+
+      // Background
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, width, baseHeight);
+
+      // Outer Card Frame
+      ctx.fillStyle = cardBg;
+      ctx.strokeStyle = borderColor;
+      ctx.lineWidth = 1 * scale;
+      ctx.beginPath();
+      ctx.roundRect(16 * scale, 16 * scale, width - 32 * scale, baseHeight - 32 * scale, 16 * scale);
+      ctx.fill();
+      ctx.stroke();
+
+      // Top Header
+      ctx.fillStyle = '#2563eb';
+      ctx.font = `bold ${18 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.fillText('TRACKIFY ACADEMIC INTELLIGENCE', 36 * scale, 52 * scale);
+
+      ctx.fillStyle = textSecondary;
+      ctx.font = `${12 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.fillText('Student Attendance & Performance Statement', 36 * scale, 72 * scale);
+
+      const dateStr = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+      ctx.textAlign = 'right';
+      ctx.fillText(dateStr, width - 36 * scale, 52 * scale);
+      ctx.fillStyle = '#10b981';
+      ctx.font = `bold ${11 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.fillText('● OFFICIAL STATEMENT', width - 36 * scale, 72 * scale);
+      ctx.textAlign = 'left';
+
+      // Divider
+      ctx.strokeStyle = borderColor;
+      ctx.beginPath();
+      ctx.moveTo(36 * scale, 88 * scale);
+      ctx.lineTo(width - 36 * scale, 88 * scale);
+      ctx.stroke();
+
+      // Student Meta
+      ctx.fillStyle = textPrimary;
+      ctx.font = `bold ${20 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.fillText(user.name || 'Student Attendance', 36 * scale, 120 * scale);
+
+      ctx.fillStyle = '#2563eb';
+      ctx.font = `bold ${13 * scale}px monospace`;
+      ctx.fillText(user.register_number || user.reg_no || 'NO_REG', 36 * scale, 142 * scale);
+
+      ctx.fillStyle = textSecondary;
+      ctx.font = `${13 * scale}px system-ui, -apple-system, sans-serif`;
+      const dept = user.department_code || user.department_name || 'General';
+      const sem = user.semester ? `Semester ${user.semester}` : '';
+      ctx.fillText(`${dept} ${sem ? '• ' + sem : ''}`, 160 * scale, 142 * scale);
+
+      // 4 KPI Cards
+      const kpis = [
+        { label: 'Overall Attendance', val: `${stats.overallPercentage || 0}%`, color: (stats.overallPercentage || 0) < target ? '#ef4444' : '#10b981' },
+        { label: 'Attended Classes', val: `${(stats.totalPresent || 0) + (stats.totalOD || 0)} / ${stats.totalConducted || 0}`, color: '#2563eb' },
+        { label: 'Target Threshold', val: `${target}%`, color: textSecondary },
+        { label: 'Status Forecast', val: stats.overallPrediction?.status === 'Safe' ? `Safe (+${stats.overallPrediction.safeAbsences})` : `Alert (-${stats.overallPrediction?.classesNeeded || 0})`, color: stats.overallPrediction?.status === 'Safe' ? '#10b981' : '#ef4444' }
+      ];
+
+      const kpiW = (width - 72 * scale - 36 * scale) / 4;
+      kpis.forEach((kpi, idx) => {
+        const kX = 36 * scale + idx * (kpiW + 12 * scale);
+        const kY = 164 * scale;
+        const kH = 64 * scale;
+
+        ctx.fillStyle = isDark ? '#0f172a' : '#ffffff';
+        ctx.strokeStyle = borderColor;
+        ctx.beginPath();
+        ctx.roundRect(kX, kY, kpiW, kH, 8 * scale);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = textSecondary;
+        ctx.font = `bold ${10 * scale}px system-ui, -apple-system, sans-serif`;
+        ctx.fillText(kpi.label, kX + 12 * scale, kY + 22 * scale);
+
+        ctx.fillStyle = kpi.color;
+        ctx.font = `bold ${16 * scale}px system-ui, -apple-system, sans-serif`;
+        ctx.fillText(kpi.val, kX + 12 * scale, kY + 48 * scale);
+      });
+
+      // Table Header
+      const tableY = 248 * scale;
+      ctx.fillStyle = isDark ? '#1e293b' : '#f1f5f9';
+      ctx.beginPath();
+      ctx.roundRect(36 * scale, tableY, width - 72 * scale, 32 * scale, 6 * scale);
+      ctx.fill();
+
+      ctx.fillStyle = textSecondary;
+      ctx.font = `bold ${11 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.fillText('SUBJECT', 48 * scale, tableY + 20 * scale);
+      ctx.fillText('COND', 360 * scale, tableY + 20 * scale);
+      ctx.fillText('PRES', 420 * scale, tableY + 20 * scale);
+      ctx.fillText('ABS', 475 * scale, tableY + 20 * scale);
+      ctx.fillText('OD/MED', 525 * scale, tableY + 20 * scale);
+      ctx.fillText('PERCENT', 590 * scale, tableY + 20 * scale);
+      ctx.fillText('FORECAST', 670 * scale, tableY + 20 * scale);
+
+      // Table Rows
+      let currY = tableY + 36 * scale;
+      subjects.forEach((subj, rIdx) => {
+        if (rIdx % 2 === 1) {
+          ctx.fillStyle = isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)';
+          ctx.fillRect(36 * scale, currY - 4 * scale, width - 72 * scale, 40 * scale);
+        }
+
+        ctx.fillStyle = textPrimary;
+        ctx.font = `bold ${12 * scale}px system-ui, -apple-system, sans-serif`;
+        const name = (subj.subject_name || '').slice(0, 32);
+        ctx.fillText(name, 48 * scale, currY + 16 * scale);
+
+        ctx.fillStyle = textSecondary;
+        ctx.font = `${10 * scale}px monospace`;
+        ctx.fillText(subj.subject_code || '', 48 * scale, currY + 30 * scale);
+
+        ctx.fillStyle = textSecondary;
+        ctx.font = `${12 * scale}px system-ui, -apple-system, sans-serif`;
+        ctx.fillText(String(subj.conducted_count || 0), 360 * scale, currY + 20 * scale);
+
+        ctx.fillStyle = '#10b981';
+        ctx.fillText(String(subj.present_count || 0), 420 * scale, currY + 20 * scale);
+
+        ctx.fillStyle = '#ef4444';
+        ctx.fillText(String(subj.absent_count || 0), 475 * scale, currY + 20 * scale);
+
+        ctx.fillStyle = textSecondary;
+        ctx.fillText(`${subj.od_count || 0}/${subj.medical_count || 0}`, 525 * scale, currY + 20 * scale);
+
+        const isLow = (subj.percentage || 0) < target;
+        ctx.fillStyle = isLow ? '#ef4444' : '#10b981';
+        ctx.font = `bold ${12 * scale}px system-ui, -apple-system, sans-serif`;
+        ctx.fillText(`${subj.percentage || 0}%`, 590 * scale, currY + 20 * scale);
+
+        ctx.font = `${10 * scale}px system-ui, -apple-system, sans-serif`;
+        if (subj.prediction?.status === 'Safe') {
+          ctx.fillStyle = '#10b981';
+          ctx.fillText(`+${subj.prediction.safeAbsences} Safe`, 670 * scale, currY + 20 * scale);
+        } else {
+          ctx.fillStyle = '#ef4444';
+          ctx.fillText(`-${subj.prediction?.classesNeeded || 0} Needed`, 670 * scale, currY + 20 * scale);
+        }
+
+        currY += 40 * scale;
+      });
+
+      // Footer
+      ctx.fillStyle = textSecondary;
+      ctx.font = `${10 * scale}px system-ui, -apple-system, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText('Generated via Trackify Academic Portal • Confidential Student Performance Record', width / 2, baseHeight - 24 * scale);
+
+      return canvas;
+    }
+
+    // Generate high-resolution export canvas with automatic library loading & fallback
+    async function generateAttendanceCardCanvas() {
+      const h2c = await ensureHtml2Canvas();
+
+      if (h2c) {
+        const sourceCard = document.getElementById('attendanceExportCard');
+        if (sourceCard) {
+          const brandHeader = document.getElementById('exportCardBrandHeader');
+          const brandFooter = document.getElementById('exportCardBrandFooter');
+          const dateEl = document.getElementById('exportCardDate');
+
+          if (brandHeader) {
+            brandHeader.classList.remove('d-none');
+            if (dateEl) {
+              dateEl.innerText = new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' });
+            }
+          }
+          if (brandFooter) brandFooter.classList.remove('d-none');
+
+          const clone = sourceCard.cloneNode(true);
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const bgColor = currentTheme === 'dark' ? '#0f172a' : '#ffffff';
+          const textColor = currentTheme === 'dark' ? '#f8fafc' : '#0f172a';
+
+          const wrapper = document.createElement('div');
+          wrapper.style.position = 'fixed';
+          wrapper.style.top = '-10000px';
+          wrapper.style.left = '-10000px';
+          wrapper.style.width = '780px';
+          wrapper.style.backgroundColor = bgColor;
+          wrapper.style.color = textColor;
+          wrapper.style.padding = '24px';
+          wrapper.style.borderRadius = '12px';
+          wrapper.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+          wrapper.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif";
+          wrapper.appendChild(clone);
+          document.body.appendChild(wrapper);
+
+          try {
+            const canvas = await h2c(wrapper, {
+              scale: 2,
+              useCORS: true,
+              backgroundColor: bgColor,
+              logging: false
+            });
+            return canvas;
+          } catch (renderErr) {
+            console.warn('html2canvas render encountered issue, using native fallback:', renderErr);
+          } finally {
+            document.body.removeChild(wrapper);
+            if (brandHeader) brandHeader.classList.add('d-none');
+            if (brandFooter) brandFooter.classList.add('d-none');
+          }
+        }
+      }
+
+      // If html2canvas is not available or threw an error, use the reliable native canvas fallback
+      return renderAttendanceCardNativeFallback();
+    }
+
+    async function downloadAttendanceImage() {
+      const btn = document.getElementById('btnDownloadImg');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Generating...';
+
+      try {
+        const canvas = await generateAttendanceCardCanvas();
+        const studentName = currentStatsUser ? (currentStatsUser.name || 'Student').replace(/\s+/g, '_') : 'Student';
+        const dateStr = new Date().toISOString().slice(0, 10);
+        const fileName = `Trackify_Attendance_${studentName}_${dateStr}.png`;
+
+        const imageUri = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = imageUri;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showAlert(`Attendance Card downloaded: ${fileName}`, 'success');
+      } catch (err) {
+        console.error('Download image error:', err);
+        showAlert('Failed to download image: ' + err.message, 'danger');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    async function shareAttendanceImage() {
+      const btn = document.getElementById('btnShareImg');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Sharing...';
+
+      try {
+        const canvas = await generateAttendanceCardCanvas();
+        const studentName = currentStatsUser ? currentStatsUser.name : 'Student';
+        const fileName = `Trackify_Attendance_${studentName.replace(/\s+/g, '_')}.png`;
+
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            throw new Error('Canvas toBlob failed');
+          }
+
+          const file = new File([blob], fileName, { type: 'image/png' });
+
+          // 1. Try Native Web Share API with files
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: `Trackify Attendance - ${studentName}`,
+                text: `Attendance report for ${studentName} via Trackify Academic Portal.`
+              });
+              showAlert('Shared attendance card successfully!', 'success');
+              return;
+            } catch (shareErr) {
+              if (shareErr.name === 'AbortError') return; // User cancelled share sheet
+              console.warn('Navigator share aborted, attempting clipboard fallback...', shareErr);
+            }
+          }
+
+          // 2. Clipboard fallback (Copy PNG to clipboard)
+          if (navigator.clipboard && window.ClipboardItem) {
+            try {
+              await navigator.clipboard.write([
+                new ClipboardItem({ 'image/png': blob })
+              ]);
+              showAlert('✅ Attendance Card image copied to clipboard! You can paste (Ctrl+V) directly into WhatsApp, Slack, or Email.', 'success');
+              return;
+            } catch (clipErr) {
+              console.warn('Clipboard write image failed, falling back to download...', clipErr);
+            }
+          }
+
+          // 3. Download Fallback
+          downloadAttendanceImage();
+        }, 'image/png');
+
+      } catch (err) {
+        console.error('Share image error:', err);
+        showAlert('Failed to share image: ' + err.message, 'danger');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
       }
     }
 

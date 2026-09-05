@@ -360,7 +360,28 @@
                 </thead>
                 <tbody id="subject-summary-tbody">
                   <tr>
-                    <td colspan="6" class="text-center py-3 text-secondary">Loading subject statistics...</td>
+                    <td><div class="skeleton-shimmer" style="width: 70px; height: 16px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 180px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="skeleton-shimmer" style="width: 65px; height: 16px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 140px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="skeleton-shimmer" style="width: 80px; height: 16px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 160px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
                   </tr>
                 </tbody>
               </table>
@@ -384,10 +405,50 @@
                 </thead>
                 <tbody id="export-table-body">
                   <tr>
-                    <td colspan="6" class="text-center py-4 text-secondary">Loading attendance entries...</td>
+                    <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 75px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 150px; height: 15px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 65px; height: 22px; border-radius: 9999px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 85px; height: 15px;"></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 75px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 170px; height: 15px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 65px; height: 22px; border-radius: 9999px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 75px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 130px; height: 15px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 65px; height: 22px; border-radius: 9999px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+                  </tr>
+                  <tr>
+                    <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 75px; height: 15px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 160px; height: 15px;"></div></td>
+                    <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 65px; height: 22px; border-radius: 9999px;"></div></td>
+                    <td><div class="skeleton-shimmer" style="width: 70px; height: 15px;"></div></td>
                   </tr>
                 </tbody>
               </table>
+            </div>
+
+            <!-- Scroll-based Progressive Pagination Footer -->
+            <div id="export-pagination-footer" class="p-3 text-center d-flex flex-column align-items-center justify-content-center gap-2 border-top bg-light-subtle rounded-bottom-3" style="display: none;">
+              <div class="d-flex align-items-center gap-2">
+                <span id="export-pagination-status" class="small text-secondary fw-semibold">Showing 0 of 0 entries</span>
+                <span id="export-scroll-spinner" class="spinner-border spinner-border-sm text-primary" role="status" style="display: none;">
+                  <span class="visually-hidden">Loading more...</span>
+                </span>
+              </div>
+              <div id="export-scroll-sentinel" style="height: 1px; width: 100%;"></div>
             </div>
           </div>
 
@@ -474,7 +535,66 @@
       onCriteriaChange();
     }
 
+    function renderExportSkeletons() {
+      const summaryTbody = document.getElementById('subject-summary-tbody');
+      const exportTbody = document.getElementById('export-table-body');
+      
+      // Animate stat cards to skeleton
+      const statEls = ['stat-conducted', 'stat-attended', 'stat-absent', 'stat-percent'];
+      statEls.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = '<div class="skeleton-shimmer mx-auto" style="width: 48px; height: 28px; border-radius: 4px;"></div>';
+      });
+
+      if (summaryTbody) {
+        summaryTbody.innerHTML = `
+          <tr>
+            <td><div class="skeleton-shimmer" style="width: 70px; height: 16px;"></div></td>
+            <td><div class="skeleton-shimmer" style="width: 180px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
+          </tr>
+          <tr>
+            <td><div class="skeleton-shimmer" style="width: 65px; height: 16px;"></div></td>
+            <td><div class="skeleton-shimmer" style="width: 140px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
+          </tr>
+          <tr>
+            <td><div class="skeleton-shimmer" style="width: 80px; height: 16px;"></div></td>
+            <td><div class="skeleton-shimmer" style="width: 160px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 32px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 45px; height: 16px;"></div></td>
+            <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 60px; height: 20px; border-radius: 9999px;"></div></td>
+          </tr>
+        `;
+      }
+
+      if (exportTbody) {
+        let rows = '';
+        for (let i = 0; i < 5; i++) {
+          rows += `
+            <tr>
+              <td><div class="skeleton-shimmer" style="width: 90px; height: 15px;"></div></td>
+              <td><div class="skeleton-shimmer" style="width: 60px; height: 15px;"></div></td>
+              <td><div class="skeleton-shimmer" style="width: 75px; height: 15px;"></div></td>
+              <td><div class="skeleton-shimmer" style="width: ${140 + (i % 3) * 20}px; height: 15px;"></div></td>
+              <td class="text-center"><div class="skeleton-shimmer mx-auto" style="width: 65px; height: 22px; border-radius: 9999px;"></div></td>
+              <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+            </tr>
+          `;
+        }
+        exportTbody.innerHTML = rows;
+      }
+    }
+
     async function loadMasterData() {
+      renderExportSkeletons();
       // Fetch stats
       try {
         const statsRes = await apiCall('/api/attendance/stats');
@@ -507,6 +627,7 @@
         document.getElementById('stmt-main-title').innerText = `Subject Report: ${name}`;
         document.getElementById('stmt-period-lbl').innerText = `Course Code: ${code}`;
 
+        renderExportSkeletons();
         const res = await apiCall(`/api/attendance?subjectId=${subjectId}`);
         allLogsMaster = (res.success && res.logs) ? res.logs : [];
         applyFiltersAndRender();
@@ -517,12 +638,14 @@
         document.getElementById('stmt-period-lbl').innerText = `Statement Period: ${startDate} to ${endDate}`;
 
         if (startDate && endDate) {
+          renderExportSkeletons();
           const res = await apiCall(`/api/attendance?startDate=${startDate}&endDate=${endDate}`);
           allLogsMaster = (res.success && res.logs) ? res.logs : [];
+          applyFiltersAndRender();
         } else {
           allLogsMaster = [];
+          applyFiltersAndRender();
         }
-        applyFiltersAndRender();
       }
     }
 
@@ -618,6 +741,110 @@
       });
     }
 
+    // Scroll-based Progressive Rendering / Infinite Scroll Pagination Variables
+    let scrollSortedLogs = [];
+    let renderedLogCount = 0;
+    const SCROLL_PAGE_SIZE = 25;
+    let exportIntersectionObserver = null;
+
+    function buildLogRowHtml(log) {
+      const isAbsent = (log.status || '').toLowerCase() === 'absent';
+      const isPresent = (log.status || '').toLowerCase() === 'present';
+      const cleanDate = String(log.date).split('T')[0];
+      const periodStr = getPeriodLabel(log);
+      const rowClass = isAbsent ? 'row-absent' : '';
+      const badgeClass = isPresent ? 'bg-success text-white' : isAbsent ? 'bg-danger text-white' : 'bg-primary text-white';
+
+      return `
+        <tr class="${rowClass}">
+          <td class="fw-bold font-monospace">${cleanDate}</td>
+          <td class="fw-semibold">${periodStr}</td>
+          <td class="font-monospace fw-semibold">${log.subject_code || '-'}</td>
+          <td class="fw-semibold">${log.subject_name || 'Subject'}</td>
+          <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1 fs-9">${log.status}</span></td>
+          <td class="small text-secondary">${log.remarks || '-'}</td>
+        </tr>
+      `;
+    }
+
+    function renderNextScrollChunk() {
+      if (renderedLogCount >= scrollSortedLogs.length) {
+        updatePaginationStatus();
+        return;
+      }
+
+      const tbody = document.getElementById('export-table-body');
+      const nextBatch = scrollSortedLogs.slice(renderedLogCount, renderedLogCount + SCROLL_PAGE_SIZE);
+      
+      let chunkHtml = '';
+      nextBatch.forEach(log => {
+        chunkHtml += buildLogRowHtml(log);
+      });
+
+      tbody.insertAdjacentHTML('beforeend', chunkHtml);
+      renderedLogCount += nextBatch.length;
+      updatePaginationStatus();
+    }
+
+    function updatePaginationStatus() {
+      const footer = document.getElementById('export-pagination-footer');
+      const statusText = document.getElementById('export-pagination-status');
+      const spinner = document.getElementById('export-scroll-spinner');
+      if (!footer || !statusText) return;
+
+      const total = scrollSortedLogs.length;
+      if (total === 0) {
+        footer.style.display = 'none';
+        return;
+      }
+
+      footer.style.display = 'flex';
+
+      if (renderedLogCount < total) {
+        statusText.innerHTML = `Showing <strong>${renderedLogCount}</strong> of <strong>${total}</strong> entries • Scroll down to load more`;
+        if (spinner) spinner.style.display = 'inline-block';
+      } else {
+        statusText.innerHTML = `<span class="text-success">✓</span> Showing all <strong>${total}</strong> entries`;
+        if (spinner) spinner.style.display = 'none';
+      }
+    }
+
+    function setupExportScrollObserver() {
+      if (exportIntersectionObserver) {
+        exportIntersectionObserver.disconnect();
+      }
+
+      const sentinel = document.getElementById('export-scroll-sentinel');
+      if (!sentinel) return;
+
+      exportIntersectionObserver = new IntersectionObserver((entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && renderedLogCount < scrollSortedLogs.length) {
+          renderNextScrollChunk();
+        }
+      }, {
+        root: null,
+        rootMargin: '200px',
+        threshold: 0.1
+      });
+
+      exportIntersectionObserver.observe(sentinel);
+    }
+
+    function ensureAllLogsRenderedForExport() {
+      if (renderedLogCount < scrollSortedLogs.length) {
+        const tbody = document.getElementById('export-table-body');
+        const remainingBatch = scrollSortedLogs.slice(renderedLogCount);
+        let chunkHtml = '';
+        remainingBatch.forEach(log => {
+          chunkHtml += buildLogRowHtml(log);
+        });
+        tbody.insertAdjacentHTML('beforeend', chunkHtml);
+        renderedLogCount = scrollSortedLogs.length;
+        updatePaginationStatus();
+      }
+    }
+
     function renderLogsTable(logs) {
       const tbody = document.getElementById('export-table-body');
       tbody.innerHTML = '';
@@ -628,42 +855,31 @@
         document.getElementById('stat-present').innerText = '0';
         document.getElementById('stat-absent').innerText = '0';
         document.getElementById('stat-percent').innerText = '0%';
+        const footer = document.getElementById('export-pagination-footer');
+        if (footer) footer.style.display = 'none';
+        scrollSortedLogs = [];
+        renderedLogCount = 0;
         return;
       }
 
       // Sort chronologically by date, then Period
-      const sorted = [...logs].sort((a, b) => {
+      scrollSortedLogs = [...logs].sort((a, b) => {
         const dateA = String(a.date).split('T')[0];
         const dateB = String(b.date).split('T')[0];
         if (dateA !== dateB) return dateA.localeCompare(dateB);
         return parsePeriodNumber(a) - parsePeriodNumber(b);
       });
 
-      let total = sorted.length;
+      // Compute statistics over 100% of the dataset
+      let total = scrollSortedLogs.length;
       let present = 0;
       let absent = 0;
 
-      sorted.forEach(log => {
+      scrollSortedLogs.forEach(log => {
         const isAbsent = (log.status || '').toLowerCase() === 'absent';
         const isPresent = (log.status || '').toLowerCase() === 'present';
         if (isPresent) present++;
         if (isAbsent) absent++;
-
-        const cleanDate = String(log.date).split('T')[0];
-        const periodStr = getPeriodLabel(log);
-        const rowClass = isAbsent ? 'row-absent' : '';
-        const badgeClass = isPresent ? 'bg-success text-white' : isAbsent ? 'bg-danger text-white' : 'bg-primary text-white';
-
-        tbody.innerHTML += `
-          <tr class="${rowClass}">
-            <td class="fw-bold font-monospace">${cleanDate}</td>
-            <td class="fw-semibold">${periodStr}</td>
-            <td class="font-monospace fw-semibold">${log.subject_code || '-'}</td>
-            <td class="fw-semibold">${log.subject_name || 'Subject'}</td>
-            <td class="text-center"><span class="badge ${badgeClass} px-2.5 py-1 fs-9">${log.status}</span></td>
-            <td class="small text-secondary">${log.remarks || '-'}</td>
-          </tr>
-        `;
       });
 
       const percentage = total > 0 ? Math.round((present / total) * 100) : 0;
@@ -671,6 +887,13 @@
       document.getElementById('stat-present').innerText = present;
       document.getElementById('stat-absent').innerText = absent;
       document.getElementById('stat-percent').innerText = `${percentage}%`;
+
+      // Render initial chunk
+      renderedLogCount = 0;
+      renderNextScrollChunk();
+
+      // Attach IntersectionObserver for scroll-based pagination
+      setupExportScrollObserver();
     }
 
     // =========================================================================
@@ -726,6 +949,7 @@
         showAlert('No data available to generate PDF statement', 'danger');
         return;
       }
+      ensureAllLogsRenderedForExport();
       const element = document.getElementById('printable-statement');
       const filename = `Attendance_Statement_${currentMode}_${new Date().toISOString().slice(0,10)}.pdf`;
 

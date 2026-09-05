@@ -74,11 +74,16 @@ const dispatchAlertEmail = async (subject, htmlContent) => {
  * @param {object} details
  */
 const notifyRolloutDeployed = async (details = {}) => {
+  // Rollout emails are disabled by default unless explicitly enabled via ENABLE_ROLLOUT_ALERTS=true
+  if (process.env.ENABLE_ROLLOUT_ALERTS !== 'true') {
+    return { success: true, disabled: true, message: 'Rollout deployment alert email suppressed' };
+  }
+
   const env = process.env.NODE_ENV || 'production';
   const port = details.port || process.env.PORT || 3000;
   const timestamp = new Date().toISOString();
   const nodeVersion = process.version;
-  const appUrl = process.env.APP_URL || 'https://trackifyapp.co.in';
+  const appUrl = process.env.APP_URL || 'https://app.trackifyapp.co.in';
   const statusUrl = `${appUrl}/status`;
 
   const subject = `[ROLLOUT] Trackify Server Online (${env.toUpperCase()} - Port ${port})`;
@@ -204,7 +209,7 @@ const notifySystemFailure = async (failureDetails = {}) => {
       ` : ''}
 
       <div style="margin: 20px 0; text-align: center;">
-        <a href="${escapeHtml((process.env.APP_URL || 'https://trackifyapp.co.in') + '/status')}" style="background-color: #dc2626; color: #ffffff; padding: 10px 24px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 700; display: inline-block;">
+        <a href="${escapeHtml((process.env.APP_URL || 'https://app.trackifyapp.co.in') + '/status')}" style="background-color: #dc2626; color: #ffffff; padding: 10px 24px; text-decoration: none; border-radius: 6px; font-size: 13px; font-weight: 700; display: inline-block;">
           Check System Status Page
         </a>
       </div>

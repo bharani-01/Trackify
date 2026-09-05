@@ -68,6 +68,28 @@ async function apiCall(url, options = {}, optionalBody = null) {
   }
 }
 
+// Global Mobile Device Haptic Vibration Trigger
+function triggerHapticFeedback(type = 'default') {
+  if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+    try {
+      const normalized = String(type || '').toLowerCase();
+      if (normalized === 'present' || normalized === 'success' || normalized === 'short') {
+        navigator.vibrate(50); // Crisp single pulse for Present
+      } else if (normalized === 'absent' || normalized === 'danger' || normalized === 'error') {
+        navigator.vibrate([50, 40, 50]); // Distinct double pulse for Absent
+      } else if (normalized === 'on duty' || normalized === 'medical leave' || normalized === 'warning' || normalized === 'info') {
+        navigator.vibrate([40, 30, 40]); // Triplet ripple
+      } else if (normalized === 'clear' || normalized === 'reset' || normalized === 'light') {
+        navigator.vibrate(30); // Very light tick
+      } else {
+        navigator.vibrate(40);
+      }
+    } catch (e) {
+      // Non-blocking: devices with strict permission or unsupported vibration ignore gracefully
+    }
+  }
+}
+
 // Show a premium top-centered Apple/Stripe-style success HUD toast pill
 function showAlert(message, type = 'success') {
   let container = document.getElementById('alert-container');
@@ -482,14 +504,19 @@ async function loadHeaderNotifications() {
   });
 }
 
-function escapeHtmlForBell(str) {
-  if (typeof str !== 'string') return str;
-  return str
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+window.escapeHtml = escapeHtml;
+
+function escapeHtmlForBell(str) {
+  return escapeHtml(str);
 }
 
 async function markAllNotificationsRead() {

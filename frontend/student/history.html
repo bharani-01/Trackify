@@ -146,14 +146,23 @@
             <a href="/student/attendance" class="btn-trackify-outline d-inline-flex align-items-center gap-2">Mark Attendance</a>
           </div>
 
-          <a href="/student/export" class="btn-trackify-outline d-inline-flex align-items-center gap-2" title="Export & Download Attendance Reports">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="7 10 12 15 17 10"></polyline>
-              <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-            <span>Download</span>
-          </a>
+          <div class="d-flex align-items-center gap-2">
+            <button type="button" onclick="exportToCSV()" class="btn-trackify-outline d-inline-flex align-items-center gap-2" title="Export currently filtered records to CSV">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Export CSV</span>
+            </button>
+            <a href="/student/export" class="btn-trackify-primary d-inline-flex align-items-center gap-2" title="Export & Download Attendance Reports">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+              </svg>
+              <span>Reports & Ledger</span>
+            </a>
+          </div>
         </div>
 
         
@@ -206,15 +215,76 @@
               </thead>
               <tbody id="logs-container">
                 <tr>
-                  <td colspan="5" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                      <span class="visually-hidden">Loading...</span>
+                  <td class="ps-4"><div class="skeleton-shimmer" style="width: 100px; height: 16px;"></div></td>
+                  <td>
+                    <div class="skeleton-shimmer mb-1" style="width: 70px; height: 14px;"></div>
+                    <div class="skeleton-shimmer" style="width: 170px; height: 16px;"></div>
+                  </td>
+                  <td><div class="skeleton-shimmer" style="width: 75px; height: 24px; border-radius: 9999px;"></div></td>
+                  <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+                  <td class="pe-4 text-end">
+                    <div class="d-inline-flex gap-1">
+                      <div class="skeleton-shimmer" style="width: 48px; height: 26px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 58px; height: 26px; border-radius: 6px;"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-4"><div class="skeleton-shimmer" style="width: 95px; height: 16px;"></div></td>
+                  <td>
+                    <div class="skeleton-shimmer mb-1" style="width: 65px; height: 14px;"></div>
+                    <div class="skeleton-shimmer" style="width: 190px; height: 16px;"></div>
+                  </td>
+                  <td><div class="skeleton-shimmer" style="width: 75px; height: 24px; border-radius: 9999px;"></div></td>
+                  <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+                  <td class="pe-4 text-end">
+                    <div class="d-inline-flex gap-1">
+                      <div class="skeleton-shimmer" style="width: 48px; height: 26px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 58px; height: 26px; border-radius: 6px;"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-4"><div class="skeleton-shimmer" style="width: 105px; height: 16px;"></div></td>
+                  <td>
+                    <div class="skeleton-shimmer mb-1" style="width: 75px; height: 14px;"></div>
+                    <div class="skeleton-shimmer" style="width: 150px; height: 16px;"></div>
+                  </td>
+                  <td><div class="skeleton-shimmer" style="width: 75px; height: 24px; border-radius: 9999px;"></div></td>
+                  <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+                  <td class="pe-4 text-end">
+                    <div class="d-inline-flex gap-1">
+                      <div class="skeleton-shimmer" style="width: 48px; height: 26px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 58px; height: 26px; border-radius: 6px;"></div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="ps-4"><div class="skeleton-shimmer" style="width: 100px; height: 16px;"></div></td>
+                  <td>
+                    <div class="skeleton-shimmer mb-1" style="width: 70px; height: 14px;"></div>
+                    <div class="skeleton-shimmer" style="width: 160px; height: 16px;"></div>
+                  </td>
+                  <td><div class="skeleton-shimmer" style="width: 75px; height: 24px; border-radius: 9999px;"></div></td>
+                  <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+                  <td class="pe-4 text-end">
+                    <div class="d-inline-flex gap-1">
+                      <div class="skeleton-shimmer" style="width: 48px; height: 26px; border-radius: 6px;"></div>
+                      <div class="skeleton-shimmer" style="width: 58px; height: 26px; border-radius: 6px;"></div>
                     </div>
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
+          <div id="history-pagination-footer" class="p-3 border-top border-light d-flex align-items-center justify-content-between flex-wrap gap-2 text-secondary small" style="background: rgba(var(--bg-card-rgb, 255, 255, 255), 0.35);">
+            <div id="history-pagination-status" class="fw-semibold">Loading attendance logs...</div>
+            <div id="history-scroll-spinner" class="d-none align-items-center gap-2 text-primary">
+              <div class="spinner-border spinner-border-sm" role="status" style="width: 1rem; height: 1rem;"></div>
+              <span class="fs-9">Loading more records...</span>
+            </div>
+          </div>
+          <div id="history-scroll-sentinel" style="height: 10px; width: 100%;"></div>
         </div>
       </main>
     </div>
@@ -275,116 +345,351 @@
   <script src="/assets/js/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    let currentLogs = [];
-    const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+    let allLogsMaster = [];
+    let renderedLogCount = 0;
+    const SCROLL_PAGE_SIZE = 30;
+    let historyIntersectionObserver = null;
+    let hasFetchedSubjects = false;
+    let isFetchingLogs = false;
+    let editModalInstance = null;
 
-    async function loadData() {
-      // Load user profile header
-      const meResult = await apiCall('/api/auth/me');
-      if (meResult.success && meResult.user) {
-        document.getElementById('user-header-name').innerText = meResult.user.name;
-      } else {
-        window.location.href = '/login';
+    function getEditModal() {
+      if (!editModalInstance && typeof bootstrap !== 'undefined') {
+        const modalEl = document.getElementById('editModal');
+        if (modalEl) {
+          editModalInstance = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+        }
+      }
+      return editModalInstance;
+    }
+
+    function formatDisplayDate(dateVal) {
+      if (!dateVal) return '-';
+      const clean = String(dateVal).split('T')[0];
+      const parts = clean.split('-');
+      if (parts.length === 3) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const d = new Date(year, month, day);
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      }
+      return clean;
+    }
+
+    function escapeHtmlSafe(str) {
+      if (typeof escapeHtml === 'function') return escapeHtml(str);
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function renderHistorySkeletons() {
+      const container = document.getElementById('logs-container');
+      if (!container) return;
+      let rows = '';
+      for (let i = 0; i < 6; i++) {
+        rows += `
+          <tr>
+            <td class="ps-4"><div class="skeleton-shimmer" style="width: 100px; height: 16px;"></div></td>
+            <td>
+              <div class="skeleton-shimmer mb-1" style="width: 65px; height: 14px;"></div>
+              <div class="skeleton-shimmer" style="width: ${160 + (i % 3) * 25}px; height: 16px;"></div>
+            </td>
+            <td><div class="skeleton-shimmer" style="width: 75px; height: 24px; border-radius: 9999px;"></div></td>
+            <td><div class="skeleton-shimmer" style="width: 80px; height: 15px;"></div></td>
+            <td class="pe-4 text-end">
+              <div class="d-inline-flex gap-1">
+                <div class="skeleton-shimmer" style="width: 48px; height: 26px; border-radius: 6px;"></div>
+                <div class="skeleton-shimmer" style="width: 58px; height: 26px; border-radius: 6px;"></div>
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+      container.innerHTML = rows;
+      updatePaginationStatus(0, 0, true);
+    }
+
+    function buildHistoryRowHtml(log, idx) {
+      const dateStr = formatDisplayDate(log.date);
+
+      let badgeClass = 'badge-present';
+      if (log.status === 'Absent') badgeClass = 'badge-absent';
+      else if (log.status === 'Medical Leave') badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
+      else if (log.status === 'Holiday') badgeClass = 'bg-info-subtle text-info border border-info-subtle';
+      else if (log.status === 'On Duty') badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
+
+      const safeColor = log.color ? escapeHtmlSafe(log.color) : 'var(--primary)';
+      const safeSubName = escapeHtmlSafe(log.subject_name || 'Subject');
+      const safeSubCode = escapeHtmlSafe(log.subject_code || '-');
+      const safeStatus = escapeHtmlSafe(log.status || 'Present');
+      const safeRemarks = escapeHtmlSafe(log.remarks || '-');
+      const safeId = escapeHtmlSafe(log.id);
+
+      return `
+        <tr class="border-bottom">
+          <td class="ps-4 fw-semibold">${dateStr}</td>
+          <td>
+            <div class="d-flex align-items-center">
+              <span style="display:inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${safeColor}; margin-right: 8px; flex-shrink: 0;"></span>
+              <span>${safeSubName} <span class="text-secondary small">(${safeSubCode})</span></span>
+            </div>
+          </td>
+          <td><span class="badge ${badgeClass} fs-8">${safeStatus}</span></td>
+          <td class="text-secondary small">${safeRemarks}</td>
+          <td class="pe-4 text-end">
+            <div class="d-flex gap-1 justify-content-end">
+              <button type="button" onclick="openEditModal(${idx})" class="btn-trackify-outline py-1 px-2.5" style="font-size: 0.8rem;">Edit</button>
+              <button type="button" onclick="deleteLog('${safeId}')" class="btn-trackify-danger-subtle py-1 px-2.5" style="font-size: 0.8rem;">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function updatePaginationStatus(rendered, total, isLoading = false) {
+      const statusEl = document.getElementById('history-pagination-status');
+      const spinnerEl = document.getElementById('history-scroll-spinner');
+      if (!statusEl) return;
+
+      if (isLoading) {
+        statusEl.innerText = 'Loading attendance logs...';
+        if (spinnerEl) spinnerEl.classList.remove('d-none');
         return;
       }
 
-      // Load subjects for filter selection (if not already loaded)
-      if (document.getElementById('filterSubject').options.length === 1) {
-        const subResult = await apiCall('/api/subjects');
-        if (subResult.success) {
-          const select = document.getElementById('filterSubject');
-          subResult.subjects.forEach(sub => {
-            select.innerHTML += `<option value="${sub.id}">${sub.subject_code} - ${sub.subject_name}</option>`;
-          });
-        }
+      if (spinnerEl) spinnerEl.classList.add('d-none');
+
+      if (total === 0) {
+        statusEl.innerText = 'No attendance logs found';
+        return;
       }
 
-      // Fetch logs
-      const subId = document.getElementById('filterSubject').value;
-      const start = document.getElementById('filterStart').value;
-      const end = document.getElementById('filterEnd').value;
-      const sortVal = document.getElementById('filterSort').value;
-
-      let url = '/api/attendance?';
-      if (subId) url += `subjectId=${subId}&`;
-      if (start) url += `startDate=${start}&`;
-      if (end) url += `endDate=${end}&`;
-
-      if (sortVal) {
-        const [sortBy, sortOrder] = sortVal.split('_');
-        url += `sortBy=${sortBy}&sortOrder=${sortOrder}&`;
-      }
-
-      const response = await apiCall(url);
-      const container = document.getElementById('logs-container');
-
-      if (response.success) {
-        currentLogs = response.logs;
-        container.innerHTML = '';
-
-        if (currentLogs.length === 0) {
-          container.innerHTML = `
-            <tr>
-              <td colspan="5" class="text-center py-5 text-secondary">
-                No attendance logs found matching filters.
-              </td>
-            </tr>
-          `;
-          return;
-        }
-
-        currentLogs.forEach((log, idx) => {
-          const d = new Date(log.date);
-          const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-          let badgeClass = 'badge-present';
-          if (log.status === 'Absent') badgeClass = 'badge-absent';
-          else if (log.status === 'Medical Leave') badgeClass = 'bg-warning-subtle text-warning border border-warning-subtle';
-          else if (log.status === 'Holiday') badgeClass = 'bg-info-subtle text-info border border-info-subtle';
-          else if (log.status === 'On Duty') badgeClass = 'bg-primary-subtle text-primary border border-primary-subtle';
-
-          container.innerHTML += `
-            <tr class="border-bottom">
-              <td class="ps-4 fw-semibold">${dateStr}</td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <span style="display:inline-block; width: 10px; height: 10px; border-radius: 50%; background-color: ${log.color}; margin-right: 8px;"></span>
-                  <span>${log.subject_name} <span class="text-secondary small">(${log.subject_code})</span></span>
-                </div>
-              </td>
-              <td><span class="badge ${badgeClass} fs-8">${log.status}</span></td>
-              <td class="text-secondary small">${log.remarks || '-'}</td>
-              <td class="pe-4 text-end">
-                <div class="d-flex gap-1 justify-content-end">
-                  <button onclick="openEditModal(${idx})" class="btn-trackify-outline py-1 px-2.5" style="font-size: 0.8rem;">Edit</button>
-                  <button onclick="deleteLog('${log.id}')" class="btn-trackify-danger-subtle py-1 px-2.5" style="font-size: 0.8rem;">Delete</button>
-                </div>
-              </td>
-            </tr>
-          `;
-        });
+      if (rendered >= total) {
+        statusEl.innerHTML = `Showing all <strong>${total}</strong> attendance log${total === 1 ? '' : 's'}`;
       } else {
-        container.innerHTML = '<tr><td colspan="5" class="text-danger text-center p-3">Failed to load logs.</td></tr>';
+        statusEl.innerHTML = `Showing <strong>${rendered}</strong> of <strong>${total}</strong> attendance logs <span class="text-muted ms-1">(scroll down for more)</span>`;
       }
     }
 
-    document.getElementById('filterForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      loadData();
-    });
+    function renderNextHistoryChunk() {
+      const container = document.getElementById('logs-container');
+      if (!container) return;
+
+      const total = allLogsMaster.length;
+      if (renderedLogCount >= total) {
+        updatePaginationStatus(renderedLogCount, total);
+        return;
+      }
+
+      const spinnerEl = document.getElementById('history-scroll-spinner');
+      if (spinnerEl) spinnerEl.classList.remove('d-none');
+
+      const nextChunk = allLogsMaster.slice(renderedLogCount, renderedLogCount + SCROLL_PAGE_SIZE);
+      let chunkHtml = '';
+      nextChunk.forEach((log, offset) => {
+        chunkHtml += buildHistoryRowHtml(log, renderedLogCount + offset);
+      });
+
+      container.insertAdjacentHTML('beforeend', chunkHtml);
+      renderedLogCount += nextChunk.length;
+      updatePaginationStatus(renderedLogCount, total);
+    }
+
+    function setupHistoryIntersectionObserver() {
+      if (historyIntersectionObserver) {
+        historyIntersectionObserver.disconnect();
+        historyIntersectionObserver = null;
+      }
+
+      const sentinel = document.getElementById('history-scroll-sentinel');
+      if (!sentinel) return;
+
+      if ('IntersectionObserver' in window) {
+        historyIntersectionObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !isFetchingLogs && renderedLogCount < allLogsMaster.length) {
+              renderNextHistoryChunk();
+            }
+          });
+        }, {
+          root: null,
+          rootMargin: '200px',
+          threshold: 0.05
+        });
+
+        historyIntersectionObserver.observe(sentinel);
+      }
+    }
+
+    async function loadData() {
+      try {
+        // 1. Fetch user session profile header
+        const meResult = await apiCall('/api/auth/me');
+        if (meResult.success && meResult.user) {
+          const userHeader = document.getElementById('user-header-name');
+          if (userHeader) userHeader.innerText = meResult.user.name;
+        } else {
+          window.location.href = '/login';
+          return;
+        }
+
+        // 2. Fetch subject filter list once
+        if (!hasFetchedSubjects) {
+          try {
+            const subResult = await apiCall('/api/subjects');
+            if (subResult.success && subResult.subjects) {
+              hasFetchedSubjects = true;
+              const select = document.getElementById('filterSubject');
+              if (select) {
+                select.innerHTML = '<option value="">All Subjects</option>';
+                subResult.subjects.forEach(sub => {
+                  const code = sub.subject_code || sub.code || 'SUB';
+                  const name = sub.subject_name || sub.name || 'Subject';
+                  select.innerHTML += `<option value="${sub.id}">${escapeHtmlSafe(code)} - ${escapeHtmlSafe(name)}</option>`;
+                });
+              }
+            }
+          } catch (subErr) {
+            console.warn('Could not load subjects for filter dropdown:', subErr);
+          }
+        }
+
+        await fetchLogs();
+      } catch (err) {
+        console.error('Fatal error loading history data:', err);
+        const container = document.getElementById('logs-container');
+        if (container) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-center py-5">
+                <div class="text-danger fw-bold mb-2">Failed to load attendance history</div>
+                <p class="text-secondary small mb-3">Please check your internet connection or log in again.</p>
+                <button class="btn-trackify-primary btn-sm px-3" onclick="loadData()">Retry</button>
+              </td>
+            </tr>
+          `;
+        }
+        updatePaginationStatus(0, 0);
+      }
+    }
+
+    async function fetchLogs() {
+      if (isFetchingLogs) return;
+      isFetchingLogs = true;
+
+      renderHistorySkeletons();
+
+      const subSelect = document.getElementById('filterSubject');
+      const startInput = document.getElementById('filterStart');
+      const endInput = document.getElementById('filterEnd');
+      const sortSelect = document.getElementById('filterSort');
+
+      const subId = subSelect ? subSelect.value : '';
+      const start = startInput ? startInput.value : '';
+      const end = endInput ? endInput.value : '';
+      const sortVal = sortSelect ? sortSelect.value : 'date_desc';
+
+      let url = '/api/attendance?';
+      if (subId) url += `subjectId=${encodeURIComponent(subId)}&`;
+      if (start) url += `startDate=${encodeURIComponent(start)}&`;
+      if (end) url += `endDate=${encodeURIComponent(end)}&`;
+
+      if (sortVal) {
+        const [sortBy, sortOrder] = sortVal.split('_');
+        url += `sortBy=${encodeURIComponent(sortBy)}&sortOrder=${encodeURIComponent(sortOrder)}&`;
+      }
+
+      try {
+        const response = await apiCall(url);
+        const container = document.getElementById('logs-container');
+        if (!container) return;
+
+        if (response.success && Array.isArray(response.logs)) {
+          allLogsMaster = response.logs;
+          renderedLogCount = 0;
+          container.innerHTML = '';
+
+          if (allLogsMaster.length === 0) {
+            container.innerHTML = `
+              <tr>
+                <td colspan="5" class="text-center py-5 text-secondary">
+                  <div class="fw-semibold">No attendance logs found matching filters.</div>
+                  <div class="small mt-1">Try clearing date ranges or selecting All Subjects.</div>
+                </td>
+              </tr>
+            `;
+            updatePaginationStatus(0, 0);
+            return;
+          }
+
+          // Render first chunk of logs smoothly
+          renderNextHistoryChunk();
+          setupHistoryIntersectionObserver();
+        } else {
+          container.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-danger text-center py-5">
+                <div class="fw-bold mb-2">Failed to load attendance records</div>
+                <p class="text-secondary small mb-3">${escapeHtmlSafe(response.message || 'Unknown error occurred.')}</p>
+                <button class="btn-trackify-primary btn-sm px-3" onclick="fetchLogs()">Try Again</button>
+              </td>
+            </tr>
+          `;
+          updatePaginationStatus(0, 0);
+        }
+      } catch (err) {
+        console.error('Error fetching attendance logs:', err);
+        const container = document.getElementById('logs-container');
+        if (container) {
+          container.innerHTML = `
+            <tr>
+              <td colspan="5" class="text-danger text-center py-5">
+                <div class="fw-bold mb-2">Network or server error</div>
+                <p class="text-secondary small mb-3">${escapeHtmlSafe(err.message || 'Could not communicate with the Trackify server.')}</p>
+                <button class="btn-trackify-primary btn-sm px-3" onclick="fetchLogs()">Try Again</button>
+              </td>
+            </tr>
+          `;
+        }
+        updatePaginationStatus(0, 0);
+      } finally {
+        isFetchingLogs = false;
+      }
+    }
+
+    const filterForm = document.getElementById('filterForm');
+    if (filterForm) {
+      filterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        fetchLogs();
+      });
+    }
+
+    const filterSub = document.getElementById('filterSubject');
+    if (filterSub) filterSub.addEventListener('change', () => fetchLogs());
+    const filterSort = document.getElementById('filterSort');
+    if (filterSort) filterSort.addEventListener('change', () => fetchLogs());
 
     function openEditModal(idx) {
-      const log = currentLogs[idx];
-      const d = new Date(log.date);
-      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const log = allLogsMaster[idx];
+      if (!log) return;
+
+      const dateStr = formatDisplayDate(log.date);
 
       document.getElementById('editLogId').value = log.id;
-      document.getElementById('editSubjectName').innerText = log.subject_name;
+      document.getElementById('editSubjectName').innerText = log.subject_name || '-';
       document.getElementById('editLogDate').innerText = dateStr;
       document.getElementById('editStatus').value = log.status;
       document.getElementById('editRemarks').value = log.remarks || '';
 
-      editModal.show();
+      const modal = getEditModal();
+      if (modal) modal.show();
     }
 
     document.getElementById('editForm').addEventListener('submit', async (e) => {
@@ -400,11 +705,13 @@
       });
 
       if (response.success) {
-        editModal.hide();
+        const modal = getEditModal();
+        if (modal) modal.hide();
         showAlert('Attendance log entry updated', 'success');
-        loadData();
+        if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback(status);
+        await fetchLogs();
       } else {
-        showAlert(response.message, 'danger');
+        showAlert(response.message || 'Failed to update entry', 'danger');
       }
     });
 
@@ -413,15 +720,16 @@
         const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
         if (response.success) {
           showAlert('Log record deleted successfully', 'success');
-          loadData();
+          if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('clear');
+          await fetchLogs();
         } else {
-          showAlert(response.message, 'danger');
+          showAlert(response.message || 'Failed to delete record', 'danger');
         }
       }
     }
 
     function exportToCSV() {
-      if (currentLogs.length === 0) {
+      if (!allLogsMaster || allLogsMaster.length === 0) {
         showAlert('No records available to export', 'warning');
         return;
       }
@@ -429,10 +737,13 @@
       let csvContent = "data:text/csv;charset=utf-8,";
       csvContent += "Date,Subject Code,Subject Name,Status,Remarks\n";
 
-      currentLogs.forEach(log => {
-        const d = new Date(log.date);
-        const dateStr = d.toISOString().split('T')[0];
-        const row = `"${dateStr}","${log.subject_code}","${log.subject_name}","${log.status}","${log.remarks || ''}"`;
+      allLogsMaster.forEach(log => {
+        const cleanDate = String(log.date).split('T')[0];
+        const sCode = (log.subject_code || '').replace(/"/g, '""');
+        const sName = (log.subject_name || '').replace(/"/g, '""');
+        const sStatus = (log.status || '').replace(/"/g, '""');
+        const sRemarks = (log.remarks || '').replace(/"/g, '""');
+        const row = `"${cleanDate}","${sCode}","${sName}","${sStatus}","${sRemarks}"`;
         csvContent += row + "\n";
       });
 
@@ -445,7 +756,19 @@
       document.body.removeChild(link);
     }
 
-    window.onload = loadData;
+    let initialHistoryLoaded = false;
+    async function initHistoryPage() {
+      if (initialHistoryLoaded) return;
+      initialHistoryLoaded = true;
+      await loadData();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initHistoryPage);
+    } else {
+      initHistoryPage();
+    }
+    window.addEventListener('load', initHistoryPage);
   </script>
   <script src="/assets/js/app-nav.js"></script>
 </body>

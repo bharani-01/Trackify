@@ -1394,6 +1394,7 @@
       
       miniCalCache = {};
       showAlert(`Successfully marked ${successfulCount} classes as ${status}`, 'success');
+      if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback(status);
       await fetchChecklist();
       await renderRollingDaysStrip(currentSelectedDate);
     }
@@ -1420,6 +1421,7 @@
       if (response.success) {
         miniCalCache = {};
         showAlert(`Successfully cleared attendance for ${currentSelectedDate}`, 'success');
+        if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('clear');
         await fetchChecklist();
         await renderRollingDaysStrip(currentSelectedDate);
       } else {
@@ -1435,6 +1437,11 @@
       if (!navigator.onLine) {
         showAlert('You are currently offline. Please check your connection.', 'warning');
         return;
+      }
+
+      // Trigger crisp physical haptic feedback instantly on user click
+      if (typeof triggerHapticFeedback === 'function') {
+        triggerHapticFeedback(status);
       }
 
       const card = document.getElementById(`card-period-${period}`) || btnEl.closest('.class-attendance-card');
@@ -1588,6 +1595,7 @@
           const response = await apiCall(`/api/attendance/${id}`, { method: 'DELETE' });
           if (response && response.success) {
             showAlert('Attendance marking reset', 'success');
+            if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('clear');
             miniCalCache = {};
           } else {
             rollback();
@@ -1595,6 +1603,7 @@
           }
         } else {
           showAlert('Attendance marking reset', 'success');
+          if (typeof triggerHapticFeedback === 'function') triggerHapticFeedback('clear');
         }
       } catch (err) {
         console.error('Error resetting marking:', err);
