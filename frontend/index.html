@@ -3,634 +3,1437 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trackify — Student Attendance &amp; Academic Tracker</title>
-  <meta name="description" content="Trackify is a personal student attendance and timetable tracking web application. Log daily lecture attendance, calculate safe lecture bunks to stay above 80%, and organize college schedules.">
-  <meta name="keywords" content="Trackify, student attendance tracker, college attendance app, bunk calculator, timetable builder, attendance manager">
+  <title>Trackify — Campus Academic Platform &amp; Attendance Intelligence</title>
+  <meta name="description" content="Trackify automates class attendance, calculates safe bunks, predicts attendance shortage risks, and streamlines daily campus workflows for college students.">
+  <meta name="keywords" content="Trackify, attendance tracker, bunk calculator, college timetable, safe bunks, campus academic platform, student portal">
   <meta name="author" content="Trackify">
   <meta name="robots" content="index, follow">
-  <meta name="application-name" content="Trackify">
   <link rel="canonical" href="https://app.trackifyapp.co.in/">
   <meta name="theme-color" content="#2563eb">
 
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Meta -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://app.trackifyapp.co.in/">
-  <meta property="og:title" content="Trackify — Student Attendance &amp; Academic Tracker">
-  <meta property="og:description" content="Trackify is an automated student attendance tracker and timetable management web app. Track daily class attendance, calculate safe lecture bunks, and take control of your semester.">
+  <meta property="og:title" content="Trackify — Attendance, without the chaos.">
+  <meta property="og:description" content="Automate class attendance, calculate safe bunks, and keep academic workflows organized. Built for modern college campuses.">
   <meta property="og:image" content="https://app.trackifyapp.co.in/assets/images/favicon-512.png">
   <meta property="og:site_name" content="Trackify">
-  <meta property="og:locale" content="en_IN">
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Trackify — Student Attendance &amp; Academic Tracker">
-  <meta name="twitter:description" content="Trackify is an automated student attendance tracker and timetable management web app. Track daily class attendance, calculate safe lecture bunks, and take control of your semester.">
-  <meta name="twitter:image" content="https://app.trackifyapp.co.in/assets/images/favicon-512.png">
+  <!-- Favicon -->
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+  <link rel="manifest" href="/manifest.json">
 
-  <!-- Google Fonts & Frameworks -->
+  <!-- Google Fonts: Plus Jakarta Sans, Inter, Caveat (Handwritten), IBM Plex Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css?v=7.0">
-  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-  
-  <script>
-    (function() {
-      const theme = localStorage.getItem('theme') || 'light';
-      document.documentElement.setAttribute('data-theme', theme);
-      if (localStorage.getItem('sidebar-collapsed') === 'true') {
-        document.documentElement.classList.add('sidebar-collapsed');
-      }
-    })();
-  </script>
-  
-  <link rel="manifest" href="/manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Trackify">
-  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "Trackify",
-    "url": "https://app.trackifyapp.co.in",
-    "description": "Trackify is an automated student attendance tracker and timetable management application designed for college students.",
-    "applicationCategory": "EducationalApplication",
-    "operatingSystem": "Web Browser",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "INR"
-    },
-    "creator": {
-      "@type": "Organization",
-      "name": "Trackify"
-    }
-  }
-  </script>
+  <!-- Bootstrap 5.3 Framework -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
   <style>
+    :root {
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-hand: 'Caveat', cursive;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-subtle: #eff6ff;
+      --color-primary-border: #bfdbfe;
+
+      --color-dark: #0b0f19;
+      --color-dark-card: #111827;
+      --color-dark-border: rgba(255, 255, 255, 0.08);
+
+      --color-text-main: #0f172a;
+      --color-text-muted: #64748b;
+      --color-text-subtle: #94a3b8;
+
+      --color-bg-page: #ffffff;
+      --color-bg-alt: #f8fafc;
+      --color-border-light: #e2e8f0;
+      --color-border-subtle: #f1f5f9;
+
+      --color-success: #10b981;
+      --color-success-bg: #ecfdf5;
+      --color-success-text: #047857;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 16px 32px -4px rgba(15, 23, 42, 0.08), 0 6px 12px -4px rgba(15, 23, 42, 0.04);
+      --shadow-mockup: 0 25px 60px -12px rgba(15, 23, 42, 0.16), 0 12px 24px -8px rgba(15, 23, 42, 0.08);
+      --shadow-floating: 0 20px 30px -6px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.06);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: var(--bg-primary);
-      color: var(--text-primary);
+      font-family: var(--font-body);
+      color: var(--color-text-main);
+      background-color: var(--color-bg-page);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       overflow-x: hidden;
     }
-    
-    .apple-hero-glow {
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--color-text-main);
+      letter-spacing: -0.025em;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Ambient Hero Glow */
+    .hero-glow-bg {
       position: absolute;
-      top: -160px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 1200px;
-      height: 750px;
-      background: var(--hero-glow-bg);
+      top: -120px;
+      right: -80px;
+      width: 780px;
+      height: 640px;
+      background: radial-gradient(circle at 60% 30%, rgba(219, 234, 254, 0.8) 0%, rgba(238, 242, 255, 0.5) 45%, rgba(255, 255, 255, 0) 70%);
       pointer-events: none;
       z-index: 0;
-      filter: blur(80px);
+      filter: blur(40px);
+    }
+
+    /* Sticky Navbar */
+    .saas-nav {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.2s ease;
+    }
+
+    .nav-brand-logo {
+      display: inline-flex;
+      align-items: center;
+      transition: opacity 0.15s ease;
+    }
+
+    .nav-brand-logo:hover {
+      opacity: 0.88;
+    }
+
+    .saas-nav .nav-link {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #475569;
+      padding: 0.5rem 0.9rem;
+      transition: color 0.15s ease;
+    }
+
+    .saas-nav .nav-link:hover {
+      color: var(--color-primary);
+    }
+
+    .saas-nav .dropdown-menu {
+      animation: navDropdownFade 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes navDropdownFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .saas-nav .dropdown-item:hover {
+      background-color: #f8fafc;
+    }
+
+    .btn-nav-primary {
+      background: var(--color-primary);
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav-primary:hover {
+      background: var(--color-primary-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-nav-ghost {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      transition: color 0.15s ease;
+    }
+
+    .btn-nav-ghost:hover {
+      color: var(--color-text-main);
+    }
+
+    /* Hero Section */
+    .hero-eyebrow {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.75rem, 5.2vw, 4.25rem);
+      line-height: 1.08;
+      font-weight: 800;
+      color: var(--color-text-main);
+      margin-bottom: 1.35rem;
+      letter-spacing: -0.035em;
+    }
+
+    .text-gradient-blue {
+      color: var(--color-primary);
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.12rem;
+      line-height: 1.65;
+      color: var(--color-text-muted);
+      max-width: 520px;
+      margin-bottom: 2rem;
+    }
+
+    .btn-hero-primary {
+      background: #0b0f19;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0.85rem 1.65rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid #0b0f19;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-hero-primary:hover {
+      background: #1e293b;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.15);
+    }
+
+    .btn-hero-secondary {
+      background: #ffffff;
+      color: #334155;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0.85rem 1.65rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    /* Handwritten Annotation */
+    .handwritten-annotation {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 1.25rem;
+      margin-right: 1.5rem;
+      pointer-events: none;
+    }
+
+    .handwritten-text {
+      font-family: var(--font-hand);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #334155;
+      line-height: 1.1;
+      transform: rotate(-2deg);
+      white-space: nowrap;
+    }
+
+    /* Realistic 3D Dashboard Mockup */
+    .mockup-perspective-wrapper {
+      perspective: 1400px;
+      position: relative;
+    }
+
+    .saas-dashboard-mockup {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: var(--shadow-mockup);
+      overflow: hidden;
+      transform: rotateY(-3.5deg) rotateX(2.5deg);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    }
+
+    .saas-dashboard-mockup:hover {
+      transform: rotateY(-1deg) rotateX(1deg) translateY(-4px);
+      box-shadow: 0 32px 70px -12px rgba(15, 23, 42, 0.2);
+    }
+
+    .mockup-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1.4rem;
+      border-bottom: 1px solid #f1f5f9;
+      background: #ffffff;
+    }
+
+    .mockup-search-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-pill);
+      padding: 0.35rem 0.9rem;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      width: 200px;
+    }
+
+    .mockup-body-layout {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      min-height: 380px;
+    }
+
+    .mockup-sidebar {
+      background: #fbfcfe;
+      border-right: 1px solid #f1f5f9;
+      padding: 1rem 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .mockup-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0.42rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .mockup-nav-item.active {
+      background: #eff6ff;
+      color: var(--color-primary);
+    }
+
+    .mockup-nav-item svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .mockup-content-area {
+      padding: 1.25rem 1.4rem;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .mockup-greeting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mockup-stat-card {
+      background: #ffffff;
+      border: 1px solid #f1f5f9;
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+
+    .mockup-stat-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #64748b;
+      margin-bottom: 0.15rem;
+    }
+
+    .mockup-stat-value {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+
+    .pill-tag-green {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--color-success-bg);
+      color: var(--color-success-text);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: var(--radius-pill);
+    }
+
+    /* Trend Bar Chart Mockup */
+    .mockup-bars-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+      height: 90px;
+      padding-top: 15px;
+    }
+
+    .mockup-bar-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      height: 100%;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .mockup-bar-fill {
+      width: 100%;
+      border-radius: 4px;
+      background: #93c5fd;
+      transition: height 0.3s ease;
+    }
+
+    .mockup-bar-col.highlight .mockup-bar-fill {
+      background: var(--color-primary);
+    }
+
+    .mockup-bar-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+
+    .mockup-chart-tooltip {
+      position: absolute;
+      top: -16px;
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 0.62rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Feature Section: Smart Attendance Engine */
+    .feature-section {
+      padding: 6.5rem 0;
+      position: relative;
+    }
+
+    .feature-eyebrow {
+      font-family: var(--font-display);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .section-headline {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      line-height: 1.15;
+      font-weight: 800;
+      color: var(--color-text-main);
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+
+    .section-desc {
+      font-size: 1.05rem;
+      color: var(--color-text-muted);
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+    }
+
+    .feature-checklist {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .feature-checklist li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .check-circle-icon {
+      width: 20px;
+      height: 20px;
+      background: #eff6ff;
+      color: var(--color-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* Photo Frame with Floating Micro-UIs */
+    .photo-composition-wrap {
+      position: relative;
+      border-radius: var(--radius-xl);
+      overflow: visible;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .photo-main-img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      display: block;
+    }
+
+    .floating-micro-card {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.75rem 1.15rem;
+      box-shadow: 0 16px 36px -6px rgba(15, 23, 42, 0.14), 0 6px 12px -3px rgba(15, 23, 42, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 5;
+      white-space: nowrap;
+      animation: floatMicro 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatMicro {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-8px); }
+    }
+
+    .float-card-3 {
+      bottom: 24px;
+      right: 24px;
+      animation-delay: 0.8s;
+    }
+
+    .micro-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .micro-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .micro-card-subtitle {
+      font-size: 0.72rem;
+      color: #64748b;
+    }
+
+    /* 6-Card Ecosystem Grid */
+    .ecosystem-section {
+      padding: 6.5rem 0;
+      background: #ffffff;
+    }
+
+    .ecosystem-header-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: flex-end;
+      margin-bottom: 3.5rem;
+    }
+
+    .ecosystem-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-lg);
+      padding: 1.85rem 1.75rem;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      height: 100%;
+    }
+
+    .ecosystem-card:hover {
+      border-color: #cbd5e1;
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .ecosystem-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .ecosystem-card-title {
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .ecosystem-card-text {
+      font-size: 0.92rem;
+      color: #64748b;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    /* Dark Impact Section */
+    .dark-impact-section {
+      background: var(--color-dark);
+      color: #ffffff;
+      padding: 6.5rem 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-impact-section h2 {
+      color: #ffffff;
+    }
+
+    .stat-metric-card {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      padding: 1.5rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--color-dark-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .stat-circle-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 2.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    /* Final CTA Banner */
+    .cta-banner-section {
+      padding: 5rem 0 6.5rem 0;
+      background: #ffffff;
+    }
+
+    .cta-glass-banner {
+      background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #faf5ff 100%);
+      border: 1px solid #dbeafe;
+      border-radius: var(--radius-xl);
+      padding: 4rem 3.5rem;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .cta-content-right {
+      padding-right: 150px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cta-floating-cubes {
+      position: absolute;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 170px;
+      height: 170px;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Multi-Column SaaS Footer */
+    .saas-footer {
+      background: #ffffff;
+      border-top: 1px solid #f1f5f9;
+      padding: 4.5rem 0 2rem 0;
+      font-size: 0.88rem;
+      color: #64748b;
+    }
+
+    .footer-heading {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .footer-links-list a {
+      color: #64748b;
+      transition: color 0.15s ease;
+    }
+
+    .footer-links-list a:hover {
+      color: var(--color-primary);
+    }
+
+    /* Responsive Rules */
+    @media (max-width: 991.98px) {
+      .mockup-perspective-wrapper {
+        perspective: none;
+        margin-top: 2.5rem;
+      }
+      .saas-dashboard-mockup {
+        transform: none !important;
+      }
+      .handwritten-annotation {
+        display: none;
+      }
+      .ecosystem-header-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+      .cta-glass-banner {
+        grid-template-columns: 1fr;
+        padding: 2.75rem 2rem;
+      }
+      .cta-content-right {
+        padding-right: 0;
+      }
+      .cta-floating-cubes {
+        display: none;
+      }
+      .photo-composition-wrap {
+        max-width: 100%;
+      }
+      .float-card-3 {
+        bottom: 15px;
+        right: 15px;
+      }
+    }
+
+    @media (max-width: 575.98px) {
+      .hero-title {
+        font-size: 2.35rem;
+      }
+      .mockup-body-layout {
+        grid-template-columns: 1fr;
+      }
+      .mockup-sidebar {
+        display: none;
+      }
+      .float-card-3 {
+        transform: scale(0.9);
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Bar (Apple Frosted Glass Style) -->
-  <nav class="navbar navbar-expand-lg apple-glass-nav sticky-top py-2.5">
+  <!-- Sticky Navbar -->
+  <nav class="navbar navbar-expand-lg saas-nav">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center me-4" href="/">
-        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo-img" style="height: 32px; width: auto;">
+      <a class="nav-brand-logo" href="/" aria-label="Trackify Home">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto; display: block;">
       </a>
 
-      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" style="color: var(--text-primary);">
+      <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#saasNavbar" aria-controls="saasNavbar" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-        <ul class="navbar-nav align-items-lg-center gap-lg-4 mx-auto my-3 my-lg-0">
+      <div class="collapse navbar-collapse" id="saasNavbar">
+        <ul class="navbar-nav mx-auto my-2 my-lg-0 gap-lg-1">
+          <!-- Products Dropdown -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle fw-semibold fs-7" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: var(--text-secondary);">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               Products
             </a>
-            <ul class="dropdown-menu border-glass shadow-lg py-2" style="background: var(--bg-card); backdrop-filter: blur(20px); border-radius: 18px; min-width: 260px;">
+            <ul class="dropdown-menu shadow-lg border-0 py-2 px-2" style="border-radius: 14px; min-width: 310px; box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06); border: 1px solid rgba(226, 232, 240, 0.85) !important;">
               <li>
-                <a class="dropdown-item d-flex align-items-center gap-3 py-2.5 px-3" href="/products/trackify">
-                  <div class="product-icon-wrap product-icon-trackify" style="width: 34px; height: 34px; font-size: 1rem;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+                <a class="dropdown-item p-2.5 rounded-3 d-flex align-items-center gap-3 text-decoration-none" href="/products/trackify">
+                  <div style="width: 38px; height: 38px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
                   </div>
                   <div>
-                    <div class="fw-bold fs-7" style="color: var(--text-primary);">Trackify</div>
-                    <div style="color: var(--text-muted); font-size: 0.72rem;">Attendance &amp; Timetable</div>
+                    <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                      <span>Trackify</span>
+                      <span class="badge" style="background: #dbeafe; color: #1d4ed8; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Platform</span>
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.74rem;">Attendance &amp; bunk intelligence</div>
                   </div>
                 </a>
               </li>
               <li>
-                <a class="dropdown-item d-flex align-items-center gap-3 py-2.5 px-3" href="/products/inks">
-                  <div class="product-icon-wrap product-icon-inks" style="width: 34px; height: 34px; padding: 3px;">
-                    <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
+                <a class="dropdown-item p-2.5 rounded-3 d-flex align-items-center gap-3 mt-1 text-decoration-none" href="/products/inks">
+                  <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                      <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
                   </div>
                   <div>
-                    <div class="fw-bold fs-7" style="color: var(--text-primary);">Inks</div>
-                    <div style="color: var(--text-muted); font-size: 0.72rem;">Campus Cloud Printing</div>
+                    <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                      <span>Inks</span>
+                      <span class="badge" style="background: #d1fae5; color: #047857; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Cloud Print</span>
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.74rem;">Zero-queue campus document printing</div>
                   </div>
-                </a>
-              </li>
-              <li><hr class="dropdown-divider border-glass my-1"></li>
-              <li>
-                <a class="dropdown-item py-2 px-3 fs-8" href="#products" style="color: var(--text-muted);">
-                  Explore All Products &rarr;
                 </a>
               </li>
             </ul>
           </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold fs-7" href="#bunk-engine" style="color: var(--text-secondary);">Attendance Engine</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold fs-7" href="#inks-cloud" style="color: var(--text-secondary);">Campus Printing</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold fs-7" href="#comparison" style="color: var(--text-secondary);">Compare Methods</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link fw-semibold fs-7" href="#platform-overview" style="color: var(--text-secondary);">Privacy &amp; Security</a>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#impact">Impact</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Resources
+            </a>
+            <ul class="dropdown-menu shadow-sm border py-2" style="border-radius: 12px; font-size: 0.88rem; border-color: rgba(226, 232, 240, 0.8) !important;">
+              <li><a class="dropdown-item py-2" href="/products/trackify">Attendance Math Guide</a></li>
+              <li><a class="dropdown-item py-2" href="/products/inks">Inks Print Guide</a></li>
+              <li><hr class="dropdown-divider my-1"></li>
+              <li><a class="dropdown-item py-2" href="/privacy-policy">Privacy &amp; OAuth Statement</a></li>
+            </ul>
           </li>
         </ul>
 
-        <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-          <a href="/login" class="apple-btn-primary py-2 px-4 fs-7">Student Portal ↗</a>
+        <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+          <a href="/login" class="btn-nav-ghost">Sign In</a>
+          <a href="/login" class="btn-nav-primary">
+            <span>Get Started</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- Hero Section (Asymmetric Left-Aligned Split — DESIGN_VARIANCE = 8) -->
-  <header class="container pt-5 pb-5 position-relative min-vh-100 d-flex align-items-center">
-    <div class="apple-hero-glow"></div>
+  <!-- Hero Section -->
+  <header class="position-relative pt-5 pb-5 overflow-hidden">
+    <div class="hero-glow-bg"></div>
 
-    <div class="row align-items-center g-5 position-relative z-1 w-100 mx-0">
-      
-      <!-- Left Column (7 cols): Asymmetric Headline & CTAs -->
-      <div class="col-lg-7 text-start apple-reveal visible">
-        <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill mb-4" style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2);">
-          <span class="pulse-dot" style="width: 7px; height: 7px; border-radius: 50%; background: #3b82f6;"></span>
-          <span class="text-primary fs-8 fw-bold text-uppercase" style="letter-spacing: 0.08em;">Campus Academic Platform</span>
-        </div>
-
-        <h1 class="apple-display-title mb-3 text-start">
-          Trackify.<br>
-          <span class="apple-gradient-text">Know every class. Bunk with precision.</span>
-        </h1>
+    <div class="container position-relative pt-lg-4 pb-lg-3">
+      <div class="row align-items-center g-5">
         
-        <p class="apple-subheadline mb-4 text-start" style="max-width: 580px;">
-          Log daily lectures in seconds, calculate safe bunks automatically, and stay effortlessly above your 80% college target.
-        </p>
+        <!-- Hero Left Column -->
+        <div class="col-lg-6 position-relative z-1">
+          <span class="hero-eyebrow">BUILT FOR MODERN CAMPUSES</span>
+          <h1 class="hero-title">
+            Attendance,<br>
+            without the <span class="text-gradient-blue">chaos.</span>
+          </h1>
+          <p class="hero-subtitle">
+            Trackify automates class attendance, calculates safe bunks, predicts risk, and keeps you informed — so you can focus on what truly matters.
+          </p>
 
-        <div class="d-flex align-items-center gap-3 flex-wrap mb-5">
-          <a href="/login" class="apple-btn-primary">Launch Student Portal &rarr;</a>
-          <a href="#products" class="apple-btn-secondary">Explore Features &darr;</a>
-        </div>
-
-        <!-- Trust Indicators (Clean SVG Primitives, NO Emojis) -->
-        <div class="d-flex align-items-center gap-4 flex-wrap fs-8 fw-semibold" style="color: var(--text-muted);">
-          <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            100% Free for Students
-          </span>
-          <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Zero Ad Trackers &amp; Privacy-First
-          </span>
-          <span class="d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            Sub-50ms Latency &amp; Offline PWA
-          </span>
-        </div>
-      </div>
-
-      <!-- Right Column (5 cols): Liquid Glass Refraction Surface Asset -->
-      <div class="col-lg-5 apple-reveal visible">
-        <div class="liquid-glass-card p-4 p-md-5">
-          <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
-            <span class="fs-8 fw-mono text-primary text-uppercase fw-bold">Mathematical Engine</span>
-            <span class="badge-pill-success">80% TARGET MET</span>
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <a href="/login" class="btn-hero-primary">
+              <span>Launch Student Portal</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
           </div>
+        </div>
 
-          <div class="p-4 rounded-4 mb-3" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
-            <div class="fs-8 text-uppercase fw-bold mb-2" style="color: var(--text-muted); letter-spacing: 0.05em;">SAFE BUNK EQUATION</div>
-            <div class="fs-6 fw-mono mb-3" style="color: var(--text-primary); font-weight: 600;">(Attended + SafeBunks) / Total &ge; 80%</div>
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2 border-top border-glass">
-              <span class="fs-8 fw-semibold" style="color: var(--text-muted);">Calculated Safety Buffer</span>
-              <span class="fs-7 fw-bold text-success">+3 Lectures Buffer</span>
+        <!-- Hero Right Column: 3D Product Dashboard Mockup -->
+        <div class="col-lg-6 position-relative">
+          <div class="mockup-perspective-wrapper">
+            
+            <div class="saas-dashboard-mockup">
+              
+              <!-- Mockup Top Bar -->
+              <div class="mockup-header-bar">
+                <div class="d-flex align-items-center">
+                  <img src="/assets/images/logo_light.webp" alt="Trackify" style="height: 20px; width: auto; display: block;">
+                </div>
+
+                <div class="mockup-search-input">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <span>Search Classes...</span>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                  <div class="position-relative" style="cursor: pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                    <span style="position: absolute; top: -1px; right: -1px; width: 6px; height: 6px; background: #ef4444; border-radius: 50%;"></span>
+                  </div>
+                  <div style="width: 28px; height: 28px; border-radius: 50%; background: #fed7aa; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; color: #9a3412;">
+                    A
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mockup Body -->
+              <div class="mockup-body-layout">
+                <!-- Sidebar -->
+                <div class="mockup-sidebar">
+                  <div class="mockup-nav-item active">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    <span>Dashboard</span>
+                  </div>
+                  <div class="mockup-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                    <span>Attendance</span>
+                  </div>
+                  <div class="mockup-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span>Timetable</span>
+                  </div>
+                  <div class="mockup-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><circle cx="8" cy="15" r="1" fill="currentColor"></circle><circle cx="12" cy="15" r="1" fill="currentColor"></circle><circle cx="16" cy="15" r="1" fill="currentColor"></circle></svg>
+                    <span>Calendar</span>
+                  </div>
+                  <div class="mockup-nav-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    <span>Settings</span>
+                  </div>
+                </div>
+
+                <!-- Main Content Area -->
+                <div class="mockup-content-area">
+                  <div class="mockup-greeting-row">
+                    <div>
+                      <div style="font-family: var(--font-display); font-size: 0.95rem; font-weight: 800; color: #0f172a;">Good morning, Alex 👋</div>
+                      <div style="font-size: 0.72rem; color: #94a3b8;">Here's your academic overview:</div>
+                    </div>
+                    <div style="font-size: 0.68rem; font-weight: 600; background: #f1f5f9; padding: 3px 8px; border-radius: 6px; color: #475569;">
+                      This Semester ▾
+                    </div>
+                  </div>
+
+                  <!-- 3 Top Metric Cards -->
+                  <div class="row g-2">
+                    <div class="col-4">
+                      <div class="mockup-stat-card">
+                        <div class="mockup-stat-label">Attendance</div>
+                        <div class="mockup-stat-value">85.7%</div>
+                        <div class="pill-tag-green mt-1">▲ 2.4% this month</div>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="mockup-stat-card">
+                        <div class="mockup-stat-label">Safe Bunks</div>
+                        <div class="mockup-stat-value">12</div>
+                        <div class="pill-tag-green mt-1">You're in safe zone</div>
+                      </div>
+                    </div>
+                    <div class="col-4">
+                      <div class="mockup-stat-card">
+                        <div class="mockup-stat-label">Next Class</div>
+                        <div class="mockup-stat-value" style="font-size: 1.15rem;">2h 15m</div>
+                        <div style="font-size: 0.65rem; color: #64748b; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Data Structures CS2001</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Trend & Risk Row -->
+                  <div class="row g-2 align-items-stretch">
+                    <div class="col-7">
+                      <div class="mockup-stat-card h-100">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <span class="mockup-stat-label">Attendance Trend</span>
+                          <span style="font-size: 0.65rem; font-weight: 600; color: var(--color-primary);">71% avg</span>
+                        </div>
+                        <div class="mockup-bars-container">
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 65%;"></div><span class="mockup-bar-label">Mon</span></div>
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 80%;"></div><span class="mockup-bar-label">Tue</span></div>
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 55%;"></div><span class="mockup-bar-label">Wed</span></div>
+                          <div class="mockup-bar-col highlight">
+                            <span class="mockup-chart-tooltip">71% • 10h</span>
+                            <div class="mockup-bar-fill" style="height: 92%;"></div>
+                            <span class="mockup-bar-label" style="font-weight: 800; color: var(--color-primary);">Thu</span>
+                          </div>
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 75%;"></div><span class="mockup-bar-label">Fri</span></div>
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 40%;"></div><span class="mockup-bar-label">Sat</span></div>
+                          <div class="mockup-bar-col"><div class="mockup-bar-fill" style="height: 85%;"></div><span class="mockup-bar-label">Sun</span></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-5">
+                      <div class="mockup-stat-card h-100 d-flex flex-column justify-content-between">
+                        <div>
+                          <div class="mockup-stat-label">Risk Level</div>
+                          <div class="d-flex align-items-center gap-2 mt-2">
+                            <span style="width: 10px; height: 10px; border-radius: 50%; background: #10b981; display: inline-block; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);"></span>
+                            <span style="font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; color: #0f172a;">Low</span>
+                          </div>
+                        </div>
+                        <div style="font-size: 0.72rem; color: #64748b; background: #f8fafc; padding: 6px 8px; border-radius: 6px;">
+                          Keep it up! ⚡
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
             </div>
-          </div>
 
-          <div class="p-3.5 rounded-4" style="background: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.15);">
-            <div class="d-flex align-items-center gap-2 text-primary fw-bold fs-7 mb-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Automated Sentinel:
+            <!-- Handwritten Annotation with Curved SVG Arrow -->
+            <div class="handwritten-annotation">
+              <svg width="48" height="36" viewBox="0 0 54 42" fill="none" stroke="#475569" stroke-width="2" stroke-linecap="round">
+                <path d="M4 36 C 18 38, 38 34, 46 12" stroke-dasharray="3 3"/>
+                <path d="M38 12 L 48 10 L 48 20"/>
+              </svg>
+              <div class="handwritten-text">Smarter tools.<br>Happier students.</div>
             </div>
-            <div class="fs-8" style="color: var(--text-secondary); line-height: 1.55;">Monitors daily schedules &amp; alerts before eligibility threshold drop.</div>
+
           </div>
         </div>
-      </div>
 
+      </div>
     </div>
   </header>
 
-  <!-- Apple Feature Highlight 1: "Attendance. Reengineered." -->
-  <section id="bunk-engine" class="container my-5 py-5">
-    <div class="row align-items-center g-5">
-      <div class="col-lg-6 apple-reveal">
-        <h2 class="apple-headline mb-3">
-          Attendance.<br>
-          <span class="apple-blue-gradient-text">Reengineered.</span>
-        </h2>
-        <p class="apple-subheadline mb-4">
-          No more guessing if you can skip a rainy Friday morning lecture. Trackify’s fraction engine calculates your exact safety margin in real time.
-        </p>
+  <!-- Feature Highlight: Smart Attendance Engine -->
+  <section id="engine" class="feature-section">
+    <div class="container">
+      <div class="row align-items-center g-5">
+        
+        <!-- Left: Image Composition with Attendance Indicator -->
+        <div class="col-lg-6">
+          <div class="photo-composition-wrap">
+            <img class="photo-main-img" src="/assets/images/campus_students.jpg" alt="Students studying together on campus lawn">
 
-        <div class="d-flex flex-column gap-3 mb-4">
-          <div class="d-flex gap-3">
-            <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+            <!-- Floating Badge: Current Attendance Gauge -->
+            <div class="floating-micro-card float-card-3">
+              <div style="width: 38px; height: 38px; border-radius: 50%; border: 3.5px solid #10b981; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: #047857; background: #ecfdf5;">
+                85%
+              </div>
+              <div>
+                <div class="micro-card-title">85.7%</div>
+                <div class="micro-card-subtitle">Current Attendance</div>
+              </div>
             </div>
-            <div>
-              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Fraction Boundary Formula</h3>
-              <p class="fs-7 mb-0" style="color: var(--text-muted);">Computes <code>(Attended + Bunks) / TotalClasses &ge; Target</code> so you always know your exact buffer.</p>
-            </div>
-          </div>
 
-          <div class="d-flex gap-3">
-            <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            </div>
-            <div>
-              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Proactive Detention Sentinel</h3>
-              <p class="fs-7 mb-0" style="color: var(--text-muted);">Alerts you before your percentage touches detention threshold, giving you actionable recovery steps.</p>
-            </div>
           </div>
         </div>
 
-        <a href="/products/trackify" class="apple-btn-secondary py-2.5 px-4 fs-7">Read Attendance Math Guide &rarr;</a>
-      </div>
+        <!-- Right: Text & Checklist -->
+        <div class="col-lg-6 ps-lg-5">
+          <span class="feature-eyebrow">SMART ATTENDANCE ENGINE</span>
+          <h2 class="section-headline">
+            Know every class.<br>
+            Make better choices.
+          </h2>
+          <p class="section-desc">
+            Trackify uses precise algorithms to calculate your attendance, safe bunk limit, and academic risk — based on your college's actual rules.
+          </p>
 
-      <div class="col-lg-6 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5">
-          <div class="mb-3">
-            <span class="badge-pill-primary">SAFE BUNK MATHEMATICS</span>
-          </div>
-          <h3 class="h4 fw-bold mb-3" style="color: var(--text-primary);">Target Boundary: 80.0%</h3>
-          
-          <div class="p-4 rounded-4 mb-3" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
-            <div class="d-flex justify-content-between align-items-center fs-8 fw-bold mb-2">
-              <span style="color: var(--text-muted); letter-spacing: 0.04em;">CURRENT OVERALL STATUS</span>
-              <span class="text-success fs-7">85.7% (24 / 28)</span>
-            </div>
-            <div class="progress my-2" style="height: 8px; background: rgba(0,0,0,0.06); border-radius: 9999px; overflow: hidden;">
-              <div class="progress-bar bg-primary" style="width: 85.7%; border-radius: 9999px;"></div>
-            </div>
-            <div class="fs-8 pt-2 border-top border-glass mt-2" style="color: var(--text-secondary);">
-              Safe Bunks Equation: <code style="color: #d946ef; font-weight: 600;">(24 - 0.8 &times; 28) / 0.8 = 2 Bunks</code>
-            </div>
-          </div>
+          <ul class="feature-checklist">
+            <li>
+              <div class="check-circle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span>College-specific attendance logic</span>
+            </li>
+            <li>
+              <div class="check-circle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span>Real-time calculations</span>
+            </li>
+            <li>
+              <div class="check-circle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span>Proactive low-attendance alerts</span>
+            </li>
+            <li>
+              <div class="check-circle-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span>Works for all departments</span>
+            </li>
+          </ul>
 
-          <div class="p-4 rounded-4" style="background: rgba(16, 185, 129, 0.06); border: 1px dashed rgba(16, 185, 129, 0.3);">
-            <div class="d-flex align-items-center gap-2 text-success fw-bold fs-7 mb-1">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              Calculated Recommendation:
-            </div>
-            <div class="fs-8" style="color: var(--text-secondary); line-height: 1.55;">You can bunk <strong>2 more classes</strong> and remain safely at <strong>80.0%</strong>.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Apple Feature Highlight 2: "Inks. Campus Cloud Printing." -->
-  <section id="inks-cloud" class="container my-5 py-4">
-    <div class="row align-items-center g-5 flex-row-reverse">
-      <div class="col-lg-6 apple-reveal">
-        <h2 class="apple-headline mb-3">
-          Inks.<br>
-          <span class="apple-emerald-gradient-text">Skip the Xerox queue.</span>
-        </h2>
-        <p class="apple-subheadline mb-4">
-          Upload assignments and lab manuals directly from your hostel room before 8:30 AM class. Live queue tracking with zero wait times.
-        </p>
-
-        <div class="d-flex flex-column gap-3 mb-4">
-          <div class="d-flex gap-3">
-            <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-            </div>
-            <div>
-              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Hostel-to-Counter Pipeline</h3>
-              <p class="fs-7 mb-0" style="color: var(--text-muted);">Upload PDFs from your phone or laptop with full duplex &amp; paper preferences locked in.</p>
-            </div>
-          </div>
-
-          <div class="d-flex gap-3">
-            <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success flex-shrink-0" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            </div>
-            <div>
-              <h3 class="h6 fw-bold mb-1" style="color: var(--text-primary);">Malware-Free Cloud Security</h3>
-              <p class="fs-7 mb-0" style="color: var(--text-muted);">Eliminate dangerous USB pendrive sharing on malware-infected public print computers.</p>
-            </div>
-          </div>
+          <a href="/login" class="btn-hero-primary" style="background: #0b0f19;">
+            <span>Explore the Engine</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
         </div>
 
-        <a href="https://inks.trackifyapp.co.in/" target="_blank" rel="noopener noreferrer" class="apple-btn-primary py-2.5 px-4 fs-7" style="background: #059669; box-shadow: 0 4px 18px rgba(5, 150, 105, 0.3);">Launch Inks Cloud ↗</a>
-      </div>
-
-      <div class="col-lg-6 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5" style="border-color: rgba(16, 185, 129, 0.2);">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <div class="product-icon-wrap product-icon-inks" style="width: 42px; height: 42px; padding: 2px;">
-              <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
-            </div>
-            <span class="badge-pill-success">READY FOR PICKUP</span>
-          </div>
-
-          <h3 class="h4 fw-bold mb-1" style="color: var(--text-primary);">Lab_Manual_Final.pdf</h3>
-          <div class="fs-8 mb-4" style="color: var(--text-muted);">Submitted: 8:12 AM &bull; Queue Position: #1</div>
-
-          <div class="p-4 rounded-4" style="background: rgba(5, 150, 105, 0.06); border: 1px dashed rgba(5, 150, 105, 0.3);">
-            <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
-              <span class="fw-bold text-success fs-7">Pickup Token: #INK-842</span>
-              <span class="badge-pill-success">COUNTER 1</span>
-            </div>
-            <div class="fs-8 pt-1" style="color: var(--text-secondary); line-height: 1.55;">14 Pages &bull; Double-Sided B&amp;W &bull; Spiral Bound</div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- Apple Bento Grid Showcase ("Designed for speed. Engineered for privacy.") -->
-  <section id="products" class="container my-5 py-5">
-    <div class="text-center mb-5 apple-reveal">
-      <h2 class="apple-headline">Designed for speed.<br><span class="apple-gradient-text">Engineered for control.</span></h2>
-    </div>
-
-    <div class="row g-4">
+  <!-- 6-Card Ecosystem Grid -->
+  <section id="features" class="ecosystem-section">
+    <div class="container">
       
-      <!-- Card 1: Smart Attendance Engine (Col 7) -->
-      <div class="col-lg-7 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5 h-100">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-          </div>
-          <div class="mb-2">
-            <span class="badge-pill-primary">ATTENDANCE INTELLIGENCE</span>
-          </div>
-          <h3 class="h3 fw-bold mb-2" style="color: var(--text-primary);">Smart Bunk Predictor</h3>
-          <p class="fs-6 mb-4" style="color: var(--text-muted);">Fraction-based mathematical calculations instantly inform you of safe bunks and recovery requirements down to single-lecture accuracy.</p>
-
-          <div class="p-3.5 rounded-4 mb-4" style="background: var(--bg-card-subtle); border: 1px solid var(--border-color);">
-            <div class="row text-center g-2">
-              <div class="col-4">
-                <div class="fs-4 fw-extrabold" style="color: var(--text-primary);">87.5%</div>
-                <div class="fs-8" style="color: var(--text-muted);">Current Rate</div>
-              </div>
-              <div class="col-4">
-                <div class="fs-4 fw-extrabold text-success">+3 Bunks</div>
-                <div class="fs-8" style="color: var(--text-muted);">Safe Buffer</div>
-              </div>
-              <div class="col-4">
-                <div class="fs-4 fw-extrabold text-primary">80%</div>
-                <div class="fs-8" style="color: var(--text-muted);">Target Goal</div>
-              </div>
-            </div>
-          </div>
-
-          <a href="/products/trackify" class="text-primary text-decoration-none fw-semibold fs-7">Explore Trackify Feature Guide &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Card 2: PWA Offline-First Engine (Col 5) -->
-      <div class="col-lg-5 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5 h-100">
-          <div class="p-2.5 rounded-3 bg-purple bg-opacity-10 text-purple mb-3 d-inline-block" style="color: #a855f7;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></svg>
-          </div>
-          <div class="mb-2">
-            <span class="badge-pill-purple">PWA OFFLINE ENGINE</span>
-          </div>
-          <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary);">100% Offline Ready</h3>
-          <p class="fs-7 mb-4" style="color: var(--text-muted);">No campus Wi-Fi signal in basement lecture halls? Trackify logs attendance locally and syncs automatically when connection restores.</p>
-          <div>
-            <span class="badge-pill-purple">INSTANT LOCALSTORAGE &amp; SERVICE WORKER SYNC</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Card 3: Privacy First & OAuth 2.0 (Col 5) -->
-      <div class="col-lg-5 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5 h-100">
-          <div class="p-2.5 rounded-3 bg-success bg-opacity-10 text-success mb-3 d-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          </div>
-          <div class="mb-2">
-            <span class="badge-pill-success">ZERO DATA TRACKERS</span>
-          </div>
-          <h3 class="h4 fw-bold mb-2" style="color: var(--text-primary);">Privacy &amp; OAuth 2.0</h3>
-          <p class="fs-7 mb-4" style="color: var(--text-muted);">Log in securely with Google OAuth 2.0. We request basic profile info strictly for personal account sync. Zero ad tracking.</p>
-          <a href="/privacy-policy" class="text-success text-decoration-none fw-semibold fs-7">Read Privacy Policy &rarr;</a>
-        </div>
-      </div>
-
-      <!-- Card 4: Inks Cloud Printing (Col 7) -->
-      <div class="col-lg-7 apple-reveal">
-        <div class="liquid-glass-card p-4 p-md-5 h-100">
-          <div class="product-icon-wrap product-icon-inks mb-3" style="width: 42px; height: 42px; padding: 2px;">
-            <img src="/assets/images/inks_logo.webp" alt="Inks Logo" style="width: 100%; height: 100%; object-fit: contain;">
-          </div>
-          <div class="mb-2">
-            <span class="badge-pill-success">CAMPUS PRINT CLOUD</span>
-          </div>
-          <h3 class="h3 fw-bold mb-2" style="color: var(--text-primary);">Inks Print Pipeline</h3>
-          <p class="fs-6 mb-4" style="color: var(--text-muted);">Remote document uploads, live queue status, malware protection, and instant pickup token generation at campus shop counters.</p>
-          <a href="/products/inks" class="text-success text-decoration-none fw-semibold fs-7">Explore Inks Guide &rarr;</a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- Apple Comparison Matrix: "Trackify vs Traditional Methods" -->
-  <section id="comparison" class="container my-5 py-4 apple-reveal">
-    <div class="text-center mb-5">
-      <h2 class="apple-headline">Why students choose Trackify.</h2>
-      <p class="apple-subheadline">Say goodbye to mental arithmetic, lost paper diaries, and bloated spreadsheets.</p>
-    </div>
-
-    <div class="liquid-glass-card p-0 overflow-hidden">
-      <div class="table-responsive">
-        <table class="apple-spec-table">
-          <thead>
-            <tr style="background: var(--bg-card-subtle);">
-              <th style="width: 34%;">Feature / Capability</th>
-              <th class="text-primary" style="width: 22%;">Trackify Ecosystem</th>
-              <th style="width: 22%; color: var(--text-muted);">Sticky Notes &amp; Diaries</th>
-              <th style="width: 22%; color: var(--text-muted);">Excel / Google Sheets</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="fw-semibold">Safe Bunk Math Engine</td>
-              <td class="text-success fw-bold">&check; Automatic Fraction Formula</td>
-              <td style="color: var(--text-muted);">&cross; Mental Guesswork</td>
-              <td style="color: var(--text-muted);">&#9888; Manual Formulas Required</td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Weekly Timetable Sync</td>
-              <td class="text-success fw-bold">&check; 1-Tap Daily Schedule Grid</td>
-              <td style="color: var(--text-muted);">&cross; Manual Hand Writing</td>
-              <td style="color: var(--text-muted);">&#9888; Static Cell Grids</td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Campus Cloud Printing</td>
-              <td class="text-success fw-bold">&check; Inks Hostel Upload &amp; Queue</td>
-              <td style="color: var(--text-muted);">&cross; 30-min Xerox Center Line</td>
-              <td style="color: var(--text-muted);">&cross; USB Pendrive Viruses</td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Offline PWA Support</td>
-              <td class="text-success fw-bold">&check; Works in Basement Labs</td>
-              <td class="text-success fw-bold">&check; Physical Notebook</td>
-              <td style="color: var(--text-muted);">&cross; Requires Active Signal</td>
-            </tr>
-            <tr>
-              <td class="fw-semibold">Ad Tracking &amp; Privacy</td>
-              <td class="text-success fw-bold">&check; Zero Ads / OAuth 2.0</td>
-              <td class="text-success fw-bold">&check; Private</td>
-              <td style="color: var(--text-muted);">&#9888; Third-Party Account Needed</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- Platform Overview & OAuth Security Section -->
-  <section id="platform-overview" class="container my-5 py-4 apple-reveal">
-    <div class="liquid-glass-card p-4 p-md-5">
-      <div class="d-flex align-items-center gap-3 mb-4">
-        <div class="p-2.5 rounded-3 bg-primary bg-opacity-10 text-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+      <!-- Two-column header -->
+      <div class="ecosystem-header-grid">
+        <div>
+          <span class="feature-eyebrow">FEATURES</span>
+          <h2 class="section-headline mb-0">
+            Everything you need,<br>
+            built for students.
+          </h2>
         </div>
         <div>
-          <h2 class="h5 fw-bold mb-0" style="color: var(--text-primary);">Platform Transparency &amp; Data Security</h2>
-          <span class="fs-7" style="color: var(--text-muted);">Official Overview &amp; Google OAuth 2.0 Integration Policy</span>
+          <p class="section-desc mb-0">
+            From attendance tracking to print tokens, Trackify brings all the tools together in one clean, distraction-free experience.
+          </p>
+        </div>
+      </div>
+
+      <!-- 6 Cards Grid -->
+      <div class="row g-4">
+        
+        <!-- Card 1: Smart Bunk Predictor -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #2563eb;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Smart Bunk Predictor</h3>
+            <p class="ecosystem-card-text">Know how many classes you can skip safely without falling below your institution’s required target percentage.</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Timetable Sync -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #10b981;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Timetable Sync</h3>
+            <p class="ecosystem-card-text">Auto-sync your class schedule and get reminders before each lecture starts so you're always on time.</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Attendance Ledger & History -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #8b5cf6;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Attendance Ledger &amp; History</h3>
+            <p class="ecosystem-card-text">Access a detailed audit trail of every marked lecture with subject filters and automatic date-range recalculations.</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Campus Print Cloud -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #f97316;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Campus Print Cloud</h3>
+            <p class="ecosystem-card-text">Upload documents remotely, skip the 8:00 AM Xerox shop queue, and pick up prints instantly with a secure token.</p>
+          </div>
+        </div>
+
+        <!-- Card 5: Shortage & Risk Alerts -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #ef4444;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Shortage &amp; Risk Alerts</h3>
+            <p class="ecosystem-card-text">Receive timely warnings when attendance in any subject approaches critical institutional thresholds before detention lists form.</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Clean & Fast UI -->
+        <div class="col-md-6 col-lg-4">
+          <div class="ecosystem-card">
+            <div class="ecosystem-icon-box" style="background: #ec4899;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <h3 class="ecosystem-card-title">Clean &amp; Fast UI</h3>
+            <p class="ecosystem-card-text">Optimized for speed on low-bandwidth college Wi-Fi. Completely responsive, offline-ready, and ad-free.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Dark Impact Section -->
+  <section id="impact" class="dark-impact-section">
+    <div class="container">
+      <div class="row align-items-center g-5 mb-5">
+        <div class="col-lg-6">
+          <span class="feature-eyebrow" style="color: #60a5fa;">REAL IMPACT</span>
+          <h2 class="section-headline mb-0">
+            Built by students,<br>
+            for students.
+          </h2>
+        </div>
+        <div class="col-lg-6">
+          <p class="section-desc mb-0" style="color: #94a3b8;">
+            We understand the chaos of college life — and we built Trackify to make it a little easier. No clutter, no unnecessary features, just the tools you actually need.
+          </p>
         </div>
       </div>
 
       <div class="row g-4">
-        <div class="col-md-6">
-          <h3 class="fs-6 fw-bold mb-2" style="color: var(--text-primary);">Application Purpose</h3>
-          <p class="fs-7 mb-0 leading-relaxed" style="color: var(--text-muted);">
-            <strong>Trackify</strong> is an automated student attendance tracking and timetable management web application. It enables college students to log daily lecture attendance, monitor subject-wise percentages, calculate safe lecture bunks to maintain 80%+ eligibility, and organize academic schedules.
-          </p>
-        </div>
-        <div class="col-md-6">
-          <h3 class="fs-6 fw-bold mb-2" style="color: var(--text-primary);">Google Sign-In &amp; OAuth Scope Usage</h3>
-          <p class="fs-7 mb-0 leading-relaxed" style="color: var(--text-muted);">
-            <strong>Trackify</strong> integrates Google OAuth 2.0 Sign-In to allow students to securely register and log in. We request access strictly to basic profile details (Name and Email) to authenticate accounts, save personal timetables, and sync attendance records securely across devices.
-          </p>
-        </div>
-      </div>
-
-      <div class="border-top border-glass pt-3 mt-4 d-flex flex-wrap align-items-center justify-content-between gap-2 fs-7" style="color: var(--text-muted);">
-        <span>Student data is encrypted, kept confidential, and never sold or shared with third parties.</span>
-        <div class="d-flex gap-3">
-          <a href="/privacy-policy" class="text-primary text-decoration-none fw-semibold">Privacy Policy</a>
-          <a href="/terms" class="text-primary text-decoration-none fw-semibold">Terms of Service</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Apple High-Impact CTA Banner -->
-  <section class="container my-5 py-4 apple-reveal">
-    <div class="liquid-glass-card text-center p-5 position-relative overflow-hidden" style="background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.08), transparent 70%);">
-      <h2 class="apple-headline mb-3">Your semester starts now.</h2>
-      <p class="apple-subheadline mx-auto mb-4" style="max-width: 620px;">
-        Join thousands of students managing attendance predictions and campus print workflows with absolute confidence.
-      </p>
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="/login" class="apple-btn-primary py-3 px-5 fs-6">Access Student Portal ↗</a>
-        <a href="/products/trackify" class="apple-btn-secondary py-3 px-4 fs-6">Explore Products</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Apple Multi-Column Footer -->
-  <footer class="border-top border-glass py-5 mt-5" style="color: var(--text-muted); border-color: var(--border-color) !important;">
-    <div class="container">
-      <div class="row g-4 mb-4 text-start">
-        <div class="col-lg-4">
-          <div class="d-flex align-items-center gap-2 mb-3">
-            <img src="/assets/images/logo_light.webp" alt="Trackify Logo" class="brand-logo-img" style="height: 32px; width: auto;">
+        <div class="col-sm-6 col-lg-3">
+          <div class="stat-metric-card">
+            <div class="stat-circle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </div>
+            <div>
+              <div class="stat-number">10,000+</div>
+              <div class="stat-label">Attendance Logs Computed</div>
+            </div>
           </div>
-          <p class="fs-7 mb-3" style="max-width: 320px; line-height: 1.6; color: var(--text-muted);">
-            A unified digital campus ecosystem built by students, for students. Powering attendance intelligence, campus cloud printing, and daily academic tools.
-          </p>
         </div>
 
-        <div class="col-6 col-lg-3">
-          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Products</h4>
-          <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-decoration-none" style="color: var(--text-muted);">Trackify Attendance</a></li>
-            <li><a href="/products/inks" class="text-decoration-none" style="color: var(--text-muted);">Inks Campus Print</a></li>
-            <li><a href="/login" class="text-decoration-none" style="color: var(--text-muted);">Student Portal</a></li>
-          </ul>
+        <div class="col-sm-6 col-lg-3">
+          <div class="stat-metric-card">
+            <div class="stat-circle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+            <div>
+              <div class="stat-number">200+</div>
+              <div class="stat-label">Course Subjects Managed</div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-6 col-lg-2">
-          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Product Guides</h4>
-          <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/products/trackify" class="text-decoration-none" style="color: var(--text-muted);">Attendance Math</a></li>
-            <li><a href="/products/inks" class="text-decoration-none" style="color: var(--text-muted);">Inks Print Guide</a></li>
-            <li><a href="/login" class="text-decoration-none" style="color: var(--text-muted);">Student Portal</a></li>
-          </ul>
+        <div class="col-sm-6 col-lg-3">
+          <div class="stat-metric-card">
+            <div class="stat-circle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="12 2 2 7 12 12 22 7 12 2"></polyline><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 17 22 12"></polyline></svg>
+            </div>
+            <div>
+              <div class="stat-number">5</div>
+              <div class="stat-label">Academic Departments</div>
+            </div>
+          </div>
         </div>
 
-        <div class="col-12 col-lg-3">
-          <h4 class="fw-bold fs-7 mb-3 text-uppercase" style="letter-spacing: 0.05em; color: var(--text-primary);">Trust &amp; Legal</h4>
-          <ul class="list-unstyled d-flex flex-column gap-2 fs-7">
-            <li><a href="/privacy-policy" class="text-decoration-none" style="color: var(--text-muted);">Privacy Policy</a></li>
-            <li><a href="/terms" class="text-decoration-none" style="color: var(--text-muted);">Terms &amp; Conditions</a></li>
-            <li><a href="/cookie-policy" class="text-decoration-none" style="color: var(--text-muted);">Cookie Policy</a></li>
-            <li><a href="#platform-overview" class="text-decoration-none" style="color: var(--text-muted);">OAuth Compliance Info</a></li>
-          </ul>
+        <div class="col-sm-6 col-lg-3">
+          <div class="stat-metric-card">
+            <div class="stat-circle-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div>
+              <div class="stat-number">50+</div>
+              <div class="stat-label">Verified Students</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="border-top border-glass pt-4 text-center fs-8" style="color: var(--text-muted); border-color: var(--border-color) !important;">
-        <p class="mb-0">&copy; 2026 Trackify. Built with Node, Postgres &amp; Modern Web.</p>
+    </div>
+  </section>
+
+  <!-- Final CTA Banner -->
+  <section class="cta-banner-section">
+    <div class="container">
+      <div class="cta-glass-banner">
+        
+        <div>
+          <span class="feature-eyebrow" style="color: var(--color-primary);">GET STARTED TODAY</span>
+          <h2 class="section-headline mb-3">
+            Your semester<br>starts now.
+          </h2>
+        </div>
+
+        <div class="cta-content-right">
+          <p class="section-desc mb-4" style="color: #475569;">
+            Join thousands of students managing attendance, assignments, and campus print workflows with absolute confidence.
+          </p>
+          <div class="d-flex align-items-center gap-3 flex-wrap">
+            <a href="/login" class="btn-hero-primary" style="background: #0b0f19;">
+              <span>Launch Student Portal</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+            <a href="/products/trackify" class="btn-hero-secondary" style="background: rgba(255, 255, 255, 0.8);">
+              <span>Explore Features</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Decorative isometric 3D shapes on right -->
+        <svg class="cta-floating-cubes" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M100 20 L160 55 L160 125 L100 160 L40 125 L40 55 Z" fill="url(#cubeGrad1)" stroke="#3b82f6" stroke-width="1.5"/>
+          <path d="M100 20 L160 55 L100 90 L40 55 Z" fill="#93c5fd" opacity="0.6"/>
+          <path d="M100 90 L160 55 L160 125 L100 160 Z" fill="#60a5fa" opacity="0.5"/>
+          <defs>
+            <linearGradient id="cubeGrad1" x1="40" y1="20" x2="160" y2="160" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#bfdbfe"/>
+              <stop offset="1" stop-color="#3b82f6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Multi-Column SaaS Footer -->
+  <footer class="saas-footer">
+    <div class="container">
+      <div class="row g-5 mb-5">
+        
+        <div class="col-lg-4">
+          <a class="nav-brand-logo mb-3 d-inline-flex" href="/" aria-label="Trackify Home">
+            <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 30px; width: auto; display: block;">
+          </a>
+          <p style="max-width: 320px; line-height: 1.6; margin-bottom: 0;">
+            A unified academic ecosystem for modern campuses. Built with ❤️ for students.
+          </p>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="footer-heading">Product</div>
+          <ul class="footer-links-list">
+            <li><a href="#engine">Attendance Engine</a></li>
+            <li><a href="/products/trackify">Bunk Calculator</a></li>
+            <li><a href="/products/inks">Campus Print Cloud</a></li>
+            <li><a href="/login">Student Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="footer-heading">Resources</div>
+          <ul class="footer-links-list">
+            <li><a href="/products/trackify">Attendance Math</a></li>
+            <li><a href="/products/inks">Printing Guide</a></li>
+            <li><a href="/privacy-policy">Google API Limited Use</a></li>
+            <li><a href="/login">Support Desk</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="footer-heading">Company</div>
+          <ul class="footer-links-list">
+            <li><a href="#impact">About Trackify</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="mailto:support@trackifyapp.co.in">Contact Us</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center pt-4 border-top border-light flex-wrap gap-2" style="font-size: 0.8rem; color: #94a3b8;">
+        <div>&copy; 2026 Trackify. All rights reserved.</div>
+        <div>Made by students, for a smarter tomorrow.</div>
       </div>
     </div>
   </footer>
 
-  <!-- Scroll Observer JavaScript -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-          }
-        });
-      }, { threshold: 0.15 });
-
-      document.querySelectorAll('.apple-reveal').forEach(el => observer.observe(el));
-    });
-  </script>
-
+  <!-- Bootstrap Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/assets/js/main.js"></script>
 </body>
 </html>

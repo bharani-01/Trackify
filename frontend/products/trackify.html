@@ -1,264 +1,1540 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trackify — Smart College Attendance & Timetable Companion</title>
-  <meta name="description" content="Explore Trackify: The smart student attendance tracker with dynamic timetables, 1-tap logging, and a mathematical bunk prediction engine to stay above 80%.">
-  <meta name="keywords" content="Trackify, attendance tracker, college attendance, student attendance app, timetable builder, attendance calculator, bunk calculator">
+  <title>Trackify — Smart College Attendance &amp; Timetable Companion</title>
+  <meta name="description" content="Explore Trackify: The premier student attendance engine with dynamic timetable schedules, 1-tap class logging, and a mathematical bunk prediction algorithm to stay safely above 80%.">
+  <meta name="keywords" content="Trackify, attendance tracker, college attendance, student attendance app, timetable builder, attendance calculator, bunk calculator, safe bunks">
+  <meta name="author" content="Trackify">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://app.trackifyapp.co.in/products/trackify">
   <meta name="theme-color" content="#2563eb">
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/css/style.css">
+  <!-- Open Graph / Meta -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://app.trackifyapp.co.in/products/trackify">
+  <meta property="og:title" content="Trackify — Smart College Attendance &amp; Timetable Companion">
+  <meta property="og:description" content="Never fall below 80%. Dynamic timetables, 1-tap logging, and real-time safe bunk calculations designed specifically for college students.">
+  <meta property="og:image" content="https://app.trackifyapp.co.in/assets/images/favicon-512.png">
+  <meta property="og:site_name" content="Trackify">
+
+  <!-- Favicons -->
   <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
-  <script>
-    (function() {
-      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      document.documentElement.setAttribute('data-theme', theme);
-      if (localStorage.getItem('sidebar-collapsed') === 'true') {
-        document.documentElement.classList.add('sidebar-collapsed');
+  <link rel="apple-touch-icon" href="/assets/images/favicon-192.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans, Inter, IBM Plex Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5.3 Framework -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+  <style>
+    :root {
+      --font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-primary-subtle: #eff6ff;
+      --color-primary-border: #bfdbfe;
+
+      --color-dark: #0b0f19;
+      --color-dark-card: #111827;
+      --color-dark-border: rgba(255, 255, 255, 0.08);
+
+      --color-text-main: #0f172a;
+      --color-text-muted: #64748b;
+      --color-text-subtle: #94a3b8;
+
+      --color-bg-page: #ffffff;
+      --color-bg-alt: #f8fafc;
+      --color-border-light: #e2e8f0;
+      --color-border-subtle: #f1f5f9;
+
+      --color-success: #10b981;
+      --color-success-bg: #ecfdf5;
+      --color-success-text: #047857;
+
+      --color-warning: #f59e0b;
+      --color-warning-bg: #fffbeb;
+      --color-warning-text: #b45309;
+
+      --color-danger: #ef4444;
+      --color-danger-bg: #fef2f2;
+      --color-danger-text: #b91c1c;
+
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 4px 12px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 16px 32px -4px rgba(15, 23, 42, 0.08), 0 6px 12px -4px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 10px 25px -3px rgba(15, 23, 42, 0.06), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-text-main);
+      background-color: var(--color-bg-page);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--color-text-main);
+      letter-spacing: -0.025em;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* Ambient Glow */
+    .hero-ambient-glow {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 900px;
+      height: 550px;
+      background: radial-gradient(circle at 50% 30%, rgba(219, 234, 254, 0.6) 0%, rgba(238, 242, 255, 0.35) 45%, rgba(255, 255, 255, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(40px);
+    }
+
+    /* Sticky SaaS Navbar */
+    .saas-nav {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.75);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      transition: all 0.2s ease;
+    }
+
+    .nav-brand-logo {
+      display: inline-flex;
+      align-items: center;
+      transition: opacity 0.15s ease;
+    }
+
+    .nav-brand-logo:hover {
+      opacity: 0.88;
+    }
+
+    .saas-nav .nav-link {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #475569;
+      padding: 0.5rem 0.9rem;
+      transition: color 0.15s ease;
+    }
+
+    .saas-nav .nav-link:hover {
+      color: var(--color-primary);
+    }
+
+    .saas-nav .nav-link.active {
+      color: var(--color-primary);
+    }
+
+    .saas-nav .dropdown-menu {
+      animation: navDropdownFade 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes navDropdownFade {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .saas-nav .dropdown-item:hover {
+      background-color: #f8fafc;
+    }
+
+    .btn-nav-primary {
+      background: var(--color-primary);
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-nav-primary:hover {
+      background: var(--color-primary-hover);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .btn-nav-ghost {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #475569;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-pill);
+      transition: color 0.15s ease;
+    }
+
+    .btn-nav-ghost:hover {
+      color: var(--color-text-main);
+    }
+
+    /* Hero Section */
+    .product-hero {
+      position: relative;
+      padding: 4.5rem 0 3.5rem 0;
+      z-index: 1;
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-display);
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #1e40af;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 5px 14px;
+      border-radius: var(--radius-pill);
+      margin-bottom: 1.5rem;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
       }
-    })();
-  </script>
+      70% {
+        box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 4.8vw, 3.85rem);
+      line-height: 1.1;
+      font-weight: 800;
+      color: var(--color-text-main);
+      margin-bottom: 1.35rem;
+      letter-spacing: -0.035em;
+    }
+
+    .text-gradient-blue {
+      color: var(--color-primary);
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: 1.15rem;
+      line-height: 1.65;
+      color: var(--color-text-muted);
+      max-width: 720px;
+      margin: 0 auto 2.25rem auto;
+    }
+
+    .btn-hero-primary {
+      background: #0b0f19;
+      color: #ffffff;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-hero-primary:hover {
+      background: #1e293b;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-hero-secondary {
+      background: #ffffff;
+      color: #334155;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 0.98rem;
+      padding: 0.85rem 1.65rem;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border-light);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-hero-secondary:hover {
+      background: #f8fafc;
+      color: #0f172a;
+      border-color: #cbd5e1;
+      transform: translateY(-1px);
+    }
+
+    /* Subject Live Preview Mockup */
+    .hero-mockup-wrapper {
+      max-width: 820px;
+      margin: 3.5rem auto 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: 0 20px 45px -8px rgba(15, 23, 42, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.05);
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .mockup-header-bar {
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0.9rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mockup-window-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mockup-control-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .mockup-card-content {
+      padding: 1.75rem;
+    }
+
+    .subject-pill-tag {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #dbeafe;
+    }
+
+    .attendance-percentage-display {
+      font-family: var(--font-display);
+      font-size: 3.25rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+      color: #0f172a;
+    }
+
+    .attendance-progress-track {
+      height: 10px;
+      background: #f1f5f9;
+      border-radius: 9999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .attendance-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6 0%, #10b981 100%);
+      border-radius: 9999px;
+      transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .target-threshold-marker {
+      position: absolute;
+      top: -2px;
+      bottom: -2px;
+      left: 80%;
+      width: 2px;
+      background: #0f172a;
+      z-index: 2;
+    }
+
+    /* Live Interactive Calculator Section */
+    .calculator-section {
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border-light);
+      border-bottom: 1px solid var(--color-border-light);
+      padding: 5.5rem 0;
+      position: relative;
+    }
+
+    .calc-card-container {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 2.5rem;
+    }
+
+    .calc-input-label {
+      font-family: var(--font-display);
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 0.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .calc-input-field {
+      width: 100%;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #0f172a;
+      transition: all 0.15s ease;
+    }
+
+    .calc-input-field:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .calc-pill-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .calc-target-btn {
+      flex: 1;
+      padding: 0.6rem 0.5rem;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+      color: #475569;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .calc-target-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+
+    .calc-target-btn.active {
+      background: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25);
+    }
+
+    .calc-result-box {
+      background: #0b0f19;
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 2.25rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calc-result-box::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .calc-result-stat {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    .calc-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .calc-formula-display {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.85rem 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #94a3b8;
+    }
+
+    /* Comparison Section */
+    .comparison-section {
+      padding: 5.5rem 0;
+    }
+
+    .compare-card {
+      background: #ffffff;
+      border: 1px solid var(--color-border-light);
+      border-radius: 18px;
+      padding: 2.25rem;
+      height: 100%;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .compare-card.card-trackify {
+      border-color: #bfdbfe;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: 0 10px 30px -4px rgba(37, 99, 235, 0.08);
+    }
+
+    .compare-heading {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .compare-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .compare-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.55;
+    }
+
+    .compare-icon-wrap {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .compare-icon-danger {
+      background: #fef2f2;
+      color: #ef4444;
+    }
+
+    .compare-icon-success {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    /* 6 Core Feature Grid */
+    .features-section {
+      background: #f8fafc;
+      border-top: 1px solid var(--color-border-light);
+      padding: 5.5rem 0;
+    }
+
+    .saas-feature-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 2rem;
+      height: 100%;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .saas-feature-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px -4px rgba(15, 23, 42, 0.08);
+      border-color: #cbd5e1;
+    }
+
+    .feature-icon-chip {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.15rem;
+    }
+
+    .feature-chip-blue {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    .feature-chip-emerald {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .feature-chip-violet {
+      background: #f5f3ff;
+      color: #7c3aed;
+    }
+
+    .feature-chip-amber {
+      background: #fffbeb;
+      color: #d97706;
+    }
+
+    .feature-chip-rose {
+      background: #fef2f2;
+      color: #dc2626;
+    }
+
+    .feature-chip-slate {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .feature-card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.65rem;
+    }
+
+    .feature-card-text {
+      font-size: 0.92rem;
+      color: #64748b;
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    /* Workflow 3-Step */
+    .workflow-section {
+      padding: 5.5rem 0;
+    }
+
+    .step-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 2rem;
+      height: 100%;
+      position: relative;
+    }
+
+    .step-num-badge {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      background: var(--color-primary-subtle);
+      border: 1px solid var(--color-primary-border);
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+    }
+
+    /* CTA Section */
+    .product-cta-section {
+      padding: 5.5rem 0;
+      background: #ffffff;
+    }
+
+    .cta-dark-card {
+      background: #0b0f19;
+      color: #ffffff;
+      border-radius: 24px;
+      padding: 4.5rem 3rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cta-dark-card::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 650px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.35) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-dark-card h2 {
+      color: #ffffff;
+      font-size: clamp(2rem, 3.8vw, 3rem);
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.03em;
+    }
+
+    .cta-dark-card p {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      max-width: 620px;
+      margin: 0 auto 2.25rem auto;
+      line-height: 1.6;
+    }
+
+    /* SaaS Footer */
+    .saas-footer {
+      background: #ffffff;
+      border-top: 1px solid #f1f5f9;
+      padding: 4.5rem 0 2.25rem 0;
+      font-size: 0.88rem;
+      color: #64748b;
+    }
+
+    .footer-heading {
+      font-family: var(--font-display);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #0f172a;
+      margin-bottom: 1.2rem;
+    }
+
+    .footer-links-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .footer-links-list a {
+      color: #64748b;
+      transition: color 0.15s ease;
+    }
+
+    .footer-links-list a:hover {
+      color: var(--color-primary);
+    }
+
+    @media (max-width: 991.98px) {
+      .calc-result-box {
+        margin-top: 1.5rem;
+      }
+      .cta-dark-card {
+        padding: 3.5rem 1.75rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <nav class="navbar navbar-expand-lg glass-nav sticky-top">
-    <div class="container py-2">
-      <div class="d-flex align-items-center gap-3">
-        <a href="/" class="btn btn-glass btn-sm d-inline-flex align-items-center gap-2 text-decoration-none">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-          <span>All Products</span>
-        </a>
-        <a class="navbar-brand d-flex align-items-center mb-0" href="/">
-          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 28px; width: auto;">
-        </a>
-      </div>
-      <div class="d-flex align-items-center gap-2">
-        <a href="/login" class="btn btn-glow btn-sm px-4">Launch Trackify ↗</a>
+  <!-- Sticky SaaS Navbar -->
+  <nav class="navbar navbar-expand-lg saas-nav">
+    <div class="container">
+      <a class="nav-brand-logo" href="/" aria-label="Trackify Home">
+        <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto; display: block;">
+      </a>
+
+      <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#trackifyNavbar" aria-controls="trackifyNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="trackifyNavbar">
+        <ul class="navbar-nav mx-auto my-2 my-lg-0 gap-lg-1">
+          <!-- Products Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Products
+            </a>
+            <ul class="dropdown-menu shadow-lg border-0 py-2 px-2" style="border-radius: 14px; min-width: 310px; box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.06); border: 1px solid rgba(226, 232, 240, 0.85) !important;">
+              <li>
+                <a class="dropdown-item p-2.5 rounded-3 d-flex align-items-center gap-3 text-decoration-none" href="/products/trackify" style="background-color: #eff6ff;">
+                  <div style="width: 38px; height: 38px; border-radius: 10px; background: #2563eb; color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                      <span>Trackify</span>
+                      <span class="badge" style="background: #2563eb; color: #ffffff; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Active</span>
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.74rem;">Attendance &amp; bunk intelligence</div>
+                  </div>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item p-2.5 rounded-3 d-flex align-items-center gap-3 mt-1 text-decoration-none" href="/products/inks">
+                  <div style="width: 38px; height: 38px; border-radius: 10px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                      <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                      <rect x="6" y="14" width="12" height="8"></rect>
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="fw-bold text-dark d-flex align-items-center gap-2" style="font-size: 0.88rem;">
+                      <span>Inks</span>
+                      <span class="badge" style="background: #d1fae5; color: #047857; font-size: 0.65rem; font-weight: 700; padding: 2px 6px; border-radius: 4px;">Cloud Print</span>
+                    </div>
+                    <div class="text-secondary" style="font-size: 0.74rem;">Zero-queue campus document printing</div>
+                  </div>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-item"><a class="nav-link" href="#calculator">Live Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="#reality">Why Trackify</a></li>
+          <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+          <li class="nav-item"><a class="nav-link" href="#workflow">How It Works</a></li>
+        </ul>
+
+        <div class="d-flex align-items-center gap-2 mt-2 mt-lg-0">
+          <a href="/login" class="btn-nav-ghost">Sign In</a>
+          <a href="/login" class="btn-nav-primary">
+            <span>Launch Trackify</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- Product Detail Hero -->
-  <header class="product-detail-hero text-center position-relative">
-    <div class="container py-4">
+  <!-- Hero Section -->
+  <header class="product-hero text-center">
+    <div class="hero-ambient-glow"></div>
+    <div class="container position-relative">
       <div class="row justify-content-center">
-        <div class="col-lg-9 animate-fade-in-up">
-          <div class="d-flex justify-content-center mb-3">
-            <span class="student-hero-badge">
-              <span class="product-tag tag-live py-0.5 px-2">LIVE PLATFORM</span>
-              STUDENT ATTENDANCE &amp; TIMETABLE
+        <div class="col-lg-10">
+          <div class="d-inline-block">
+            <span class="live-badge">
+              <span class="pulse-dot"></span>
+              ATTENDANCE INTELLIGENCE ENGINE &bull; v2.4 LIVE
             </span>
           </div>
-          <h1 class="display-4 fw-extrabold mb-3">
-            Never Fall Below 80%. Own Your Semester With <span class="text-primary">Trackify</span>.
+
+          <h1 class="hero-title">
+            Never Fall Below 80%.<br>
+            Own Your Semester With <span class="text-gradient-blue">Trackify</span>.
           </h1>
-          <p class="lead text-secondary mb-4 fs-5 mx-auto" style="max-width: 750px;">
-            A mathematical attendance engine designed specifically for college students. Map your weekly schedule, log classes in one tap, and get real-time safe bunk calculations before every skipped lecture.
+
+          <p class="hero-subtitle">
+            A deterministic mathematical attendance engine designed for engineering and college coursework. Map your timetable once, record attendance in one tap, and calculate safe bunks before missing a single lecture.
           </p>
+
           <div class="d-flex justify-content-center gap-3 flex-wrap">
-            <a href="/login" class="btn btn-glow btn-lg px-5 py-3">Launch Trackify Portal ↗</a>
-            <a href="/register" class="btn btn-glass btn-lg px-4 py-3">Create Free Account</a>
+            <a href="/login" class="btn-hero-primary">
+              <span>Launch Trackify Portal</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </a>
+            <a href="#calculator" class="btn-hero-secondary">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><path d="M16 10h.01"></path><path d="M12 10h.01"></path><path d="M8 10h.01"></path><path d="M12 14h.01"></path><path d="M8 14h.01"></path><path d="M12 18h.01"></path><path d="M8 18h.01"></path></svg>
+              <span>Try Live Bunk Calculator</span>
+            </a>
           </div>
+
+          <!-- Hero Product Showcase: Trackify Subject Card -->
+          <div class="hero-mockup-wrapper">
+            <div class="mockup-header-bar">
+              <div class="d-flex align-items-center gap-3">
+                <div class="mockup-window-controls">
+                  <div class="mockup-control-dot dot-red"></div>
+                  <div class="mockup-control-dot dot-yellow"></div>
+                  <div class="mockup-control-dot dot-green"></div>
+                </div>
+                <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600; color: #64748b;">
+                  trackify://app/subjects/CS302
+                </span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-light text-secondary border px-2.5 py-1" style="font-family: var(--font-mono); font-size: 0.72rem;">
+                  Semester 5 &bull; Target: 80%
+                </span>
+              </div>
+            </div>
+
+            <div class="mockup-card-content">
+              <div class="row align-items-center g-4">
+                <div class="col-md-7">
+                  <div class="d-flex align-items-center gap-2 mb-2">
+                    <span class="subject-pill-tag">CS302</span>
+                    <span class="fw-bold text-dark fs-6">Database Management Systems</span>
+                  </div>
+                  <div class="d-flex align-items-baseline gap-3 mb-2">
+                    <div class="attendance-percentage-display">84.6%</div>
+                    <span class="badge bg-success-subtle text-success-emphasis border border-success-subtle px-2.5 py-1.5 fw-bold" style="font-size: 0.78rem;">
+                      Safe &bull; +4.6% Above Target
+                    </span>
+                  </div>
+
+                  <!-- Progress Bar with 80% Target Marker -->
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between text-secondary mb-1" style="font-size: 0.78rem; font-family: var(--font-mono);">
+                      <span>Current: 84.6%</span>
+                      <span class="fw-bold text-dark">Target Line: 80.0%</span>
+                    </div>
+                    <div class="attendance-progress-track">
+                      <div class="attendance-progress-fill" style="width: 84.6%;"></div>
+                      <div class="target-threshold-marker" title="80% University Rule"></div>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-4 text-secondary" style="font-size: 0.85rem;">
+                    <div><strong class="text-dark">33</strong> Attended</div>
+                    <div><strong class="text-dark">39</strong> Total Held</div>
+                    <div><strong class="text-dark">6</strong> Missed</div>
+                  </div>
+                </div>
+
+                <div class="col-md-5">
+                  <div class="p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                    <div class="text-uppercase fw-bold text-secondary mb-1" style="font-size: 0.68rem; letter-spacing: 0.06em;">
+                      Deterministic Prediction
+                    </div>
+                    <div class="h5 fw-extrabold text-success mb-2 d-flex align-items-center gap-1.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                      <span>Safe to skip 2 lectures</span>
+                    </div>
+                    <p class="text-secondary mb-3" style="font-size: 0.8rem; line-height: 1.45;">
+                      Skipping 2 hours will lower your percentage to <strong>80.5%</strong>, remaining safely clear of detention thresholds.
+                    </p>
+                    <div class="d-flex gap-1.5">
+                      <button class="btn btn-sm btn-primary flex-fill fw-bold py-1.5" style="font-size: 0.75rem;">+ Present</button>
+                      <button class="btn btn-sm btn-outline-danger flex-fill fw-bold py-1.5" style="font-size: 0.75rem;">Absent</button>
+                      <button class="btn btn-sm btn-outline-secondary flex-fill fw-bold py-1.5" style="font-size: 0.75rem;">On-Duty</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
   </header>
 
-  <!-- The Problem vs Solution -->
-  <section class="container my-5 py-4">
-    <div class="text-center mb-5">
-      <h2 class="fs-2 fw-bold">Why College Students Need Trackify</h2>
-      <p class="text-secondary fs-6">Say goodbye to manual register guesswork and surprise exam hall detentions.</p>
-    </div>
-    <div class="row g-4">
-      <div class="col-md-6">
-        <div class="glass-card h-100 p-4 border-danger border-opacity-25" style="border-left: 4px solid var(--danger) !important;">
-          <h3 class="h5 fw-bold text-danger mb-3 d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-            The Old, Stressful Way
-          </h3>
-          <ul class="text-secondary mb-0 d-flex flex-direction-column gap-2 ps-3" style="font-size: 0.92rem; line-height: 1.6;">
-            <li>Guessing if you have enough attendance percentage before taking a day off.</li>
-            <li>Messy Excel sheets or notebook tallies that get lost or out of sync.</li>
-            <li>Finding out too late from college admin that you're under 75% or 80%.</li>
-            <li>No distinction between theory lectures, 2-hour labs, or On-Duty leaves.</li>
-          </ul>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="glass-card h-100 p-4 border-success border-opacity-25" style="border-left: 4px solid var(--success) !important;">
-          <h3 class="h5 fw-bold text-success mb-3 d-flex align-items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-            The Trackify Way
-          </h3>
-          <ul class="text-secondary mb-0 d-flex flex-direction-column gap-2 ps-3" style="font-size: 0.92rem; line-height: 1.6;">
-            <li>Exact mathematical margin: know if you can skip 2 classes or must attend the next 3.</li>
-            <li>1-tap daily schedule dashboard with zero configuration overhead.</li>
-            <li>Automated alarms and browser alerts when any subject approaches your safety threshold.</li>
-            <li>Full exportable history and reports for exam hall clearances and condonation proofs.</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Deep Feature Breakdown -->
-  <section class="container my-5 py-4">
-    <div class="text-center mb-5">
-      <h2 class="fs-2 fw-bold">Engineered For Real College Life</h2>
-      <p class="text-secondary fs-6">Every feature built to give you total control over your academic attendance.</p>
-    </div>
-
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
-          </div>
-          <h3 class="h5 fw-bold mb-2">Bunk Prediction Engine</h3>
-          <p class="text-secondary fs-7 mb-0">
-            Real-time algorithms dynamically compute your buffer. If you're at 84%, it tells you exactly how many lectures you can safely miss without dipping below your threshold.
+  <!-- Interactive Live Bunk Calculator Section -->
+  <section class="calculator-section" id="calculator">
+    <div class="container">
+      <div class="row justify-content-center mb-5 text-center">
+        <div class="col-lg-8">
+          <span class="text-primary fw-bold text-uppercase" style="font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.1em;">
+            Interactive Mathematical Tool
+          </span>
+          <h2 class="display-6 fw-extrabold mt-2 mb-3">Test Your Own Attendance Right Now</h2>
+          <p class="text-secondary fs-6 mb-0">
+            Enter your current lecture counts to see exactly how many classes you can afford to skip, or how many you must attend to escape the danger zone.
           </p>
         </div>
       </div>
 
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          </div>
-          <h3 class="h5 fw-bold mb-2">Dynamic Weekly Timetable</h3>
-          <p class="text-secondary fs-7 mb-0">
-            Customize your schedule Monday through Saturday. Supports consecutive lab slots, break intervals, classroom numbers, and faculty details.
-          </p>
-        </div>
-      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="calc-card-container">
+            <div class="row g-4 align-items-stretch">
+              
+              <!-- Inputs Column -->
+              <div class="col-lg-6">
+                <h3 class="h5 fw-bold mb-4 text-dark">Lecture Metrics</h3>
 
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-          <h3 class="h5 fw-bold mb-2">1-Tap Daily Marking</h3>
-          <p class="text-secondary fs-7 mb-0">
-            Your today's schedule loads automatically. Mark Present, Absent, or On-Duty (OD) in one tap. Your overall and subject stats update in milliseconds.
-          </p>
-        </div>
-      </div>
+                <!-- Target Selector -->
+                <div class="mb-4">
+                  <div class="calc-input-label">
+                    <span>College Target Threshold</span>
+                    <span id="labelTargetPct" class="fw-bold text-primary font-monospace">80%</span>
+                  </div>
+                  <div class="calc-pill-group">
+                    <button type="button" class="calc-target-btn" data-target="75">75% (Min)</button>
+                    <button type="button" class="calc-target-btn active" data-target="80">80% (Standard)</button>
+                    <button type="button" class="calc-target-btn" data-target="85">85% (Safe)</button>
+                  </div>
+                </div>
 
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
-          </div>
-          <h3 class="h5 fw-bold mb-2">Subject-Wise Analytics</h3>
-          <p class="text-secondary fs-7 mb-0">
-            View attendance health cards for each course. Clear color indicators highlight green (safe), yellow (warning), and red (danger zone).
-          </p>
-        </div>
-      </div>
+                <!-- Total Classes Held -->
+                <div class="mb-3">
+                  <div class="calc-input-label">
+                    <span>Total Lectures Held</span>
+                    <span class="text-secondary" style="font-size: 0.75rem;">Conducted so far</span>
+                  </div>
+                  <input type="number" id="inputTotal" class="calc-input-field" value="40" min="1" max="250">
+                </div>
 
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-          </div>
-          <h3 class="h5 fw-bold mb-2">Intelligent Push Alarms</h3>
-          <p class="text-secondary fs-7 mb-0">
-            Get automated reminders if you miss attendance logging or when your subject attendance drops dangerously close to the 80% mark.
-          </p>
-        </div>
-      </div>
+                <!-- Classes Attended -->
+                <div class="mb-4">
+                  <div class="calc-input-label">
+                    <span>Lectures Attended</span>
+                    <span class="text-secondary" style="font-size: 0.75rem;">Present + Approved OD</span>
+                  </div>
+                  <input type="number" id="inputAttended" class="calc-input-field" value="35" min="0" max="250">
+                </div>
 
-      <div class="col-md-4">
-        <div class="detail-feature-card">
-          <div class="product-icon-wrap product-icon-trackify mb-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <!-- Quick Presets -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <span class="text-secondary" style="font-size: 0.78rem; font-weight: 600;">Presets:</span>
+                  <button type="button" class="btn btn-sm btn-light border py-0 px-2" style="font-size: 0.75rem;" onclick="setCalcValues(40, 35, 80)">Safe (87.5%)</button>
+                  <button type="button" class="btn btn-sm btn-light border py-0 px-2" style="font-size: 0.75rem;" onclick="setCalcValues(40, 32, 80)">Borderline (80%)</button>
+                  <button type="button" class="btn btn-sm btn-light border py-0 px-2" style="font-size: 0.75rem;" onclick="setCalcValues(40, 28, 80)">Shortage (70%)</button>
+                </div>
+              </div>
+
+              <!-- Output Verdict Column -->
+              <div class="col-lg-6">
+                <div class="calc-result-box">
+                  <div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                      <span class="text-uppercase text-secondary fw-bold" style="font-size: 0.74rem; letter-spacing: 0.08em;">
+                        Calculated Status
+                      </span>
+                      <span id="calcStatusBadge" class="calc-status-badge bg-success-subtle text-success">
+                        Safe Margin
+                      </span>
+                    </div>
+
+                    <div class="d-flex align-items-baseline gap-2 mb-3">
+                      <div id="calcPercentOutput" class="calc-result-stat text-white">87.5%</div>
+                      <span class="text-secondary" style="font-size: 0.95rem;">Attendance</span>
+                    </div>
+
+                    <!-- Dynamic Verdict Text -->
+                    <div id="calcVerdictTitle" class="h5 fw-bold text-white mb-2">
+                      You can safely miss 3 more lecture(s).
+                    </div>
+                    <p id="calcVerdictDesc" class="text-secondary mb-4" style="font-size: 0.88rem; line-height: 1.55;">
+                      Your attendance will settle at 81.4%, staying strictly above your required 80% threshold without penalty.
+                    </p>
+                  </div>
+
+                  <!-- Math Formula Box -->
+                  <div class="calc-formula-display">
+                    <div class="fw-bold text-white mb-1" style="font-size: 0.74rem; letter-spacing: 0.04em;">DETERMINISTIC FORMULA</div>
+                    <div id="calcFormulaText">S = ⌊ (Attended / Target) - Total ⌋</div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
-          <h3 class="h5 fw-bold mb-2">Exportable Audit Records</h3>
-          <p class="text-secondary fs-7 mb-0">
-            Generate detailed CSV &amp; printable logs of your semester attendance history to present to mentors, proctors, or department heads.
-          </p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Quick Setup 3 Steps -->
-  <section class="container my-5 py-4">
-    <div class="glass-card p-5">
-      <div class="text-center mb-5">
-        <h2 class="fs-2 fw-bold">Get Started in 2 Minutes</h2>
-        <p class="text-secondary fs-6">No complicated setup. Built to fit right into your daily college routine.</p>
+  <!-- Reality Check: Guesswork vs Deterministic Precision -->
+  <section class="comparison-section" id="reality">
+    <div class="container">
+      <div class="row justify-content-center mb-5 text-center">
+        <div class="col-lg-8">
+          <span class="text-primary fw-bold text-uppercase" style="font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.1em;">
+            The Reality Check
+          </span>
+          <h2 class="display-6 fw-extrabold mt-2 mb-3">Why College Students Need Trackify</h2>
+          <p class="text-secondary fs-6 mb-0">
+            Say goodbye to mental math on exam week, unreliable registers, and surprise condonation fines.
+          </p>
+        </div>
       </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Old Way -->
+        <div class="col-md-6 col-lg-5">
+          <div class="compare-card">
+            <div class="compare-heading text-danger">
+              <div class="compare-icon-wrap compare-icon-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </div>
+              <span>The Guesswork Way</span>
+            </div>
+            <ul class="compare-list">
+              <li>
+                <div class="compare-icon-wrap compare-icon-danger">✕</div>
+                <div><strong>Mental guesswork:</strong> Wondering if skipping tomorrow morning's lecture pushes you under 75%.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-danger">✕</div>
+                <div><strong>Messy loose notebooks:</strong> Tallies and Excel sheets that become outdated within a week.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-danger">✕</div>
+                <div><strong>Late portal updates:</strong> Finding out too late from your ERP portal that you are in the detention zone.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-danger">✕</div>
+                <div><strong>Unrecorded On-Duty:</strong> Symposia, sports, and club ODs getting marked absent without proof.</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Trackify Way -->
+        <div class="col-md-6 col-lg-5">
+          <div class="compare-card card-trackify">
+            <div class="compare-heading text-primary">
+              <div class="compare-icon-wrap compare-icon-success">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <span>The Trackify Engine</span>
+            </div>
+            <ul class="compare-list">
+              <li>
+                <div class="compare-icon-wrap compare-icon-success">✓</div>
+                <div><strong>Exact mathematical margin:</strong> Know instantly whether you can skip 2 lectures or need 3 classes to recover.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-success">✓</div>
+                <div><strong>1-tap daily routine:</strong> Your daily timetable loads automatically every morning. Log in under 5 seconds.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-success">✓</div>
+                <div><strong>Proactive shortage alerts:</strong> Notifications before any subject breaches your target threshold.</div>
+              </li>
+              <li>
+                <div class="compare-icon-wrap compare-icon-success">✓</div>
+                <div><strong>Audit-ready logs:</strong> Timestamped history of every lecture for proctors and condonation clearance.</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Features Grid (6 Real Capabilities) -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="row justify-content-center mb-5 text-center">
+        <div class="col-lg-8">
+          <span class="text-primary fw-bold text-uppercase" style="font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.1em;">
+            Engineered For Real College Life
+          </span>
+          <h2 class="display-6 fw-extrabold mt-2 mb-3">Six Tools Built For Total Academic Control</h2>
+          <p class="text-secondary fs-6 mb-0">
+            Every feature designed to eliminate confusion and protect your eligibility for semester exams.
+          </p>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <!-- 1. Bunk Engine -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-blue">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg>
+              </div>
+              <h3 class="feature-card-title">Deterministic Bunk Predictor</h3>
+              <p class="feature-card-text">
+                Dynamic algorithms project your future attendance trajectory. Instantly know your safe skip allowance without risking detention.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              Target: 75% &bull; 80% &bull; 85% rules
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Timetable -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-emerald">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <h3 class="feature-card-title">Multi-Slot Weekly Schedule</h3>
+              <p class="feature-card-text">
+                Configure day orders or weekly Mon-Sat grids with lab blocks, room numbers, faculty initials, and break intervals.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              Supports 2-hr practical lab blocks
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 1-Tap Marking -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-violet">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <h3 class="feature-card-title">1-Tap Fast Marking</h3>
+              <p class="feature-card-text">
+                Today's schedule loads automatically on your dashboard. Mark Present, Absent, or On-Duty in one tap with sub-50ms sync.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              Real-time ledger audit trail
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Health Matrix -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-amber">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              </div>
+              <h3 class="feature-card-title">Subject Health Matrix</h3>
+              <p class="feature-card-text">
+                At-a-glance health badges across all semester courses. Distinct green (optimal), amber (warning), and red (danger) tiers.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              Clear visual threshold tiers
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Shortage Alerts -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-rose">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+              </div>
+              <h3 class="feature-card-title">Automated Shortage Alarms</h3>
+              <p class="feature-card-text">
+                Get proactive browser alerts when any subject approaches your safety margin. Never face surprise condonation warnings.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              Triggered 2 classes before breach
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Ledger Reports -->
+        <div class="col-md-6 col-lg-4">
+          <div class="saas-feature-card">
+            <div>
+              <div class="feature-icon-chip feature-chip-slate">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </div>
+              <h3 class="feature-card-title">Audit-Ready Ledger Exports</h3>
+              <p class="feature-card-text">
+                Generate timestamped attendance history statements for mentor sessions, HOD sign-offs, and exam hall clearance proofs.
+              </p>
+            </div>
+            <div class="pt-3 border-top mt-3 text-secondary" style="font-size: 0.76rem; font-family: var(--font-mono);">
+              One-click CSV &amp; printable logs
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3-Step Setup Workflow -->
+  <section class="workflow-section" id="workflow">
+    <div class="container">
+      <div class="row justify-content-center mb-5 text-center">
+        <div class="col-lg-8">
+          <span class="text-primary fw-bold text-uppercase" style="font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.1em;">
+            Simple Onboarding
+          </span>
+          <h2 class="display-6 fw-extrabold mt-2 mb-3">Up and Running in 2 Minutes</h2>
+          <p class="text-secondary fs-6 mb-0">
+            No convoluted setups. Built to seamlessly integrate into your daily student routine.
+          </p>
+        </div>
+      </div>
+
       <div class="row g-4">
         <div class="col-md-4">
-          <div class="workflow-step">
-            <div class="step-number">1</div>
-            <div>
-              <h3 class="h5 fw-bold mb-1">Add Your Subjects</h3>
-              <p class="text-secondary fs-7 mb-0">Enter your course names, course codes, and set your target percentage (e.g. 80% or 75%).</p>
-            </div>
+          <div class="step-card">
+            <div class="step-num-badge">01</div>
+            <h3 class="h5 fw-bold mb-2">Declare Subjects &amp; Target</h3>
+            <p class="text-secondary fs-6 mb-0">
+              Input your course codes, faculty names, and specify your university target requirement (e.g. 75% or 80%).
+            </p>
           </div>
         </div>
+
         <div class="col-md-4">
-          <div class="workflow-step">
-            <div class="step-number">2</div>
-            <div>
-              <h3 class="h5 fw-bold mb-1">Map Your Timetable</h3>
-              <p class="text-secondary fs-7 mb-0">Fill out your weekly class schedule once. Trackify automatically sets up your daily dashboard.</p>
-            </div>
+          <div class="step-card">
+            <div class="step-num-badge">02</div>
+            <h3 class="h5 fw-bold mb-2">Map Your Timetable</h3>
+            <p class="text-secondary fs-6 mb-0">
+              Enter your weekly lecture schedule once. Trackify automatically synchronizes your day-to-day class dashboard.
+            </p>
           </div>
         </div>
+
         <div class="col-md-4">
-          <div class="workflow-step">
-            <div class="step-number">3</div>
-            <div>
-              <h3 class="h5 fw-bold mb-1">Tap Daily &amp; Predict</h3>
-              <p class="text-secondary fs-7 mb-0">Mark classes with 1 tap. Trackify calculates safe bunks and keeps you confident all semester.</p>
-            </div>
+          <div class="step-card">
+            <div class="step-num-badge">03</div>
+            <h3 class="h5 fw-bold mb-2">Log Daily &amp; Predict</h3>
+            <p class="text-secondary fs-6 mb-0">
+              Tap Present, Absent, or OD after each lecture. Trackify computes your safe bunk margin with mathematical precision.
+            </p>
           </div>
         </div>
-      </div>
-      <div class="text-center mt-4">
-        <a href="/login" class="btn btn-glow btn-lg px-5">Open Trackify Now ↗</a>
       </div>
     </div>
   </section>
 
-  <!-- CTA Banner -->
-  <section class="container my-5 py-4">
-    <div class="glass-card text-center p-5 border-primary border-opacity-25" style="background: radial-gradient(circle at 50% 50%, var(--primary-subtle), transparent 80%);">
-      <h2 class="display-6 fw-bold mb-3">Ready to Take the Stress Out of College Attendance?</h2>
-      <p class="text-secondary mx-auto mb-4 fs-6" style="max-width: 600px;">
-        Join thousands of students who never have to worry about attendance shortfalls or surprise exam hall detentions.
-      </p>
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
-        <a href="/login" class="btn btn-glow btn-lg px-5 py-3">Launch Trackify Portal ↗</a>
-        <a href="/" class="btn btn-glass btn-lg px-4 py-3">Explore Other Products</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="border-top border-glass py-4 mt-5 text-center text-secondary">
+  <!-- High-Impact Closing CTA -->
+  <section class="product-cta-section">
     <div class="container">
-      <div class="d-flex flex-wrap justify-content-center gap-4 mb-2" style="font-size: 0.85rem;">
-        <a href="/" class="text-secondary text-decoration-none">Ecosystem Home</a>
-        <a href="/products/inks" class="text-secondary text-decoration-none">Inks Campus Print</a>
-        <a href="/privacy-policy" class="text-secondary text-decoration-none">Privacy Policy</a>
-        <a href="/terms" class="text-secondary text-decoration-none">Terms &amp; Conditions</a>
+      <div class="cta-dark-card">
+        <h2>Eliminate Attendance Stress Forever.</h2>
+        <p>
+          Join thousands of college students managing their classes with mathematical certainty and zero exam-hall surprises.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="/login" class="btn-hero-primary" style="background: var(--color-primary);">
+            <span>Launch Trackify Portal</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </a>
+          <a href="/products/inks" class="btn-hero-secondary" style="background: rgba(255, 255, 255, 0.08); color: #ffffff; border-color: rgba(255, 255, 255, 0.15);">
+            <span>Explore Inks Print Cloud</span>
+          </a>
+        </div>
       </div>
-      <p class="mb-0 fs-8">&copy; 2026 Trackify. Built exclusively for students.</p>
+    </div>
+  </section>
+
+  <!-- Multi-Column SaaS Footer -->
+  <footer class="saas-footer">
+    <div class="container">
+      <div class="row g-5 mb-5">
+        
+        <div class="col-lg-4">
+          <a class="nav-brand-logo mb-3 d-inline-flex" href="/" aria-label="Trackify Home">
+            <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 30px; width: auto; display: block;">
+          </a>
+          <p style="max-width: 320px; line-height: 1.6; margin-bottom: 0;">
+            Trackify is an academic companion engineered to eliminate attendance anxiety and simplify campus life.
+          </p>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-2">
+          <div class="footer-heading">Products</div>
+          <ul class="footer-links-list">
+            <li><a href="/products/trackify">Trackify Attendance</a></li>
+            <li><a href="/products/inks">Inks Print Cloud</a></li>
+            <li><a href="/login">Student Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="footer-heading">Resources</div>
+          <ul class="footer-links-list">
+            <li><a href="#calculator">Bunk Calculator</a></li>
+            <li><a href="#reality">The Trackify Way</a></li>
+            <li><a href="/privacy-policy">Google API Limited Use</a></li>
+            <li><a href="/privacy-policy">Data Privacy</a></li>
+          </ul>
+        </div>
+
+        <div class="col-6 col-md-4 col-lg-3">
+          <div class="footer-heading">Company</div>
+          <ul class="footer-links-list">
+            <li><a href="/">About Trackify</a></li>
+            <li><a href="/terms">Terms of Service</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="mailto:support@trackifyapp.co.in">Contact Support</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center pt-4 border-top border-light flex-wrap gap-2" style="font-size: 0.8rem; color: #94a3b8;">
+        <div>&copy; 2026 Trackify. Built with precision for students.</div>
+        <div>All rights reserved.</div>
+      </div>
     </div>
   </footer>
 
+  <!-- Bootstrap 5.3 JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="/assets/js/main.js"></script>
+
+  <!-- Interactive Live Bunk Calculator Logic -->
+  <script>
+    let currentTargetPct = 80;
+
+    const inputTotal = document.getElementById('inputTotal');
+    const inputAttended = document.getElementById('inputAttended');
+    const calcPercentOutput = document.getElementById('calcPercentOutput');
+    const calcStatusBadge = document.getElementById('calcStatusBadge');
+    const calcVerdictTitle = document.getElementById('calcVerdictTitle');
+    const calcVerdictDesc = document.getElementById('calcVerdictDesc');
+    const calcFormulaText = document.getElementById('calcFormulaText');
+    const labelTargetPct = document.getElementById('labelTargetPct');
+    const targetButtons = document.querySelectorAll('.calc-target-btn');
+
+    function calculateAttendance() {
+      const total = parseInt(inputTotal.value, 10) || 0;
+      const attended = parseInt(inputAttended.value, 10) || 0;
+      const target = currentTargetPct / 100;
+
+      if (total <= 0) {
+        calcPercentOutput.textContent = '0.0%';
+        calcVerdictTitle.textContent = 'Enter lecture counts';
+        calcVerdictDesc.textContent = 'Please enter valid numbers for total lectures held and attended.';
+        return;
+      }
+
+      if (attended > total) {
+        calcPercentOutput.textContent = '100.0%';
+        calcVerdictTitle.textContent = 'Attended cannot exceed total held';
+        calcVerdictDesc.textContent = 'Please check your inputs.';
+        return;
+      }
+
+      const currentPct = (attended / total) * 100;
+      calcPercentOutput.textContent = currentPct.toFixed(1) + '%';
+
+      if (currentPct >= currentTargetPct) {
+        // Safe: compute safe bunks
+        // S = floor(attended / target - total)
+        const safeBunks = Math.floor((attended / target) - total);
+        
+        calcStatusBadge.className = 'calc-status-badge bg-success-subtle text-success';
+        calcStatusBadge.textContent = 'Safe Buffer';
+
+        if (safeBunks > 0) {
+          const newPct = (attended / (total + safeBunks)) * 100;
+          calcVerdictTitle.innerHTML = `You can safely miss <span class="text-success">${safeBunks}</span> more lecture${safeBunks > 1 ? 's' : ''}.`;
+          calcVerdictDesc.textContent = `Skipping ${safeBunks} class${safeBunks > 1 ? 'es' : ''} will bring your attendance to ${newPct.toFixed(1)}%, remaining safely above your ${currentTargetPct}% target.`;
+        } else {
+          calcVerdictTitle.textContent = 'On the exact threshold.';
+          calcVerdictDesc.textContent = `You cannot miss any classes right now without dipping below ${currentTargetPct}%. Attend next class to create a buffer.`;
+        }
+
+        calcFormulaText.textContent = `S = ⌊(${attended} / ${target.toFixed(2)}) - ${total}⌋ = ${safeBunks} safe skips`;
+      } else {
+        // Shortage: compute required consecutive classes
+        // C = ceil( (target * total - attended) / (1 - target) )
+        const requiredClasses = Math.ceil((target * total - attended) / (1 - target));
+
+        calcStatusBadge.className = 'calc-status-badge bg-danger-subtle text-danger';
+        calcStatusBadge.textContent = 'Attendance Shortage';
+
+        const newTotal = total + requiredClasses;
+        const newAttended = attended + requiredClasses;
+        const recoveredPct = (newAttended / newTotal) * 100;
+
+        calcVerdictTitle.innerHTML = `Must attend next <span class="text-danger">${requiredClasses}</span> consecutive class${requiredClasses > 1 ? 'es' : ''}.`;
+        calcVerdictDesc.textContent = `Attending ${requiredClasses} class${requiredClasses > 1 ? 'es' : ''} without absence will elevate your attendance back to ${recoveredPct.toFixed(1)}%, clearing the danger zone.`;
+
+        calcFormulaText.textContent = `C = ⌈(${target.toFixed(2)} × ${total} - ${attended}) / (1 - ${target.toFixed(2)})⌉ = ${requiredClasses} required`;
+      }
+    }
+
+    targetButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        targetButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentTargetPct = parseInt(btn.getAttribute('data-target'), 10);
+        labelTargetPct.textContent = currentTargetPct + '%';
+        calculateAttendance();
+      });
+    });
+
+    inputTotal.addEventListener('input', calculateAttendance);
+    inputAttended.addEventListener('input', calculateAttendance);
+
+    function setCalcValues(total, attended, target) {
+      inputTotal.value = total;
+      inputAttended.value = attended;
+      targetButtons.forEach(b => {
+        if (parseInt(b.getAttribute('data-target'), 10) === target) {
+          b.click();
+        }
+      });
+      calculateAttendance();
+    }
+
+    // Initial calculation on load
+    calculateAttendance();
+  </script>
 </body>
 </html>

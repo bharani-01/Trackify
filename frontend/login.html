@@ -245,8 +245,6 @@
   </div>
 
   
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   
   <script src="/assets/js/main.js"></script>
@@ -263,39 +261,6 @@
       showAlert('Public self-registration is currently disabled.', 'warning');
     } else if (msg === 'pending_approval') {
       showAlert('Your registration request is pending administrator review.', 'info');
-    }
-
-    function initGoogleSignIn(clientId) {
-      if (!clientId) return;
-      
-      function renderGoogleBtn() {
-        if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
-          google.accounts.id.initialize({
-            client_id: clientId,
-            callback: handleGoogleSignIn,
-            context: 'signin',
-            ux_mode: 'popup',
-            auto_prompt: false
-          });
-
-          const btnContainer = document.getElementById('g_id_signin_button');
-          if (btnContainer) {
-            google.accounts.id.renderButton(btnContainer, {
-              type: 'standard',
-              shape: 'pill',
-              theme: 'outline',
-              text: 'signin_with',
-              size: 'large',
-              logo_alignment: 'left',
-              width: 320
-            });
-          }
-        } else {
-          setTimeout(renderGoogleBtn, 100);
-        }
-      }
-
-      renderGoogleBtn();
     }
 
     // Check registration status dynamically & initialize Google OAuth
