@@ -17,6 +17,7 @@ const {
   adminResetUserPassword,
   bulkUpdateSubjectHours,
   getStudentAttendanceStats,
+  clearStudentFutureAttendance,
   triggerDailyReminders,
   triggerLowAttendanceWarnings,
   previewDailyReminders,
@@ -49,6 +50,7 @@ router.route('/users/:id')
 router.put('/users/:id/suspend', toggleUserSuspension);
 router.put('/users/:id/reset-password', adminResetUserPassword);
 router.get('/users/:id/attendance-stats', getStudentAttendanceStats);
+router.delete('/users/:id/clear-future-attendance', clearStudentFutureAttendance);
 
 // Approvals management
 const { getPendingApprovals, approveRegistration, rejectRegistration } = require('../controllers/approvalController');

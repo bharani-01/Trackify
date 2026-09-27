@@ -718,6 +718,45 @@ const getStudentAttendanceStats = async (req, res) => {
 };
 
 /**
+ * Clear future attendance records for a specific student (Admin action)
+ * @route DELETE /api/admin/users/:id/clear-future-attendance
+ */
+const clearStudentFutureAttendance = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const student = await userRepository.findById(id);
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    const count = await attendanceRepository.deleteFutureRecords(id, todayStr);
+
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    auditLogRepository.logAction(
+      req.user.id,
+      'ADMIN_CLEAR_FUTURE_ATTENDANCE',
+      `Admin cleared ${count} future attendance records after ${todayStr} for student ${student.name} (${student.email})`,
+      ip
+    ).catch(err => console.error('Background audit log error:', err));
+
+    return res.status(200).json({
+      success: true,
+      message: `Cleared ${count} future attendance record(s) for ${student.name}`,
+      count
+    });
+  } catch (error) {
+    console.error('clearStudentFutureAttendance error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to clear student future attendance'
+    });
+  }
+};
+
+/**
  * Preview daily marking reminder emails
  * @route POST /api/admin/reminders/preview-daily
  */
@@ -907,6 +946,7 @@ module.exports = {
   adminResetUserPassword,
   bulkUpdateSubjectHours,
   getStudentAttendanceStats,
+  clearStudentFutureAttendance,
   triggerDailyReminders,
   triggerLowAttendanceWarnings,
   previewDailyReminders,

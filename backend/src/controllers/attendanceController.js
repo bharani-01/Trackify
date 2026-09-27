@@ -219,6 +219,39 @@ const clearAttendanceByDate = async (req, res) => {
 };
 
 /**
+ * Clear all future attendance records for the logged-in student (dates after today)
+ */
+const clearFutureAttendance = async (req, res) => {
+  try {
+    const today = new Date();
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    const count = await attendanceRepository.deleteFutureRecords(req.user.id, todayStr);
+
+    // Log action asynchronously without blocking response
+    const ip = req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    auditLogRepository.logAction(
+      req.user.id,
+      'CLEAR_FUTURE_ATTENDANCE',
+      `Cleared all future attendance markings after ${todayStr} (${count} entries removed)`,
+      ip
+    ).catch(err => console.error('Background audit log error:', err));
+
+    return res.status(200).json({
+      success: true,
+      message: `Cleared ${count} future attendance record(s) after ${todayStr}`,
+      count
+    });
+  } catch (error) {
+    console.error('clearFutureAttendance controller error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to clear future attendance'
+    });
+  }
+};
+
+/**
  * Delete a logged attendance record
  */
 const deleteAttendance = async (req, res) => {
@@ -673,6 +706,7 @@ module.exports = {
   updateAttendance,
   deleteAttendance,
   clearAttendanceByDate,
+  clearFutureAttendance,
   getStats,
   getCalendarMonthSummary
 };

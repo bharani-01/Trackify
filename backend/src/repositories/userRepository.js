@@ -334,6 +334,7 @@ const updateLastLogin = async (userId) => {
 module.exports = {
   findByEmail,
   findById,
+  getById: findById,
   createUser,
   updateResetToken,
   findByResetToken,

@@ -999,6 +999,8 @@
 
     let cachedTimetable = null;
     let currentDayLogs = [];
+    let fetchChecklistSeq = 0;
+    let isChecklistLoading = false;
 
     function renderSkeletonSchedule(count = 3) {
       let html = '';
@@ -1025,8 +1027,12 @@
 
     // Load classes checklist based on selected date
     async function fetchChecklist() {
+      const currentSeq = ++fetchChecklistSeq;
+      isChecklistLoading = true;
+      daySlots = [];
+
       const container = document.getElementById('today-schedule-container');
-      if (container && (!daySlots || daySlots.length === 0)) {
+      if (container) {
         container.innerHTML = renderSkeletonSchedule(3);
       }
       const dParts = currentSelectedDate.split('-');
@@ -1049,6 +1055,12 @@
         apiCall(`/api/timetable/adjustments?date=${currentSelectedDate}`),
         apiCall(`/api/attendance?startDate=${currentSelectedDate}&endDate=${currentSelectedDate}`)
       ]);
+
+      if (currentSeq !== fetchChecklistSeq) {
+        // Discard stale response from superseded date selection
+        return;
+      }
+      isChecklistLoading = false;
 
       if (timetableRes.success && adjustmentsRes.success && logsRes.success) {
         if (!cachedTimetable) cachedTimetable = timetableRes.timetable;
@@ -1364,9 +1376,16 @@
         return;
       }
 
+      if (isChecklistLoading || !daySlots || daySlots.length === 0) {
+        showAlert('Classes are still loading for this date. Please wait a moment.', 'warning');
+        return;
+      }
+
+      const targetBatchDate = currentSelectedDate;
+
       const confirmed = await showAppConfirm({
         title: `Mark All as ${status}`,
-        message: `Are you sure you want to mark all scheduled classes on ${currentSelectedDate} as ${status}?`,
+        message: `Are you sure you want to mark all scheduled classes on ${targetBatchDate} as ${status}?`,
         confirmText: `Mark All ${status}`,
         confirmVariant: status === 'Absent' ? 'danger' : 'primary'
       });
@@ -1382,7 +1401,7 @@
           method: 'POST',
           body: {
             subject_id: slot.subject_id,
-            date: currentSelectedDate,
+            date: targetBatchDate,
             status: status,
             remarks: `Period ${slot.period}`
           }

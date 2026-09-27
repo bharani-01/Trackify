@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node backend/server.js",
     "dev": "nodemon backend/server.js",
-    "init-db": "node backend/src/config/init_db.js"
+    "init-db": "node backend/src/config/init_db.js",
+    "test": "node --test tests/index.test.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

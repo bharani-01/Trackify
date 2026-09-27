@@ -212,6 +212,18 @@ const getSubjectStats = async (userId) => {
   return result.rows;
 };
 
+/**
+ * Delete all future attendance logs for a user (date strictly greater than specified date)
+ * @param {string} userId 
+ * @param {string} date - Base date in YYYY-MM-DD
+ * @returns {Promise<number>} Count of deleted records
+ */
+const deleteFutureRecords = async (userId, date) => {
+  const query = 'DELETE FROM attendance WHERE user_id = $1 AND date > $2 RETURNING id';
+  const result = await db.query(query, [userId, date]);
+  return result.rowCount;
+};
+
 module.exports = {
   getByUserId,
   getById,
@@ -220,6 +232,7 @@ module.exports = {
   delete: deleteRecord,
   deleteByDate,
   deleteByDateAndTarget,
+  deleteFutureRecords,
   getSubjectStats
 };
 
