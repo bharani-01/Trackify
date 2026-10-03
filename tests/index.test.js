@@ -3,3 +3,4 @@ require('./frontendRaceGuard.test.js');
 require('./databaseIntegrity.test.js');
 require('./attendanceRepository.test.js');
 require('./attendanceController.test.js');
+require('./simulator.test.js');

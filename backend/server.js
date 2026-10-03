@@ -563,7 +563,11 @@ app.get(['/student/calendar', '/student/calendar.html'], (req, res) => {
   return res.redirect('/student/attendance');
 });
 
-// Protected HTML pages for student and admin
+// Direct access route for predicted attendance simulator (unlisted utility accessible via direct URL)
+app.get(['/student/predicted-attendance', '/student/predicted-attendance.html'], protectHtml('student'), (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/student/simulator.html'));
+});
+
 app.use('/student', protectHtml('student'), express.static(path.join(__dirname, '../frontend/student'), { extensions: ['html'] }));
 app.use('/admin', protectHtml('admin'), express.static(path.join(__dirname, '../frontend/admin'), { extensions: ['html'] }));
 

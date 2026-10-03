@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Predicted Attendance &amp; Closing Simulator - Trackify</title>
+  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/css/style.css?v=1.2">
+
+  <style>
+    /* Strict Theme Synchronization with Trackify Core Design System */
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-main-wrapper {
+      background-color: var(--bg-primary);
+    }
+
+    .glass-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px 0 rgba(0, 0, 0, 0.01);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Human-Centric Table Styling with Smooth Horizontal Scrolling */
+    .subject-table-wrapper {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+    }
+
+    .subject-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      margin: 0;
+    }
+
+    .subject-table th {
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      text-align: left;
+    }
+
+    .subject-table td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+      color: var(--text-secondary);
+    }
+
+    .subject-table tbody tr {
+      transition: background-color 0.12s ease;
+    }
+
+    .subject-table tbody tr:hover {
+      background-color: var(--bg-primary);
+    }
+
+    .subject-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Form controls in theme */
+    .theme-input {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+    .theme-input:focus {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border-color: #2563eb;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+    }
+
+    /* Human Dual-Tone Visual Progress Bar */
+    .projection-bar-track {
+      width: 100%;
+      height: 6px;
+      background: var(--border-color);
+      border-radius: 9999px;
+      overflow: hidden;
+      display: flex;
+      position: relative;
+    }
+
+    .projection-bar-current {
+      height: 100%;
+      background: #2563eb;
+      border-radius: 9999px 0 0 9999px;
+    }
+
+    .projection-bar-gain {
+      height: 100%;
+      background: #10b981;
+      opacity: 0.85;
+      border-radius: 0 9999px 9999px 0;
+    }
+
+    /* Clean Delta Typography */
+    .delta-gain-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 700;
+      color: #059669;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    [data-theme="dark"] .delta-gain-text {
+      color: #34d399;
+    }
+
+    /* Clean Status Badges (Strictly No-Wrap to prevent truncation) */
+    .status-badge-safe {
+      background: rgba(16, 185, 129, 0.1);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      display: inline-block;
+      white-space: nowrap !important;
+      word-break: keep-all;
+    }
+
+    [data-theme="dark"] .status-badge-safe {
+      color: #34d399;
+      border-color: rgba(52, 211, 153, 0.3);
+    }
+
+    .status-badge-warn {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      display: inline-block;
+      white-space: nowrap !important;
+      word-break: keep-all;
+    }
+
+    .status-badge-risk {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.25rem 0.55rem;
+      display: inline-block;
+      white-space: nowrap !important;
+      word-break: keep-all;
+    }
+
+    /* Search & Filter Bar */
+    .search-input-box {
+      position: relative;
+      max-width: 260px;
+      width: 100%;
+    }
+
+    .search-input-box svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      color: var(--text-muted);
+    }
+
+    .search-input-box input {
+      padding-left: 32px;
+      font-size: 0.8rem;
+      border-radius: 8px;
+    }
+
+    .filter-chip-btn {
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border: 1px solid var(--border-color);
+      background: var(--bg-primary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .filter-chip-btn.active {
+      background: #2563eb;
+      color: #ffffff;
+      border-color: #2563eb;
+    }
+
+    /* Mobile Subject Card Styles */
+    .subject-mobile-card {
+      border-radius: 12px;
+      margin-bottom: 0.75rem;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .app-content {
+        padding: 0.75rem 0.6rem !important;
+      }
+      
+      .glass-card {
+        padding: 0.95rem 0.85rem !important;
+        border-radius: 10px;
+      }
+
+      .search-input-box {
+        max-width: 100%;
+      }
+    }
+  </style>
+
+  <link rel="icon" type="image/webp" href="/assets/images/favicon.webp">
+  <script>
+    (function () {
+      const theme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+      if (localStorage.getItem('sidebar-collapsed') === 'true') {
+        document.documentElement.classList.add('sidebar-collapsed');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="app-layout">
+    
+    <!-- Standard Sidebar matching all student views (unlisted utility) -->
+    <aside class="app-sidebar">
+      <div class="sidebar-logo">
+        <a href="/student/dashboard">
+          <img src="/assets/images/logo_light.webp" alt="Trackify Logo" style="height: 32px; width: auto;">
+        </a>
+      </div>
+      <div class="sidebar-menu">
+        <a class="sidebar-link" href="/student/dashboard">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>
+          </svg>
+          <span>Dashboard</span>
+        </a>
+        <a class="sidebar-link" href="/student/attendance">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          <span>Attendance</span>
+        </a>
+        <a class="sidebar-link" href="/student/timetable">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Time Table</span>
+        </a>
+        <a class="sidebar-link" href="/student/settings">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Profile</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="app-main-wrapper">
+      
+      <!-- Top Application Header with Mobile Sidebar Toggle, Theme Switcher & Profile -->
+      <header class="app-header">
+        <div class="d-flex align-items-center gap-2">
+          <button class="sidebar-toggle btn p-1 d-md-none" id="sidebarToggle" type="button" aria-label="Toggle navigation" style="border: 1px solid var(--border-color); background: var(--bg-secondary); border-radius: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <span class="app-header-title">Predicted Attendance</span>
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <!-- Theme Toggle -->
+          <button class="theme-toggle btn p-1.5" id="themeToggle" type="button" aria-label="Toggle theme" style="border: 1px solid var(--border-color); background: var(--bg-secondary); border-radius: 8px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary sun-icon"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary moon-icon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+
+          <!-- Profile Dropdown -->
+          <div class="app-header-profile dropdown">
+            <div class="d-flex align-items-center gap-2" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+              <div class="profile-avatar-container">
+                <span class="badge bg-primary text-white d-flex align-items-center justify-content-center fw-bold fs-6" style="width: 34px; height: 34px; border-radius: 50%;" id="user-avatar-initial">S</span>
+              </div>
+              <div class="text-start d-none d-md-block" style="line-height: 1.1;">
+                <div class="fw-bold fs-7" style="color: var(--text-primary);" id="user-header-name">Student</div>
+                <div class="text-secondary small" style="font-size: 0.65rem;">Direct Simulator</div>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary ms-1 d-none d-md-block" style="width: 14px; height: 14px;">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-glass rounded-4 mt-2 py-2" style="min-width: 180px; background: var(--bg-secondary); backdrop-filter: blur(8px); border: 1px solid var(--border-color);">
+              <li>
+                <a class="dropdown-item py-2 px-3 fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);" href="/student/dashboard">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;">
+                    <rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>
+                  </svg>
+                  <span>Dashboard</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 px-3 fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);" href="/student/attendance">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;">
+                    <polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+                  </svg>
+                  <span>Attendance</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 px-3 fw-semibold d-flex align-items-center gap-2" style="color: var(--text-primary);" href="/student/settings">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary" style="width: 16px; height: 16px;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>Settings</span>
+                </a>
+              </li>
+              <li><hr class="dropdown-divider" style="border-color: var(--border-color);"></li>
+              <li>
+                <a class="dropdown-item py-2 px-3 fw-semibold text-danger d-flex align-items-center gap-2" href="#" onclick="handleLogout()">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-danger" style="width: 16px; height: 16px;">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  <span>Log Out</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Application Content Area -->
+      <main class="app-content animate-fade-in-up">
+        
+        <!-- Clean Overview Header with Cutoff Date -->
+        <div class="glass-card p-3 p-md-3.5 mb-3 mb-md-4">
+          <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            
+            <!-- Left: Title -->
+            <div>
+              <h1 class="h5 fw-bold mb-0" style="color: var(--text-primary); letter-spacing: -0.02em; font-size: 1.25rem;">
+                Predicted Attendance
+              </h1>
+            </div>
+
+            <!-- Right: Elegant Unified Date Trigger & Countdown Status -->
+            <div class="d-flex align-items-center flex-wrap gap-2.5 p-2 px-3 rounded-3 border" style="background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div class="d-flex align-items-center gap-1.5">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary flex-shrink-0"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <label for="closingDateInput" class="text-secondary small fw-semibold mb-0" style="font-size: 0.75rem;">Cutoff:</label>
+                <input type="date" class="form-control form-control-sm theme-input font-monospace fw-semibold border-0 py-0 ps-1 pe-2" id="closingDateInput" value="2026-10-23" onchange="onClosingDateChanged(this.value)" style="width: 145px; font-size: 0.82rem; background: transparent !important; cursor: pointer; box-shadow: none;">
+              </div>
+
+              <div class="vr d-none d-sm-block my-1" style="color: var(--border-color); opacity: 0.5;"></div>
+
+              <div class="d-flex align-items-center gap-2 font-monospace" style="font-size: 0.78rem;">
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1 fw-bold" id="statRemainingDaysNumber">20 Days</span>
+                <span class="text-secondary" id="statRemainingAcademicLabel">14 working days left</span>
+                <span class="d-none" id="statRemainingClassesSummary">98 classes remaining</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section: Subject Predictions Table & Mobile Cards -->
+        <div class="glass-card p-3 p-md-4 mb-3 mb-md-4">
+          <!-- Desktop View: Clean Table (≥ 768px) with Auto Horizontal Scroll -->
+          <div class="subject-table-wrapper table-responsive d-none d-md-block">
+            <table class="subject-table">
+              <thead>
+                <tr>
+                  <th style="min-width: 200px;">Subject</th>
+                  <th class="text-center" style="width: 100px;">Current</th>
+                  <th class="text-center" style="width: 100px;">Upcoming</th>
+                  <th style="min-width: 170px;">Projected (100% Attended)</th>
+                  <th class="text-center" style="width: 90px;">Change</th>
+                  <th class="text-end" style="width: 110px; padding-right: 1.5rem; white-space: nowrap;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="subject-table-tbody">
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-secondary small">
+                    Loading your enrolled subjects and timetable...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile View: Clean App-Native Cards (< 768px) -->
+          <div class="d-md-none" id="subject-mobile-cards-container">
+            <div class="text-center py-4 text-secondary small">
+              Loading your subjects...
+            </div>
+          </div>
+        </div>
+
+        <!-- Integrated Holidays Notice (Only shown if holidays exist in window) -->
+        <div id="holidaysNoticeContainer" class="p-3 rounded-3 border d-flex align-items-center gap-2.5 mb-4" style="background: var(--bg-secondary); border-color: var(--border-color) !important; display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-secondary flex-shrink-0">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <div class="small text-secondary flex-grow-1" style="font-size: 0.78rem; line-height: 1.45;">
+            <strong style="color: var(--text-primary); font-weight: 600;">Institutional Holidays in this period:</strong>
+            <span id="holidaysListInline" class="ms-1 text-muted">None</span>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <script src="/assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets/js/app-nav.js"></script>
+
+  <script>
+    // Global Application State
+    let currentUser = null;
+    let userSettings = { minimum_attendance: 80 };
+    let realSubjectStats = [];
+    let weeklyTimetable = [];
+    let officialHolidays = [];
+
+    // Filter & Search State
+    let activeFilter = 'all'; // 'all' | 'risk'
+    let searchQuery = '';
+
+    // Cutoff Date Configuration
+    let selectedClosingDate = '2026-10-23';
+
+    // Remaining window calculations cache
+    let remainingWindowStats = {
+      calendarDays: 0,
+      workingDays: 0,
+      holidayCount: 0,
+      sundayCount: 0,
+      totalRemainingClasses: 0,
+      subjectRemaining: {}, // { [subject_id]: remainingCount }
+      subjectScheduleDays: {}, // { [subject_id]: Set of dayNames }
+      holidaysInWindow: []
+    };
+
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+      return el;
+    }
+
+    function safeSetHtml(id, html) {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = html;
+      return el;
+    }
+
+    function getTodayStr() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    function formatDateDisplay(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${d} ${months[m - 1]} ${y}`;
+    }
+
+    // Cutoff Date Change Handler
+    function onClosingDateChanged(newDateStr) {
+      selectedClosingDate = newDateStr;
+
+      computeRemainingWindow();
+      renderSubjectBreakdownTable();
+    }
+
+    // Filter & Search Handlers
+    function setSubjectFilter(filterType) {
+      activeFilter = filterType;
+      document.querySelectorAll('.filter-chip-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-filter') === filterType);
+      });
+      renderSubjectBreakdownTable();
+    }
+
+    function onFilterChanged() {
+      const input = document.getElementById('subjectSearchInput');
+      searchQuery = input ? input.value.trim().toLowerCase() : '';
+      renderSubjectBreakdownTable();
+    }
+
+    // Main Initialization Sequence
+    async function initSimulator() {
+      // 1. Fetch user session
+      const meRes = await apiCall('/api/auth/me');
+      if (!meRes.success || !meRes.user) {
+        window.location.href = '/login';
+        return;
+      }
+      currentUser = meRes.user;
+      safeSetText('user-header-name', currentUser.name || 'Student');
+
+      // 2. Fetch user settings for target threshold badge
+      const settingsRes = await apiCall('/api/settings');
+      if (settingsRes.success && settingsRes.settings) {
+        userSettings = {
+          minimum_attendance: settingsRes.settings.minimum_attendance || 80
+        };
+      }
+
+      // 3. Fetch real attendance statistics & subjects
+      const statsRes = await apiCall('/api/attendance/stats');
+      if (statsRes.success && statsRes.stats) {
+        realSubjectStats = statsRes.stats.subjectStats || [];
+      }
+
+      // 4. Fetch timetable and holidays in parallel
+      const [timetableRes, holidaysRes] = await Promise.all([
+        apiCall('/api/timetable'),
+        apiCall('/api/attendance/holidays')
+      ]);
+
+      if (holidaysRes.success && holidaysRes.holidays) {
+        officialHolidays = holidaysRes.holidays;
+      }
+
+      if (timetableRes.success && timetableRes.timetable) {
+        weeklyTimetable = timetableRes.timetable;
+      }
+
+      computeRemainingWindow();
+      renderSubjectBreakdownTable();
+    }
+
+    // Calculate days remaining, working days, and timetable slots to closing date
+    function computeRemainingWindow() {
+      const todayStr = getTodayStr();
+      const [ty, tm, td] = todayStr.split('-').map(Number);
+      const today = new Date(ty, tm - 1, td);
+
+      const [cy, cm, cd] = selectedClosingDate.split('-').map(Number);
+      const closingDate = new Date(cy, cm - 1, cd);
+
+      const holidayDates = new Set(officialHolidays.map(h => h.date));
+      const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      let totalCalendarDays = 0;
+      let workingDays = 0;
+      let holidayCount = 0;
+      let sundayCount = 0;
+      let totalRemainingClasses = 0;
+      const subjectRemaining = {};
+      const subjectScheduleDays = {};
+      const holidaysInWindow = [];
+
+      // Calculate calendar difference from today to closing date
+      const diffMs = closingDate.getTime() - today.getTime();
+      const calendarDaysDiff = Math.max(0, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+      safeSetText('statRemainingDaysNumber', `${calendarDaysDiff} Days`);
+
+      // Iterate from tomorrow up through closing date
+      let cur = new Date(today);
+      cur.setDate(cur.getDate() + 1);
+
+      while (cur <= closingDate) {
+        totalCalendarDays++;
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, '0');
+        const d = String(cur.getDate()).padStart(2, '0');
+        const dateStr = `${y}-${m}-${d}`;
+        const dayName = daysOfWeek[cur.getDay()];
+
+        if (dayName === 'Sunday') {
+          sundayCount++;
+        } else if (holidayDates.has(dateStr)) {
+          holidayCount++;
+          const hObj = officialHolidays.find(h => h.date === dateStr);
+          if (hObj && !holidaysInWindow.some(existing => existing.date === dateStr)) {
+            holidaysInWindow.push(hObj);
+          }
+        } else {
+          workingDays++;
+          const slotsForDay = weeklyTimetable.filter(s => s.day === dayName);
+          totalRemainingClasses += slotsForDay.length;
+          slotsForDay.forEach(s => {
+            const subId = s.subject_id;
+            subjectRemaining[subId] = (subjectRemaining[subId] || 0) + 1;
+            if (!subjectScheduleDays[subId]) {
+              subjectScheduleDays[subId] = new Set();
+            }
+            subjectScheduleDays[subId].add(dayName);
+          });
+        }
+
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      remainingWindowStats = {
+        calendarDays: calendarDaysDiff,
+        workingDays,
+        holidayCount,
+        sundayCount,
+        totalRemainingClasses,
+        subjectRemaining,
+        subjectScheduleDays,
+        holidaysInWindow
+      };
+
+      // Populate Status Strings
+      safeSetText('statRemainingAcademicLabel', `${workingDays} working days left`);
+      safeSetText('statRemainingClassesSummary', `${totalRemainingClasses} classes remaining`);
+
+      // Populate Institutional Holidays Notice (Hide if 0 holidays to prevent empty card clutter)
+      const noticeContainer = document.getElementById('holidaysNoticeContainer');
+      const inlineHolidays = document.getElementById('holidaysListInline');
+
+      if (noticeContainer && inlineHolidays) {
+        if (holidaysInWindow.length === 0) {
+          noticeContainer.style.display = 'none';
+        } else {
+          noticeContainer.style.display = 'flex';
+          inlineHolidays.innerHTML = holidaysInWindow.map(h => `${escapeHtmlSafe(h.name)} (${formatDateDisplay(h.date)})`).join(', ');
+        }
+      }
+    }
+
+    // Render Both Desktop Table and Native Mobile Cards
+    function renderSubjectBreakdownTable() {
+      const tbody = document.getElementById('subject-table-tbody');
+      const mobileContainer = document.getElementById('subject-mobile-cards-container');
+
+      if (!tbody && !mobileContainer) return;
+
+      if (realSubjectStats.length === 0) {
+        const emptyHtml = `<div class="text-center py-5 text-muted small">No subjects registered yet.</div>`;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-muted small">No subjects registered yet.</td></tr>`;
+        if (mobileContainer) mobileContainer.innerHTML = emptyHtml;
+        return;
+      }
+
+      const target = userSettings.minimum_attendance || 80;
+
+      // Filter and search
+      let riskCount = 0;
+      const computedSubjects = realSubjectStats.map(subj => {
+        const subId = subj.subject_id;
+        const remainingForSub = remainingWindowStats.subjectRemaining[subId] || 0;
+
+        const baseConducted = subj.conducted_count || 0;
+        const baseAttended = (subj.present_count || 0) + (subj.od_count || 0);
+        const basePercent = subj.percentage || (baseConducted > 0 ? Math.round((baseAttended / baseConducted) * 100 * 10) / 10 : 100.0);
+
+        const finalSubConducted = baseConducted + remainingForSub;
+        const projectedAttended = baseAttended + remainingForSub;
+        const predictedPercent = finalSubConducted > 0 
+          ? Math.round((projectedAttended / finalSubConducted) * 100 * 10) / 10 
+          : 100.0;
+
+        const delta = Math.round((predictedPercent - basePercent) * 10) / 10;
+        const isAtRisk = predictedPercent < target;
+        if (isAtRisk) riskCount++;
+
+        return {
+          ...subj,
+          remainingForSub,
+          baseConducted,
+          baseAttended,
+          basePercent,
+          finalSubConducted,
+          projectedAttended,
+          predictedPercent,
+          delta,
+          isAtRisk
+        };
+      });
+
+      safeSetText('countAllBadge', realSubjectStats.length);
+      safeSetText('countRiskBadge', riskCount);
+
+      // Apply active filter and search query
+      const filtered = computedSubjects.filter(item => {
+        if (activeFilter === 'risk' && !item.isAtRisk) return false;
+        if (searchQuery) {
+          const matchCode = (item.subject_code || '').toLowerCase().includes(searchQuery);
+          const matchName = (item.subject_name || '').toLowerCase().includes(searchQuery);
+          if (!matchCode && !matchName) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        const noMatchHtml = `<div class="text-center py-4 text-muted small">No subjects match your filter criteria.</div>`;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted small">No subjects match your filter criteria.</td></tr>`;
+        if (mobileContainer) mobileContainer.innerHTML = noMatchHtml;
+        return;
+      }
+
+      let desktopHtml = '';
+      let mobileHtml = '';
+
+      filtered.forEach(subj => {
+        const subId = subj.subject_id;
+        const daysSet = remainingWindowStats.subjectScheduleDays[subId];
+        const daysText = (daysSet && daysSet.size > 0) ? Array.from(daysSet).join(', ') : 'Weekly timetable';
+
+        // Clean Concise Status Indicator (Strictly No-Wrap)
+        let statusBadge = '';
+        if (subj.predictedPercent >= target) {
+          statusBadge = `<span class="status-badge-safe">Eligible</span>`;
+        } else if (subj.predictedPercent >= 75) {
+          statusBadge = `<span class="status-badge-warn">Borderline</span>`;
+        } else {
+          statusBadge = `<span class="status-badge-risk">At Risk</span>`;
+        }
+
+        const deltaSign = subj.delta > 0 ? `+${subj.delta.toFixed(1)}%` : `0.0%`;
+
+        // Progress bar percentage widths (capped at 100%)
+        const currentBarWidth = Math.min(100, Math.max(0, subj.basePercent));
+        const gainBarWidth = Math.min(100 - currentBarWidth, Math.max(0, subj.delta));
+
+        // 1. Desktop Table Row (Spacious & Clean with padding)
+        desktopHtml += `
+          <tr>
+            <td>
+              <div class="d-flex align-items-center gap-2 mb-0.5 flex-wrap">
+                <span class="badge bg-secondary-subtle text-secondary border font-monospace" style="font-size: 0.68rem; padding: 0.2rem 0.45rem;">
+                  ${escapeHtmlSafe(subj.subject_code || 'SUB')}
+                </span>
+                <span class="fw-semibold" style="color: var(--text-primary); font-size: 0.92rem;">
+                  ${escapeHtmlSafe(subj.subject_name || '')}
+                </span>
+              </div>
+              <div class="text-muted small" style="font-size: 0.72rem;">Meets on: ${escapeHtmlSafe(daysText)}</div>
+            </td>
+            <td class="text-center font-monospace">
+              <div class="fw-bold" style="color: var(--text-primary); font-size: 0.95rem;">${subj.basePercent}%</div>
+              <div class="text-muted small" style="font-size: 0.72rem;">${subj.baseAttended} / ${subj.baseConducted}</div>
+            </td>
+            <td class="text-center">
+              <div class="fw-bold font-monospace text-primary" style="font-size: 0.95rem;">+${subj.remainingForSub}</div>
+              <div class="text-muted small" style="font-size: 0.7rem;">classes</div>
+            </td>
+            <td>
+              <div class="d-flex justify-content-between align-items-baseline mb-1">
+                <span class="fw-bold font-monospace text-primary fs-6">${subj.predictedPercent.toFixed(1)}%</span>
+                <span class="text-muted small font-monospace" style="font-size: 0.72rem;">${subj.projectedAttended} / ${subj.finalSubConducted}</span>
+              </div>
+              <div class="projection-bar-track">
+                <div class="projection-bar-current" style="width: ${currentBarWidth}%;"></div>
+                <div class="projection-bar-gain" style="width: ${gainBarWidth}%;"></div>
+              </div>
+            </td>
+            <td class="text-center">
+              <span class="delta-gain-text">${deltaSign}</span>
+            </td>
+            <td class="text-end" style="padding-right: 1.5rem; white-space: nowrap;">
+              ${statusBadge}
+            </td>
+          </tr>
+        `;
+
+        // 2. Mobile Native Card
+        mobileHtml += `
+          <div class="subject-mobile-card mb-2.5">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-1.5">
+              <div>
+                <span class="badge bg-secondary-subtle text-secondary border font-monospace" style="font-size: 0.65rem; padding: 0.2rem 0.4rem;">
+                  ${escapeHtmlSafe(subj.subject_code || 'SUB')}
+                </span>
+                <div class="fw-semibold mt-1" style="color: var(--text-primary); font-size: 0.92rem; line-height: 1.3;">
+                  ${escapeHtmlSafe(subj.subject_name || '')}
+                </div>
+              </div>
+              <div>${statusBadge}</div>
+            </div>
+            
+            <div class="text-muted small mb-2.5" style="font-size: 0.7rem;">
+              Meets on: ${escapeHtmlSafe(daysText)}
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="d-flex align-items-center justify-content-between p-2 rounded-2 border mb-2 font-monospace" style="background: var(--bg-primary); border-color: var(--border-color) !important;">
+              <div>
+                <div class="text-muted" style="font-size: 0.62rem; text-transform: uppercase;">Current</div>
+                <div class="fw-bold fs-7 text-dark">${subj.basePercent}%</div>
+                <div class="text-muted" style="font-size: 0.65rem;">${subj.baseAttended}/${subj.baseConducted}</div>
+              </div>
+
+              <div class="text-center">
+                <div class="text-muted" style="font-size: 0.62rem; text-transform: uppercase;">Upcoming</div>
+                <div class="fw-bold fs-7 text-primary">+${subj.remainingForSub}</div>
+                <div class="text-muted" style="font-size: 0.65rem;">classes</div>
+              </div>
+
+              <div class="text-end">
+                <div class="text-muted" style="font-size: 0.62rem; text-transform: uppercase;">Projected</div>
+                <div class="fw-bold fs-7 text-success">${subj.predictedPercent.toFixed(1)}%</div>
+                <div class="text-muted" style="font-size: 0.65rem;">${subj.projectedAttended}/${subj.finalSubConducted}</div>
+              </div>
+            </div>
+
+            <!-- Visual Progress Track -->
+            <div class="mb-2">
+              <div class="projection-bar-track">
+                <div class="projection-bar-current" style="width: ${currentBarWidth}%;"></div>
+                <div class="projection-bar-gain" style="width: ${gainBarWidth}%;"></div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center pt-1.5 border-top" style="border-color: var(--border-color) !important;">
+              <span class="text-muted small" style="font-size: 0.72rem;">Attendance Gain:</span>
+              <span class="delta-gain-text">${deltaSign}</span>
+            </div>
+          </div>
+        `;
+      });
+
+      if (tbody) tbody.innerHTML = desktopHtml;
+      if (mobileContainer) mobileContainer.innerHTML = mobileHtml;
+    }
+
+    function escapeHtmlSafe(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    window.onload = initSimulator;
+  </script>
+</body>
+
+</html>
